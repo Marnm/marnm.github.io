@@ -6,7 +6,7 @@
     
     
     
-    <title>归档: 2018/12 | Deops&#39;s.cn | 运维技术分享</title>
+    <title>tags | Deops&#39;s.cn | 运维技术分享</title>
     <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     
     <meta name="theme-color" content="#77AAFF">
@@ -39,17 +39,18 @@
 
 
     
-    <meta name="description" content="Echo">
+    <meta name="description" content="document.querySelectorAll(&apos;.github-emoji&apos;)           .forEach(el =&amp;gt; {             if (!el.dataset.src) { return; }             const img = document.createElement(&apos;img&apos;);             img.style">
 <meta name="keywords" content="Echo">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Deops&#39;s.cn">
-<meta property="og:url" content="http://deops.cn/archives/2018/12/index.html">
+<meta property="og:title" content="tags">
+<meta property="og:url" content="http://deops.cn/tags/index.html">
 <meta property="og:site_name" content="Deops&#39;s.cn">
-<meta property="og:description" content="Echo">
+<meta property="og:description" content="document.querySelectorAll(&apos;.github-emoji&apos;)           .forEach(el =&amp;gt; {             if (!el.dataset.src) { return; }             const img = document.createElement(&apos;img&apos;);             img.style">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-01-01T12:57:45.082Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Deops&#39;s.cn">
-<meta name="twitter:description" content="Echo">
+<meta name="twitter:title" content="tags">
+<meta name="twitter:description" content="document.querySelectorAll(&apos;.github-emoji&apos;)           .forEach(el =&amp;gt; {             if (!el.dataset.src) { return; }             const img = document.createElement(&apos;img&apos;);             img.style">
     
         <link rel="alternate" type="application/atom+xml" title="Deops&#39;s.cn" href="/atom.xml">
     
@@ -92,7 +93,7 @@
                   </a>
               </li>
             
-              <li class="waves-block waves-effect active">
+              <li class="waves-block waves-effect">
                   <a href="/archives">
                     <i class="icon icon-lg icon-archives"></i>
                     <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
@@ -106,7 +107,7 @@
                   </a>
               </li>
             
-              <li class="waves-block waves-effect">
+              <li class="waves-block waves-effect active">
                   <a href="/tags">
                     <i class="icon icon-lg icon-tags"></i>
                     <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
@@ -151,7 +152,7 @@
         <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
           <i class="icon icon-lg icon-navicon"></i>
         </a>
-        <div class="flex-col header-title ellipsis">归档</div>
+        <div class="flex-col header-title ellipsis">标签</div>
         
         <div class="search-wrap" id="search-wrap">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
@@ -168,7 +169,7 @@
         </a>
     </div>
 </header>
-<header class="content-header archives-header">
+<header class="content-header tags-header">
     
     
     <div class="container fade-scale">
@@ -178,7 +179,19 @@
             </h1>
             <h5 class="subtitle">
                 
-                    <h1 class="archivestitle">路漫漫其修远兮</h1>
+                    <h1 id="pagetitle" class="archivestitle"></h1>
+                    <script>
+                        if(location.href.indexOf('about')!=-1){
+                            pagetitle.textContent = '一个坏掉的番茄';
+                        }else if(location.href.indexOf('tags')!=-1||location.href.indexOf('categories')!=-1){
+                            var a=location.href.substring(location.href.length-5,location.href.length-1);
+                            if(a==='tags'){
+                                pagetitle.textContent = '不积小流无以成江海';
+                            }else if(a==='ries'){
+                                pagetitle.textContent = '不积跬步无以至千里';
+                            }
+                        }
+                    </script>
                 
             </h5>
         </div>
@@ -186,78 +199,228 @@
 
 </header>
 
-<div class="container body-wrap fade">
-    
 
-    
+    <div class="container body-wrap fade">
+        
+            <h5 class="tag-tip"><i class="icon icon-lg icon-tags"></i>
+                目前共19个标签
+            </h5>
+            <div class="card-pool">
             
-            <h3 class="archive-separator">
-                <i class="icon icon-lg icon-folder-o"></i>&nbsp;&nbsp;
-                2018
-            </h3>
-            <div class="waterfall">
-    
-
-        <article class="archive-article" onclick="location.href='/190101.html'">
-    <div class="archive-article-date">
-      
-      <time class="my-post-time">
-        <i class="icon icon-lg icon-file-text-o"></i>
-        &nbsp;
-          12-30
-      </time>
+                    <a class="MyTagLink" href="/tags/Java/" itemprop="url">
+    <div class="card-card">
+        <div class="card-container">
+            <span href="/tags/Java/" class="card-link">Java</span>
+            <span class="card-count">
+                (1)
+            </span>
+        </div>
     </div>
-    <div class="archive-article-inner">
-      
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a href="/190101.html">Hello World</a>
-    </h3>
-  
-
-
-
-      
+</a>
+                
+                    <a class="MyTagLink" href="/tags/编程/" itemprop="url">
+    <div class="card-card">
+        <div class="card-container">
+            <span href="/tags/编程/" class="card-link">编程</span>
+            <span class="card-count">
+                (2)
+            </span>
+        </div>
     </div>
-  </article>
-
-    
-
-        <article class="archive-article" onclick="location.href='/cjqdvaqk5000cvooc3g3j56s2.html'">
-    <div class="archive-article-date">
-      
-      <time class="my-post-time">
-        <i class="icon icon-lg icon-file-text-o"></i>
-        &nbsp;
-          12-16
-      </time>
+</a>
+                
+                    <a class="MyTagLink" href="/tags/Linux/" itemprop="url">
+    <div class="card-card">
+        <div class="card-container">
+            <span href="/tags/Linux/" class="card-link">Linux</span>
+            <span class="card-count">
+                (3)
+            </span>
+        </div>
     </div>
-    <div class="archive-article-inner">
-      
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a href="/cjqdvaqk5000cvooc3g3j56s2.html">kali工具Metasploit首次启动配置</a>
-    </h3>
-  
-
-
-
-      
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MSF/">MSF</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kali/">kali</a></li></ul>
-
+</a>
+                
+                    <a class="MyTagLink" href="/tags/RedHat/" itemprop="url">
+    <div class="card-card">
+        <div class="card-container">
+            <span href="/tags/RedHat/" class="card-link">RedHat</span>
+            <span class="card-count">
+                (3)
+            </span>
+        </div>
     </div>
-  </article>
-
-    
+</a>
+                
+                    <a class="MyTagLink" href="/tags/yum/" itemprop="url">
+    <div class="card-card">
+        <div class="card-container">
+            <span href="/tags/yum/" class="card-link">yum</span>
+            <span class="card-count">
+                (1)
+            </span>
+        </div>
     </div>
+</a>
+                
+                    <a class="MyTagLink" href="/tags/Python2/" itemprop="url">
+    <div class="card-card">
+        <div class="card-container">
+            <span href="/tags/Python2/" class="card-link">Python2</span>
+            <span class="card-count">
+                (1)
+            </span>
+        </div>
+    </div>
+</a>
+                
+                    <a class="MyTagLink" href="/tags/Python3/" itemprop="url">
+    <div class="card-card">
+        <div class="card-container">
+            <span href="/tags/Python3/" class="card-link">Python3</span>
+            <span class="card-count">
+                (1)
+            </span>
+        </div>
+    </div>
+</a>
+                
+                    <a class="MyTagLink" href="/tags/Python-pip/" itemprop="url">
+    <div class="card-card">
+        <div class="card-container">
+            <span href="/tags/Python-pip/" class="card-link">Python-pip</span>
+            <span class="card-count">
+                (1)
+            </span>
+        </div>
+    </div>
+</a>
+                
+                    <a class="MyTagLink" href="/tags/rhel/" itemprop="url">
+    <div class="card-card">
+        <div class="card-container">
+            <span href="/tags/rhel/" class="card-link">rhel</span>
+            <span class="card-count">
+                (1)
+            </span>
+        </div>
+    </div>
+</a>
+                
+                    <a class="MyTagLink" href="/tags/kali/" itemprop="url">
+    <div class="card-card">
+        <div class="card-container">
+            <span href="/tags/kali/" class="card-link">kali</span>
+            <span class="card-count">
+                (1)
+            </span>
+        </div>
+    </div>
+</a>
+                
+                    <a class="MyTagLink" href="/tags/MSF/" itemprop="url">
+    <div class="card-card">
+        <div class="card-container">
+            <span href="/tags/MSF/" class="card-link">MSF</span>
+            <span class="card-count">
+                (1)
+            </span>
+        </div>
+    </div>
+</a>
+                
+                    <a class="MyTagLink" href="/tags/生活/" itemprop="url">
+    <div class="card-card">
+        <div class="card-container">
+            <span href="/tags/生活/" class="card-link">生活</span>
+            <span class="card-count">
+                (1)
+            </span>
+        </div>
+    </div>
+</a>
+                
+                    <a class="MyTagLink" href="/tags/努力/" itemprop="url">
+    <div class="card-card">
+        <div class="card-container">
+            <span href="/tags/努力/" class="card-link">努力</span>
+            <span class="card-count">
+                (1)
+            </span>
+        </div>
+    </div>
+</a>
+                
+                    <a class="MyTagLink" href="/tags/学习/" itemprop="url">
+    <div class="card-card">
+        <div class="card-container">
+            <span href="/tags/学习/" class="card-link">学习</span>
+            <span class="card-count">
+                (2)
+            </span>
+        </div>
+    </div>
+</a>
+                
+                    <a class="MyTagLink" href="/tags/英语/" itemprop="url">
+    <div class="card-card">
+        <div class="card-container">
+            <span href="/tags/英语/" class="card-link">英语</span>
+            <span class="card-count">
+                (1)
+            </span>
+        </div>
+    </div>
+</a>
+                
+                    <a class="MyTagLink" href="/tags/CTF/" itemprop="url">
+    <div class="card-card">
+        <div class="card-container">
+            <span href="/tags/CTF/" class="card-link">CTF</span>
+            <span class="card-count">
+                (1)
+            </span>
+        </div>
+    </div>
+</a>
+                
+                    <a class="MyTagLink" href="/tags/信息安全/" itemprop="url">
+    <div class="card-card">
+        <div class="card-container">
+            <span href="/tags/信息安全/" class="card-link">信息安全</span>
+            <span class="card-count">
+                (1)
+            </span>
+        </div>
+    </div>
+</a>
+                
+                    <a class="MyTagLink" href="/tags/网络空间安全/" itemprop="url">
+    <div class="card-card">
+        <div class="card-container">
+            <span href="/tags/网络空间安全/" class="card-link">网络空间安全</span>
+            <span class="card-count">
+                (1)
+            </span>
+        </div>
+    </div>
+</a>
+                
+                    <a class="MyTagLink" href="/tags/Python/" itemprop="url">
+    <div class="card-card">
+        <div class="card-container">
+            <span href="/tags/Python/" class="card-link">Python</span>
+            <span class="card-count">
+                (1)
+            </span>
+        </div>
+    </div>
+</a>
+                
+            
+            </div>
+        
 
-    
 </div>
-
         <footer class="footer">
     <div class="footer-content">
         <span class="power">
