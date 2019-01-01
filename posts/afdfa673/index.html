@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>RHEL 7配置Yum软件仓库 | Deops&#39;s.cn | 运维技术分享</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="Linux,RedHat,yum">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="离线环境环境下配置一个本地yum软件仓库，简单整理一下。Yum软件仓库的作用是为了进一步简化RPM管理软件的难度以及自动分析所需软件包及其依赖关系的技术。">
+<meta name="keywords" content="Linux,RedHat,yum">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RHEL 7配置Yum软件仓库">
+<meta property="og:url" content="http://deops.cn/posts/afdfa673/index.html">
+<meta property="og:site_name" content="Deops&#39;s.cn">
+<meta property="og:description" content="离线环境环境下配置一个本地yum软件仓库，简单整理一下。Yum软件仓库的作用是为了进一步简化RPM管理软件的难度以及自动分析所需软件包及其依赖关系的技术。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-10-03T17:35:33.586Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RHEL 7配置Yum软件仓库">
+<meta name="twitter:description" content="离线环境环境下配置一个本地yum软件仓库，简单整理一下。Yum软件仓库的作用是为了进一步简化RPM管理软件的难度以及自动分析所需软件包及其依赖关系的技术。">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s.cn" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="微博" href="https://weibo.com/6040025614" target="_blank" title="微博">
+                <i class="icon icon-lg icon-weibo weibo"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">RHEL 7配置Yum软件仓库</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#第1步：-切换到-etc-yum-repos-d-目录中，（yum配置文件存放路径"><span class="post-toc-number">1.</span> <span class="post-toc-text">第1步： 切换到/etc/yum.repos.d/目录中，（yum配置文件存放路径)</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#第2步：-创建一个配置文件（文件名可随意，但后缀名必须是-repo）"><span class="post-toc-number">2.</span> <span class="post-toc-text">第2步： 创建一个配置文件（文件名可随意，但后缀名必须是.repo）</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#第3步：创建本地软件仓"><span class="post-toc-number">3.</span> <span class="post-toc-text">第3步：创建本地软件仓</span></a></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-RHEL-7配置Yum软件仓库" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">RHEL 7配置Yum软件仓库</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2018-08-07 15:18:07" datetime="2018-08-07T07:18:07.000Z" itemprop="datePublished">2018-08-07</time>
+
+            <br id="mybreak">
+            
+	<i class="icon icon-lg icon-folder-o"></i>
+	分类：<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Linux/">Linux</a></li></ul>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">2</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>&#x79BB;&#x7EBF;&#x73AF;&#x5883;&#x73AF;&#x5883;&#x4E0B;&#x914D;&#x7F6E;&#x4E00;&#x4E2A;&#x672C;&#x5730;yum&#x8F6F;&#x4EF6;&#x4ED3;&#x5E93;&#xFF0C;&#x7B80;&#x5355;&#x6574;&#x7406;&#x4E00;&#x4E0B;&#x3002;<br>Yum&#x8F6F;&#x4EF6;&#x4ED3;&#x5E93;&#x7684;&#x4F5C;&#x7528;&#x662F;&#x4E3A;&#x4E86;&#x8FDB;&#x4E00;&#x6B65;&#x7B80;&#x5316;RPM&#x7BA1;&#x7406;&#x8F6F;&#x4EF6;&#x7684;&#x96BE;&#x5EA6;&#x4EE5;&#x53CA;&#x81EA;&#x52A8;&#x5206;&#x6790;&#x6240;&#x9700;&#x8F6F;&#x4EF6;&#x5305;&#x53CA;&#x5176;&#x4F9D;&#x8D56;&#x5173;&#x7CFB;&#x7684;&#x6280;&#x672F;&#x3002;<br><a id="more"></a></p>
+<h4 id="&#x7B2C;1&#x6B65;&#xFF1A;-&#x5207;&#x6362;&#x5230;-etc-yum-repos-d-&#x76EE;&#x5F55;&#x4E2D;&#xFF0C;&#xFF08;yum&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x5B58;&#x653E;&#x8DEF;&#x5F84;"><a href="#&#x7B2C;1&#x6B65;&#xFF1A;-&#x5207;&#x6362;&#x5230;-etc-yum-repos-d-&#x76EE;&#x5F55;&#x4E2D;&#xFF0C;&#xFF08;yum&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x5B58;&#x653E;&#x8DEF;&#x5F84;" class="headerlink" title="&#x7B2C;1&#x6B65;&#xFF1A; &#x5207;&#x6362;&#x5230;/etc/yum.repos.d/&#x76EE;&#x5F55;&#x4E2D;&#xFF0C;&#xFF08;yum&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x5B58;&#x653E;&#x8DEF;&#x5F84;)"></a>&#x7B2C;1&#x6B65;&#xFF1A; &#x5207;&#x6362;&#x5230;<code>/etc/yum.repos.d/</code>&#x76EE;&#x5F55;&#x4E2D;&#xFF0C;&#xFF08;yum&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x5B58;&#x653E;&#x8DEF;&#x5F84;)</h4><h4 id="&#x7B2C;2&#x6B65;&#xFF1A;-&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF08;&#x6587;&#x4EF6;&#x540D;&#x53EF;&#x968F;&#x610F;&#xFF0C;&#x4F46;&#x540E;&#x7F00;&#x540D;&#x5FC5;&#x987B;&#x662F;-repo&#xFF09;"><a href="#&#x7B2C;2&#x6B65;&#xFF1A;-&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF08;&#x6587;&#x4EF6;&#x540D;&#x53EF;&#x968F;&#x610F;&#xFF0C;&#x4F46;&#x540E;&#x7F00;&#x540D;&#x5FC5;&#x987B;&#x662F;-repo&#xFF09;" class="headerlink" title="&#x7B2C;2&#x6B65;&#xFF1A; &#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF08;&#x6587;&#x4EF6;&#x540D;&#x53EF;&#x968F;&#x610F;&#xFF0C;&#x4F46;&#x540E;&#x7F00;&#x540D;&#x5FC5;&#x987B;&#x662F;.repo&#xFF09;"></a>&#x7B2C;2&#x6B65;&#xFF1A; &#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF08;&#x6587;&#x4EF6;&#x540D;&#x53EF;&#x968F;&#x610F;&#xFF0C;&#x4F46;&#x540E;&#x7F00;&#x540D;&#x5FC5;&#x987B;&#x662F;<code>.repo</code>&#xFF09;</h4><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[root@rhel_7 ~]# cd /etc/yum.repos.d/</span><br><span class="line">[root@rhel_7 yum.repos.d]# vi rhel7.repo</span><br><span class="line">[rhel7]</span><br><span class="line">name=rhel7</span><br><span class="line">baseurl=file:///media/cdrom</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>[rhel7]    # yum&#x4ED3;&#x5E93;&#x552F;&#x4E00;&#x6807;&#x8BC6;&#x7B26;&#xFF0C;&#x907F;&#x514D;&#x4E0E;&#x5176;&#x4ED6;&#x4ED3;&#x5E93;&#x51B2;&#x7A81;&#x3002;</li>
+<li>name=rhel7 # yum&#x540D;&#x79F0;&#x63CF;&#x8FF0;&#xFF0C;&#x6613;&#x4E8E;&#x8BC6;&#x522B;&#x4ED3;&#x5E93;&#x7528;&#x5904;&#x3002;</li>
+<li>baseurl=file:///media/cdrom    # &#x63D0;&#x4F9B;&#x7684;&#x65B9;&#x5F0F;&#x5305;&#x62EC;FTP(ftp://..)&#x3001;HTTP(http://..)&#x3001;&#x672C;&#x5730;(file:///..)</li>
+<li>enabled=1    # &#x8BBE;&#x7F6E;yum&#x662F;&#x5426;&#x53EF;&#x7528;&#xFF1B;1&#x53EF;&#x7528;&#xFF0C;0&#x7981;&#x7528;&#x3002;</li>
+<li>gpgcheck=1    # &#x8BBE;&#x7F6E;yum&#x662F;&#x5426;&#x6821;&#x9A8C;&#x6587;&#x4EF6;&#xFF0C;1&#x6821;&#x9A8C;&#xFF0C;0&#x4E0D;&#x6821;&#x9A8C;&#x3002;</li>
+<li>gpgkey=file:///media/cdrom/RPM-GPG-KEY-rehat-release    # &#x82E5;<code>gpgcheck</code>&#x5F00;&#x542F;&#xFF0C;&#x987B;&#x6307;&#x5B9A;&#x516C;&#x94A5;&#x6587;&#x4EF6;&#x5730;&#x5740;</li>
+</ul>
+<h4 id="&#x7B2C;3&#x6B65;&#xFF1A;&#x521B;&#x5EFA;&#x672C;&#x5730;&#x8F6F;&#x4EF6;&#x4ED3;"><a href="#&#x7B2C;3&#x6B65;&#xFF1A;&#x521B;&#x5EFA;&#x672C;&#x5730;&#x8F6F;&#x4EF6;&#x4ED3;" class="headerlink" title="&#x7B2C;3&#x6B65;&#xFF1A;&#x521B;&#x5EFA;&#x672C;&#x5730;&#x8F6F;&#x4EF6;&#x4ED3;"></a>&#x7B2C;3&#x6B65;&#xFF1A;&#x521B;&#x5EFA;&#x672C;&#x5730;&#x8F6F;&#x4EF6;&#x4ED3;</h4><p>&#x6302;&#x8F7D;ISO&#x955C;&#x50CF;&#x6216;&#x8005;&#x4E0A;&#x4F20;&#x5230;&#x672C;&#x5730;</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@rhel_7 ~]# mkdir -p /media/cdrom</span><br><span class="line">[root@rhel_7 ~]# mount -t iso9660 -o loop /usr/local/src/RHEL-server-7.0-x86_64.iso /media/cdrom</span><br><span class="line">[root@rhel_7 ~]# vim /etc/fstab</span><br><span class="line">/usr/local/src/RHEL-server-7.0-x86_64.iso /media/cdrom iso9660 default,ro.loop 0 0</span><br></pre></td></tr></tbody></table></figure><script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2018-10-03T17:35:33.586Z" itemprop="dateUpdated">2018-10-04 01:35:33</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/afdfa673/" target="_blank" rel="external">http://deops.cn/posts/afdfa673/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='http://deops.cn'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RedHat/">RedHat</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/yum/">yum</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://deops.cn/posts/afdfa673/&title=《RHEL 7配置Yum软件仓库》 — Deops's.cn&pic=http://deops.cn/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://deops.cn/posts/afdfa673/&title=《RHEL 7配置Yum软件仓库》 — Deops's.cn&source=离线环境环境下配置一个本地yum软件仓库，简单整理一下。Yum软件仓库的作用是为了进一步简化RPM管理软件的难度以及自动分析所需软件包及其依赖关系的技术。" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://deops.cn/posts/afdfa673/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RHEL 7配置Yum软件仓库》 — Deops's.cn&url=http://deops.cn/posts/afdfa673/&via=http://deops.cn" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://deops.cn/posts/afdfa673/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/28c30eb2/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：CTF线下赛AWD套路小结
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/eb7dbe25/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：RedHat_7 配置网卡信息">下一篇：RedHat_7 配置网卡信息</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2019
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="http://deops.cn">deops.cn</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license">This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://deops.cn/posts/afdfa673/&title=《RHEL 7配置Yum软件仓库》 — Deops's.cn&pic=http://deops.cn/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://deops.cn/posts/afdfa673/&title=《RHEL 7配置Yum软件仓库》 — Deops's.cn&source=离线环境环境下配置一个本地yum软件仓库，简单整理一下。Yum软件仓库的作用是为了进一步简化RPM管理软件的难度以及自动分析所需软件包及其依赖关系的技术。" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://deops.cn/posts/afdfa673/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RHEL 7配置Yum软件仓库》 — Deops's.cn&url=http://deops.cn/posts/afdfa673/&via=http://deops.cn" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://deops.cn/posts/afdfa673/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABwElEQVR42u3aOw4DIQxF0ex/0xMp/aD7bHAo7lRRhODQWP7w+eDv+X3kH7Jy/f+GT65cuW3us/z4kWso2X+9Rq5cufNcQnndAsSc9fWCYCdXrtzLuOQ3SXRqgVKuXLl3cvkBZL1cuXLv5/LihKcy62ToeK0mV67cBjdtmJ74fbC/K1eu3JD7hF9tZzJ6QafLlSt3hMsHqDxx4UGqVlzJlSt3hstbn2Q0wi/fGtvIlSt3hJvWHenzi13POOTKlXuay8el5CkVv+T6lNewKFeu3HFu2jbt4GqtE7ly5c5wSdFSe2KVlklBi1auXLkjXB6M0qKo9vxiQ00mV67cBrc2XiWhLQ2RKPWRK1fuCDdtgvBiJh3GyJUr9x5u58hOHsKhcuXKneemRQgPbXuHsnLlyp3kps3NXY1Ofg25cuX+i8tHnulhZDATXEyuXLmD3LRtmqZEPAjGcx65cuUe4NaeZNUeZPT3lCtX7iS3E7x4A5QHss2TH7ly5Ta46cOpWurDmyav6+XKlXsZN82V0mQI7SNXrtzruaQVwtegy8iVK3eQmz6i4s8maunOhlpNrly5DW7aMOVEnsrwpoxcuXIPc7/WS03UMpf3mgAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>

