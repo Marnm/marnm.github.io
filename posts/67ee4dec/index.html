@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Linux学习笔记 - 关于开源 | Deops&#39;s blog | 运维开发工程师</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="Linux,开源">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="1. 开源共享精神低风险：使用闭源软件无疑把命运交付给他人，一旦封闭的源代码没有人来维护，你将进退维谷；而且相较于商业软件公司，开源社区很少存在倒闭的问题。 高品质：相较于闭源软件产品，开源项目通常是由开源社区来研发及维护的，参与编写、维护、测试的用户量众多，一般的bug还没有等爆发就已经被修补。 低成本：开源工作者都是在幕后默默且无偿地付出劳动成果，为美好的世界贡献一份力量，因此使用开源社区推动">
+<meta name="keywords" content="Linux,开源">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux学习笔记 - 关于开源">
+<meta property="og:url" content="https://marnm.github.io/posts/67ee4dec/index.html">
+<meta property="og:site_name" content="Deops&#39;s blog">
+<meta property="og:description" content="1. 开源共享精神低风险：使用闭源软件无疑把命运交付给他人，一旦封闭的源代码没有人来维护，你将进退维谷；而且相较于商业软件公司，开源社区很少存在倒闭的问题。 高品质：相较于闭源软件产品，开源项目通常是由开源社区来研发及维护的，参与编写、维护、测试的用户量众多，一般的bug还没有等爆发就已经被修补。 低成本：开源工作者都是在幕后默默且无偿地付出劳动成果，为美好的世界贡献一份力量，因此使用开源社区推动">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://docs.blender.org/manual/zh-hans/dev/_images/getting-started_about_license_gnu-logo.png">
+<meta property="og:image" content="https://qph.fs.quoracdn.net/main-thumb-t-14907-200-seTLViB8UWkDHk3At9asR1xYPu5k6spg.jpeg">
+<meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Apache_Software_Foundation_Logo_%282016%29.svg/1200px-Apache_Software_Foundation_Logo_%282016%29.svg.png">
+<meta property="og:updated_time" content="2020-04-09T11:50:11.075Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux学习笔记 - 关于开源">
+<meta name="twitter:description" content="1. 开源共享精神低风险：使用闭源软件无疑把命运交付给他人，一旦封闭的源代码没有人来维护，你将进退维谷；而且相较于商业软件公司，开源社区很少存在倒闭的问题。 高品质：相较于闭源软件产品，开源项目通常是由开源社区来研发及维护的，参与编写、维护、测试的用户量众多，一般的bug还没有等爆发就已经被修补。 低成本：开源工作者都是在幕后默默且无偿地付出劳动成果，为美好的世界贡献一份力量，因此使用开源社区推动">
+<meta name="twitter:image" content="https://docs.blender.org/manual/zh-hans/dev/_images/getting-started_about_license_gnu-logo.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
+                <i class="icon icon-lg icon-tv tv"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Linux学习笔记 - 关于开源</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-开源共享精神"><span class="post-toc-number">1.</span> <span class="post-toc-text">1. 开源共享精神</span></a></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-Linux学习笔记 - 关于开源" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Linux学习笔记 - 关于开源</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2018-07-10 20:55:02" datetime="2018-07-10T12:55:02.000Z" itemprop="datePublished">2018-07-10</time>
+
+            <br id="mybreak">
+            
+	<i class="icon icon-lg icon-folder-o"></i>
+	分类：<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Linux/">Linux</a></li></ul>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">7</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h3 id="1-&#x5F00;&#x6E90;&#x5171;&#x4EAB;&#x7CBE;&#x795E;"><a href="#1-&#x5F00;&#x6E90;&#x5171;&#x4EAB;&#x7CBE;&#x795E;" class="headerlink" title="1. &#x5F00;&#x6E90;&#x5171;&#x4EAB;&#x7CBE;&#x795E;"></a>1. &#x5F00;&#x6E90;&#x5171;&#x4EAB;&#x7CBE;&#x795E;</h3><p><strong>&#x4F4E;&#x98CE;&#x9669;&#xFF1A;</strong>&#x4F7F;&#x7528;&#x95ED;&#x6E90;&#x8F6F;&#x4EF6;&#x65E0;&#x7591;&#x628A;&#x547D;&#x8FD0;&#x4EA4;&#x4ED8;&#x7ED9;&#x4ED6;&#x4EBA;&#xFF0C;&#x4E00;&#x65E6;&#x5C01;&#x95ED;&#x7684;&#x6E90;&#x4EE3;&#x7801;&#x6CA1;&#x6709;&#x4EBA;&#x6765;&#x7EF4;&#x62A4;&#xFF0C;&#x4F60;&#x5C06;&#x8FDB;&#x9000;&#x7EF4;&#x8C37;&#xFF1B;&#x800C;&#x4E14;&#x76F8;&#x8F83;&#x4E8E;&#x5546;&#x4E1A;&#x8F6F;&#x4EF6;&#x516C;&#x53F8;&#xFF0C;&#x5F00;&#x6E90;&#x793E;&#x533A;&#x5F88;&#x5C11;&#x5B58;&#x5728;&#x5012;&#x95ED;&#x7684;&#x95EE;&#x9898;&#x3002;</p>
+<p><strong>&#x9AD8;&#x54C1;&#x8D28;&#xFF1A;</strong>&#x76F8;&#x8F83;&#x4E8E;&#x95ED;&#x6E90;&#x8F6F;&#x4EF6;&#x4EA7;&#x54C1;&#xFF0C;&#x5F00;&#x6E90;&#x9879;&#x76EE;&#x901A;&#x5E38;&#x662F;&#x7531;&#x5F00;&#x6E90;&#x793E;&#x533A;&#x6765;&#x7814;&#x53D1;&#x53CA;&#x7EF4;&#x62A4;&#x7684;&#xFF0C;&#x53C2;&#x4E0E;&#x7F16;&#x5199;&#x3001;&#x7EF4;&#x62A4;&#x3001;&#x6D4B;&#x8BD5;&#x7684;&#x7528;&#x6237;&#x91CF;&#x4F17;&#x591A;&#xFF0C;&#x4E00;&#x822C;&#x7684;bug&#x8FD8;&#x6CA1;&#x6709;&#x7B49;&#x7206;&#x53D1;&#x5C31;&#x5DF2;&#x7ECF;&#x88AB;&#x4FEE;&#x8865;&#x3002;</p>
+<p><strong>&#x4F4E;&#x6210;&#x672C;&#xFF1A;</strong>&#x5F00;&#x6E90;&#x5DE5;&#x4F5C;&#x8005;&#x90FD;&#x662F;&#x5728;&#x5E55;&#x540E;&#x9ED8;&#x9ED8;&#x4E14;&#x65E0;&#x507F;&#x5730;&#x4ED8;&#x51FA;&#x52B3;&#x52A8;&#x6210;&#x679C;&#xFF0C;&#x4E3A;&#x7F8E;&#x597D;&#x7684;&#x4E16;&#x754C;&#x8D21;&#x732E;&#x4E00;&#x4EFD;&#x529B;&#x91CF;&#xFF0C;&#x56E0;&#x6B64;&#x4F7F;&#x7528;&#x5F00;&#x6E90;&#x793E;&#x533A;&#x63A8;&#x52A8;&#x7684;&#x8F6F;&#x4EF6;&#x9879;&#x76EE;&#x53EF;&#x4EE5;&#x8282;&#x7701;&#x5927;&#x91CF;&#x7684;&#x4EBA;&#x529B;&#x3001;&#x7269;&#x529B;&#x548C;&#x8D22;&#x529B;&#x3002;</p>
+<p><strong>&#x66F4;&#x900F;&#x660E;&#xFF1A;</strong>&#x6CA1;&#x6709;&#x54EA;&#x4E2A;&#x7B28;&#x86CB;&#x4F1A;&#x628A;&#x6728;&#x9A6C;&#x3001;&#x540E;&#x95E8;&#x7B49;&#x653E;&#x5230;&#x5F00;&#x6E90;&#x4EE3;&#x7801;&#x4E2D;&#xFF0C;&#x8FD9;&#x6837;&#x65E0;&#x7591;&#x662F;&#x628A;&#x81EA;&#x5DF1;&#x7684;&#x7F6A;&#x884C;&#x66B4;&#x9732;&#x5728;&#x9633;&#x5149;&#x4E4B;&#x4E0B;&#x3002;</p>
+<p>&#x4F46;&#x662F;&#xFF0C;&#x5982;&#x679C;&#x5F00;&#x6E90;&#x8F6F;&#x4EF6;&#x4E3A;&#x4E86;&#x5355;&#x7EAF;&#x8FFD;&#x6C42;&#x201C;&#x81EA;&#x7531;&#x201D;&#x800C;&#x727A;&#x7272;&#x7A0B;&#x5E8F;&#x5458;&#x7684;&#x5229;&#x76CA;&#xFF0C;&#x8FD9;&#x5C06;&#x4F1A;&#x5F71;&#x54CD;&#x7A0B;&#x5E8F;&#x5458;&#x7684;&#x521B;&#x9020;&#x6FC0;&#x60C5;&#xFF0C;&#x56E0;&#x6B64;&#x4E16;&#x754C;&#x4E0A;&#x73B0;&#x5728;&#x6709;60&#x591A;&#x79CD;&#x88AB;&#x5F00;&#x6E90;&#x4FC3;&#x8FDB;&#x7EC4;&#x7EC7;&#xFF08;Open Source Initiative&#xFF09;&#x8BA4;&#x53EF;&#x7684;&#x5F00;&#x6E90;&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#x6765;&#x4FDD;&#x8BC1;&#x5DE5;&#x4F5C;&#x8005;&#x7684;&#x6743;&#x76CA;&#x3002;&#x5BF9;&#x4E8E;&#x90A3;&#x4E9B;&#x53EA;&#x77E5;&#x9053;&#x4E00;&#x5473;&#x6284;&#x88AD;&#x3001;&#x7BE1;&#x6539;&#x3001;&#x7834;&#x89E3;&#x6216;&#x8005;&#x76D7;&#x7248;&#x4ED6;&#x4EBA;&#x4F5C;&#x54C1;&#x7684;&#x4EBA;&#xFF0C;&#x7EC8;&#x5F52;&#x4F1A;&#x5728;&#x67D0;&#x4E00;&#x5929;&#x6536;&#x5230;&#x6CD5;&#x9662;&#x7684;&#x4F20;&#x7968;&#x3002;</p>
+<a id="more"></a>
+<hr>
+<p><strong>GNU GPL (GNU General Public License , GNU&#x901A;&#x7528;&#x516C;&#x5171;&#x8BB8;&#x53EF;&#x8BC1;)&#xFF1A;</strong>&#x53EA;&#x8981;&#x54E6;&#x8F6F;&#x4EF6;&#x4E2D;&#x5305;&#x542B;&#x4E86;&#x9075;&#x5FAA;GPL&#x534F;&#x8BAE;&#x7684;&#x4EA7;&#x54C1;&#x6216;&#x4EE3;&#x7801;&#xFF0C;&#x8BE5;&#x8F6F;&#x4EF6;&#x5C31;&#x5FC5;&#x987B;&#x9075;&#x5FAA;GPL&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#x4E14;&#x5F00;&#x6E90;&#x3001;&#x514D;&#x8D39;&#xFF0C;&#x56E0;&#x6B64;&#x8FD9;&#x4E2A;&#x534F;&#x8BAE;&#x5E76;&#x4E0D;&#x9002;&#x5408;&#x5546;&#x7528;&#x8F6F;&#x4EF6;&#x3002;&#x9075;&#x5FAA;&#x8BE5;&#x534F;&#x8BAE;&#x7684;&#x5F00;&#x6E90;&#x8F6F;&#x4EF6;&#x6570;&#x91CF;&#x53CA;&#x5176;&#x5E9E;&#x5927;&#xFF0C;&#x5305;&#x62EC;Linux&#x7CFB;&#x7EDF;&#x5728;&#x5185;&#x7684;&#x5927;&#x591A;&#x6570;&#x7684;&#x5F00;&#x6E90;&#x8F6F;&#x4EF6;&#x90FD;&#x662F;&#x57FA;&#x4E8E;&#x8FD9;&#x4E2A;&#x534F;&#x8BAE;&#x7684;&#x3002;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://docs.blender.org/manual/zh-hans/dev/_images/getting-started_about_license_gnu-logo.png" alt="GNU" title="">
+                </div>
+                <div class="image-caption">GNU</div>
+            </figure>
+<ul>
+<li><strong>&#x590D;&#x5236;&#x81EA;&#x7531;&#xFF1A;</strong>&#x5141;&#x8BB8;&#x5427;&#x8F6F;&#x4EF6;&#x590D;&#x5236;&#x5230;&#x4EFB;&#x4F55;&#x4EBA;&#x7684;&#x7535;&#x8111;&#x4E2D;&#xFF0C;&#x5E76;&#x4E14;&#x4E0D;&#x9650;&#x590D;&#x5236;&#x7684;&#x6570;&#x91CF;</li>
+<li><strong>&#x4F20;&#x64AD;&#x81EA;&#x7531;&#xFF1A;</strong>&#x5141;&#x8BB8;&#x8F6F;&#x4EF6;&#x4EE5;&#x5404;&#x79CD;&#x5F62;&#x5F0F;&#x4F20;&#x64AD;</li>
+<li><strong>&#x6536;&#x8D39;&#x4F20;&#x64AD;&#xFF1A;</strong>&#x5141;&#x8BB8;&#x5728;&#x5404;&#x79CD;&#x5A92;&#x4ECB;&#x4E0A;&#x51FA;&#x552E;&#x8BE5;&#x8F6F;&#x4EF6;&#xFF0C;&#x4F46;&#x5FC5;&#x987B;&#x63D0;&#x524D;&#x8BA9;&#x4E70;&#x5BB6;&#x77E5;&#x9053;&#x8FD9;&#x4E2A;&#x8F6F;&#x4EF6;&#x662F;&#x53EF;&#x4EE5;&#x514D;&#x8D39;&#x83B7;&#x5F97;&#x7684;&#xFF1B;&#x56E0;&#x6B64;&#xFF0C;&#x4E00;&#x822C;&#x6765;&#x8BB2;&#xFF0C;&#x5F00;&#x6E90;&#x8F6F;&#x4EF6;&#x90FD;&#x662F;&#x901A;&#x8FC7;&#x7528;&#x6237;&#x63D0;&#x4F9B;&#x6709;&#x507F;&#x670D;&#x52A1;&#x7684;&#x5F62;&#x5F0F;&#x6765;&#x76C8;&#x5229;&#x7684;&#x3002;</li>
+<li><strong>&#x4FEE;&#x6539;&#x81EA;&#x7531;&#xFF1A;</strong>&#x5141;&#x8BB8;&#x5F00;&#x53D1;&#x4EBA;&#x5458;&#x589E;&#x52A0;&#x6216;&#x5220;&#x9664;&#x8F6F;&#x4EF6;&#x7684;&#x529F;&#x80FD;&#xFF0C;&#x4F46;&#x8F6F;&#x4EF6;&#x4FEE;&#x6539;&#x540E;&#x5FC5;&#x987B;&#x4F9D;&#x7136;&#x57FA;&#x4E8E;GPL&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#x6388;&#x6743;</li>
+</ul>
+<hr>
+<p><strong>BSD(Berkeley Software Distribution&#xFF0C;&#x4F2F;&#x514B;&#x5229;&#x8F6F;&#x4EF6;&#x53D1;&#x5E03;&#x7248;)&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#xFF1A;</strong></p>
+<p>&#x7528;&#x6237;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x3001;&#x4FEE;&#x6539;&#x548C;&#x91CD;&#x65B0;&#x53D1;&#x5E03;&#x9075;&#x5FAA;&#x8BE5;&#x8BB8;&#x53EF;&#x7684;&#x8F6F;&#x4EF6;&#xFF0C;&#x5E76;&#x4E14;&#x53EF;&#x4EE5;&#x5C06;&#x8F6F;&#x4EF6;&#x4F5C;&#x4E3A;&#x5546;&#x4E1A;&#x8F6F;&#x4EF6;&#x53D1;&#x5E03;&#x548C;&#x9500;&#x552E;&#xFF0C;&#x524D;&#x63D0;&#x662F;&#x9700;&#x8981;&#x6EE1;&#x8DB3;&#x4E0B;&#x9762;3&#x4E2A;&#x6761;&#x4EF6;&#x3002;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://qph.fs.quoracdn.net/main-thumb-t-14907-200-seTLViB8UWkDHk3At9asR1xYPu5k6spg.jpeg" alt="BSD&#xFF0C;&#x4F2F;&#x514B;&#x5229;&#x8F6F;&#x4EF6;&#x53D1;&#x5E03;&#x7248;" title="">
+                </div>
+                <div class="image-caption">BSD&#xFF0C;&#x4F2F;&#x514B;&#x5229;&#x8F6F;&#x4EF6;&#x53D1;&#x5E03;&#x7248;</div>
+            </figure>
+<p>&#x5982;&#x679C;&#x518D;&#x53D1;&#x5E03;&#x7684;&#x8F6F;&#x4EF6;&#x4E2D;&#x5305;&#x542B;&#x6E90;&#x4EE3;&#x7801;&#xFF0C;&#x5219;&#x6E90;&#x4EE3;&#x7801;&#x5FC5;&#x987B;&#x7EE7;&#x7EED;&#x9075;&#x5FAA;BSD&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#x3002;<br>&#x5982;&#x679C;&#x518D;&#x53D1;&#x5E03;&#x7684;&#x8F6F;&#x4EF6;&#x4E2D;&#x53EA;&#x6709;&#x4E8C;&#x8FDB;&#x5236;&#x7A0B;&#x5E8F;&#xFF0C;&#x5219;&#x9700;&#x8981;&#x5728;&#x76F8;&#x5173;&#x6587;&#x6863;&#x6216;&#x7248;&#x6743;&#x6587;&#x4EF6;&#x4E2D;&#x58F0;&#x660E;&#x539F;&#x59CB;&#x4EE3;&#x7801;&#x9075;&#x5FAA;&#x4E86;BSD&#x534F;&#x8BAE;&#x3002;<br>&#x4E0D;&#x5141;&#x8BB8;&#x7528;&#x539F;&#x59CB;&#x8F6F;&#x4EF6;&#x7684;&#x540D;&#x5B57;&#x3001;&#x4F5C;&#x8005;&#x540D;&#x5B57;&#x6216;&#x673A;&#x6784;&#x540D;&#x79F0;&#x8FDB;&#x884C;&#x5E02;&#x573A;&#x63A8;&#x5E7F;&#x3002;</p>
+<hr>
+<p><strong>Apache &#x8BB8;&#x53EF;&#x8BC1;&#x7248;&#x672C;&#xFF08;Apache License Version&#xFF09;&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#xFF1A;</strong><br>&#x5728;&#x4E3A;&#x5F00;&#x53D1;&#x4EBA;&#x5458;&#x63D0;&#x4F9B;&#x7248;&#x6743;&#x53CA;&#x4E13;&#x5229;&#x8BB8;&#x53EF;&#x7684;&#x540C;&#x65F6;&#xFF0C;&#x5141;&#x8BB8;&#x7528;&#x6237;&#x62E5;&#x6709;&#x4FEE;&#x6539;&#x4EE3;&#x7801;&#x53CA;&#x518D;&#x53D1;&#x5E03;&#x7684;&#x81EA;&#x7531;&#x3002;&#x8BE5;&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#x9002;&#x7528;&#x4E8E;&#x5546;&#x4E1A;&#x8F6F;&#x4EF6;&#xFF0C;&#x73B0;&#x5728;&#x70ED;&#x95E8;&#x7684;Hadoop&#x3001;Apache HTTP Server&#x3001;MongoDB&#x7B49;&#x9879;&#x76EE;&#x90FD;&#x662F;&#x57FA;&#x4E8E;&#x8BE5;&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#x7814;&#x53D1;&#x7684;&#xFF0C;&#x7A0B;&#x5E8F;&#x5F00;&#x53D1;&#x4EBA;&#x5458;&#x5728;&#x5F00;&#x53D1;&#x9075;&#x5FAA;&#x8BE5;&#x534F;&#x8BAE;&#x7684;&#x8F6F;&#x4EF6;&#x65F6;&#xFF0C;&#x8981;&#x4E25;&#x683C;&#x9075;&#x5B88;&#x4E0B;&#x9762;&#x7684;4&#x4E2A;&#x6761;&#x4EF6;&#x3002;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Apache_Software_Foundation_Logo_%282016%29.svg/1200px-Apache_Software_Foundation_Logo_%282016%29.svg.png" alt="Apache License" title="">
+                </div>
+                <div class="image-caption">Apache License</div>
+            </figure>
+<p>&#x8BE5;&#x8F6F;&#x4EF6;&#x53CA;&#x5176;&#x884D;&#x751F;&#x54C1;&#x5FC5;&#x987B;&#x7EE7;&#x7EED;&#x4F7F;&#x7528;Apache&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#x3002;<br>&#x5982;&#x679C;&#x4FEE;&#x6539;&#x4E86;&#x7A0B;&#x5E8F;&#x6E90;&#x4EE3;&#x7801;&#xFF0C;&#x9700;&#x8981;&#x5728;&#x6587;&#x6863;&#x4E2D;&#x8FDB;&#x884C;&#x58F0;&#x660E;&#x3002;<br>&#x82E5;&#x8F6F;&#x4EF6;&#x662F;&#x57FA;&#x4E8E;&#x4ED6;&#x4EBA;&#x7684;&#x6E90;&#x4EE3;&#x7801;&#x7F16;&#x5199;&#x800C;&#x6210;&#x7684;&#xFF0C;&#x5219;&#x9700;&#x8981;&#x4FDD;&#x7559;&#x539F;&#x59CB;&#x4EE3;&#x7801;&#x7684;&#x534F;&#x8BAE;&#x3001;&#x5546;&#x6807;&#x3001;&#x4E13;&#x5229;&#x58F0;&#x660E;&#x53CA;&#x5176;&#x4ED6;&#x539F;&#x4F5C;&#x8005;&#x58F0;&#x660E;&#x7684;&#x5185;&#x5BB9;&#x4FE1;&#x606F;&#x3002;<br>&#x5982;&#x679C;&#x518D;&#x53D1;&#x5E03;&#x7684;&#x8F6F;&#x4EF6;&#x4E2D;&#x6709;&#x58F0;&#x660E;&#x6587;&#x4EF6;&#xFF0C;&#x5219;&#x9700;&#x5728;&#x6B64;&#x6587;&#x4EF6;&#x4E2D;&#x6807;&#x6CE8;Apache&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#x53CA;&#x5176;&#x4ED6;&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#x3002;</p>
+<hr>
+<p><strong>MPL(Mozilla Public License&#xFF0C; Mozilla&#x516C;&#x5171;&#x8BB8;&#x53EF;)&#xFF1A;</strong></p>
+<p>&#x76F8;&#x8F83;&#x4E8E;GPL&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#xFF0C;MPL&#x66F4;&#x52A0;&#x6CE8;&#x91CD;&#x4E8E;&#x5BF9;&#x5F00;&#x53D1;&#x8005;&#x7684;&#x6E90;&#x4EE3;&#x7801;&#x9700;&#x6C42;&#x548C;&#x6536;&#x76CA;&#x4E4B;&#x95F4;&#x7684;&#x5E73;&#x8861;</p>
+<hr>
+<p><strong>MIT&#xFF08;Massachusetts Institute of Technology )&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#xFF1A;</strong></p>
+<p>&#x76EE;&#x524D;&#x9650;&#x5236;&#x6700;&#x5C11;&#x7684;&#x5F00;&#x6E90;&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#x4E4B;&#x4E00;&#xFF0C;&#x53EA;&#x8981;&#x7A0B;&#x5E8F;&#x7684;&#x5F00;&#x53D1;&#x8005;&#x5728;&#x4FEE;&#x6539;&#x540E;&#x7684;&#x6E90;&#x4EE3;&#x7801;&#x4E2D;&#x4FDD;&#x7559;&#x539F;&#x4F5C;&#x8005;&#x7684;&#x8BB8;&#x53EF;&#x4FE1;&#x606F;&#x5373;&#x53EF;&#xFF0C;&#x56E0;&#x6B64;&#x666E;&#x904D;&#x88AB;&#x5546;&#x4E1A;&#x8F6F;&#x4EF6;&#x6240;&#x4F7F;&#x7528;&#x3002;</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2020-04-09T11:50:11.075Z" itemprop="dateUpdated">2020-04-09 19:50:11</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/67ee4dec/" target="_blank" rel="external">https://marnm.github.io/posts/67ee4dec/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='https://marnm.github.io'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开源/">开源</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/67ee4dec/&title=《Linux学习笔记 - 关于开源》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/67ee4dec/&title=《Linux学习笔记 - 关于开源》 — Deops's blog&source=1. 开源共享精神低风险：使用闭源软件无疑把命运交付给他人，一旦封闭的源代码没有人来维护，你将进退维谷；而且相较于商业软件公司，开源社区很少存在倒闭的问题..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/67ee4dec/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Linux学习笔记 - 关于开源》 — Deops's blog&url=https://marnm.github.io/posts/67ee4dec/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/67ee4dec/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/60444925/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：NexT主题优化+美化
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/bff83912/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：Markdown 简明语法手册">下一篇：Markdown 简明语法手册</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2022
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="https://marnm.github.io">marnm.github.io</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/67ee4dec/&title=《Linux学习笔记 - 关于开源》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/67ee4dec/&title=《Linux学习笔记 - 关于开源》 — Deops's blog&source=1. 开源共享精神低风险：使用闭源软件无疑把命运交付给他人，一旦封闭的源代码没有人来维护，你将进退维谷；而且相较于商业软件公司，开源社区很少存在倒闭的问题..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/67ee4dec/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Linux学习笔记 - 关于开源》 — Deops's blog&url=https://marnm.github.io/posts/67ee4dec/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/67ee4dec/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABvklEQVR42u3aQY6DMAwF0N7/0ow0q9kMfNskUOllVaEWHl1Y8Y8/n3gdvyv5/Hfl97x54eLijrnH6TonJndIXin5LS4u7n5uUryi2wVF7fzvuLDh4uK+jFvdoCQvg4uL++3cpLTlOFxc3Pdz86Ylb4GSZGNhr4aLizvg3huY9j4/lu/i4uIWTyWq4WmvkBWejouLu4VbjTyqxyT5Nihvh3BxcfdwV0w75N+vHsPg4uKu5uaHJUl5+q8knV8vFFZcXNzt3MmIVa+9GRUyXFzcZdzJIWveDuVtT1T+cHFxF3PzIGMSXuQhyEWZw8XF3cKtNifJhqbX6pSjUlxc3MXc3vbl3oGtQrnExcXdwu1tMqqRSrXk4eLiPsWdNCTVKGTSSuHi4u7k5sFob7hqRRCDi4u7mnu0VnU4IwlWog0QLi7uRm4hVW21QDn34gVwcXE3cqslLElZqhFJ+bQHFxd3GXdesO7a7pTzXVxc3MXcaqvTa116gSwuLu6z3Hwk4ryETQa/yvkuLi7uC7iTB+dXLp6Ci4v7JdzqlerYFi4u7lPcaqNSHdXqHaKMejVcXNwBt/fjSctUGLnAxcXdzf0BsgW0extyaOQAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>

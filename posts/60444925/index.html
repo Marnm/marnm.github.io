@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>NexT主题优化+美化 | Deops&#39;s blog | 运维开发工程师</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="Hexo,NexT">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="Hexo和NexT主题">
+<meta name="keywords" content="Hexo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NexT主题优化+美化">
+<meta property="og:url" content="https://marnm.github.io/posts/60444925/index.html">
+<meta property="og:site_name" content="Deops&#39;s blog">
+<meta property="og:description" content="Hexo和NexT主题">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-05-26T13:32:07.811Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="NexT主题优化+美化">
+<meta name="twitter:description" content="Hexo和NexT主题">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
+                <i class="icon icon-lg icon-tv tv"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">NexT主题优化+美化</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-0-视觉优化与性能优化"><span class="post-toc-number">2.</span> <span class="post-toc-text">1.0 视觉优化与性能优化</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1-1-更改字体"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">1.1 更改字体</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1-2-修改行距和间距"><span class="post-toc-number">2.0.2.</span> <span class="post-toc-text">1.2 修改行距和间距</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1-3-使用gulp压缩hexo博客"><span class="post-toc-number">2.0.3.</span> <span class="post-toc-text">1.3 使用gulp压缩hexo博客</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-0-主题美化与主题修改"><span class="post-toc-number">3.</span> <span class="post-toc-text">2.0 主题美化与主题修改</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2-1-修改字体颜色"><span class="post-toc-number">3.0.1.</span> <span class="post-toc-text">2.1 修改字体颜色</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2-2-修改文章内链接文本样式"><span class="post-toc-number">3.0.2.</span> <span class="post-toc-text">2.2 修改文章内链接文本样式</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2-3-修改文章底部标签的-号"><span class="post-toc-number">3.0.3.</span> <span class="post-toc-text">2.3 修改文章底部标签的#号</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2-4-在每篇文章末尾添加“结束”标记"><span class="post-toc-number">3.0.4.</span> <span class="post-toc-text">2.4 在每篇文章末尾添加“结束”标记</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2-5-修改作者头像样式"><span class="post-toc-number">3.0.5.</span> <span class="post-toc-text">2.5 修改作者头像样式</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2-6-修改代码块样式"><span class="post-toc-number">3.0.6.</span> <span class="post-toc-text">2.6 修改代码块样式</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2-7-取消侧边栏文章目录对标题的自动编号"><span class="post-toc-number">3.0.7.</span> <span class="post-toc-text">2.7 取消侧边栏文章目录对标题的自动编号</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2-8-修改侧边栏的背景图片-amp-颜色"><span class="post-toc-number">3.0.8.</span> <span class="post-toc-text">2.8 修改侧边栏的背景图片&amp;颜色</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2-9-给侧边栏头像添加链接"><span class="post-toc-number">3.0.9.</span> <span class="post-toc-text">2.9 给侧边栏头像添加链接</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-0-添加加密功能"><span class="post-toc-number">4.</span> <span class="post-toc-text">3.0 添加加密功能</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#3-1-安装"><span class="post-toc-number">4.0.1.</span> <span class="post-toc-text">3.1 安装</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#3-2-快速开始"><span class="post-toc-number">4.0.2.</span> <span class="post-toc-text">3.2 快速开始</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#最后"><span class="post-toc-number">5.</span> <span class="post-toc-text">最后</span></a></li>
+        </nav>
+    </aside>
+   
+<article id="post-NexT主题优化-美化" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">NexT主题优化+美化</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2018-07-27 20:16:41" datetime="2018-07-27T12:16:41.000Z" itemprop="datePublished">2018-07-27</time>
+
+            <br id="mybreak">
+            
+	<i class="icon icon-lg icon-folder-o"></i>
+	分类：<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/前端/">前端</a></li></ul>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">11</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h3 id="&#x524D;&#x8A00;"><a href="#&#x524D;&#x8A00;" class="headerlink" title="&#x524D;&#x8A00;"></a>&#x524D;&#x8A00;</h3><p>&#x5173;&#x4E8E;Hexo&#x535A;&#x5BA2;NexT&#x4E3B;&#x9898;&#x7F8E;&#x5316;&#x5C31;&#x4E0D;&#x4E00;&#x4E00;&#x5217;&#x4E3E;&#x7684;&#xFF0C;&#x7F51;&#x4E0A;&#x6559;&#x7A0B;&#x4E00;&#x5927;&#x5806;&#xFF0C;&#x6211;&#x5C31;&#x5217;&#x51FA;&#x4E00;&#x4E9B;&#x4E2A;&#x4EBA;&#x89C9;&#x5F97;&#x6BD4;&#x8F83;&#x5B9E;&#x7528;&#x7684;</p>
+<h3 id="1-0-&#x89C6;&#x89C9;&#x4F18;&#x5316;&#x4E0E;&#x6027;&#x80FD;&#x4F18;&#x5316;"><a href="#1-0-&#x89C6;&#x89C9;&#x4F18;&#x5316;&#x4E0E;&#x6027;&#x80FD;&#x4F18;&#x5316;" class="headerlink" title="1.0 &#x89C6;&#x89C9;&#x4F18;&#x5316;&#x4E0E;&#x6027;&#x80FD;&#x4F18;&#x5316;"></a>1.0 &#x89C6;&#x89C9;&#x4F18;&#x5316;&#x4E0E;&#x6027;&#x80FD;&#x4F18;&#x5316;</h3><a id="more"></a>
+<h5 id="1-1-&#x66F4;&#x6539;&#x5B57;&#x4F53;"><a href="#1-1-&#x66F4;&#x6539;&#x5B57;&#x4F53;" class="headerlink" title="1.1 &#x66F4;&#x6539;&#x5B57;&#x4F53;"></a>1.1 &#x66F4;&#x6539;&#x5B57;&#x4F53;</h5><blockquote>
+<p><code>themes\next\source\css\\_varibles\custom.styl</code></p>
+</blockquote>
+<figure class="highlight cs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// &#x6807;&#x9898;&#xFF0C;&#x4FEE;&#x6539;&#x6210;&#x4F60;&#x671F;&#x671B;&#x7684;&#x5B57;&#x4F53;&#x65CF;</span></span><br><span class="line">$font-family-headings = Georgia, sans</span><br><span class="line"></span><br><span class="line"><span class="comment">// &#x4FEE;&#x6539;&#x6210;&#x4F60;&#x671F;&#x671B;&#x7684;&#x5B57;&#x4F53;&#x65CF;</span></span><br><span class="line">$font-family-<span class="keyword">base</span> = <span class="string">&quot;Microsoft YaHei&quot;</span>, Verdana, sans-serif</span><br><span class="line"></span><br><span class="line"><span class="comment">// &#x4EE3;&#x7801;&#x5B57;&#x4F53;</span></span><br><span class="line">$code-font-family = <span class="string">&quot;Input Mono&quot;</span>, <span class="string">&quot;PT Mono&quot;</span>, Consolas, Monaco, Menlo, monospace</span><br><span class="line"></span><br><span class="line"><span class="comment">// &#x6B63;&#x6587;&#x5B57;&#x4F53;&#x7684;&#x5927;&#x5C0F;</span></span><br><span class="line">$font-size-<span class="keyword">base</span> = <span class="number">16</span>px</span><br><span class="line"></span><br><span class="line"><span class="comment">// &#x4EE3;&#x7801;&#x5B57;&#x4F53;&#x7684;&#x5927;&#x5C0F;</span></span><br><span class="line">$code-font-size = <span class="number">13</span>px</span><br></pre></td></tr></tbody></table></figure>
+<h5 id="1-2-&#x4FEE;&#x6539;&#x884C;&#x8DDD;&#x548C;&#x95F4;&#x8DDD;"><a href="#1-2-&#x4FEE;&#x6539;&#x884C;&#x8DDD;&#x548C;&#x95F4;&#x8DDD;" class="headerlink" title="1.2 &#x4FEE;&#x6539;&#x884C;&#x8DDD;&#x548C;&#x95F4;&#x8DDD;"></a>1.2 &#x4FEE;&#x6539;&#x884C;&#x8DDD;&#x548C;&#x95F4;&#x8DDD;</h5><blockquote>
+<p><code>themes\next\source\css\\_varibles\base.styl</code></p>
+</blockquote>
+<figure class="highlight cs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// &#x5168;&#x6587;&#x95F4;&#x8DDD;&#x53C2;&#x6570;</span></span><br><span class="line">$line-height-<span class="keyword">base</span>           = <span class="number">1.8</span></span><br><span class="line">$line-height-code-block     = <span class="number">1.6</span>  <span class="comment">// Can&apos;t be less than 1.3</span></span><br></pre></td></tr></tbody></table></figure>
+<h5 id="1-3-&#x4F7F;&#x7528;gulp&#x538B;&#x7F29;hexo&#x535A;&#x5BA2;"><a href="#1-3-&#x4F7F;&#x7528;gulp&#x538B;&#x7F29;hexo&#x535A;&#x5BA2;" class="headerlink" title="1.3 &#x4F7F;&#x7528;gulp&#x538B;&#x7F29;hexo&#x535A;&#x5BA2;"></a>1.3 &#x4F7F;&#x7528;gulp&#x538B;&#x7F29;hexo&#x535A;&#x5BA2;</h5><p>&#x5B89;&#x88C5;gulp</p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install gulp -g</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x5B89;&#x88C5;gulp&#x4F9D;&#x8D56;&#x6A21;&#x5757;</p>
+<blockquote>
+<ul>
+<li>gulp-htmlclean  //&#x6E05;&#x7406;HTML</li>
+<li>gulp-htmlmin //&#x538B;&#x7F29;HTML</li>
+<li>gulp-minify //&#x538B;&#x7F29;CSS</li>
+<li>gulp-uglify //&#x6DF7;&#x6DC6;js</li>
+<li>gulp-imagemin //&#x538B;&#x7F29;&#x56FE;&#x7247;</li>
+</ul>
+</blockquote>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install gulp-htmlclean gulp-htmlmin gulp-minify-css gulp-uglify gulp-imagemin --save</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x5B89;&#x88C5;&#x5B8C;&#x53EF;&#x4EE5;&#x5728;&#x6839;&#x76EE;&#x5F55;<code>package.json</code>&#x6587;&#x4EF6;&#x91CC;&#x770B;&#x5230;</p>
+<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&quot;dependencies&quot;: {</span><br><span class="line">    &quot;gulp&quot;: &quot;^3.9.1&quot;,</span><br><span class="line">    &quot;gulp-imagemin&quot;: &quot;^4.1.0&quot;,</span><br><span class="line">    ...</span><br><span class="line">    ...</span><br><span class="line">  },</span><br><span class="line">  &quot;devDependencies&quot;: {</span><br><span class="line">    &quot;babel-core&quot;: &quot;^6.26.3&quot;,</span><br><span class="line">    &quot;gulp-babel&quot;: &quot;^7.0.1&quot;,</span><br><span class="line">    &quot;gulp-htmlclean&quot;: &quot;^2.7.22&quot;,</span><br><span class="line">    &quot;gulp-htmlmin&quot;: &quot;^4.0.0&quot;,</span><br><span class="line">    &quot;gulp-minify-css&quot;: &quot;^1.2.4&quot;,</span><br><span class="line">    &quot;gulp-uglify&quot;: &quot;^3.0.1&quot;</span><br><span class="line">  }</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x5728;&#x535A;&#x5BA2;&#x6839;&#x76EE;&#x5F55;&#x4E0B;&#x624B;&#x52A8;&#x6DFB;&#x52A0;<code>gulpfile.js</code>&#x6587;&#x4EF6;</p>
+<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> gulp = <span class="built_in">require</span>(<span class="string">&apos;gulp&apos;</span>);</span><br><span class="line"><span class="keyword">var</span> minifycss = <span class="built_in">require</span>(<span class="string">&apos;gulp-minify-css&apos;</span>);</span><br><span class="line"><span class="keyword">var</span> uglify = <span class="built_in">require</span>(<span class="string">&apos;gulp-uglify&apos;</span>);</span><br><span class="line"><span class="keyword">var</span> htmlmin = <span class="built_in">require</span>(<span class="string">&apos;gulp-htmlmin&apos;</span>);</span><br><span class="line"><span class="keyword">var</span> htmlclean = <span class="built_in">require</span>(<span class="string">&apos;gulp-htmlclean&apos;</span>);</span><br><span class="line"><span class="keyword">var</span> imagemin = <span class="built_in">require</span>(<span class="string">&apos;gulp-imagemin&apos;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// &#x538B;&#x7F29;html</span></span><br><span class="line">gulp.task(<span class="string">&apos;minify-html&apos;</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{</span><br><span class="line">    <span class="keyword">return</span> gulp.src(<span class="string">&apos;./public/**/*.html&apos;</span>)</span><br><span class="line">        .pipe(htmlclean())</span><br><span class="line">        .pipe(htmlmin({</span><br><span class="line">            removeComments: <span class="literal">true</span>,</span><br><span class="line">            minifyJS: <span class="literal">true</span>,</span><br><span class="line">            minifyCSS: <span class="literal">true</span>,</span><br><span class="line">            minifyURLs: <span class="literal">true</span>,</span><br><span class="line">        }))</span><br><span class="line">        .pipe(gulp.dest(<span class="string">&apos;./public&apos;</span>))</span><br><span class="line">});</span><br><span class="line"><span class="comment">// &#x538B;&#x7F29;css</span></span><br><span class="line">gulp.task(<span class="string">&apos;minify-css&apos;</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{</span><br><span class="line">    <span class="keyword">return</span> gulp.src(<span class="string">&apos;./public/**/*.css&apos;</span>)</span><br><span class="line">        .pipe(minifycss({</span><br><span class="line">            compatibility: <span class="string">&apos;ie8&apos;</span></span><br><span class="line">        }))</span><br><span class="line">        .pipe(gulp.dest(<span class="string">&apos;./public&apos;</span>));</span><br><span class="line">});</span><br><span class="line"><span class="comment">// &#x538B;&#x7F29;js</span></span><br><span class="line">gulp.task(<span class="string">&apos;minify-js&apos;</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{</span><br><span class="line">    <span class="keyword">return</span> gulp.src(<span class="string">&apos;./public/js/**/*.js&apos;</span>)</span><br><span class="line">        .pipe(uglify())</span><br><span class="line">        .pipe(gulp.dest(<span class="string">&apos;./public&apos;</span>));</span><br><span class="line">});</span><br><span class="line"><span class="comment">// &#x538B;&#x7F29;&#x56FE;&#x7247;</span></span><br><span class="line">gulp.task(<span class="string">&apos;minify-images&apos;</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{</span><br><span class="line">    <span class="keyword">return</span> gulp.src(<span class="string">&apos;./public/images/**/*.*&apos;</span>)</span><br><span class="line">        .pipe(imagemin(</span><br><span class="line">        [imagemin.gifsicle({<span class="string">&apos;optimizationLevel&apos;</span>: <span class="number">3</span>}), </span><br><span class="line">        imagemin.jpegtran({<span class="string">&apos;progressive&apos;</span>: <span class="literal">true</span>}), </span><br><span class="line">        imagemin.optipng({<span class="string">&apos;optimizationLevel&apos;</span>: <span class="number">7</span>}), </span><br><span class="line">        imagemin.svgo()],</span><br><span class="line">        {<span class="string">&apos;verbose&apos;</span>: <span class="literal">true</span>}))</span><br><span class="line">        .pipe(gulp.dest(<span class="string">&apos;./public/images&apos;</span>))</span><br><span class="line">});</span><br><span class="line"><span class="comment">// &#x9ED8;&#x8BA4;&#x4EFB;&#x52A1;</span></span><br><span class="line">gulp.task(<span class="string">&apos;default&apos;</span>, [</span><br><span class="line">    <span class="string">&apos;minify-html&apos;</span>,<span class="string">&apos;minify-css&apos;</span>,<span class="string">&apos;minify-js&apos;</span>,<span class="string">&apos;minify-images&apos;</span></span><br><span class="line">]);</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x76F4;&#x63A5;&#x8FD0;&#x884C;<code>gulp</code>&#x547D;&#x4EE4;&#x5F00;&#x59CB;&#x538B;&#x7F29;</p>
+<p><strong>&#x53C2;&#x8003;&#x94FE;&#x63A5;</strong></p>
+<p><a href="http://fengdi.org/2017/08/07/Hexo%E5%8D%9A%E5%AE%A2%E4%B9%8B%E9%80%9F%E5%BA%A6%E4%BC%98%E5%8C%96.html" target="_blank" rel="noopener">Hexo&#x535A;&#x5BA2;&#x4E4B;&#x901F;&#x5EA6;&#x4F18;&#x5316;</a></p>
+<p><a href="https://www.karlzhou.com/articles/compress-minify-hexo/" target="_blank" rel="noopener">&#x4F18;&#x5316;Hexo&#x535A;&#x5BA2; - &#x538B;&#x7F29; HTML&#x3001;CSS&#x3001;JS&#x3001;IMG &#x7B49;</a></p>
+<p><a href="https://www.liuxinggang.com/2016-12-06-hexo%E5%8D%9A%E5%AE%A2%E8%BF%9B%E9%98%B6%EF%BC%8D%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" target="_blank" rel="noopener">hexo&#x535A;&#x5BA2;&#x8FDB;&#x9636; - &#x6027;&#x80FD;&#x4F18;&#x5316;</a> </p>
+<h3 id="2-0-&#x4E3B;&#x9898;&#x7F8E;&#x5316;&#x4E0E;&#x4E3B;&#x9898;&#x4FEE;&#x6539;"><a href="#2-0-&#x4E3B;&#x9898;&#x7F8E;&#x5316;&#x4E0E;&#x4E3B;&#x9898;&#x4FEE;&#x6539;" class="headerlink" title="2.0 &#x4E3B;&#x9898;&#x7F8E;&#x5316;&#x4E0E;&#x4E3B;&#x9898;&#x4FEE;&#x6539;"></a>2.0 &#x4E3B;&#x9898;&#x7F8E;&#x5316;&#x4E0E;&#x4E3B;&#x9898;&#x4FEE;&#x6539;</h3><h5 id="2-1-&#x4FEE;&#x6539;&#x5B57;&#x4F53;&#x989C;&#x8272;"><a href="#2-1-&#x4FEE;&#x6539;&#x5B57;&#x4F53;&#x989C;&#x8272;" class="headerlink" title="2.1 &#x4FEE;&#x6539;&#x5B57;&#x4F53;&#x989C;&#x8272;"></a>2.1 &#x4FEE;&#x6539;&#x5B57;&#x4F53;&#x989C;&#x8272;</h5><h5 id="2-2-&#x4FEE;&#x6539;&#x6587;&#x7AE0;&#x5185;&#x94FE;&#x63A5;&#x6587;&#x672C;&#x6837;&#x5F0F;"><a href="#2-2-&#x4FEE;&#x6539;&#x6587;&#x7AE0;&#x5185;&#x94FE;&#x63A5;&#x6587;&#x672C;&#x6837;&#x5F0F;" class="headerlink" title="2.2 &#x4FEE;&#x6539;&#x6587;&#x7AE0;&#x5185;&#x94FE;&#x63A5;&#x6587;&#x672C;&#x6837;&#x5F0F;"></a>2.2 &#x4FEE;&#x6539;&#x6587;&#x7AE0;&#x5185;&#x94FE;&#x63A5;&#x6587;&#x672C;&#x6837;&#x5F0F;</h5><blockquote>
+<p><code>theme\next\source\css\\_common\components\post\post.styl</code></p>
+</blockquote>
+<figure class="highlight css"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// &#x5728;&#x672B;&#x5C3E;&#x6DFB;&#x52A0;</span><br><span class="line">// &#x6587;&#x7AE0;&#x5185;&#x94FE;&#x63A5;&#x6587;&#x672C;&#x6837;&#x5F0F;</span><br><span class="line"><span class="selector-class">.post-body</span> <span class="selector-tag">p</span> <span class="selector-tag">a</span>{</span><br><span class="line">  <span class="attribute">color</span>: <span class="number">#0593d3</span>;</span><br><span class="line">  <span class="attribute">border-bottom</span>: none;</span><br><span class="line">  <span class="attribute">border-bottom</span>: <span class="number">1px</span> solid <span class="number">#0593d3</span>;</span><br><span class="line">  &amp;:hover {</span><br><span class="line">    <span class="selector-tag">color</span>: <span class="selector-id">#fc6423</span>;</span><br><span class="line">    <span class="selector-tag">border-bottom</span>: <span class="selector-tag">none</span>;</span><br><span class="line">    <span class="selector-tag">border-bottom</span>: 1<span class="selector-tag">px</span> <span class="selector-tag">solid</span> <span class="selector-id">#fc6423</span>;</span><br><span class="line">  }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h5 id="2-3-&#x4FEE;&#x6539;&#x6587;&#x7AE0;&#x5E95;&#x90E8;&#x6807;&#x7B7E;&#x7684;-&#x53F7;"><a href="#2-3-&#x4FEE;&#x6539;&#x6587;&#x7AE0;&#x5E95;&#x90E8;&#x6807;&#x7B7E;&#x7684;-&#x53F7;" class="headerlink" title="2.3 &#x4FEE;&#x6539;&#x6587;&#x7AE0;&#x5E95;&#x90E8;&#x6807;&#x7B7E;&#x7684;#&#x53F7;"></a>2.3 &#x4FEE;&#x6539;&#x6587;&#x7AE0;&#x5E95;&#x90E8;&#x6807;&#x7B7E;&#x7684;#&#x53F7;</h5><blockquote>
+<p><code>/themes/next/layout/_macro/post.swig</code></p>
+<p>&#x641C;&#x7D22;<code>rel=&quot;tag&quot;</code>&#xFF0C;&#x5C06;#&#x6362;&#x6210;<code>&lt;i class=&quot;fa fa-tag&quot;&gt;&lt;/i&gt;</code></p>
+</blockquote>
+<h5 id="2-4-&#x5728;&#x6BCF;&#x7BC7;&#x6587;&#x7AE0;&#x672B;&#x5C3E;&#x6DFB;&#x52A0;&#x201C;&#x7ED3;&#x675F;&#x201D;&#x6807;&#x8BB0;"><a href="#2-4-&#x5728;&#x6BCF;&#x7BC7;&#x6587;&#x7AE0;&#x672B;&#x5C3E;&#x6DFB;&#x52A0;&#x201C;&#x7ED3;&#x675F;&#x201D;&#x6807;&#x8BB0;" class="headerlink" title="2.4 &#x5728;&#x6BCF;&#x7BC7;&#x6587;&#x7AE0;&#x672B;&#x5C3E;&#x6DFB;&#x52A0;&#x201C;&#x7ED3;&#x675F;&#x201D;&#x6807;&#x8BB0;"></a>2.4 &#x5728;&#x6BCF;&#x7BC7;&#x6587;&#x7AE0;&#x672B;&#x5C3E;&#x6DFB;&#x52A0;&#x201C;&#x7ED3;&#x675F;&#x201D;&#x6807;&#x8BB0;</h5><blockquote>
+<p>&#x5728;<code>\themes\next\layout\_macro</code>&#x4E2D;&#x65B0;&#x5EFA;<code>passage-end-tag.swig&#x6587;&#x4EF6;</code></p>
+</blockquote>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    {% if not is_index %}</span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">&quot;text-align:center;color: #ccc;font-size:14px;&quot;</span>&gt;</span>-------------Ending-------------<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    {% endif %}</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure>
+<p>&#x63A5;&#x7740;&#x6253;&#x5F00;<code>\themes\next\layout\_macro\post.swig</code>&#xFF0C;&#x5728;<code>post-body</code>&#x4E4B;&#x540E;&#x548C;<code>post-footer</code>&#x4E4B;&#x524D;&#x6DFB;&#x52A0;&#x5982;&#x4E0B;&#x4EE3;&#x7801;</p>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">  {% if not is_index %}</span><br><span class="line">    {% include &apos;post-end-tag.swig&apos; %}</span><br><span class="line">  {% endif %}</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure>
+<p>&#x7136;&#x540E;&#x5728;<code>&#x4E3B;&#x9898;&#x914D;&#x7F6E;&#x6587;&#x4EF6;</code>&#x672B;&#x5C3E;&#x6DFB;&#x52A0;</p>
+<figure class="highlight html"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># &#x6587;&#x7AE0;&#x672B;&#x5C3E;&#x6DFB;&#x52A0;&#x201C;&#x672C;&#x6587;&#x7ED3;&#x675F;&#x201D;&#x6807;&#x8BB0;</span><br><span class="line">passage_end_tag:</span><br><span class="line">  enabled: true</span><br></pre></td></tr></tbody></table></figure>
+<h5 id="2-5-&#x4FEE;&#x6539;&#x4F5C;&#x8005;&#x5934;&#x50CF;&#x6837;&#x5F0F;"><a href="#2-5-&#x4FEE;&#x6539;&#x4F5C;&#x8005;&#x5934;&#x50CF;&#x6837;&#x5F0F;" class="headerlink" title="2.5 &#x4FEE;&#x6539;&#x4F5C;&#x8005;&#x5934;&#x50CF;&#x6837;&#x5F0F;"></a>2.5 &#x4FEE;&#x6539;&#x4F5C;&#x8005;&#x5934;&#x50CF;&#x6837;&#x5F0F;</h5><p>&#x6253;&#x5F00;<code>\themes\next\source\css\_common\components\sidebar\sidebar-author.styl</code></p>
+<figure class="highlight css"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.site-author-image</span> {</span><br><span class="line">  <span class="attribute">display</span>: block;</span><br><span class="line">  <span class="attribute">margin</span>: <span class="number">0</span> auto;</span><br><span class="line">  <span class="attribute">padding</span>: $site-author-image-padding;</span><br><span class="line">  <span class="attribute">max-width</span>: $site-author-image-width;</span><br><span class="line">  <span class="attribute">height</span>: $site-author-image-height;</span><br><span class="line">  <span class="attribute">border</span>: $site-author-image-border-width solid $site-author-image-border-color;</span><br><span class="line">  <span class="comment">/* &#x5934;&#x50CF;&#x5706;&#x5F62; */</span></span><br><span class="line">  <span class="attribute">border-radius</span>: <span class="number">80px</span>;</span><br><span class="line">  <span class="attribute">-webkit-border-radius</span>: <span class="number">80px</span>;</span><br><span class="line">  <span class="attribute">-moz-border-radius</span>: <span class="number">80px</span>;</span><br><span class="line">  <span class="attribute">box-shadow</span>: inset <span class="number">0</span> -<span class="number">1px</span> <span class="number">0</span> <span class="number">#333</span>sf;</span><br><span class="line">  <span class="comment">/* &#x8BBE;&#x7F6E;&#x5FAA;&#x73AF;&#x52A8;&#x753B; [animation: (play)&#x52A8;&#x753B;&#x540D;&#x79F0; (2s)&#x52A8;&#x753B;&#x64AD;&#x653E;&#x65F6;&#x957F;&#x5355;&#x4F4D;&#x79D2;&#x6216;&#x5FAE;&#x79D2; (ase-out)&#x52A8;&#x753B;&#x64AD;&#x653E;&#x7684;&#x901F;&#x5EA6;&#x66F2;&#x7EBF;&#x4E3A;&#x4EE5;&#x4F4E;&#x901F;&#x7ED3;&#x675F; </span></span><br><span class="line"><span class="comment">    (1s)&#x7B49;&#x5F85;1&#x79D2;&#x7136;&#x540E;&#x5F00;&#x59CB;&#x52A8;&#x753B; (1)&#x52A8;&#x753B;&#x64AD;&#x653E;&#x6B21;&#x6570;(infinite&#x4E3A;&#x5FAA;&#x73AF;&#x64AD;&#x653E;) ]*/</span></span><br><span class="line"> </span><br><span class="line">  <span class="comment">/* &#x9F20;&#x6807;&#x7ECF;&#x8FC7;&#x5934;&#x50CF;&#x65CB;&#x8F6C;360&#x5EA6; */</span></span><br><span class="line">  <span class="attribute">-webkit-transition</span>: -webkit-transform <span class="number">1.0s</span> ease-out;</span><br><span class="line">  <span class="attribute">-moz-transition</span>: -moz-transform <span class="number">1.0s</span> ease-out;</span><br><span class="line">  <span class="attribute">transition</span>: transform <span class="number">1.0s</span> ease-out;</span><br><span class="line">}</span><br><span class="line"><span class="selector-tag">img</span><span class="selector-pseudo">:hover</span> {</span><br><span class="line">  <span class="comment">/* &#x9F20;&#x6807;&#x7ECF;&#x8FC7;&#x505C;&#x6B62;&#x5934;&#x50CF;&#x65CB;&#x8F6C; </span></span><br><span class="line"><span class="comment">  -webkit-animation-play-state:paused;</span></span><br><span class="line"><span class="comment">  animation-play-state:paused;*/</span></span><br><span class="line">  <span class="comment">/* &#x9F20;&#x6807;&#x7ECF;&#x8FC7;&#x5934;&#x50CF;&#x65CB;&#x8F6C;360&#x5EA6; */</span></span><br><span class="line">  <span class="attribute">-webkit-transform</span>: <span class="built_in">rotateZ</span>(360deg);</span><br><span class="line">  <span class="attribute">-moz-transform</span>: <span class="built_in">rotateZ</span>(360deg);</span><br><span class="line">  <span class="attribute">transform</span>: <span class="built_in">rotateZ</span>(360deg);</span><br><span class="line">}</span><br><span class="line"><span class="comment">/* Z &#x8F74;&#x65CB;&#x8F6C;&#x52A8;&#x753B; */</span></span><br><span class="line">@-<span class="keyword">webkit</span>-<span class="keyword">keyframes</span> play {</span><br><span class="line">  0% {</span><br><span class="line">    <span class="attribute">-webkit-transform</span>: <span class="built_in">rotateZ</span>(0deg);</span><br><span class="line">  }</span><br><span class="line">  100% {</span><br><span class="line">    <span class="attribute">-webkit-transform</span>: <span class="built_in">rotateZ</span>(-360deg);</span><br><span class="line">  }</span><br><span class="line">}</span><br><span class="line">@-<span class="keyword">moz</span>-<span class="keyword">keyframes</span> play {</span><br><span class="line">  0% {</span><br><span class="line">    <span class="attribute">-moz-transform</span>: <span class="built_in">rotateZ</span>(0deg);</span><br><span class="line">  }</span><br><span class="line">  100% {</span><br><span class="line">    <span class="attribute">-moz-transform</span>: <span class="built_in">rotateZ</span>(-360deg);</span><br><span class="line">  }</span><br><span class="line">}</span><br><span class="line">@<span class="keyword">keyframes</span> play {</span><br><span class="line">  0% {</span><br><span class="line">    <span class="attribute">transform</span>: <span class="built_in">rotateZ</span>(0deg);</span><br><span class="line">  }</span><br><span class="line">  100% {</span><br><span class="line">    <span class="attribute">transform</span>: <span class="built_in">rotateZ</span>(-360deg);</span><br><span class="line">  }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h5 id="2-6-&#x4FEE;&#x6539;&#x4EE3;&#x7801;&#x5757;&#x6837;&#x5F0F;"><a href="#2-6-&#x4FEE;&#x6539;&#x4EE3;&#x7801;&#x5757;&#x6837;&#x5F0F;" class="headerlink" title="2.6 &#x4FEE;&#x6539;&#x4EE3;&#x7801;&#x5757;&#x6837;&#x5F0F;"></a>2.6 &#x4FEE;&#x6539;<code></code>&#x4EE3;&#x7801;&#x5757;&#x6837;&#x5F0F;</h5><p><code>\themes\next\source\css\_custom\custom.styl</code></p>
+<figure class="highlight css"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#x5411;&#x91CC;&#x9762;&#x52A0;&#x5165;&#xFF1A;(&#x989C;&#x8272;&#x53EF;&#x4EE5;&#x81EA;&#x5DF1;&#x5B9A;&#x4E49;)</span><br><span class="line">// Custom styles.</span><br><span class="line"><span class="selector-tag">code</span> {</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#ff7600</span>;</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#fbf7f8</span>;</span><br><span class="line">    <span class="attribute">margin</span>: <span class="number">2px</span>;</span><br><span class="line">}</span><br><span class="line">// &#x5927;&#x4EE3;&#x7801;&#x5757;&#x7684;&#x81EA;&#x5B9A;&#x4E49;&#x6837;&#x5F0F;</span><br><span class="line"><span class="selector-class">.highlight</span>, <span class="selector-tag">pre</span> {</span><br><span class="line">    <span class="attribute">margin</span>: <span class="number">5px</span> <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">padding</span>: <span class="number">5px</span>;</span><br><span class="line">    <span class="attribute">border-radius</span>: <span class="number">3px</span>;</span><br><span class="line">}</span><br><span class="line"><span class="selector-class">.highlight</span>, <span class="selector-tag">code</span>, <span class="selector-tag">pre</span> {</span><br><span class="line">    <span class="attribute">border</span>: <span class="number">1px</span> solid <span class="number">#d6d6d6</span>;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h5 id="2-7-&#x53D6;&#x6D88;&#x4FA7;&#x8FB9;&#x680F;&#x6587;&#x7AE0;&#x76EE;&#x5F55;&#x5BF9;&#x6807;&#x9898;&#x7684;&#x81EA;&#x52A8;&#x7F16;&#x53F7;"><a href="#2-7-&#x53D6;&#x6D88;&#x4FA7;&#x8FB9;&#x680F;&#x6587;&#x7AE0;&#x76EE;&#x5F55;&#x5BF9;&#x6807;&#x9898;&#x7684;&#x81EA;&#x52A8;&#x7F16;&#x53F7;" class="headerlink" title="2.7 &#x53D6;&#x6D88;&#x4FA7;&#x8FB9;&#x680F;&#x6587;&#x7AE0;&#x76EE;&#x5F55;&#x5BF9;&#x6807;&#x9898;&#x7684;&#x81EA;&#x52A8;&#x7F16;&#x53F7;"></a>2.7 &#x53D6;&#x6D88;&#x4FA7;&#x8FB9;&#x680F;&#x6587;&#x7AE0;&#x76EE;&#x5F55;&#x5BF9;&#x6807;&#x9898;&#x7684;&#x81EA;&#x52A8;&#x7F16;&#x53F7;</h5><p>&#x6253;&#x5F00;&#x4E3B;&#x9898;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF0C;&#x5C06;<code>number:</code>&#x53D8;&#x91CF;&#x6539;&#x6210;false&#x5373;&#x53EF;</p>
+<pre><code>number: false
+</code></pre><h5 id="2-8-&#x4FEE;&#x6539;&#x4FA7;&#x8FB9;&#x680F;&#x7684;&#x80CC;&#x666F;&#x56FE;&#x7247;-amp-&#x989C;&#x8272;"><a href="#2-8-&#x4FEE;&#x6539;&#x4FA7;&#x8FB9;&#x680F;&#x7684;&#x80CC;&#x666F;&#x56FE;&#x7247;-amp-&#x989C;&#x8272;" class="headerlink" title="2.8 &#x4FEE;&#x6539;&#x4FA7;&#x8FB9;&#x680F;&#x7684;&#x80CC;&#x666F;&#x56FE;&#x7247;&amp;&#x989C;&#x8272;"></a>2.8 &#x4FEE;&#x6539;&#x4FA7;&#x8FB9;&#x680F;&#x7684;&#x80CC;&#x666F;&#x56FE;&#x7247;&amp;&#x989C;&#x8272;</h5><p>&#x4FA7;&#x8FB9;&#x680F;&#x6837;&#x5F0F;&#x6587;&#x4EF6;<code>\themes\next\source\css\_common\components\sidebar\sidebar.styl</code></p>
+<figure class="highlight css"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.sidebar</span> {</span><br><span class="line">	<span class="attribute">position</span>: fixed;</span><br><span class="line">	<span class="attribute">right</span>: <span class="number">0</span>;</span><br><span class="line">	<span class="attribute">top</span>: <span class="number">0</span>;</span><br><span class="line">	<span class="attribute">bottom</span>: <span class="number">0</span>;</span><br><span class="line">	<span class="attribute">background</span>: <span class="built_in">url</span>(&#x56FE;&#x7247;&#x5730;&#x5740;.jpg) no-repeat <span class="meta">!important</span>;</span><br><span class="line">	<span class="attribute">background-size</span>: cover <span class="meta">!important</span>;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h5 id="2-9-&#x7ED9;&#x4FA7;&#x8FB9;&#x680F;&#x5934;&#x50CF;&#x6DFB;&#x52A0;&#x94FE;&#x63A5;"><a href="#2-9-&#x7ED9;&#x4FA7;&#x8FB9;&#x680F;&#x5934;&#x50CF;&#x6DFB;&#x52A0;&#x94FE;&#x63A5;" class="headerlink" title="2.9 &#x7ED9;&#x4FA7;&#x8FB9;&#x680F;&#x5934;&#x50CF;&#x6DFB;&#x52A0;&#x94FE;&#x63A5;"></a>2.9 &#x7ED9;&#x4FA7;&#x8FB9;&#x680F;&#x5934;&#x50CF;&#x6DFB;&#x52A0;&#x94FE;&#x63A5;</h5><p>&#x6253;&#x5F00;<code>\next\source\css\_common\components\sidebar\sidebar-author.styl</code>&#xFF1B;<br>&#x5728;<code>.site-author-image</code>&#x53D8;&#x91CF;&#x5185;&#x6DFB;&#x52A0;<code>cursor: pointer;</code>&#x4FEE;&#x6539;&#x9F20;&#x6807;&#x6837;&#x5F0F;&#xFF1B;<br>&#x6253;&#x5F00;<code>\next\source\js\src\motion.js</code>&#xFF0C;&#x5728;&#x9876;&#x90E8;&#x6DFB;&#x52A0;&#x5982;&#x4E0B;&#x4EE3;&#x7801;&#xFF1A;</p>
+<figure class="highlight javascript"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">&apos;.site-author-image&apos;</span>).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{</span><br><span class="line">     <span class="built_in">window</span>.location.href=<span class="string">&quot;&#x81EA;&#x5B9A;&#x4E49;&#x94FE;&#x63A5;&quot;</span>;</span><br><span class="line">});</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="3-0-&#x6DFB;&#x52A0;&#x52A0;&#x5BC6;&#x529F;&#x80FD;"><a href="#3-0-&#x6DFB;&#x52A0;&#x52A0;&#x5BC6;&#x529F;&#x80FD;" class="headerlink" title="3.0 &#x6DFB;&#x52A0;&#x52A0;&#x5BC6;&#x529F;&#x80FD;"></a>3.0 &#x6DFB;&#x52A0;&#x52A0;&#x5BC6;&#x529F;&#x80FD;</h3><blockquote>
+<p>Hexo&#x7684;&#x6587;&#x7AE0;&#x52A0;&#x5BC6;&#x6211;&#x77E5;&#x9053;&#x7684;&#x6709;&#x4E24;&#x79CD;&#xFF0C;&#x8FD9;&#x91CC;&#x4E3B;&#x8981;&#x8BB2;<code>hexo-blog-encrypt</code> &#x7684;&#x4F7F;&#x7528;<br>&#x4F60;&#x5199;&#x4E86;&#x4E00;&#x7BC7;&#x535A;&#x5BA2;&#xFF0C;&#x4F46;&#x662F;&#xFF0C;&#x51FA;&#x4E8E;&#x67D0;&#x79CD;&#x539F;&#x56E0;&#xFF0C;&#x4E0D;&#x592A;&#x5E0C;&#x671B;&#x6BCF;&#x4E00;&#x4E2A;&#x4EBA;&#x90FD;&#x53EF;&#x4EE5;&#x770B;&#x5230;&#x3002;<br>&#x6240;&#x4EE5;&#x4F60;&#x5E38;&#x5E38;&#x4F1A;&#x4E3A;&#x8FD9;&#x79CD;&#x6587;&#x7AE0;&#x8BBE;&#x7F6E;&#x4E00;&#x4E2A;&#x5BC6;&#x7801;&#xFF0C;&#x9700;&#x8981;&#x8F93;&#x5165;&#x5BC6;&#x7801;&#x624D;&#x53EF;&#x4EE5;&#x8BBF;&#x95EE;&#x8FD9;&#x7BC7;&#x535A;&#x5BA2;&#x3002;<br>&#x8BE6;&#x7EC6;&#x4ECB;&#x7ECD;&#x53C2;&#x8003;&#xFF1A;<a href="https://github.com/MikeCoder/hexo-blog-encrypt/blob/master/ReadMe.zh.md" target="_blank" rel="noopener">https://github.com/MikeCoder/hexo-blog-encrypt/blob/master/ReadMe.zh.md</a></p>
+</blockquote>
+<h5 id="3-1-&#x5B89;&#x88C5;"><a href="#3-1-&#x5B89;&#x88C5;" class="headerlink" title="3.1 &#x5B89;&#x88C5;"></a>3.1 &#x5B89;&#x88C5;</h5><ul>
+<li>&#x5728;hexo&#x6839;&#x76EE;&#x5F55;&#x7684;<code>package.json</code>&#x6587;&#x4EF6;&#x4E2D;&#x7684;<code>dependencies</code>&#x6DFB;&#x52A0;<code>&quot;hexo-blog-encrypt&quot;: &quot;1.1.*&quot;,</code></li>
+<li><strong>&#x6CE8;&#x610F;&#xFF1A;</strong>&#x5C3D;&#x91CF;&#x6DFB;&#x52A0;&#x5728;&#x5F00;&#x5934;&#xFF0C;&#x4E0D;&#x8981;&#x52A0;&#x5728;&#x5E95;&#x90E8;</li>
+<li>&#x7136;&#x540E;&#x6267;&#x884C;<code>npm install</code>&#x547D;&#x4EE4;</li>
+<li>&#x8BE5;&#x63D2;&#x4EF6;&#x4F1A;&#x81EA;&#x52A8;&#x5B89;&#x88C5;</li>
+</ul>
+<h5 id="3-2-&#x5FEB;&#x901F;&#x5F00;&#x59CB;"><a href="#3-2-&#x5FEB;&#x901F;&#x5F00;&#x59CB;" class="headerlink" title="3.2 &#x5FEB;&#x901F;&#x5F00;&#x59CB;"></a>3.2 &#x5FEB;&#x901F;&#x5F00;&#x59CB;</h5><ul>
+<li>&#x9996;&#x5148;&#x5728;<code>_config.yml</code>&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x4E2D;&#x542F;&#x7528;&#x63D2;&#x4EF6;</li>
+</ul>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># Security</span><br><span class="line">##</span><br><span class="line">encrypt:</span><br><span class="line">  enable: true</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>&#x7136;&#x540E;&#x5728;&#x4F60;&#x7684;&#x6587;&#x7AE0;&#x7684;&#x5934;&#x90E8;&#x4E0A;&#x52A0;&#x4E0A;&#x5BF9;&#x5E94;&#x5B57;&#x6BB5;&#xFF1A;</li>
+</ul>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: hello world</span><br><span class="line">date: 2016-03-30 21:18:02</span><br><span class="line">tags:</span><br><span class="line">  - fdsafsdaf</span><br><span class="line">password: 123456</span><br><span class="line">abstract: Welcome to my blog, enter password to read.</span><br><span class="line">message: Welcome to my blog, enter password to read.</span><br><span class="line">---</span><br></pre></td></tr></tbody></table></figure>
+<ul>
+<li>password: &#x662F;&#x8BE5;&#x535A;&#x5BA2;&#x52A0;&#x5BC6;&#x4F7F;&#x7528;&#x7684;&#x5BC6;&#x7801;</li>
+<li>abstract: &#x662F;&#x8BE5;&#x535A;&#x5BA2;&#x7684;&#x6458;&#x8981;&#xFF0C;&#x4F1A;&#x663E;&#x793A;&#x5728;&#x535A;&#x5BA2;&#x7684;&#x5217;&#x8868;&#x9875;</li>
+<li>message: &#x8FD9;&#x4E2A;&#x662F;&#x535A;&#x5BA2;&#x67E5;&#x770B;&#x65F6;&#xFF0C;&#x5BC6;&#x7801;&#x8F93;&#x5165;&#x6846;&#x4E0A;&#x9762;&#x7684;&#x63CF;&#x8FF0;&#x6027;&#x6587;&#x5B57;</li>
+</ul>
+<h3 id="&#x6700;&#x540E;"><a href="#&#x6700;&#x540E;" class="headerlink" title="&#x6700;&#x540E;"></a>&#x6700;&#x540E;</h3><p><strong>&#x7ED9;&#x51FA;&#x4E00;&#x4E9B;&#x6574;&#x7406;&#x7684;&#x6BD4;&#x8F83;&#x597D;&#x7684;&#x6587;&#x7AE0;</strong><br><a href="http://www.iamlj.com/2016/08/add-special-effect-harlem-shake-for-hexo/" target="_blank" rel="noopener">&#x4E3A;Hexo NexT&#x4E3B;&#x9898;&#x6DFB;&#x52A0;&#x54C8;&#x6797;&#x6447;&#x7279;&#x6548;</a><br><a href="http://shenzekun.cn/h-exo%E7%9A%84next%E4%B8%BB%E9%A2%98%E4%B8%AA%E6%80%A7%E5%8C%96%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B.html" target="_blank" rel="noopener">hexo&#x7684;next&#x4E3B;&#x9898;&#x4E2A;&#x6027;&#x5316;&#x6559;&#x7A0B;&#xFF1A;&#x6253;&#x9020;&#x70AB;&#x9177;&#x7F51;&#x7AD9;| Moorez</a><br><a href="https://reuixiy.github.io/technology/computer/computer-aided-art/2017/06/09/hexo-next-optimization.html" target="_blank" rel="noopener">&#x6253;&#x9020;&#x4E2A;&#x6027;&#x8D85;&#x8D5E;&#x535A;&#x5BA2;Hexo+NexT+GitHubPages</a><br><a href="http://mashirosorata.vicp.io/HEXO-NEXT%E4%B8%BB%E9%A2%98%E4%B8%AA%E6%80%A7%E5%8C%96%E9%85%8D%E7%BD%AE.html" target="_blank" rel="noopener">HEXO+NEXT&#x4E3B;&#x9898;&#x4E2A;&#x6027;&#x5316;&#x914D;&#x7F6E;| SORA</a><br><code>&#x5B98;&#x65B9;</code><a href="http://theme-next.iissnan.com/" target="_blank" rel="noopener">NexT &#x4F7F;&#x7528;&#x6587;&#x6863;</a></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2022-05-26T13:32:07.811Z" itemprop="dateUpdated">2022-05-26 21:32:07</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/60444925/" target="_blank" rel="external">https://marnm.github.io/posts/60444925/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='https://marnm.github.io'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NexT/">NexT</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/60444925/&title=《NexT主题优化+美化》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/60444925/&title=《NexT主题优化+美化》 — Deops's blog&source=前言关于Hexo博客NexT主题美化就不一一列举的，网上教程一大堆，我就列出一些个人觉得比较实用的
+1.0 视觉优化与性能优化" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/60444925/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《NexT主题优化+美化》 — Deops's blog&url=https://marnm.github.io/posts/60444925/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/60444925/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/9e3f6743/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：自由的灵魂必将远航
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/67ee4dec/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：Linux学习笔记 - 关于开源">下一篇：Linux学习笔记 - 关于开源</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2022
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="https://marnm.github.io">marnm.github.io</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/60444925/&title=《NexT主题优化+美化》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/60444925/&title=《NexT主题优化+美化》 — Deops's blog&source=前言关于Hexo博客NexT主题美化就不一一列举的，网上教程一大堆，我就列出一些个人觉得比较实用的
+1.0 视觉优化与性能优化" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/60444925/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《NexT主题优化+美化》 — Deops's blog&url=https://marnm.github.io/posts/60444925/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/60444925/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAAB0ElEQVR42u3aO47DMAxFUe1/0542TZT7SIkwBldVgATxoQuCH62Fz/NxyLf733/+Zt04cuXKbXOf7UlBaUjcIFeu3HnuPtF8Y/GQyOtAyU6uXLkv5vIw0qQmV67c/8TtND9y5cp9J5eXIOQzb28u9mpy5cptcPmU8t7nK/NduXLllrhPeGqP349Wg6fLlSt3hMsTSi0AUu7Ey125cuUOcmuLkDQ9kRcU92py5co9yiXXrVIKX8TG61i5cuWOcPk6hIA6YQdtlVy5cse5teaHVyA8tV3s1eTKlZv95+LlSLHTKm1Mgg2PXLly29x+SkpXs6Sc+vosuXLlDnL7g4xaqxMHJleu3HHuvoghqxFe+pDU9iORyZUr9xo3HVukzVKtEUKNlly5ci9z0xVI55oFH7zG8125cuVe4KYXI9JFCA/sR9hy5cod5HaqiNolDFLirDS/ypUrt819wsN7Kf4/QWskV67cEW7nSgRPXrzJ6Sx05cqVe5bbT17pgoSPaNESRa5cude4tQ0ML1N4Bj0w35UrV+44l487a6c4NZErV+4LuPH9jtLwFK1S5MqVe43Lh5t8gNKZxMQ7Ybly5R7l1haf/AJWbSByYL4rV67cCvcPrJ0BLxLa2qMAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>

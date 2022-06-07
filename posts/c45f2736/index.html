@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>SQL Server 2008安装配置 | Deops&#39;s blog | 运维开发工程师</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="SQL Server">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="系统要求官网的最低要求                                                                                              SQL Server 2008 System Requirements">
+<meta name="keywords" content="SQL Server">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL Server 2008安装配置">
+<meta property="og:url" content="https://marnm.github.io/posts/c45f2736/index.html">
+<meta property="og:site_name" content="Deops&#39;s blog">
+<meta property="og:description" content="系统要求官网的最低要求                                                                                              SQL Server 2008 System Requirements">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://marnm.github.io/posts/img/sqlsrv2008_system-requirements.png">
+<meta property="og:image" content="d:/Settings/library/Document/article/install.png">
+<meta property="og:image" content="d:/Settings/library/Document/article/enter_key.png">
+<meta property="og:image" content="d:/Settings/library/Document/article/accept_license.png">
+<meta property="og:image" content="d:/Settings/library/Document/article/click_install.png">
+<meta property="og:image" content="d:/Settings/library/Document/article/next_step.png">
+<meta property="og:image" content="d:/Settings/library/Document/article/default.png">
+<meta property="og:image" content="d:/Settings/library/Document/article/defaultID.png">
+<meta property="og:image" content="d:/Settings/library/Document/article/server_config.png">
+<meta property="og:image" content="d:/Settings/library/Document/article/sqlengine_conf.png">
+<meta property="og:image" content="d:/Settings/library/Document/article/Analysis_Services.png">
+<meta property="og:image" content="d:/Settings/library/Document/article/installing.png">
+<meta property="og:image" content="d:/Settings/library/Document/article/Installed.png">
+<meta property="og:image" content="d:/Settings/library/Document/article/remote1.png">
+<meta property="og:image" content="d:/Settings/library/Document/article/remote2.png">
+<meta property="og:image" content="d:/Settings/library/Document/article/remote3.png">
+<meta property="og:image" content="d:/Settings/library/Document/article/remote4.png">
+<meta property="og:updated_time" content="2022-05-27T01:38:48.225Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SQL Server 2008安装配置">
+<meta name="twitter:description" content="系统要求官网的最低要求                                                                                              SQL Server 2008 System Requirements">
+<meta name="twitter:image" content="https://marnm.github.io/posts/img/sqlsrv2008_system-requirements.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
+                <i class="icon icon-lg icon-tv tv"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">SQL Server 2008安装配置</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#系统要求"><span class="post-toc-number">1.</span> <span class="post-toc-text">系统要求</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#安装过程"><span class="post-toc-number">2.</span> <span class="post-toc-text">安装过程</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#配置远程连接"><span class="post-toc-number">3.</span> <span class="post-toc-text">配置远程连接</span></a></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-SQL-Server-2008安装配置" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">SQL Server 2008安装配置</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2021-03-25 19:08:40" datetime="2021-03-25T11:08:40.000Z" itemprop="datePublished">2021-03-25</time>
+
+            <br id="mybreak">
+            
+<script>
+	mybreak.style="display:none";
+</script>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">1</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h3 id="&#x7CFB;&#x7EDF;&#x8981;&#x6C42;"><a href="#&#x7CFB;&#x7EDF;&#x8981;&#x6C42;" class="headerlink" title="&#x7CFB;&#x7EDF;&#x8981;&#x6C42;"></a>&#x7CFB;&#x7EDF;&#x8981;&#x6C42;</h3><p>&#x5B98;&#x7F51;&#x7684;&#x6700;&#x4F4E;&#x8981;&#x6C42;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="../img/sqlsrv2008_system-requirements.png" alt="SQL Server 2008 System Requirements" title="">
+                </div>
+                <div class="image-caption">SQL Server 2008 System Requirements</div>
+            </figure>
+<a id="more"></a>
+<h3 id="&#x5B89;&#x88C5;&#x8FC7;&#x7A0B;"><a href="#&#x5B89;&#x88C5;&#x8FC7;&#x7A0B;" class="headerlink" title="&#x5B89;&#x88C5;&#x8FC7;&#x7A0B;"></a>&#x5B89;&#x88C5;&#x8FC7;&#x7A0B;</h3><!--more-->
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="D:\Settings\library\Document\article\install.png" alt="Install Check" title="">
+                </div>
+                <div class="image-caption">Install Check</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="D:\Settings\library\Document\article\enter_key.png" alt="Enter Key" title="">
+                </div>
+                <div class="image-caption">Enter Key</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="D:\Settings\library\Document\article\accept_license.png" alt="Accept License" title="">
+                </div>
+                <div class="image-caption">Accept License</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="D:\Settings\library\Document\article\click_install.png" alt="Click Install" title="">
+                </div>
+                <div class="image-caption">Click Install</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="D:\Settings\library\Document\article\next_step.png" alt="Next Step" title="">
+                </div>
+                <div class="image-caption">Next Step</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="D:\Settings\library\Document\article\default.png" alt="Default Select All" title="">
+                </div>
+                <div class="image-caption">Default Select All</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="D:\Settings\library\Document\article\defaultID.png" alt="Default" title="">
+                </div>
+                <div class="image-caption">Default</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="D:\Settings\library\Document\article\server_config.png" alt="Server Config" title="">
+                </div>
+                <div class="image-caption">Server Config</div>
+            </figure>
+<p>&#x8FD9;&#x91CC;&#x53EF;&#x9009;&#x62E9;&#x9ED8;&#x8BA4;&#x914D;&#x7F6E;&#x3010;Windows&#x8EAB;&#x4EFD;&#x9A8C;&#x8BC1;&#x6A21;&#x5F0F;&#x3011;&#xFF0C;&#x7136;&#x540E;&#x3010;&#x6DFB;&#x52A0;&#x5F53;&#x524D;&#x7528;&#x6237;&#x3011;&#x4E3A;&#x7BA1;&#x7406;&#x5458;&#xFF1A;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="D:\Settings\library\Document\article\sqlengine_conf.png" alt="SQL Server Engine Config" title="">
+                </div>
+                <div class="image-caption">SQL Server Engine Config</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="D:\Settings\library\Document\article\Analysis_Services.png" alt="Analysis Server Configure" title="">
+                </div>
+                <div class="image-caption">Analysis Server Configure</div>
+            </figure>
+<p>&#x540E;&#x9762;&#x7684;&#x57FA;&#x672C;&#x5168;&#x90E8;&#x9ED8;&#x8BA4;&#x3010;&#x4E0B;&#x4E00;&#x6B65;&#x3011;&#xFF0C;&#x7B49;&#x5F85;&#x5B89;&#x88C5;&#x5B8C;&#x6210;&#xFF1A;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="D:\Settings\library\Document\article\installing.png" alt="Install" title="">
+                </div>
+                <div class="image-caption">Install</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="D:\Settings\library\Document\article\Installed.png" alt="Installed" title="">
+                </div>
+                <div class="image-caption">Installed</div>
+            </figure>
+<h3 id="&#x914D;&#x7F6E;&#x8FDC;&#x7A0B;&#x8FDE;&#x63A5;"><a href="#&#x914D;&#x7F6E;&#x8FDC;&#x7A0B;&#x8FDE;&#x63A5;" class="headerlink" title="&#x914D;&#x7F6E;&#x8FDC;&#x7A0B;&#x8FDE;&#x63A5;"></a>&#x914D;&#x7F6E;&#x8FDC;&#x7A0B;&#x8FDE;&#x63A5;</h3><p>&#x6253;&#x5F00;&#x6570;&#x636E;&#x5E93;&#x5C5E;&#x6027;&#xFF1A;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="D:\Settings\library\Document\article\remote1.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="D:\Settings\library\Document\article\remote2.png" alt="Security" title="">
+                </div>
+                <div class="image-caption">Security</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="D:\Settings\library\Document\article\remote3.png" alt="Enable Connection" title="">
+                </div>
+                <div class="image-caption">Enable Connection</div>
+            </figure>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="D:\Settings\library\Document\article\remote4.png" alt="Enable TCP/IP" title="">
+                </div>
+                <div class="image-caption">Enable TCP/IP</div>
+            </figure>
+<p>&#x5982;&#x679C;Windows&#x542F;&#x7528;&#x4E86;&#x9632;&#x706B;&#x5899;&#xFF0C;&#x8BF7;&#x5141;&#x8BB8;<code>1433</code>&#x7AEF;&#x53E3;&#x51FA;&#x5165;</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2022-05-27T01:38:48.225Z" itemprop="dateUpdated">2022-05-27 09:38:48</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/c45f2736/" target="_blank" rel="external">https://marnm.github.io/posts/c45f2736/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='https://marnm.github.io'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQL-Server/">SQL Server</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/c45f2736/&title=《SQL Server 2008安装配置》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/c45f2736/&title=《SQL Server 2008安装配置》 — Deops's blog&source=系统要求官网的最低要求
+
+                
+                    
+                    
+     ..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/c45f2736/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SQL Server 2008安装配置》 — Deops's blog&url=https://marnm.github.io/posts/c45f2736/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/c45f2736/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/e76ba468/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：Ubuntu Desktop优化与配置
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/217dc297/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：计算机概述">下一篇：计算机概述</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2022
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="https://marnm.github.io">marnm.github.io</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/c45f2736/&title=《SQL Server 2008安装配置》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/c45f2736/&title=《SQL Server 2008安装配置》 — Deops's blog&source=系统要求官网的最低要求
+
+                
+                    
+                    
+     ..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/c45f2736/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SQL Server 2008安装配置》 — Deops's blog&url=https://marnm.github.io/posts/c45f2736/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/c45f2736/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABz0lEQVR42u3aQW7DMAwEQP//0+m1h9pekpZiFKNTUSj2JAdCXOo44vX5ta739PY/vHBxccfcz+U623P2yjPE9WcTAy4u7n5uUpiqX6+3/8aGi4v7Su71ISY5uODi4v4/br6/2izh4uK+jds7svS+QNJcPdCr4eLiDrh5Srnu7yX5Li4ubov7Ka5qkUqeUPgsLi7uFu4kyOiNUvLW6HQnLi7uYu51E5I3LZNWKjnJHAkOFxf3Ie6kOUnCi+o1jvIRBxcXdxk3KUPVI0u12DV/OFxc3AXcauuSj0OS6CQpiH80P7i4uIu5vVFo/vrJ2KbQ/ODi4i7mPvXKvBFKAtmbfBcXF3cBN794kfwnb3V6rRQuLu5qbjmgjAtTNTyNSiouLu4W7ooWaPITlJNdXFzcZdykfMxHI/mo5qYpwsXF/RI3iSTyI071qtbNk3FxcTdyc9w8+KgGMUfvZbi4uC1ur3V5tngVWiNcXNwt3MmViGphqg5gRuNeXFzcMbdavPILE71jU3QxCxcXdws3H2nkj06uXlWvYuDi4r6fm8edjw1icXFxX8+dX7Ao78fFxd3IzcPN5JW9w00UmuDi4m7hzktPHprkgcgD+S4uLm6H+wMULpp5TsU73wAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>

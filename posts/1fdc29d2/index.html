@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Shell的基本运算符 | Deops&#39;s blog | 运维开发工程师</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="Linux,Shell">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="Shell 和其它编程语言一样，支持多种运算符，包括：  算数运算符 关系运算符 布尔运算符 字符串运算符 文件测试运算符原生bash不支持简单的数学运算，但是可以通过其它命令来实现，例如awk和expr最常用。expr是一款表达式计算工具，使用它能完成表达式的求值操作。">
+<meta name="keywords" content="Linux,Shell">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Shell的基本运算符">
+<meta property="og:url" content="https://marnm.github.io/posts/1fdc29d2/index.html">
+<meta property="og:site_name" content="Deops&#39;s blog">
+<meta property="og:description" content="Shell 和其它编程语言一样，支持多种运算符，包括：  算数运算符 关系运算符 布尔运算符 字符串运算符 文件测试运算符原生bash不支持简单的数学运算，但是可以通过其它命令来实现，例如awk和expr最常用。expr是一款表达式计算工具，使用它能完成表达式的求值操作。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-08-12T08:28:01.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Shell的基本运算符">
+<meta name="twitter:description" content="Shell 和其它编程语言一样，支持多种运算符，包括：  算数运算符 关系运算符 布尔运算符 字符串运算符 文件测试运算符原生bash不支持简单的数学运算，但是可以通过其它命令来实现，例如awk和expr最常用。expr是一款表达式计算工具，使用它能完成表达式的求值操作。">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
+                <i class="icon icon-lg icon-tv tv"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Shell的基本运算符</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#算数运算符"><span class="post-toc-number">1.</span> <span class="post-toc-text">算数运算符</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#关系运算符"><span class="post-toc-number">2.</span> <span class="post-toc-text">关系运算符</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#布尔运算符"><span class="post-toc-number">3.</span> <span class="post-toc-text">布尔运算符</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#逻辑运算符"><span class="post-toc-number">4.</span> <span class="post-toc-text">逻辑运算符</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#字符串运算符"><span class="post-toc-number">5.</span> <span class="post-toc-text">字符串运算符</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#文件测试运算符"><span class="post-toc-number">6.</span> <span class="post-toc-text">文件测试运算符</span></a></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-Shell的基本运算符" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Shell的基本运算符</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2018-08-10 22:18:16" datetime="2018-08-10T14:18:16.000Z" itemprop="datePublished">2018-08-10</time>
+
+            <br id="mybreak">
+            
+	<i class="icon icon-lg icon-folder-o"></i>
+	分类：<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Linux/">Linux</a></li></ul>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">6</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>Shell &#x548C;&#x5176;&#x5B83;&#x7F16;&#x7A0B;&#x8BED;&#x8A00;&#x4E00;&#x6837;&#xFF0C;&#x652F;&#x6301;&#x591A;&#x79CD;&#x8FD0;&#x7B97;&#x7B26;&#xFF0C;&#x5305;&#x62EC;&#xFF1A;</p>
+<ul>
+<li>&#x7B97;&#x6570;&#x8FD0;&#x7B97;&#x7B26;</li>
+<li>&#x5173;&#x7CFB;&#x8FD0;&#x7B97;&#x7B26;</li>
+<li>&#x5E03;&#x5C14;&#x8FD0;&#x7B97;&#x7B26;</li>
+<li>&#x5B57;&#x7B26;&#x4E32;&#x8FD0;&#x7B97;&#x7B26;</li>
+<li>&#x6587;&#x4EF6;&#x6D4B;&#x8BD5;&#x8FD0;&#x7B97;&#x7B26;<br>&#x539F;&#x751F;bash&#x4E0D;&#x652F;&#x6301;&#x7B80;&#x5355;&#x7684;&#x6570;&#x5B66;&#x8FD0;&#x7B97;&#xFF0C;&#x4F46;&#x662F;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x5176;&#x5B83;&#x547D;&#x4EE4;&#x6765;&#x5B9E;&#x73B0;&#xFF0C;&#x4F8B;&#x5982;<code>awk</code>&#x548C;<code>expr</code>&#x6700;&#x5E38;&#x7528;&#x3002;<br><code>expr</code>&#x662F;&#x4E00;&#x6B3E;&#x8868;&#x8FBE;&#x5F0F;&#x8BA1;&#x7B97;&#x5DE5;&#x5177;&#xFF0C;&#x4F7F;&#x7528;&#x5B83;&#x80FD;&#x5B8C;&#x6210;&#x8868;&#x8FBE;&#x5F0F;&#x7684;&#x6C42;&#x503C;&#x64CD;&#x4F5C;&#x3002;<a id="more"></a>
+<h1 id="&#x7B97;&#x6570;&#x8FD0;&#x7B97;&#x7B26;"><a href="#&#x7B97;&#x6570;&#x8FD0;&#x7B97;&#x7B26;" class="headerlink" title="&#x7B97;&#x6570;&#x8FD0;&#x7B97;&#x7B26;"></a>&#x7B97;&#x6570;&#x8FD0;&#x7B97;&#x7B26;</h1>&#x76F8;&#x5F53;&#x4E8E;&#x5C0F;&#x5B66;&#x77E5;&#x8BC6;</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>&#x8FD0;&#x7B97;&#x7B26;</th>
+<th>&#x8BF4;&#x660E;</th>
+<th>&#x4E3E;&#x4F8B;(a=10,b=20),``&#x4E0D;&#x662F;&#x5355;&#x5F15;&#x53F7;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>+</td>
+<td>&#x52A0;</td>
+<td>`expr $a + $b`&#x7ED3;&#x679C;&#x4E3A;30</td>
+</tr>
+<tr>
+<td>-</td>
+<td>&#x51CF;</td>
+<td>`expr $b - $a`&#x7ED3;&#x679C;&#x4E3A;10</td>
+</tr>
+<tr>
+<td>*</td>
+<td>&#x4E58;</td>
+<td>`expr $a \* $b`&#x7ED3;&#x679C;&#x4E3A;200</td>
+</tr>
+<tr>
+<td>/</td>
+<td>&#x9664;</td>
+<td>`expr $b \ $a`&#x7ED3;&#x679C;&#x4E3A;2</td>
+</tr>
+<tr>
+<td>%</td>
+<td>&#x53D6;&#x4F59;</td>
+<td>`expr $a % $3`&#x7ED3;&#x679C;&#x4E3A;1</td>
+</tr>
+<tr>
+<td>=</td>
+<td>&#x8D4B;&#x503C;</td>
+<td>`expr $a = $b`&#x7ED3;&#x679C;&#x4E3A;false</td>
+</tr>
+<tr>
+<td>==</td>
+<td>&#x7B49;&#x4E8E;</td>
+<td>`expr $a == $b`&#x7ED3;&#x679C;&#x4E3A;false</td>
+</tr>
+<tr>
+<td>!=</td>
+<td>&#x4E0D;&#x7B49;&#x4E8E;</td>
+<td>`expr $a != $b`&#x7ED3;&#x679C;&#x4E3A;true</td>
+</tr>
+</tbody>
+</table>
+<h1 id="&#x5173;&#x7CFB;&#x8FD0;&#x7B97;&#x7B26;"><a href="#&#x5173;&#x7CFB;&#x8FD0;&#x7B97;&#x7B26;" class="headerlink" title="&#x5173;&#x7CFB;&#x8FD0;&#x7B97;&#x7B26;"></a>&#x5173;&#x7CFB;&#x8FD0;&#x7B97;&#x7B26;</h1><p>&#x5173;&#x7CFB;&#x8FD0;&#x7B97;&#x7B26;&#x53EA;&#x652F;&#x6301;&#x6570;&#x5B57;&#xFF0C;&#x4E0D;&#x652F;&#x6301;&#x5B57;&#x7B26;&#x4E32;&#xFF0C;&#x9664;&#x975E;&#x5B57;&#x7B26;&#x4E32;&#x7684;&#x503C;&#x662F;&#x6570;&#x5B57;&#x3002;</p>
+<table>
+<thead>
+<tr>
+<th>&#x8FD0;&#x7B97;&#x7B26;</th>
+<th>&#x8BF4;&#x660E;</th>
+<th>&#x4E3E;&#x4F8B;(a=10,b=20),``&#x4E0D;&#x662F;&#x5355;&#x5F15;&#x53F7;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-eq</td>
+<td>&#x68C0;&#x6D4B;&#x4E24;&#x4E2A;&#x6570;&#x662F;&#x5426;<code>&#x76F8;&#x7B49;</code>&#xFF0C;&#x76F8;&#x7B49;&#x8FD4;&#x56DE;true</td>
+<td>[ $a -ea $b]&#x8FD4;&#x56DE;false</td>
+</tr>
+<tr>
+<td>-ne</td>
+<td>&#x68C0;&#x6D4B;&#x4E24;&#x4E2A;&#x6570;&#x662F;&#x5426;<code>&#x4E0D;&#x76F8;&#x7B49;</code>,&#x4E0D;&#x76F8;&#x7B49;&#x8FD4;&#x56DE;true</td>
+<td>[ $a -ne $b ]&#x8FD4;&#x56DE;true</td>
+</tr>
+<tr>
+<td>-gt</td>
+<td>&#x68C0;&#x6D4B;&#x5DE6;&#x8FB9;&#x7684;&#x6570;&#x662F;&#x5426;<code>&#x5927;&#x4E8E;</code>&#x53F3;&#x8FB9;&#x7684;&#xFF0C;&#x662F;&#xFF0C;&#x5219;&#x8FD4;&#x56DE;true</td>
+<td>[ $a -gt $b ]&#x8FD4;&#x56DE;false</td>
+</tr>
+<tr>
+<td>-lt</td>
+<td>&#x68C0;&#x6D4B;&#x5DE6;&#x8FB9;&#x7684;&#x6570;&#x662F;&#x5426;<code>&#x5C0F;&#x4E8E;</code>&#x53F3;&#x8FB9;&#x7684;&#xFF0C;&#x662F;&#xFF0C;&#x5219;&#x8FD4;&#x56DE;true</td>
+<td>[ $a -lt $b ]&#x8FD4;&#x56DE;true</td>
+</tr>
+<tr>
+<td>-ge</td>
+<td>&#x68C0;&#x6D4B;&#x5DE6;&#x8FB9;&#x7684;&#x6570;&#x662F;&#x5426;<code>&#x5927;&#x4E8E;&#x7B49;&#x4E8E;</code>&#x53F3;&#x8FB9;&#x7684;&#xFF0C;&#x662F;&#xFF0C;&#x5219;&#x8FD4;&#x56DE;true</td>
+<td>[ $a -ge $b ]&#x8FD4;&#x56DE;false</td>
+</tr>
+<tr>
+<td>-le</td>
+<td>&#x68C0;&#x6D4B;&#x5DE6;&#x8FB9;&#x7684;&#x6570;&#x662F;&#x5426;<code>&#x5C0F;&#x4E8E;&#x7B49;&#x4E8E;</code>&#x53F3;&#x8FB9;&#x7684;&#xFF0C;&#x662F;&#xFF0C;&#x5219;&#x8FD4;&#x56DE;true</td>
+<td>[ $a -le $b ]&#x8FD4;&#x56DE;true</td>
+</tr>
+</tbody>
+</table>
+<h1 id="&#x5E03;&#x5C14;&#x8FD0;&#x7B97;&#x7B26;"><a href="#&#x5E03;&#x5C14;&#x8FD0;&#x7B97;&#x7B26;" class="headerlink" title="&#x5E03;&#x5C14;&#x8FD0;&#x7B97;&#x7B26;"></a>&#x5E03;&#x5C14;&#x8FD0;&#x7B97;&#x7B26;</h1><table>
+<thead>
+<tr>
+<th>&#x8FD0;&#x7B97;&#x7B26;</th>
+<th>&#x8BF4;&#x660E;</th>
+<th>&#x4E3E;&#x4F8B;(a=10,b=20),``&#x4E0D;&#x662F;&#x5355;&#x5F15;&#x53F7;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>!</td>
+<td>&#x2018;&#x975E;&#x2019;&#x8FD0;&#x7B97;&#xFF0C;&#x628A;&#x6761;&#x4EF6;&#x6D4B;&#x8BD5;&#x4E2D;&#x7684;&#x5224;&#x65AD;&#x7ED3;&#x679C;&#x53D6;&#x76F8;&#x53CD;&#x503C;</td>
+<td>[ !false ]&#x8FD4;&#x56DE;true</td>
+</tr>
+<tr>
+<td>-o</td>
+<td>&#x2018;&#x6216;&#x2019;&#x8FD0;&#x7B97;&#xFF0C;&#x6709;&#x4E00;&#x4E2A;&#x8868;&#x8FBE;&#x5F0F;&#x4E3A;true&#x5219;&#x8FD4;&#x56DE;true</td>
+<td>[ $a -lt 20 -o $b -gt 100]&#x8FD4;&#x56DE;true</td>
+</tr>
+<tr>
+<td>-a</td>
+<td>&#x2018;&#x4E0E;&#x2019;&#x8FD0;&#x7B97;&#xFF0C;&#x4E24;&#x4E2A;&#x8868;&#x8FBE;&#x5F0F;&#x90FD;&#x4E3A;true&#x624D;&#x8FD4;&#x56DE;true</td>
+<td>[ $a -lt -a $b -gt 100 ]&#x8FD4;&#x56DE;false</td>
+</tr>
+</tbody>
+</table>
+<h1 id="&#x903B;&#x8F91;&#x8FD0;&#x7B97;&#x7B26;"><a href="#&#x903B;&#x8F91;&#x8FD0;&#x7B97;&#x7B26;" class="headerlink" title="&#x903B;&#x8F91;&#x8FD0;&#x7B97;&#x7B26;"></a>&#x903B;&#x8F91;&#x8FD0;&#x7B97;&#x7B26;</h1><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&amp;&amp;&#xFF0C;&#x903B;&#x8F91;`&#x4E0E;`&#x8FD0;&#x7B97;&#xFF0C;&#x524D;&#x9762;&#x7684;&#x6761;&#x4EF6;&#x6267;&#x884C;&#x6210;&#x529F;&#x540E;&#x6267;&#x884C;&#x540E;&#x9762;&#x7684;&#xFF0C;[[ $a -lt 100 &amp;&amp; $b -gt 100]]&#x8FD4;&#x56DE;false</span><br><span class="line">||&#xFF0C;&#x903B;&#x8F91;`&#x6216;`&#x8FD0;&#x7B97;&#xFF0C;&#x524D;&#x9762;&#x7684;&#x6761;&#x4EF6;&#x6267;&#x884C;&#x5931;&#x8D25;&#x540E;&#x6267;&#x884C;&#x540E;&#x9762;&#x7684;&#xFF0C;[[ $a -lt 100 `||` $b -gt 100]]&#x8FD4;&#x56DE;true</span><br></pre></td></tr></tbody></table></figure>
+<h1 id="&#x5B57;&#x7B26;&#x4E32;&#x8FD0;&#x7B97;&#x7B26;"><a href="#&#x5B57;&#x7B26;&#x4E32;&#x8FD0;&#x7B97;&#x7B26;" class="headerlink" title="&#x5B57;&#x7B26;&#x4E32;&#x8FD0;&#x7B97;&#x7B26;"></a>&#x5B57;&#x7B26;&#x4E32;&#x8FD0;&#x7B97;&#x7B26;</h1><!--more-->
+<table>
+<thead>
+<tr>
+<th>&#x8FD0;&#x7B97;&#x7B26;</th>
+<th>&#x8BF4;&#x660E;</th>
+<th>&#x4E3E;&#x4F8B;(a=10,b=20),``&#x4E0D;&#x662F;&#x5355;&#x5F15;&#x53F7;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>=</td>
+<td>&#x68C0;&#x6D4B;&#x4E24;&#x4E2A;&#x5B57;&#x7B26;&#x4E32;&#x662F;&#x5426;&#x76F8;&#x7B49;&#xFF0C;&#x76F8;&#x7B49;&#x8FD4;&#x56DE;true</td>
+<td>[$a = $b]&#x8FD4;&#x56DE;false</td>
+</tr>
+<tr>
+<td>!=</td>
+<td>&#x68C0;&#x6D4B;&#x4E24;&#x4E2A;&#x5B57;&#x7B26;&#x4E32;&#x662F;&#x5426;&#x76F8;&#x7B49;&#xFF0C;&#x4E0D;&#x76F8;&#x7B49;&#x8FD4;&#x56DE;true</td>
+<td>[$a != $b ]&#x8FD4;&#x56DE;true</td>
+</tr>
+<tr>
+<td>-z</td>
+<td>&#x68C0;&#x6D4B;&#x5B57;&#x7B26;&#x4E32;&#x957F;&#x5EA6;&#x662F;&#x5426;&#x4E3A;0&#xFF0C;&#x4E3A;0&#x8FD4;&#x56DE;true</td>
+<td>[ -z $a ]&#x8FD4;&#x56DE;false</td>
+</tr>
+<tr>
+<td>-n</td>
+<td>&#x68C0;&#x6D4B;&#x5B57;&#x7B26;&#x4E32;&#x957F;&#x5EA6;&#x662F;&#x5426;&#x4E3A;0&#xFF0C;&#x4E0D;&#x4E3A;0&#x8FD4;&#x56DE;true</td>
+<td>[ -n &#x201C;$a&#x201D; ]&#x8FD4;&#x56DE;true</td>
+</tr>
+<tr>
+<td>str</td>
+<td>&#x68C0;&#x6D4B;&#x5B57;&#x7B26;&#x4E32;&#x662F;&#x5426;&#x4E3A;&#x7A7A;&#xFF0C;&#x4E0D;&#x4E3A;&#x7A7A;&#x8FD4;&#x56DE;true</td>
+<td>[ $a ]&#x8FD4;&#x56DE;true</td>
+</tr>
+</tbody>
+</table>
+<h1 id="&#x6587;&#x4EF6;&#x6D4B;&#x8BD5;&#x8FD0;&#x7B97;&#x7B26;"><a href="#&#x6587;&#x4EF6;&#x6D4B;&#x8BD5;&#x8FD0;&#x7B97;&#x7B26;" class="headerlink" title="&#x6587;&#x4EF6;&#x6D4B;&#x8BD5;&#x8FD0;&#x7B97;&#x7B26;"></a>&#x6587;&#x4EF6;&#x6D4B;&#x8BD5;&#x8FD0;&#x7B97;&#x7B26;</h1><table>
+<thead>
+<tr>
+<th>&#x8FD0;&#x7B97;&#x7B26;</th>
+<th>&#x8BF4;&#x660E;</th>
+<th>&#x4E3E;&#x4F8B;(a=10,b=20),``&#x4E0D;&#x662F;&#x5355;&#x5F15;&#x53F7;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-b</td>
+<td>&#x6D4B;&#x8BD5;&#x6587;&#x4EF6;&#x662F;&#x5426;&#x4E3A;&#x5757;&#x8BBE;&#x5907;&#x6587;&#x4EF6;</td>
+<td>[ -b $file ]&#x8FD4;&#x56DE;false</td>
+</tr>
+<tr>
+<td>-c</td>
+<td>&#x6D4B;&#x8BD5;&#x6587;&#x4EF6;&#x662F;&#x5426;&#x4E3A;&#x5B57;&#x7B26;&#x8BBE;&#x5907;&#x6587;&#x4EF6;</td>
+<td>[ -c $file ]&#x8FD4;&#x56DE;false</td>
+</tr>
+<tr>
+<td>-d</td>
+<td>&#x6D4B;&#x8BD5;&#x6587;&#x4EF6;&#x662F;&#x5426;&#x4E3A;&#x76EE;&#x5F55;&#x7C7B;&#x578B;</td>
+<td>[ -d $file ]&#x8FD4;&#x56DE;false</td>
+</tr>
+<tr>
+<td>-f</td>
+<td>&#x6D4B;&#x8BD5;&#x6587;&#x4EF6;&#x662F;&#x5426;&#x4E3A;&#x666E;&#x901A;&#x6587;&#x4EF6;&#xFF08;&#x65E2;&#x4E0D;&#x662F;&#x76EE;&#x5F55;&#xFF0C;&#x4E5F;&#x4E0D;&#x662F;&#x8BBE;&#x5907;&#x6587;&#x4EF6;&#xFF09;</td>
+<td>[ -f $file]</td>
+</tr>
+<tr>
+<td>-g</td>
+<td>&#x6D4B;&#x8BD5;&#x6587;&#x4EF6;&#x662F;&#x5426;&#x8BBE;&#x7F6E;&#x4E86;SGID&#x4F4D;</td>
+<td></td>
+</tr>
+<tr>
+<td>-k</td>
+<td>&#x6D4B;&#x8BD5;&#x6587;&#x4EF6;&#x662F;&#x5426;&#x8BBE;&#x7F6E;&#x4E86;&#x7C98;&#x7740;&#x4F4D;(Sticky Bit)</td>
+<td></td>
+</tr>
+<tr>
+<td>-p</td>
+<td>&#x6D4B;&#x8BD5;&#x6587;&#x4EF6;&#x662F;&#x5426;&#x6709;&#x540D;&#x7BA1;&#x9053;</td>
+<td></td>
+</tr>
+<tr>
+<td>-u</td>
+<td>&#x6D4B;&#x8BD5;&#x6587;&#x4EF6;&#x662F;&#x5426;&#x8BBE;&#x7F6E;&#x4E86;SUID&#x4F4D;</td>
+<td></td>
+</tr>
+<tr>
+<td>-r</td>
+<td>&#x6D4B;&#x8BD5;&#x6587;&#x4EF6;&#x662F;&#x5426;&#x53EF;&#x8BFB;</td>
+<td></td>
+</tr>
+<tr>
+<td>-w</td>
+<td>&#x6D4B;&#x8BD5;&#x6587;&#x4EF6;&#x662F;&#x5426;&#x53EF;&#x5199;</td>
+<td></td>
+</tr>
+<tr>
+<td>-x</td>
+<td>&#x6D4B;&#x8BD5;&#x6587;&#x4EF6;&#x662F;&#x5426;&#x53EF;&#x6267;&#x884C;</td>
+<td></td>
+</tr>
+<tr>
+<td>-s</td>
+<td>&#x6D4B;&#x8BD5;&#x6587;&#x4EF6;&#x662F;&#x5426;&#x4E3A;&#x7A7A;</td>
+<td></td>
+</tr>
+<tr>
+<td>-e</td>
+<td>&#x6D4B;&#x8BD5;&#x6587;&#x4EF6;&#xFF08;&#x5305;&#x62EC;&#x76EE;&#x5F55;&#xFF09;&#x662F;&#x5426;&#x5B58;&#x5728;</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2018-08-12T08:28:01.000Z" itemprop="dateUpdated">2018-08-12 16:28:01</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/1fdc29d2/" target="_blank" rel="external">https://marnm.github.io/posts/1fdc29d2/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='https://marnm.github.io'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shell/">Shell</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/1fdc29d2/&title=《Shell的基本运算符》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/1fdc29d2/&title=《Shell的基本运算符》 — Deops's blog&source=Shell 和其它编程语言一样，支持多种运算符，包括：
+
+算数运算符
+关系运算符
+布尔运算符
+字符串运算符
+文件测试运算符原生bash不支持简单的数学运算..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/1fdc29d2/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Shell的基本运算符》 — Deops's blog&url=https://marnm.github.io/posts/1fdc29d2/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/1fdc29d2/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/28c30eb2/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：CTF线下赛AWD套路小结
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/afdfa673/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：RHEL 7配置Yum软件仓库">下一篇：RHEL 7配置Yum软件仓库</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2022
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="https://marnm.github.io">marnm.github.io</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/1fdc29d2/&title=《Shell的基本运算符》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/1fdc29d2/&title=《Shell的基本运算符》 — Deops's blog&source=Shell 和其它编程语言一样，支持多种运算符，包括：
+
+算数运算符
+关系运算符
+布尔运算符
+字符串运算符
+文件测试运算符原生bash不支持简单的数学运算..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/1fdc29d2/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Shell的基本运算符》 — Deops's blog&url=https://marnm.github.io/posts/1fdc29d2/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/1fdc29d2/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABwUlEQVR42u3aSQ6DMAwFUO5/aXqC0m+bBCo9VlWnvGwsT8cRP2frSf7zWPHg4uKOucmR1+8nxye/ja6Ni4u7kXsdaPLXOSK5Ki4u7n9x80+rQQ0XF/d/uUnqk6BxcXHfzJ2kIL2LLa/VcHFxB9y8S7nu9ZL+Li4ubovbG42cg2d0Oi4u7hZuHlDy5CMvparn4uLiPsXNw818OyL/h0I3BRcX9yZu8qW89ZmHsN44FhcXdzW3WuokwS6/fLXZiouLu5Obh6Tr0iVfy+hdDBcXdw93voaVX2YyMSnPdnBxcRdwe0tU1SZp0kKNAhkuLu6t3CTFyYufvOXavBguLu5GbtIKSXKM5BqjhgsuLu4Wbl78TJYzquVQdDouLu5ibr4kcZ2gVANTMtD9upiFi4u7hTsPavkQpdoiwcXFfYrbC0PVIWs1xTnujZq4uLgB9yw+84ZIvniBi4v7FHeyEpEflhc5ty1z4OLijrm94FUte6qp1Y8hCi4u7hbuZLgyCWfVVQxcXNx3cqthqFdilbsmuLi4L+CW+7Ktb0aTH1xc3GXcfLmqmu70OjGFISsuLu4Cbu/H1QWLanp0Q38XFxe3w/0AC80p+EZOm5IAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>
