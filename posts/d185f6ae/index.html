@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>web性能压测学习 | Deops&#39;s blog | 运维开发工程师</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="&amp;#x5E38;&amp;#x7528;&amp;#x6027;&amp;#x80FD;&amp;#x538B;&amp;#x6D4B;&amp;#x5DE5;&amp;#x5177;&amp;#x5B9E;&amp;#x6218;&amp;#x603B;&amp;#x7ED3;&amp;#x4E00;&amp;#x3001;&amp;#x538B;&amp;#x6D4B;&amp;#x80CC;&amp;#x666F; &amp;#x4EE5;&amp;#x524D;&amp;#xFF1A;&amp;#x672A;&amp;#x51FA;&amp;#x793E;&amp;#x4F1A">
+<meta name="keywords" content="Echo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="web性能压测学习">
+<meta property="og:url" content="https://marnm.github.io/posts/d185f6ae/index.html">
+<meta property="og:site_name" content="Deops&#39;s blog">
+<meta property="og:description" content="&amp;#x5E38;&amp;#x7528;&amp;#x6027;&amp;#x80FD;&amp;#x538B;&amp;#x6D4B;&amp;#x5DE5;&amp;#x5177;&amp;#x5B9E;&amp;#x6218;&amp;#x603B;&amp;#x7ED3;&amp;#x4E00;&amp;#x3001;&amp;#x538B;&amp;#x6D4B;&amp;#x80CC;&amp;#x666F; &amp;#x4EE5;&amp;#x524D;&amp;#xFF1A;&amp;#x672A;&amp;#x51FA;&amp;#x793E;&amp;#x4F1A">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-06-07T05:00:05.882Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="web性能压测学习">
+<meta name="twitter:description" content="&amp;#x5E38;&amp;#x7528;&amp;#x6027;&amp;#x80FD;&amp;#x538B;&amp;#x6D4B;&amp;#x5DE5;&amp;#x5177;&amp;#x5B9E;&amp;#x6218;&amp;#x603B;&amp;#x7ED3;&amp;#x4E00;&amp;#x3001;&amp;#x538B;&amp;#x6D4B;&amp;#x80CC;&amp;#x666F; &amp;#x4EE5;&amp;#x524D;&amp;#xFF1A;&amp;#x672A;&amp;#x51FA;&amp;#x793E;&amp;#x4F1A">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
+                <i class="icon icon-lg icon-tv tv"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">web性能压测学习</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#常用性能压测工具实战总结"><span class="post-toc-number">1.</span> <span class="post-toc-text">常用性能压测工具实战总结</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#一、压测背景"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">一、压测背景</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#二、压测工具"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">二、压测工具</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-web性能压测学习" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">web性能压测学习</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2022-06-07 12:55:14" datetime="2022-06-07T04:55:14.000Z" itemprop="datePublished">2022-06-07</time>
+
+            <br id="mybreak">
+            
+<script>
+	mybreak.style="display:none";
+</script>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">18</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="&#x5E38;&#x7528;&#x6027;&#x80FD;&#x538B;&#x6D4B;&#x5DE5;&#x5177;&#x5B9E;&#x6218;&#x603B;&#x7ED3;"><a href="#&#x5E38;&#x7528;&#x6027;&#x80FD;&#x538B;&#x6D4B;&#x5DE5;&#x5177;&#x5B9E;&#x6218;&#x603B;&#x7ED3;" class="headerlink" title="&#x5E38;&#x7528;&#x6027;&#x80FD;&#x538B;&#x6D4B;&#x5DE5;&#x5177;&#x5B9E;&#x6218;&#x603B;&#x7ED3;"></a>&#x5E38;&#x7528;&#x6027;&#x80FD;&#x538B;&#x6D4B;&#x5DE5;&#x5177;&#x5B9E;&#x6218;&#x603B;&#x7ED3;</h1><h2 id="&#x4E00;&#x3001;&#x538B;&#x6D4B;&#x80CC;&#x666F;"><a href="#&#x4E00;&#x3001;&#x538B;&#x6D4B;&#x80CC;&#x666F;" class="headerlink" title="&#x4E00;&#x3001;&#x538B;&#x6D4B;&#x80CC;&#x666F;"></a>&#x4E00;&#x3001;&#x538B;&#x6D4B;&#x80CC;&#x666F;</h2><blockquote>
+<p>&#x4EE5;&#x524D;&#xFF1A;&#x672A;&#x51FA;&#x793E;&#x4F1A;&#x4E4B;&#x524D;&#x7ECF;&#x5E38;&#x7528;AB&#x5DE5;&#x5177;&#x6765;&#x538B;&#x6D4B;&#x81EA;&#x5DF1;&#x7684; nginx &#x6B22;&#x8FCE;&#x9875;&#x9762;&#xFF0C;&#x770B;&#x7740;&#x670D;&#x52A1;&#x5668;&#x7684;&#x8D44;&#x6E90;&#x4ECE;20%&#x5230;100%&#xFF0C;&#x53D1;&#x73B0;&#x539F;&#x6765;&#x4E00;&#x4E2A;&#x5F00;&#x6E90;&#x7684;&#x5DE5;&#x5177;&#x90FD;&#x53EF;&#x4EE5;&#x628A;&#x4E00;&#x53F0;4C8G&#x7684;&#x865A;&#x62DF;&#x673A;&#x538B;&#x7206;&#x6EE1;&#xFF0C;&#x7136;&#x540E;&#x5C31;&#x9677;&#x5165;&#x6C89;&#x601D;&#xFF0C;&#x4F4E;&#x6210;&#x672C;&#x7684;&#x538B;&#x6D4B;&#x90FD;&#x53EF;&#x4EE5;&#x9020;&#x6210;&#x4E00;&#x53F0;&#x865A;&#x62DF;&#x673A;&#x7684;&#x8D44;&#x6E90;&#x6EE1;&#x8D1F;&#x8F7D;&#xFF0C;&#x800C;&#x4E14;&#x8FD8;&#x662F;&#x4E2A;&#x9759;&#x6001;&#x9875;&#x9762;&#xFF0C;&#x90A3;&#x5982;&#x679C;&#x53D1;&#x751F;&#x5728;&#x4F01;&#x4E1A;&#x8EAB;&#x4E0A;&#x4F1A;&#x5982;&#x4F55;&#xFF1F;&#x9020;&#x6210;&#x7684;&#x635F;&#x5931;&#x8FDC;&#x8FDC;&#x9AD8;&#x4E8E;&#x538B;&#x6D4B;&#x65B9;&#xFF0C;&#x540E;&#x679C;&#x4E0D;&#x6562;&#x60F3;&#x8C61;&#x3002;</p>
+</blockquote>
+<blockquote>
+<p>&#x73B0;&#x5728;&#xFF1A;&#x6211;&#x627F;&#x8BA4;&#x4EE5;&#x524D;&#x592A;&#x5929;&#x771F;&#x4E86;&#xFF0C;&#x65E2;&#x7136;&#x6709;&#x538B;&#x6D4B;&#x65B9;&#xFF0C;&#x90A3;&#x80AF;&#x5B9A;&#x6709;&#x9632;&#x5FA1;&#x65B9;&#xFF0C;&#x9047;&#x5230;&#x6076;&#x610F;&#x538B;&#x6D4B;&#x4ED6;&#x4EBA;&#x7F51;&#x7AD9;&#x7684;&#xFF0C;&#x76F4;&#x63A5;&#x901A;&#x8FC7;&#x5404;&#x79CD;&#x5168;&#x5BB6;&#x6876;&#x62C9;&#x9ED1;&#x3001;&#x5C4F;&#x853D;&#x6389;&#x5C31;&#x597D;&#x4E86;&#x3002;&#x90A3;&#x5BF9;&#x4E8E;&#x73B0;&#x5728;&#x4F01;&#x4E1A;&#x6765;&#x8BF4;&#xFF0C;&#x5404;&#x4EBA;&#x89C9;&#x5F97;&#x6700;&#x5927;&#x7684;&#x4EF7;&#x503C;&#x5C31;&#x662F;&#x63A2;&#x6D4B;&#x8D44;&#x6E90;&#x6027;&#x80FD;&#x3001;&#x8D44;&#x6E90;&#x5BB9;&#x91CF;&#x5408;&#x7406;&#x89C4;&#x5212;&#x3001;&#x589E;&#x5F3A;&#x4E1A;&#x52A1;&#x7A33;&#x5B9A;SLA&#x3001;&#x51CF;&#x5C11;&#x4E8B;&#x6545;&#x53D1;&#x751F;&#xFF0C;&#x8FD9;&#x4E2A;&#x5BF9;&#x4E8E;&#x6D4B;&#x8BD5;&#x8FD8;&#x662F;&#x8FD0;&#x7EF4;&#x6765;&#x8BF4;&#x90FD;&#x662F;&#x5929;&#x5927;&#x7684;&#x597D;&#x4E8B;&#xFF0C;&#x4E5F;&#x662F;&#x4EF7;&#x503C;&#x7684;&#x4F53;&#x73B0;&#x3002;</p>
+</blockquote>
+<blockquote>
+<p>&#x672A;&#x6765;&#xFF1A;&#x538B;&#x6D4B;&#x7684;&#x666E;&#x9002;&#x6027;&#xFF0C;&#x5BF9;&#x4F01;&#x4E1A;&#x5E26;&#x6765;&#x7684;&#x4EF7;&#x503C;&#x4E0D;&#x6B62;&#x63A2;&#x6D4B;&#x8D44;&#x6E90;&#x6027;&#x80FD;&#x3001;&#x8D44;&#x6E90;&#x5BB9;&#x91CF;&#x5408;&#x7406;&#x89C4;&#x5212;&#xFF0C;&#x8FD8;&#x6709;&#x6280;&#x672F;&#x67B6;&#x6784;&#x5347;&#x7EA7;&#x9A8C;&#x8BC1;&#x3001;&#x4E1A;&#x52A1;&#x7CFB;&#x7EDF;&#x4E0A;&#x7EBF;&#x6D4B;&#x8BD5;&#x3001;&#x4E1A;&#x52A1;&#x5CF0;&#x503C;&#x7A33;&#x5B9A;&#x6027;&#x6D4B;&#x8BD5;&#x7B49;&#x7B49;&#xFF0C;&#x901A;&#x8FC7;&#x538B;&#x6D4B;&#x6E05;&#x695A;&#x8D44;&#x6E90;&#x7684;&#x80FD;&#x529B;&#xFF0C;&#x964D;&#x4F4E;&#x76F2;&#x76EE;&#x9884;&#x4F30;&#x7684;&#x98CE;&#x9669;&#xFF0C;&#x63D0;&#x9AD8;&#x670D;&#x52A1;&#x7684;&#x53EF;&#x7528;&#x6027;&#x548C;&#x7A33;&#x5B9A;&#x6027;&#x3002;</p>
+</blockquote>
+<p><strong>&#x6240;&#x4EE5;&#x4E3A;&#x4EC0;&#x4E48;&#x8981;&#x505A;&#x538B;&#x6D4B;&#xFF1F;</strong><br>&#x538B;&#x6D4B;&#x7684;&#x76EE;&#x7684;&#x5C31;&#x662F;&#x901A;&#x8FC7;&#x538B;&#x6D4B;(&#x6A21;&#x62DF;&#x771F;&#x5B9E;&#x7528;&#x6237;&#x7684;&#x884C;&#x4E3A;)&#xFF0C;&#x6D4B;&#x7B97;&#x51FA;&#x673A;&#x5668;&#x7684;&#x6027;&#x80FD;(&#x5355;&#x53F0;&#x673A;&#x5668;&#x7684;QPS)&#xFF0C;&#x4ECE;&#x800C;&#x63A8;&#x7B97;&#x51FA;&#x7CFB;&#x7EDF;&#x5728;&#x627F;&#x53D7;&#x6307;&#x5B9A;&#x7528;&#x6237;&#x6570;(100W)&#x65F6;&#xFF0C;&#x9700;&#x8981;&#x591A;&#x5C11;&#x673A;&#x5668;&#x80FD;&#x652F;&#x6491;&#x5F97;&#x4F4F;&#x538B;&#x6D4B;&#x662F;&#x5728;&#x4E0A;&#x7EBF;&#x524D;&#x4E3A;&#x4E86;&#x5E94;&#x5BF9;&#x672A;&#x6765;&#x53EF;&#x80FD;&#x8FBE;&#x5230;&#x7684;&#x7528;&#x6237;&#x6570;&#x91CF;&#x7684;&#x4E00;&#x6B21;&#x9884;&#x4F30;(&#x63D0;&#x524D;&#x6F14;&#x7EC3;)&#xFF0C;&#x538B;&#x6D4B;&#x4EE5;&#x540E;&#x901A;&#x8FC7;&#x4F18;&#x5316;&#x7A0B;&#x5E8F;&#x7684;&#x6027;&#x80FD;&#x6216;&#x51C6;&#x5907;&#x5145;&#x8DB3;&#x7684;&#x673A;&#x5668;&#xFF0C;&#x6765;&#x4FDD;&#x8BC1;&#x7528;&#x6237;&#x7684;&#x4F53;&#x9A8C;&#x3002;</p>
+<h2 id="&#x4E8C;&#x3001;&#x538B;&#x6D4B;&#x5DE5;&#x5177;"><a href="#&#x4E8C;&#x3001;&#x538B;&#x6D4B;&#x5DE5;&#x5177;" class="headerlink" title="&#x4E8C;&#x3001;&#x538B;&#x6D4B;&#x5DE5;&#x5177;"></a>&#x4E8C;&#x3001;&#x538B;&#x6D4B;&#x5DE5;&#x5177;</h2><ol>
+<li>&#x5DE5;&#x5177;&#x8BF4;&#x660E;</li>
+</ol>
+<p>AB&#xFF1A;ApacheBench &#x662F; Apache&#x670D;&#x52A1;&#x5668;&#x81EA;&#x5E26;&#x7684;&#x4E00;&#x4E2A;web&#x538B;&#x529B;&#x6D4B;&#x8BD5;&#x5DE5;&#x5177;&#xFF0C;&#x7B80;&#x79F0;ab&#x3002;ab&#x53C8;&#x662F;&#x4E00;&#x4E2A;&#x547D;&#x4EE4;&#x884C;&#x5DE5;&#x5177;&#xFF0C;&#x5BF9;&#x53D1;&#x8D77;&#x8D1F;&#x8F7D;&#x7684;&#x672C;&#x673A;&#x8981;&#x6C42;&#x5F88;&#x4F4E;&#xFF0C;&#x6839;&#x636E;ab&#x547D;&#x4EE4;&#x53EF;&#x4EE5;&#x521B;&#x5EFA;&#x5F88;&#x591A;&#x7684;&#x5E76;&#x53D1;&#x8BBF;&#x95EE;&#x7EBF;&#x7A0B;&#xFF0C;&#x6A21;&#x62DF;&#x591A;&#x4E2A;&#x8BBF;&#x95EE;&#x8005;&#x540C;&#x65F6;&#x5BF9;&#x67D0;&#x4E00;URL&#x5730;&#x5740;&#x8FDB;&#x884C;&#x8BBF;&#x95EE;&#xFF0C;&#x56E0;&#x6B64;&#x53EF;&#x4EE5;&#x7528;&#x6765;&#x6D4B;&#x8BD5;&#x76EE;&#x6807;&#x670D;&#x52A1;&#x5668;&#x7684;&#x8D1F;&#x8F7D;&#x538B;&#x529B;&#x3002;&#x603B;&#x7684;&#x6765;&#x8BF4;ab&#x5DE5;&#x5177;&#x5C0F;&#x5DE7;&#x7B80;&#x5355;&#x3001;&#x975E;&#x5E38;&#x8F7B;&#x91CF;&#x5316;&#x7684;&#x538B;&#x6D4B;&#x5DE5;&#x5177;&#xFF0C;&#x4E0A;&#x624B;&#x5B66;&#x4E60;&#x8F83;&#x5FEB;&#xFF0C;&#x53EF;&#x4EE5;&#x63D0;&#x4F9B;&#x9700;&#x8981;&#x7684;&#x57FA;&#x672C;&#x6027;&#x80FD;&#x6307;&#x6807;&#xFF0C;&#x4F46;&#x662F;&#x6CA1;&#x6709;&#x56FE;&#x5F62;&#x5316;&#x7ED3;&#x679C;&#xFF0C;&#x4E0D;&#x80FD;&#x76D1;&#x63A7;&#x3002;</p>
+<p>Jmeter&#xFF1A;Apache JMeter&#x662F;Apache&#x7EC4;&#x7EC7;&#x5F00;&#x53D1;&#x7684;&#x57FA;&#x4E8E;Java&#x7684;&#x538B;&#x529B;&#x6D4B;&#x8BD5;&#x5DE5;&#x5177;&#x3002;&#x7528;&#x4E8E;&#x5BF9;&#x8F6F;&#x4EF6;&#x505A;&#x538B;&#x529B;&#x6D4B;&#x8BD5;&#xFF0C;&#x5B83;&#x6700;&#x521D;&#x88AB;&#x8BBE;&#x8BA1;&#x7528;&#x4E8E;Web&#x5E94;&#x7528;&#x6D4B;&#x8BD5;&#xFF0C;&#x4F46;&#x540E;&#x6765;&#x6269;&#x5C55;&#x5230;&#x5176;&#x4ED6;&#x6D4B;&#x8BD5;&#x9886;&#x57DF;&#x3002;JMeter&#x80FD;&#x591F;&#x5BF9;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x505A;&#x529F;&#x80FD;/&#x56DE;&#x5F52;&#x6D4B;&#x8BD5;&#xFF0C;&#x901A;&#x8FC7;&#x521B;&#x5EFA;&#x5E26;&#x6709;&#x65AD;&#x8A00;&#x7684;&#x811A;&#x672C;&#x6765;&#x9A8C;&#x8BC1;&#x4F60;&#x7684;&#x7A0B;&#x5E8F;&#x8FD4;&#x56DE;&#x4E86;&#x4F60;&#x671F;&#x671B;&#x7684;&#x7ED3;&#x679C;&#x3002;</p>
+<p>LoadRunner&#xFF1A;LR&#x662F;HP&#x63A8;&#x51FA;&#x7684;&#x4E00;&#x79CD;&#x9884;&#x6D4B;&#x7CFB;&#x7EDF;&#x884C;&#x4E3A;&#x548C;&#x6027;&#x80FD;&#x7684;&#x8D1F;&#x8F7D;&#x6D4B;&#x8BD5;&#x5DE5;&#x5177;&#xFF0C;&#x901A;&#x8FC7;&#x4EE5;&#x6A21;&#x62DF;&#x4E0A;&#x5343;&#x4E07;&#x7528;&#x6237;&#x5B9E;&#x65BD;&#x5E76;&#x53D1;&#x8D1F;&#x8F7D;&#x53CA;&#x5B9E;&#x65F6;&#x6027;&#x80FD;&#x76D1;&#x6D4B;&#x7684;&#x65B9;&#x5F0F;&#x6765;&#x786E;&#x8BA4;&#x548C;&#x67E5;&#x627E;&#x95EE;&#x9898;&#xFF0C;&#x5206;&#x4E3A;Windows &#x7248;&#x672C;&#x548C;Unix &#x7248;&#x672C;&#x3002;LoadRunner&#x80FD;&#x591F;&#x5BF9;&#x6574;&#x4E2A;&#x4F01;&#x4E1A;&#x67B6;&#x6784;&#x8FDB;&#x884C;&#x6D4B;&#x8BD5;&#x3002;&#x4F01;&#x4E1A;&#x4E5F;&#x80FD;&#x6700;&#x5927;&#x9650;&#x5EA6;&#x5730;&#x7F29;&#x77ED;&#x6D4B;&#x8BD5;&#x65F6;&#x95F4;&#xFF0C;&#x4F18;&#x5316;&#x6027;&#x80FD;&#x548C;&#x52A0;&#x901F;&#x5E94;&#x7528;&#x7CFB;&#x7EDF;&#x7684;&#x53D1;&#x5E03;&#x5468;&#x671F;&#x3002;&#x4E5F;&#x80FD;&#x9884;&#x6D4B;&#x7CFB;&#x7EDF;&#x884C;&#x4E3A;&#x5E76;&#x4F18;&#x5316;&#x7CFB;&#x7EDF;&#x6027;&#x80FD;&#x3002;&#x5546;&#x4E1A;&#x7248;&#x652F;&#x6301;&#x5F55;&#x5C4F;+&#x811A;&#x672C;&#x7684;&#x65B9;&#x5F0F;&#x3002;</p>
+<p>&#x963F;&#x91CC;&#x4E91;PTS&#xFF1A;PTS&#xFF08;Performance Testing Service&#xFF09;&#x662F;&#x9762;&#x5411;&#x6240;&#x6709;&#x6280;&#x672F;&#x80CC;&#x666F;&#x4EBA;&#x5458;&#x7684;&#x4E91;&#x5316;&#x6D4B;&#x8BD5;&#x5DE5;&#x5177;&#x3002;&#x6709;&#x522B;&#x4E8E;&#x4F20;&#x7EDF;&#x5DE5;&#x5177;&#x7684;&#x7E41;&#x590D;&#xFF0C;PTS&#x4EE5;&#x4E92;&#x8054;&#x7F51;&#x5316;&#x7684;&#x4EA4;&#x4E92;&#xFF0C;&#x63D0;&#x4F9B;&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x3001;API&#x8C03;&#x8BD5;&#x548C;&#x76D1;&#x6D4B;&#x7B49;&#x591A;&#x79CD;&#x80FD;&#x529B;&#x3002;&#x81EA;&#x7814;&#x548C;&#x9002;&#x914D;&#x5F00;&#x6E90;&#x7684;&#x529F;&#x80FD;&#x90FD;&#x53EF;&#x4EE5;&#x8F7B;&#x677E;&#x6A21;&#x62DF;&#x4EFB;&#x610F;&#x4F53;&#x91CF;&#x7684;&#x7528;&#x6237;&#x8BBF;&#x95EE;&#x4E1A;&#x52A1;&#x7684;&#x573A;&#x666F;&#xFF0C;&#x4EFB;&#x52A1;&#x968F;&#x65F6;&#x53D1;&#x8D77;&#xFF0C;&#x514D;&#x53BB;&#x7E41;&#x7410;&#x7684;&#x642D;&#x5EFA;&#x548C;&#x7EF4;&#x62A4;&#x6210;&#x672C;&#x3002;&#x66F4;&#x662F;&#x7D27;&#x5BC6;&#x7ED3;&#x5408;&#x76D1;&#x63A7;&#x3001;&#x6D41;&#x63A7;&#x7B49;&#x5144;&#x5F1F;&#x4EA7;&#x54C1;&#x63D0;&#x4F9B;&#x4E00;&#x7AD9;&#x5F0F;&#x9AD8;&#x53EF;&#x7528;&#x80FD;&#x529B;&#xFF0C;&#x9AD8;&#x6548;&#x68C0;&#x9A8C;&#x548C;&#x7BA1;&#x7406;&#x4E1A;&#x52A1;&#x6027;&#x80FD;&#x3002;&#x5F53;&#x7136;&#x4E5F;&#x53EF;&#x4EE5;&#x6A21;&#x62DF;&#x9ED1;&#x5BA2;&#x5BF9;&#x4E1A;&#x52A1;&#x7CFB;&#x7EDF;&#x8FDB;&#x884C;&#x5168;&#x9762;&#x6DF1;&#x5165;&#x7684;&#x5B89;&#x5168;&#x6D4B;&#x8BD5;&#xFF0C;</p>
+<ol start="2">
+<li>&#x5E38;&#x7528;&#x5DE5;&#x5177;&#x5BF9;&#x6BD4;</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>&#x5BF9;&#x6BD4;&#x9879;\&#x538B;&#x6D4B;&#x5DE5;&#x5177;</th>
+<th>Apache Bench&#xFF08;ab&#xFF09;</th>
+<th>JMeter</th>
+<th>LoadRunner</th>
+<th>PTS</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&#x5B66;&#x4E60;&#x6210;&#x672C;</td>
+<td>&#x4F4E;</td>
+<td>&#x9AD8;</td>
+<td>&#x9AD8;</td>
+<td>&#x4F4E;</td>
+</tr>
+<tr>
+<td>&#x5B89;&#x88C5;&#x90E8;&#x7F72;&#x6210;&#x672C;</td>
+<td>&#x4F4E;</td>
+<td>&#x9AD8;</td>
+<td>&#x9AD8;</td>
+<td>&#x4F4E;</td>
+</tr>
+<tr>
+<td>&#x8D39;&#x7528;</td>
+<td>&#x65E0;</td>
+<td>&#x65E0;</td>
+<td>&#x6709;</td>
+<td>&#x6709;</td>
+</tr>
+<tr>
+<td>&#x591A;&#x534F;&#x8BAE;</td>
+<td>&#x5426;</td>
+<td>&#x662F;</td>
+<td>&#x662F;</td>
+<td>&#x662F;</td>
+</tr>
+<tr>
+<td>&#x56FE;&#x5F62;&#x5316;&#x5C55;&#x793A;</td>
+<td>&#x5426;</td>
+<td>&#x662F;</td>
+<td>&#x662F;</td>
+<td>&#x662F;</td>
+</tr>
+<tr>
+<td>TPS&#x6A21;&#x5F0F;</td>
+<td>&#x5426;</td>
+<td>&#x5426;</td>
+<td>&#x5426;</td>
+<td>&#x662F;</td>
+</tr>
+<tr>
+<td>&#x538B;&#x6D4B;&#x94FE;&#x8DEF;&#x3001;&#x573A;&#x666F;&#x7F16;&#x6392;&#x7BA1;&#x7406;</td>
+<td>&#x5426;</td>
+<td>&#x662F;</td>
+<td>&#x662F;</td>
+<td>&#x662F;</td>
+</tr>
+<tr>
+<td>&#x573A;&#x666F;&#x5F55;&#x5236;</td>
+<td>&#x5426;</td>
+<td>&#x662F;</td>
+<td>&#x662F;</td>
+<td>&#x662F;</td>
+</tr>
+<tr>
+<td>&#x751F;&#x6001;&#x73AF;&#x5883;&#x5F3A;&#x5F31;</td>
+<td>&#x5F31;</td>
+<td>&#x5F31;</td>
+<td>&#x5F31;</td>
+<td>&#x5F3A;</td>
+</tr>
+<tr>
+<td>&#x76D1;&#x63A7;&#x6307;&#x6807;&#x662F;&#x5426;&#x5B8C;&#x5907;</td>
+<td>&#x5426;</td>
+<td>&#x5426;</td>
+<td>&#x5426;</td>
+<td>&#x662F;</td>
+</tr>
+<tr>
+<td>&#x6D41;&#x91CF;&#x5730;&#x57DF;&#x5B9A;&#x5236;</td>
+<td>&#x5426;</td>
+<td>&#x5426;</td>
+<td>&#x5426;</td>
+<td>&#x662F;</td>
+</tr>
+</tbody>
+</table>
+<ol start="3">
+<li>&#x538B;&#x6D4B;&#x6807;&#x51C6;</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>&#x538B;&#x6D4B;&#x7C7B;&#x578B;</th>
+<th>&#x89E3;&#x91CA;&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&#x538B;&#x529B;&#x6D4B;&#x8BD5;(Stress Testing)</td>
+<td>&#x4E5F;&#x79F0;&#x4E4B;&#x4E3A;&#x5F3A;&#x5EA6;&#x6D4B;&#x8BD5;&#xFF0C;&#x6D4B;&#x8BD5;&#x4E00;&#x4E2A;&#x7CFB;&#x7EDF;&#x7684;&#x6700;&#x5927;&#x6297;&#x538B;&#x80FD;&#x529B;&#xFF0C;&#x5728;&#x5F3A;&#x8D1F;&#x8F7D;(&#x5927;&#x6570;&#x636E;&#x3001;&#x9AD8;&#x5E76;&#x53D1;)&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x6D4B;&#x8BD5;&#x7CFB;&#x7EDF;&#x6240;&#x80FD;&#x627F;&#x53D7;&#x7684;&#x6700;&#x5927;&#x538B;&#x529B;&#xFF0C;&#x9884;&#x4F30;&#x7CFB;&#x7EDF;&#x7684;&#x74F6;&#x9888;</td>
+</tr>
+<tr>
+<td>&#x5E76;&#x53D1;&#x6D4B;&#x8BD5;(Concurrency Testing)</td>
+<td>&#x901A;&#x8FC7;&#x6A21;&#x62DF;&#x5F88;&#x591A;&#x7528;&#x6237;&#x540C;&#x4E00;&#x65F6;&#x523B;&#x8BBF;&#x95EE;&#x7CFB;&#x7EDF;&#x6216;&#x5BF9;&#x7CFB;&#x7EDF;&#x67D0;&#x4E00;&#x4E2A;&#x529F;&#x80FD;&#x8FDB;&#x884C;&#x64CD;&#x4F5C;&#xFF0C;&#x6765;&#x6D4B;&#x8BD5;&#x7CFB;&#x7EDF;&#x7684;&#x6027;&#x80FD;&#xFF0C;&#x4ECE;&#x4E2D;&#x53D1;&#x73B0;&#x95EE;&#x9898;(&#x5E76;&#x53D1;&#x8BFB;&#x5199;&#x3001;&#x7EBF;&#x7A0B;&#x63A7;&#x5236;&#x3001;&#x8D44;&#x6E90;&#x4E89;&#x62A2;)</td>
+</tr>
+<tr>
+<td>&#x8010;&#x4E45;&#x6027;&#x6D4B;&#x8BD5;(Configuration Testing)</td>
+<td>&#x901A;&#x8FC7;&#x5BF9;&#x7CFB;&#x7EDF;&#x5728;&#x5927;&#x8D1F;&#x8377;&#x7684;&#x6761;&#x4EF6;&#x4E0B;&#x957F;&#x65F6;&#x95F4;&#x8FD0;&#x884C;&#xFF0C;&#x6D4B;&#x8BD5;&#x7CFB;&#x7EDF;&#x3001;&#x673A;&#x5668;&#x7684;&#x957F;&#x65F6;&#x95F4;&#x8FD0;&#x884C;&#x4E0B;&#x7684;&#x72B6;&#x51B5;,&#x4ECE;&#x4E2D;&#x53D1;&#x73B0;&#x95EE;&#x9898;(&#x5185;&#x5B58;&#x6CC4;&#x6F0F;&#x3001;&#x6570;&#x636E;&#x5E93;&#x8FDE;&#x63A5;&#x6C60;&#x4E0D;&#x91CA;&#x653E;&#x3001;&#x8D44;&#x6E90;&#x4E0D;&#x56DE;&#x6536;)</td>
+</tr>
+</tbody>
+</table>
+<p>&#x7CFB;&#x7EDF;&#x6027;&#x80FD;&#x6307;&#x6807;</p>
+<p>3.1 &#x4EA4;&#x6613;&#x54CD;&#x5E94;&#x65F6;&#x95F4;  </p>
+<blockquote>
+<p>&#x54CD;&#x5E94;&#x65F6;&#x95F4;&#x6307;&#x7528;&#x6237;&#x4ECE;&#x5BA2;&#x6237;&#x7AEF;&#x53D1;&#x8D77;&#x4E00;&#x4E2A;&#x8BF7;&#x6C42;&#x5F00;&#x59CB;&#xFF0C;&#x5230;&#x5BA2;&#x6237;&#x7AEF;&#x63A5;&#x6536;&#x5230;&#x4ECE;&#x670D;&#x52A1;&#x5668;&#x7AEF;&#x8FD4;&#x56DE;&#x7684;&#x54CD;&#x5E94;&#x7ED3;&#x675F;&#xFF0C;&#x6574;&#x4E2A;&#x8FC7;&#x7A0B;&#x6240;&#x8017;&#x8D39;&#x7684;&#x65F6;&#x95F4;&#x3002;&#x5728;&#x6027;&#x80FD;&#x68C0;&#x6D4B;&#x4E2D;&#x4E00;&#x822C;&#x4EE5;&#x538B;&#x529B;&#x53D1;&#x8D77;&#x7AEF;&#x81F3;&#x88AB;&#x538B;&#x6D4B;&#x670D;&#x52A1;&#x5668;&#x8FD4;&#x56DE;&#x5904;&#x7406;&#x7ED3;&#x679C;&#x7684;&#x65F6;&#x95F4;&#x4E3A;&#x8BA1;&#x91CF;&#xFF0C;&#x5355;&#x4F4D;&#x4E00;&#x822C;&#x4E3A;&#x79D2;&#x6216;&#x6BEB;&#x79D2;&#x3002;&#x5E73;&#x5747;&#x54CD;&#x5E94;&#x65F6;&#x95F4;&#x6307;&#x7CFB;&#x7EDF;&#x7A33;&#x5B9A;&#x8FD0;&#x884C;&#x65F6;&#x95F4;&#x6BB5;&#x5185;&#xFF0C;&#x540C;&#x4E00;&#x4EA4;&#x6613;&#x7684;&#x5E73;&#x5747;&#x54CD;&#x5E94;&#x65F6;&#x95F4;&#x3002;&#x4E00;&#x822C;&#x800C;&#x8A00;&#xFF0C;&#x4EA4;&#x6613;&#x54CD;&#x5E94;&#x65F6;&#x95F4;&#x5747;&#x6307;&#x5E73;&#x5747;&#x54CD;&#x5E94;&#x65F6;&#x95F4;&#x3002; &#x5E73;&#x5747;&#x54CD;&#x5E94;&#x65F6;&#x95F4;&#x6307;&#x6807;&#x503C;&#x5E94;&#x6839;&#x636E;&#x4E0D;&#x540C;&#x7684;&#x4EA4;&#x6613;&#x5206;&#x522B;&#x8BBE;&#x5B9A;&#xFF0C;&#x4E00;&#x822C;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x5206;&#x4E3A;&#x590D;&#x6742;&#x4EA4;&#x6613;&#x54CD;&#x5E94;&#x65F6;&#x95F4;&#x3001;&#x7B80;&#x5355;&#x4EA4;&#x6613;&#x54CD;&#x5E94;&#x65F6;&#x95F4;&#x3001;&#x7279;&#x6B8A;&#x4EA4;&#x6613;&#x54CD;&#x5E94;&#x65F6;&#x95F4;&#x3002;&#x5176;&#x4E2D;&#xFF0C;&#x7279;&#x6B8A;&#x4EA4;&#x6613;&#x54CD;&#x5E94;&#x65F6;&#x95F4;&#x7684;&#x8BBE;&#x5B9A;&#x5FC5;&#x987B;&#x660E;&#x786E;&#x8BE5;&#x4EA4;&#x6613;&#x5728;&#x54CD;&#x5E94;&#x65F6;&#x95F4;&#x65B9;&#x9762;&#x7684;&#x7279;&#x6B8A;&#x6027;&#x3002;</p>
+</blockquote>
+<p>Response Time: &#x7B80;&#x79F0;RT</p>
+<blockquote>
+<p>&#x4E0D;&#x540C;&#x884C;&#x4E1A;&#x4E0D;&#x540C;&#x4E1A;&#x52A1;&#x53EF;&#x63A5;&#x53D7;&#x7684;&#x54CD;&#x5E94;&#x65F6;&#x95F4;&#x662F;&#x4E0D;&#x540C;&#x7684;&#xFF0C;&#x4E00;&#x822C;&#x60C5;&#x51B5;&#xFF0C;&#x5BF9;&#x4E8E;&#x5728;&#x7EBF;&#x5B9E;&#x65F6;&#x4EA4;&#x6613;&#xFF1A;<br>&#x4E92;&#x8054;&#x7F51;&#x4F01;&#x4E1A;&#xFF1A;500&#x6BEB;&#x79D2;&#x4EE5;&#x4E0B;&#xFF0C;&#x4F8B;&#x5982;&#x6DD8;&#x5B9D;&#x4E1A;&#x52A1;10&#x6BEB;&#x79D2;&#x5DE6;&#x53F3;&#x3002;<br>&#x91D1;&#x878D;&#x4F01;&#x4E1A;&#xFF1A;1&#x79D2;&#x4EE5;&#x4E0B;&#x4E3A;&#x4F73;&#xFF0C;&#x90E8;&#x5206;&#x590D;&#x6742;&#x4E1A;&#x52A1;3&#x79D2;&#x4EE5;&#x4E0B;&#x3002;<br>&#x4FDD;&#x9669;&#x4F01;&#x4E1A;&#xFF1A;3&#x79D2;&#x4EE5;&#x4E0B;&#x4E3A;&#x4F73;&#x3002;<br>&#x5236;&#x9020;&#x4E1A;&#xFF1A;5&#x79D2;&#x4EE5;&#x4E0B;&#x4E3A;&#x4F73;&#x3002;</p>
+</blockquote>
+<p>&#x5BF9;&#x4E8E;&#x6279;&#x91CF;&#x4EA4;&#x6613;&#xFF1A;</p>
+<blockquote>
+<p>&#x65F6;&#x95F4;&#x7A97;&#x53E3;&#xFF1A;&#x5373;&#x6574;&#x4E2A;&#x538B;&#x6D4B;&#x8FC7;&#x7A0B;&#x7684;&#x65F6;&#x95F4;&#xFF0C;&#x4E0D;&#x540C;&#x6570;&#x636E;&#x91CF;&#x5219;&#x65F6;&#x95F4;&#x4E0D;&#x4E00;&#x6837;&#xFF0C;&#x4F8B;&#x5982;&#x53CC;11&#x548C;99&#x5927;&#x4FC3;&#xFF0C;&#x6570;&#x636E;&#x91CF;&#x7EA7;&#x4E0D;&#x4E00;&#x6837;&#x5219;&#x65F6;&#x95F4;&#x7A97;&#x53E3;&#x4E0D;&#x540C;&#x3002;&#x5927;&#x6570;&#x636E;&#x91CF;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;2&#x5C0F;&#x65F6;&#x5185;&#x53EF;&#x5B8C;&#x6210;&#x538B;&#x6D4B;&#x3002;</p>
+</blockquote>
+<p>3.2 &#x7CFB;&#x7EDF;&#x5904;&#x7406;&#x80FD;&#x529B;</p>
+<blockquote>
+<p>&#x7CFB;&#x7EDF;&#x5904;&#x7406;&#x80FD;&#x529B;&#x662F;&#x6307;&#x7CFB;&#x7EDF;&#x5728;&#x5229;&#x7528;&#x7CFB;&#x7EDF;&#x786C;&#x4EF6;&#x5E73;&#x53F0;&#x548C;&#x8F6F;&#x4EF6;&#x5E73;&#x53F0;&#x8FDB;&#x884C;&#x4FE1;&#x606F;&#x5904;&#x7406;&#x7684;&#x80FD;&#x529B;&#x3002; &#x7CFB;&#x7EDF;&#x5904;&#x7406;&#x80FD;&#x529B;&#x901A;&#x8FC7;&#x7CFB;&#x7EDF;&#x6BCF;&#x79D2;&#x949F;&#x80FD;&#x591F;&#x5904;&#x7406;&#x7684;&#x4EA4;&#x6613;&#x6570;&#x91CF;&#x6765;&#x8BC4;&#x4EF7;&#xFF0C;&#x4EA4;&#x6613;&#x6709;&#x4E24;&#x79CD;&#x7406;&#x89E3;&#xFF1A;&#x4E00;&#x662F;&#x4E1A;&#x52A1;&#x4EBA;&#x5458;&#x89D2;&#x5EA6;&#x7684;&#x4E00;&#x7B14;&#x4E1A;&#x52A1;&#x8FC7;&#x7A0B;&#xFF1B;&#x4E8C;&#x662F;&#x7CFB;&#x7EDF;&#x89D2;&#x5EA6;&#x7684;&#x4E00;&#x6B21;&#x4EA4;&#x6613;&#x7533;&#x8BF7;&#x548C;&#x54CD;&#x5E94;&#x8FC7;&#x7A0B;&#x3002;&#x524D;&#x8005;&#x79F0;&#x4E3A;&#x4E1A;&#x52A1;&#x4EA4;&#x6613;&#x8FC7;&#x7A0B;&#xFF0C;&#x540E;&#x8005;&#x79F0;&#x4E3A;&#x4E8B;&#x52A1;&#x3002;&#x4E24;&#x79CD;&#x4EA4;&#x6613;&#x6307;&#x6807;&#x90FD;&#x53EF;&#x4EE5;&#x8BC4;&#x4EF7;&#x5E94;&#x7528;&#x7CFB;&#x7EDF;&#x7684;&#x5904;&#x7406;&#x80FD;&#x529B;&#x3002;&#x4E00;&#x822C;&#x7684;&#x5EFA;&#x8BAE;&#x4E0E;&#x7CFB;&#x7EDF;&#x4EA4;&#x6613;&#x65E5;&#x5FD7;&#x4FDD;&#x6301;&#x4E00;&#x81F4;&#xFF0C;&#x4EE5;&#x4FBF;&#x4E8E;&#x7EDF;&#x8BA1;&#x4E1A;&#x52A1;&#x91CF;&#x6216;&#x8005;&#x4EA4;&#x6613;&#x91CF;&#x3002;&#x7CFB;&#x7EDF;&#x5904;&#x7406;&#x80FD;&#x529B;&#x6307;&#x6807;&#x662F;&#x6280;&#x672F;&#x6D4B;&#x8BD5;&#x6D3B;&#x52A8;&#x4E2D;&#x91CD;&#x8981;&#x6307;&#x6807;&#x3002;</p>
+</blockquote>
+<p>&#x4E00;&#x822C;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x7528;&#x4EE5;&#x4E0B;&#x6307;&#x6807;&#x6765;&#x5EA6;&#x91CF;&#xFF1A;</p>
+<blockquote>
+<p>HPS&#xFF08;Hits Per Second&#xFF09; &#xFF1A;&#x6BCF;&#x79D2;&#x70B9;&#x51FB;&#x6B21;&#x6570;&#xFF0C;&#x5355;&#x4F4D;&#x662F;&#x6B21;/&#x79D2;&#x3002;<br>TPS&#xFF08;Transaction per Second&#xFF09;&#xFF1A;&#x7CFB;&#x7EDF;&#x6BCF;&#x79D2;&#x5904;&#x7406;&#x4EA4;&#x6613;&#x6570;&#xFF0C;&#x5355;&#x4F4D;&#x662F;&#x7B14;/&#x79D2;&#x3002;<br>QPS&#xFF08;Query per Second&#xFF09;&#xFF1A;&#x7CFB;&#x7EDF;&#x6BCF;&#x79D2;&#x5904;&#x7406;&#x67E5;&#x8BE2;&#x6B21;&#x6570;&#xFF0C;&#x5355;&#x4F4D;&#x662F;&#x6B21;/&#x79D2;&#x3002; &#x5BF9;&#x4E8E;&#x4E92;&#x8054;&#x7F51;&#x4E1A;&#x52A1;&#x4E2D;&#xFF0C;&#x5982;&#x679C;&#x67D0;&#x4E9B;&#x4E1A;&#x52A1;&#x6709;&#x4E14;&#x4EC5;&#x6709;&#x4E00;&#x4E2A;&#x8BF7;&#x6C42;&#x8FDE;&#x63A5;&#xFF0C;&#x90A3;&#x4E48;TPS=QPS=HPS&#xFF0C;&#x4E00;&#x822C;&#x60C5;&#x51B5;&#x4E0B;&#x7528;TPS&#x6765;&#x8861;&#x91CF;&#x6574;&#x4E2A;&#x4E1A;&#x52A1;&#x6D41;&#x7A0B;&#xFF0C;&#x7528;QPS&#x6765;&#x8861;&#x91CF;&#x63A5;&#x53E3;&#x67E5;&#x8BE2;&#x6B21;&#x6570;&#xFF0C;&#x7528;HPS&#x6765;&#x8868;&#x793A;&#x5BF9;&#x670D;&#x52A1;&#x5668;&#x5355;&#x51FB;&#x8BF7;&#x6C42;&#x3002;  </p>
+</blockquote>
+<p>&#x6807;&#x51C6;</p>
+<blockquote>
+<p>&#x65E0;&#x8BBA;TPS&#x3001;QPS&#x3001;HPS&#xFF0C;&#x6B64;&#x6307;&#x6807;&#x662F;&#x8861;&#x91CF;&#x7CFB;&#x7EDF;&#x5904;&#x7406;&#x80FD;&#x529B;&#x975E;&#x5E38;&#x91CD;&#x8981;&#x7684;&#x6307;&#x6807;&#xFF0C;&#x8D8A;&#x5927;&#x8D8A;&#x597D;&#xFF0C;&#x6839;&#x636E;&#x7ECF;&#x9A8C;&#xFF0C;&#x4E00;&#x822C;&#x60C5;&#x51B5;&#x4E0B;&#xFF1A;<br>&#x91D1;&#x878D;&#x884C;&#x4E1A;&#xFF1A;1000 TPS&#x3002;<br>&#x4FDD;&#x9669;&#x884C;&#x4E1A;&#xFF1A;100000 TPS&#xFF0C;&#x4E0D;&#x5305;&#x62EC;&#x4E92;&#x8054;&#x7F51;&#x5316;&#x7684;&#x6D3B;&#x52A8;&#x3002;<br>&#x5236;&#x9020;&#x884C;&#x4E1A;&#xFF1A;10 TPS&#x3002;<br>&#x4E92;&#x8054;&#x7F51;&#x7535;&#x5B50;&#x5546;&#x52A1;&#xFF1A;1000000 TPS&#x3002;<br>&#x4E92;&#x8054;&#x7F51;&#x4E2D;&#x578B;&#x7F51;&#x7AD9;&#xFF1A;1000 TPS&#x3002;<br>&#x4E92;&#x8054;&#x7F51;&#x5C0F;&#x578B;&#x7F51;&#x7AD9;&#xFF1A;10000 TPS&#x3002;    </p>
+</blockquote>
+<p>3.3 &#x5E76;&#x53D1;&#x7528;&#x6237;</p>
+<blockquote>
+<p>&#x5E76;&#x53D1;&#x7528;&#x6237;&#x6570;&#x6307;&#x5728;&#x540C;&#x4E00;&#x65F6;&#x523B;&#x5185;&#xFF0C;&#x767B;&#x5F55;&#x7CFB;&#x7EDF;&#x5E76;&#x8FDB;&#x884C;&#x4E1A;&#x52A1;&#x64CD;&#x4F5C;&#x7684;&#x7528;&#x6237;&#x6570;&#x91CF;&#x3002; &#x5E76;&#x53D1;&#x7528;&#x6237;&#x6570;&#x5BF9;&#x4E8E;&#x957F;&#x8FDE;&#x63A5;&#x7CFB;&#x7EDF;&#x6765;&#x8BF4;&#x6700;&#x5927;&#x5E76;&#x53D1;&#x7528;&#x6237;&#x6570;&#x5373;&#x662F;&#x7CFB;&#x7EDF;&#x7684;&#x5E76;&#x53D1;&#x63A5;&#x5165;&#x80FD;&#x529B;&#x3002;&#x5BF9;&#x4E8E;&#x77ED;&#x8FDE;&#x63A5;&#x7CFB;&#x7EDF;&#x800C;&#x8A00;&#x6700;&#x5927;&#x5E76;&#x53D1;&#x7528;&#x6237;&#x6570;&#x5E76;&#x4E0D;&#x7B49;&#x4E8E;&#x7CFB;&#x7EDF;&#x7684;&#x5E76;&#x53D1;&#x63A5;&#x5165;&#x80FD;&#x529B;&#xFF0C;&#x800C;&#x662F;&#x4E0E;&#x7CFB;&#x7EDF;&#x67B6;&#x6784;&#x3001;&#x7CFB;&#x7EDF;&#x5904;&#x7406;&#x80FD;&#x529B;&#x7B49;&#x5404;&#x79CD;&#x60C5;&#x51B5;&#x76F8;&#x5173;&#x3002;&#x4F8B;&#x5982;&#x7CFB;&#x7EDF;&#x541E;&#x5410;&#x80FD;&#x529B;&#x5F88;&#x5F3A;&#xFF0C;&#x52A0;&#x4E0A;&#x77ED;&#x8FDE;&#x63A5;&#x4E00;&#x822C;&#x90FD;&#x6709;&#x8FDE;&#x63A5;&#x590D;&#x7528;&#xFF0C;&#x5F80;&#x5F80;&#x5E76;&#x53D1;&#x7528;&#x6237;&#x6570;&#x5927;&#x4E8E;&#x7CFB;&#x7EDF;&#x7684;&#x5E76;&#x53D1;&#x63A5;&#x5165;&#x8FDE;&#x63A5;&#x6570;&#x3002;&#x6240;&#x4EE5;&#x5BF9;&#x4E8E;&#x5927;&#x90E8;&#x5206;&#x77ED;&#x8FDE;&#x63A5;&#x7C7B;&#x578B;&#x7684;&#x7CFB;&#x7EDF;&#xFF0C;&#x541E;&#x5410;&#x91CF;&#x6A21;&#x5F0F;&#xFF08;RPS&#x6A21;&#x5F0F;&#xFF0C;Request Per Second&#xFF09;&#x6BD4;&#x8F83;&#x9002;&#x5408;&#xFF0C;&#x4E5F;&#x662F;&#x963F;&#x91CC;&#x7684;&#x6700;&#x4F73;&#x5B9E;&#x8DF5;&#xFF0C;PTS&#x652F;&#x6301;RPS&#x6A21;&#x5F0F;&#x7684;&#x538B;&#x6D4B;&#xFF0C;&#x541E;&#x5410;&#x91CF;&#x7684;&#x538B;&#x6D4B;&#x6784;&#x5EFA;&#x548C;&#x8861;&#x91CF;&#x4E00;&#x6B65;&#x5230;&#x4F4D;&#x3002; &#x5728;&#x6D4B;&#x8BD5;&#x4E2D;&#xFF0C;&#x91C7;&#x7528;&#x865A;&#x62DF;&#x7528;&#x6237;&#x6765;&#x6A21;&#x62DF;&#x73B0;&#x5B9E;&#x4E2D;&#x7528;&#x6237;&#x8FDB;&#x884C;&#x4E1A;&#x52A1;&#x64CD;&#x4F5C;&#x3002;</p>
+</blockquote>
+<p>Virtual User&#xFF1A;&#x7B80;&#x79F0;VU</p>
+<p>&#x6807;&#x51C6;</p>
+<blockquote>
+<p>&#x4E00;&#x822C;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x662F;&#x5C06;&#x7CFB;&#x7EDF;&#x5904;&#x7406;&#x80FD;&#x529B;&#x5BB9;&#x91CF;&#x6D4B;&#x51FA;&#x6765;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x6D4B;&#x8BD5;&#x5E76;&#x53D1;&#x7528;&#x6237;&#x6570;&#xFF0C;&#x9664;&#x4E86;&#x670D;&#x52A1;&#x5668;&#x957F;&#x8FDE;&#x63A5;&#x53EF;&#x80FD;&#x5F71;&#x54CD;&#x5E76;&#x53D1;&#x7528;&#x6237;&#x6570;&#x5916;&#xFF0C;&#x7CFB;&#x7EDF;&#x5904;&#x7406;&#x80FD;&#x529B;&#x4E0D;&#x53D7;&#x5E76;&#x53D1;&#x7528;&#x6237;&#x6570;&#x5F71;&#x54CD;&#xFF0C;&#x53EF;&#x4EE5;&#x7528;&#x6700;&#x5C0F;&#x7684;&#x7528;&#x6237;&#x6570;&#x5C06;&#x7CFB;&#x7EDF;&#x5904;&#x7406;&#x80FD;&#x529B;&#x5BB9;&#x91CF;&#x6D4B;&#x8BD5;&#x51FA;&#x6765;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x7528;&#x66F4;&#x591A;&#x7684;&#x7528;&#x6237;&#x5C06;&#x7CFB;&#x7EDF;&#x5904;&#x7406;&#x80FD;&#x529B;&#x5BB9;&#x91CF;&#x6D4B;&#x8BD5;&#x51FA;&#x6765;&#x3002;</p>
+</blockquote>
+<p>3.4 &#x9519;&#x8BEF;&#x7387;<br>&#x5B9A;&#x4E49;&#x53CA;&#x89E3;&#x91CA;</p>
+<blockquote>
+<p>&#x539F;&#x6587;<a href="https://www.leoheng.com/2021/06/25/%E5%B8%B8%E7%94%A8%E6%80%A7%E8%83%BD%E5%8E%8B%E6%B5%8B%E5%B7%A5%E5%85%B7%E5%AE%9E%E6%88%98%E6%80%BB%E7%BB%93/" target="_blank" rel="noopener">https://www.leoheng.com/2021/06/25/%E5%B8%B8%E7%94%A8%E6%80%A7%E8%83%BD%E5%8E%8B%E6%B5%8B%E5%B7%A5%E5%85%B7%E5%AE%9E%E6%88%98%E6%80%BB%E7%BB%93/</a></p>
+</blockquote>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2022-06-07T05:00:05.882Z" itemprop="dateUpdated">2022-06-07 13:00:05</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/d185f6ae/" target="_blank" rel="external">https://marnm.github.io/posts/d185f6ae/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='https://marnm.github.io'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/d185f6ae/&title=《web性能压测学习》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/d185f6ae/&title=《web性能压测学习》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/d185f6ae/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《web性能压测学习》 — Deops's blog&url=https://marnm.github.io/posts/d185f6ae/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/d185f6ae/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/c4bbfe69/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：Linux的日志切割
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/d53cba09/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：Linux常用性能分析工具">下一篇：Linux常用性能分析工具</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2022
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="https://marnm.github.io">marnm.github.io</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/d185f6ae/&title=《web性能压测学习》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/d185f6ae/&title=《web性能压测学习》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/d185f6ae/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《web性能压测学习》 — Deops's blog&url=https://marnm.github.io/posts/d185f6ae/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/d185f6ae/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABwElEQVR42u3aQY7DIAwF0Nz/0pkDjMp824FGo8eqUlP6yALZH64rHvdyfHommfPaMXBxccfcCeXTM5Nv/1g2Li7uQe56o/n9zLOUxICLi/t+7qRMwcXF/X/cT5taVKDMXwcuLu5Bbq8EWU+dFDobezVcXNwBNy9K9n3eku/i4uK2uHdx5A3MOjRp/jsuLu4RbrV8mbQ0yQKSAAUXF3c3t9rSrLek9QaXFzcPbGG4uLgDblJw9BaQhyN5uYOLi3ueO2lI8uUl6EKAgouLu4GbNyd5RLJGT2bGxcU9w332OkU1QGnOgIuLe4SbNz89en70Em1kuLi4x7nJo0kj9GzUgouLe56bxxnVADS5rlH9FS4u7hluL8Loxax585MfA+Pi4u7gJpcqqrj8RVQvc+Di4n6L+9Qha3WGQvODi4t7hDvZ1HqXMJIS5+r9JS4u7oB7F0fvCKR38QIXF/db3MmViPlVjCStaS4GFxd3zO1tXnmBkscrhXtkuLi4R7iTE5hm9NlrxnBxcV/JzRueSYtVTk1wcXFfwJ03RdXWCxcX9zy3eoy6LoB6xU1UYOHi4h7h9g4+kzB0Eog8kO/i4uJ2uD8h9rloQ2ZWuQAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>

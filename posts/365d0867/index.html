@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Linux路由配置——route | Deops&#39;s blog | 运维开发工程师</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="route&amp;#x663E;&amp;#x793A;&amp;#x5E76;&amp;#x8BBE;&amp;#x7F6E;Linux&amp;#x4E2D;&amp;#x9759;&amp;#x6001;&amp;#x8DEF;&amp;#x7531;&amp;#x8868; &amp;#x8865;&amp;#x5145;&amp;#x8BF4;&amp;#x660E;route&amp;#x547D;&amp;#x4EE4; &amp;#x7528;&amp;#x6765;&amp;#x663E;&amp;#x793A;&amp;#x5E76;&amp;#x8BBE">
+<meta name="keywords" content="Echo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux路由配置——route">
+<meta property="og:url" content="https://marnm.github.io/posts/365d0867/index.html">
+<meta property="og:site_name" content="Deops&#39;s blog">
+<meta property="og:description" content="route&amp;#x663E;&amp;#x793A;&amp;#x5E76;&amp;#x8BBE;&amp;#x7F6E;Linux&amp;#x4E2D;&amp;#x9759;&amp;#x6001;&amp;#x8DEF;&amp;#x7531;&amp;#x8868; &amp;#x8865;&amp;#x5145;&amp;#x8BF4;&amp;#x660E;route&amp;#x547D;&amp;#x4EE4; &amp;#x7528;&amp;#x6765;&amp;#x663E;&amp;#x793A;&amp;#x5E76;&amp;#x8BBE">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-06-07T05:20:19.826Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux路由配置——route">
+<meta name="twitter:description" content="route&amp;#x663E;&amp;#x793A;&amp;#x5E76;&amp;#x8BBE;&amp;#x7F6E;Linux&amp;#x4E2D;&amp;#x9759;&amp;#x6001;&amp;#x8DEF;&amp;#x7531;&amp;#x8868; &amp;#x8865;&amp;#x5145;&amp;#x8BF4;&amp;#x660E;route&amp;#x547D;&amp;#x4EE4; &amp;#x7528;&amp;#x6765;&amp;#x663E;&amp;#x793A;&amp;#x5E76;&amp;#x8BBE">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
+                <i class="icon icon-lg icon-tv tv"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Linux路由配置——route</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#route"><span class="post-toc-number">1.</span> <span class="post-toc-text">route</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#补充说明"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">补充说明</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#语法"><span class="post-toc-number">1.1.1.</span> <span class="post-toc-text">语法</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#选项"><span class="post-toc-number">1.1.2.</span> <span class="post-toc-text">选项</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#参数"><span class="post-toc-number">1.1.3.</span> <span class="post-toc-text">参数</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#实例"><span class="post-toc-number">1.1.4.</span> <span class="post-toc-text">实例</span></a></li></ol></li></ol></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-Linux路由配置——route" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Linux路由配置——route</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2022-06-07 12:40:40" datetime="2022-06-07T04:40:40.000Z" itemprop="datePublished">2022-06-07</time>
+
+            <br id="mybreak">
+            
+<script>
+	mybreak.style="display:none";
+</script>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">7</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="route"><a href="#route" class="headerlink" title="route"></a>route</h1><p>&#x663E;&#x793A;&#x5E76;&#x8BBE;&#x7F6E;Linux&#x4E2D;&#x9759;&#x6001;&#x8DEF;&#x7531;&#x8868;</p>
+<h2 id="&#x8865;&#x5145;&#x8BF4;&#x660E;"><a href="#&#x8865;&#x5145;&#x8BF4;&#x660E;" class="headerlink" title="&#x8865;&#x5145;&#x8BF4;&#x660E;"></a>&#x8865;&#x5145;&#x8BF4;&#x660E;</h2><p><strong>route&#x547D;&#x4EE4;</strong> &#x7528;&#x6765;&#x663E;&#x793A;&#x5E76;&#x8BBE;&#x7F6E;Linux&#x5185;&#x6838;&#x4E2D;&#x7684;&#x7F51;&#x7EDC;&#x8DEF;&#x7531;&#x8868;&#xFF0C;<strong>route&#x547D;&#x4EE4;&#x8BBE;&#x7F6E;&#x7684;&#x8DEF;&#x7531;&#x4E3B;&#x8981;&#x662F;&#x9759;&#x6001;&#x8DEF;&#x7531;</strong>&#x3002;&#x8981;&#x5B9E;&#x73B0;&#x4E24;&#x4E2A;&#x4E0D;&#x540C;&#x7684;&#x5B50;&#x7F51;&#x4E4B;&#x95F4;&#x7684;&#x901A;&#x4FE1;&#xFF0C;&#x9700;&#x8981;&#x4E00;&#x53F0;&#x8FDE;&#x63A5;&#x4E24;&#x4E2A;&#x7F51;&#x7EDC;&#x7684;&#x8DEF;&#x7531;&#x5668;&#xFF0C;&#x6216;&#x8005;&#x540C;&#x65F6;&#x4F4D;&#x4E8E;&#x4E24;&#x4E2A;&#x7F51;&#x7EDC;&#x7684;&#x7F51;&#x5173;&#x6765;&#x5B9E;&#x73B0;&#x3002;</p>
+<p>&#x5728;Linux&#x7CFB;&#x7EDF;&#x4E2D;&#x8BBE;&#x7F6E;&#x8DEF;&#x7531;&#x901A;&#x5E38;&#x662F;&#x4E3A;&#x4E86;&#x89E3;&#x51B3;&#x4EE5;&#x4E0B;&#x95EE;&#x9898;&#xFF1A;&#x8BE5;Linux&#x7CFB;&#x7EDF;&#x5728;&#x4E00;&#x4E2A;&#x5C40;&#x57DF;&#x7F51;&#x4E2D;&#xFF0C;&#x5C40;&#x57DF;&#x7F51;&#x4E2D;&#x6709;&#x4E00;&#x4E2A;&#x7F51;&#x5173;&#xFF0C;&#x80FD;&#x591F;&#x8BA9;&#x673A;&#x5668;&#x8BBF;&#x95EE;Internet&#xFF0C;&#x90A3;&#x4E48;&#x5C31;&#x9700;&#x8981;&#x5C06;&#x8FD9;&#x53F0;&#x673A;&#x5668;&#x7684;ip&#x5730;&#x5740;&#x8BBE;&#x7F6E;&#x4E3A;Linux&#x673A;&#x5668;&#x7684;&#x9ED8;&#x8BA4;&#x8DEF;&#x7531;&#x3002;&#x8981;&#x6CE8;&#x610F;&#x7684;&#x662F;&#xFF0C;&#x76F4;&#x63A5;&#x5728;&#x547D;&#x4EE4;&#x884C;&#x4E0B;&#x6267;&#x884C;route&#x547D;&#x4EE4;&#x6765;&#x6DFB;&#x52A0;&#x8DEF;&#x7531;&#xFF0C;&#x4E0D;&#x4F1A;&#x6C38;&#x4E45;&#x4FDD;&#x5B58;&#xFF0C;&#x5F53;&#x7F51;&#x5361;&#x91CD;&#x542F;&#x6216;&#x8005;&#x673A;&#x5668;&#x91CD;&#x542F;&#x4E4B;&#x540E;&#xFF0C;&#x8BE5;&#x8DEF;&#x7531;&#x5C31;&#x5931;&#x6548;&#x4E86;&#xFF1B;&#x53EF;&#x4EE5;&#x5728;<code>/etc/rc.local</code>&#x4E2D;&#x6DFB;&#x52A0;route&#x547D;&#x4EE4;&#x6765;&#x4FDD;&#x8BC1;&#x8BE5;&#x8DEF;&#x7531;&#x8BBE;&#x7F6E;&#x6C38;&#x4E45;&#x6709;&#x6548;&#x3002;</p>
+<h3 id="&#x8BED;&#x6CD5;"><a href="#&#x8BED;&#x6CD5;" class="headerlink" title="&#x8BED;&#x6CD5;"></a>&#x8BED;&#x6CD5;</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">route(&#x9009;&#x9879;)(&#x53C2;&#x6570;)</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="&#x9009;&#x9879;"><a href="#&#x9009;&#x9879;" class="headerlink" title="&#x9009;&#x9879;"></a>&#x9009;&#x9879;</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">-A&#xFF1A;&#x8BBE;&#x7F6E;&#x5730;&#x5740;&#x7C7B;&#x578B;&#xFF1B;</span><br><span class="line">-C&#xFF1A;&#x6253;&#x5370;&#x5C06;Linux&#x6838;&#x5FC3;&#x7684;&#x8DEF;&#x7531;&#x7F13;&#x5B58;&#xFF1B;</span><br><span class="line">-v&#xFF1A;&#x8BE6;&#x7EC6;&#x4FE1;&#x606F;&#x6A21;&#x5F0F;&#xFF1B;</span><br><span class="line">-n&#xFF1A;&#x4E0D;&#x6267;&#x884C;DNS&#x53CD;&#x5411;&#x67E5;&#x627E;&#xFF0C;&#x76F4;&#x63A5;&#x663E;&#x793A;&#x6570;&#x5B57;&#x5F62;&#x5F0F;&#x7684;IP&#x5730;&#x5740;&#xFF1B;</span><br><span class="line">-e&#xFF1A;netstat&#x683C;&#x5F0F;&#x663E;&#x793A;&#x8DEF;&#x7531;&#x8868;&#xFF1B;</span><br><span class="line">-net&#xFF1A;&#x5230;&#x4E00;&#x4E2A;&#x7F51;&#x7EDC;&#x7684;&#x8DEF;&#x7531;&#x8868;&#xFF1B;</span><br><span class="line">-host&#xFF1A;&#x5230;&#x4E00;&#x4E2A;&#x4E3B;&#x673A;&#x7684;&#x8DEF;&#x7531;&#x8868;&#x3002;</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="&#x53C2;&#x6570;"><a href="#&#x53C2;&#x6570;" class="headerlink" title="&#x53C2;&#x6570;"></a>&#x53C2;&#x6570;</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Add&#xFF1A;&#x589E;&#x52A0;&#x6307;&#x5B9A;&#x7684;&#x8DEF;&#x7531;&#x8BB0;&#x5F55;&#xFF1B;</span><br><span class="line">Del&#xFF1A;&#x5220;&#x9664;&#x6307;&#x5B9A;&#x7684;&#x8DEF;&#x7531;&#x8BB0;&#x5F55;&#xFF1B;</span><br><span class="line">Target&#xFF1A;&#x76EE;&#x7684;&#x7F51;&#x7EDC;&#x6216;&#x76EE;&#x7684;&#x4E3B;&#x673A;&#xFF1B;</span><br><span class="line">gw&#xFF1A;&#x8BBE;&#x7F6E;&#x9ED8;&#x8BA4;&#x7F51;&#x5173;&#xFF1B;</span><br><span class="line">mss&#xFF1A;&#x8BBE;&#x7F6E;TCP&#x7684;&#x6700;&#x5927;&#x533A;&#x5757;&#x957F;&#x5EA6;&#xFF08;MSS&#xFF09;&#xFF0C;&#x5355;&#x4F4D;MB&#xFF1B;</span><br><span class="line">window&#xFF1A;&#x6307;&#x5B9A;&#x901A;&#x8FC7;&#x8DEF;&#x7531;&#x8868;&#x7684;TCP&#x8FDE;&#x63A5;&#x7684;TCP&#x7A97;&#x53E3;&#x5927;&#x5C0F;&#xFF1B;</span><br><span class="line">dev&#xFF1A;&#x8DEF;&#x7531;&#x8BB0;&#x5F55;&#x6240;&#x8868;&#x793A;&#x7684;&#x7F51;&#x7EDC;&#x63A5;&#x53E3;&#x3002;</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="&#x5B9E;&#x4F8B;"><a href="#&#x5B9E;&#x4F8B;" class="headerlink" title="&#x5B9E;&#x4F8B;"></a>&#x5B9E;&#x4F8B;</h3><p> <strong>&#x663E;&#x793A;&#x5F53;&#x524D;&#x8DEF;&#x7531;&#xFF1A;</strong> </p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# route</span><br><span class="line">Kernel IP routing table</span><br><span class="line">Destination&#xA0;&#xA0;&#xA0;&#xA0; Gateway&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; Genmask&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; Flags Metric Ref&#xA0;&#xA0;&#xA0; Use Iface</span><br><span class="line">112.124.12.0&#xA0;&#xA0;&#xA0; *&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; 255.255.252.0&#xA0;&#xA0; U&#xA0;&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; 0 eth1</span><br><span class="line">10.160.0.0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; *&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; 255.255.240.0&#xA0;&#xA0; U&#xA0;&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; 0 eth0</span><br><span class="line">192.168.0.0&#xA0;&#xA0;&#xA0;&#xA0; 10.160.15.247&#xA0;&#xA0; 255.255.0.0&#xA0;&#xA0;&#xA0;&#xA0; UG&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; 0 eth0</span><br><span class="line">172.16.0.0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; 10.160.15.247&#xA0;&#xA0; 255.240.0.0&#xA0;&#xA0;&#xA0;&#xA0; UG&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; 0 eth0</span><br><span class="line">10.0.0.0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; 10.160.15.247&#xA0;&#xA0; 255.0.0.0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; UG&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; 0 eth0</span><br><span class="line">default&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; 112.124.15.247&#xA0; 0.0.0.0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; UG&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; 0&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0; 0 eth1</span><br><span class="line"></span><br><span class="line">[root@localhost ~]# route -n</span><br><span class="line">Kernel IP routing table</span><br><span class="line">Destination     Gateway         Genmask         Flags Metric Ref    Use Iface</span><br><span class="line">112.124.12.0    0.0.0.0         255.255.252.0   U     0      0        0 eth1</span><br><span class="line">10.160.0.0      0.0.0.0         255.255.240.0   U     0      0        0 eth0</span><br><span class="line">192.168.0.0     10.160.15.247   255.255.0.0     UG    0      0        0 eth0</span><br><span class="line">172.16.0.0      10.160.15.247   255.240.0.0     UG    0      0        0 eth0</span><br><span class="line">10.0.0.0        10.160.15.247   255.0.0.0       UG    0      0        0 eth0</span><br><span class="line">0.0.0.0         112.124.15.247  0.0.0.0         UG    0      0        0 eth1</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x5176;&#x4E2D;Flags&#x4E3A;&#x8DEF;&#x7531;&#x6807;&#x5FD7;&#xFF0C;&#x6807;&#x8BB0;&#x5F53;&#x524D;&#x7F51;&#x7EDC;&#x8282;&#x70B9;&#x7684;&#x72B6;&#x6001;&#xFF0C;Flags&#x6807;&#x5FD7;&#x8BF4;&#x660E;&#xFF1A;</p>
+<ul>
+<li>U Up&#x8868;&#x793A;&#x6B64;&#x8DEF;&#x7531;&#x5F53;&#x524D;&#x4E3A;&#x542F;&#x52A8;&#x72B6;&#x6001;&#x3002;</li>
+<li>H Host&#xFF0C;&#x8868;&#x793A;&#x6B64;&#x7F51;&#x5173;&#x4E3A;&#x4E00;&#x4E3B;&#x673A;&#x3002;</li>
+<li>G Gateway&#xFF0C;&#x8868;&#x793A;&#x6B64;&#x7F51;&#x5173;&#x4E3A;&#x4E00;&#x8DEF;&#x7531;&#x5668;&#x3002;</li>
+<li>R Reinstate Route&#xFF0C;&#x4F7F;&#x7528;&#x52A8;&#x6001;&#x8DEF;&#x7531;&#x91CD;&#x65B0;&#x521D;&#x59CB;&#x5316;&#x7684;&#x8DEF;&#x7531;&#x3002;</li>
+<li>D Dynamically,&#x6B64;&#x8DEF;&#x7531;&#x662F;&#x52A8;&#x6001;&#x6027;&#x5730;&#x5199;&#x5165;&#x3002;</li>
+<li>M Modified&#xFF0C;&#x6B64;&#x8DEF;&#x7531;&#x662F;&#x7531;&#x8DEF;&#x7531;&#x5B88;&#x62A4;&#x7A0B;&#x5E8F;&#x6216;&#x5BFC;&#x5411;&#x5668;&#x52A8;&#x6001;&#x4FEE;&#x6539;&#x3002;</li>
+<li><p>! &#x8868;&#x793A;&#x6B64;&#x8DEF;&#x7531;&#x5F53;&#x524D;&#x4E3A;&#x5173;&#x95ED;&#x72B6;&#x6001;&#x3002;</p>
+<p><strong>&#x6DFB;&#x52A0;&#x7F51;&#x5173;/&#x8BBE;&#x7F6E;&#x7F51;&#x5173;&#xFF1A;</strong> </p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">route add -net 224.0.0.0 netmask 240.0.0.0 dev eth0    #&#x589E;&#x52A0;&#x4E00;&#x6761;&#x5230;&#x8FBE;244.0.0.0&#x7684;&#x8DEF;&#x7531;&#x3002;</span><br></pre></td></tr></tbody></table></figure>
+<p> <strong>&#x5C4F;&#x853D;&#x4E00;&#x6761;&#x8DEF;&#x7531;&#xFF1A;</strong> </p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">route add -net 224.0.0.0 netmask 240.0.0.0 reject     #&#x589E;&#x52A0;&#x4E00;&#x6761;&#x5C4F;&#x853D;&#x7684;&#x8DEF;&#x7531;&#xFF0C;&#x76EE;&#x7684;&#x5730;&#x5740;&#x4E3A;224.x.x.x&#x5C06;&#x88AB;&#x62D2;&#x7EDD;&#x3002;</span><br></pre></td></tr></tbody></table></figure>
+<p> <strong>&#x5220;&#x9664;&#x8DEF;&#x7531;&#x8BB0;&#x5F55;&#xFF1A;</strong> </p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">route del -net 224.0.0.0 netmask 240.0.0.0</span><br><span class="line">route del -net 224.0.0.0 netmask 240.0.0.0 reject</span><br></pre></td></tr></tbody></table></figure>
+<p> <strong>&#x5220;&#x9664;&#x548C;&#x6DFB;&#x52A0;&#x8BBE;&#x7F6E;&#x9ED8;&#x8BA4;&#x7F51;&#x5173;&#xFF1A;</strong> </p>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">route del default gw 192.168.120.240</span><br><span class="line">route add default gw 192.168.120.240</span><br></pre></td></tr></tbody></table></figure>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2022-06-07T05:20:19.826Z" itemprop="dateUpdated">2022-06-07 13:20:19</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/365d0867/" target="_blank" rel="external">https://marnm.github.io/posts/365d0867/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='https://marnm.github.io'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/365d0867/&title=《Linux路由配置——route》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/365d0867/&title=《Linux路由配置——route》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/365d0867/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Linux路由配置——route》 — Deops's blog&url=https://marnm.github.io/posts/365d0867/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/365d0867/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/1939d3e2/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：net-tools工具
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/f20e14fd/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：Linux网卡聚合及bond模式的原理">下一篇：Linux网卡聚合及bond模式的原理</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2022
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="https://marnm.github.io">marnm.github.io</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/365d0867/&title=《Linux路由配置——route》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/365d0867/&title=《Linux路由配置——route》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/365d0867/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Linux路由配置——route》 — Deops's blog&url=https://marnm.github.io/posts/365d0867/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/365d0867/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAAByklEQVR42u3aS47EIAwFwL7/pTMHaIU88/FErWKVRUIKFpax+Xzicd2M73e+3x/P+TkxcHFxl7nXcOTvjEF3c5bnx8XFbeQmP8t/kyDu5nyw4eLivpI7TmLyAIeLi/tL3CQYzSVAuLi4b+PmKUjym73JEC4ubj83r1Keez5S38XFxZ3iXsVRPcDkM0R/x8XFbeHmAWVv6TNPX3Bxcfu5489WjkNzS3oIf7i4uI3ccYJSvUiRpEGT7VhcXNxG7noRMwmISah6eMbFxf1XbrVFmgS4fFOiww8uLu4x7lxDtFx3mWrbPMyDi4t7jFtNPsbhprqMpIR6e1bDxcVt5OZFjV2t1kLZBRcXt4WbFymqx56VxUc9YVxc3BZu3l6tfjV3fLrdMlxc3EZuNQxVr2jMbUT5zgguLu5W7lzxNH+uzvNw+MHFxW3kziU0c5cw8vZtoYKCi4u7zL2Ko3oZq3rxq9x9xcXFPcCduxKxt0aRFGfLi8HFxV3mrhxOkvCUB7sowOHi4jZy85ZGtSlbjaDlgikuLu5ruCut1qVGLC4u7iu5SSF1qYI7fh8XF7eRu7e4mbdY8hlwcXE7uet92urCkk3ZUN/FxcWd4f4BzoCQnzje8RAAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>

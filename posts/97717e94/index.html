@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>PXE自动化部署 | Deops&#39;s blog | 运维开发工程师</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="LinuxPXE/KickstartBIOS&amp;#x6A21;&amp;#x5F0F;&amp;#x914D;&amp;#x7F6E;&amp;#x7F51;&amp;#x7EDC;&amp;#x670D;&amp;#x52A1;&amp;#x5668;&amp;#xFF08;NFS&amp;#xFF0C;HTTPS&amp;#xFF0C;HTTP&amp;#xFF0C;FTP&amp;#xFF09;&amp;#x7528;&amp;#x4E8E;&amp;#x5B58;&amp;#x50A8;ISO&amp;#x955C;&amp;#x50CF;">
+<meta name="keywords" content="Echo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PXE自动化部署">
+<meta property="og:url" content="https://marnm.github.io/posts/97717e94/index.html">
+<meta property="og:site_name" content="Deops&#39;s blog">
+<meta property="og:description" content="LinuxPXE/KickstartBIOS&amp;#x6A21;&amp;#x5F0F;&amp;#x914D;&amp;#x7F6E;&amp;#x7F51;&amp;#x7EDC;&amp;#x670D;&amp;#x52A1;&amp;#x5668;&amp;#xFF08;NFS&amp;#xFF0C;HTTPS&amp;#xFF0C;HTTP&amp;#xFF0C;FTP&amp;#xFF09;&amp;#x7528;&amp;#x4E8E;&amp;#x5B58;&amp;#x50A8;ISO&amp;#x955C;&amp;#x50CF;">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-06-07T05:22:42.827Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PXE自动化部署">
+<meta name="twitter:description" content="LinuxPXE/KickstartBIOS&amp;#x6A21;&amp;#x5F0F;&amp;#x914D;&amp;#x7F6E;&amp;#x7F51;&amp;#x7EDC;&amp;#x670D;&amp;#x52A1;&amp;#x5668;&amp;#xFF08;NFS&amp;#xFF0C;HTTPS&amp;#xFF0C;HTTP&amp;#xFF0C;FTP&amp;#xFF09;&amp;#x7528;&amp;#x4E8E;&amp;#x5B58;&amp;#x50A8;ISO&amp;#x955C;&amp;#x50CF;">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
+                <i class="icon icon-lg icon-tv tv"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">PXE自动化部署</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Linux"><span class="post-toc-number">1.</span> <span class="post-toc-text">Linux</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PXE-Kickstart"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">PXE/Kickstart</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#BIOS模式"><span class="post-toc-number">1.1.1.</span> <span class="post-toc-text">BIOS模式</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#UEFI模式"><span class="post-toc-number">1.1.2.</span> <span class="post-toc-text">UEFI模式</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Kickstart"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">Kickstart</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Cobbler-Kickstart"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">Cobbler+Kickstart</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Windows"><span class="post-toc-number">2.</span> <span class="post-toc-text">Windows</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PXE-Server"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">PXE Server</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#修改Windows镜像"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">修改Windows镜像</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-PXE自动化部署" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">PXE自动化部署</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2022-06-07 12:37:37" datetime="2022-06-07T04:37:37.000Z" itemprop="datePublished">2022-06-07</time>
+
+            <br id="mybreak">
+            
+<script>
+	mybreak.style="display:none";
+</script>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">13</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h2><h3 id="PXE-Kickstart"><a href="#PXE-Kickstart" class="headerlink" title="PXE/Kickstart"></a>PXE/Kickstart</h3><h4 id="BIOS&#x6A21;&#x5F0F;"><a href="#BIOS&#x6A21;&#x5F0F;" class="headerlink" title="BIOS&#x6A21;&#x5F0F;"></a>BIOS&#x6A21;&#x5F0F;</h4><p>&#x914D;&#x7F6E;&#x7F51;&#x7EDC;&#x670D;&#x52A1;&#x5668;&#xFF08;NFS&#xFF0C;HTTPS&#xFF0C;HTTP&#xFF0C;FTP&#xFF09;&#x7528;&#x4E8E;&#x5B58;&#x50A8;ISO&#x955C;&#x50CF;<br><strong>&#x914D;&#x7F6E;DHCP</strong></p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum install -y dhcp</span><br><span class="line">cp /usr/share/doc/dhcp*/dhcpd.conf.example /etc/dhcp/dhcpd.conf</span><br><span class="line">vim /etc/dhcp/dhcpd.conf</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">allow booting;</span><br><span class="line">allow bootp;</span><br><span class="line">ddns-update-style interim;</span><br><span class="line">ignore client-updates;</span><br><span class="line">subnet 192.168.10.0 netmask 255.255.255.0 {</span><br><span class="line">    option subnet-mask 255.255.255.0;</span><br><span class="line">    option domain-name-servers 192.168.10.10;</span><br><span class="line">    range dynamic-bootp 192.168.10.100 192.168.10.200;</span><br><span class="line">    default-lease-time 21600;</span><br><span class="line">    max-lease-time 43200;</span><br><span class="line">    next-server 192.168.10.10;</span><br><span class="line">    filename <span class="string">&quot;pxelinux.0&quot;</span>;</span><br><span class="line"> }</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart dhcpd &amp;&amp; systemctl <span class="built_in">enable</span> dhcpd</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>&#x914D;&#x7F6E;tftp &#x63D0;&#x4F9B;&#x5F15;&#x5BFC;&#x6587;&#x4EF6;</strong></p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">yum install -y tftp-server xinetd</span><br><span class="line">vim /etc/xinet.d/tftp</span><br><span class="line"></span><br><span class="line">service tftp {</span><br><span class="line">    socket_type = dgram</span><br><span class="line">    protocol = udp</span><br><span class="line">    <span class="built_in">wait</span> = yes</span><br><span class="line">    user = root</span><br><span class="line">    server = /usr/sbin/in.tftpd</span><br><span class="line">    server_args = -s /var/lib/tftpboot</span><br><span class="line">    <span class="built_in">disable</span> = no</span><br><span class="line">    per_source = 11</span><br><span class="line">    cps = 100 2</span><br><span class="line">    flags = IPv4</span><br><span class="line"> </span><br><span class="line">systemctl restart xinetd &amp;&amp; systemctl <span class="built_in">enable</span> xinetd</span><br><span class="line">firewall-cmd --permanent --add-port=69/udp</span><br><span class="line">firewall-cmd --reload</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x83B7;&#x53D6;pxelinux.0&#x6587;&#x4EF6;</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x5B89;&#x88C5;syslinux&#x5305;</span></span><br><span class="line">yum install -y syslinux</span><br><span class="line">cp /usr/share/syslinux/pxelinux.0 /var/lib/tftpboot/</span><br><span class="line"><span class="comment"># &#x6216;</span></span><br><span class="line"><span class="comment"># &#x76F4;&#x63A5;&#x52A0;&#x538B;rpm&#x5305;</span></span><br><span class="line">mount -t iso9660 /dev/cdrom /media/cdrom -o loop,ro</span><br><span class="line">cp -pr /media/cdrom/Packages/syslinux-x.xx-xx.x86_64.rpm ./</span><br><span class="line">rpm2cpio syslinux-x.xx-xx.x86_64.rpm | cpio -dimv</span><br><span class="line"><span class="comment"># &#x590D;&#x5236;pxelinux.0&#x5230;/var/lib/tftpboot/pxelinux/&#x4E2D; </span></span><br><span class="line">cp pxelinux.0 /var/lib/tftpboot/</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x590D;&#x5236;&#x5F15;&#x5BFC;&#x6587;&#x4EF6;&#x5230;tftp&#x6839;&#x76EE;&#x5F55;&#x4E2D;</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cp /media/cdrom/images/pxeboot/{vmlinuz,initrd.img} /var/lib/tftpboot/</span><br><span class="line">cp /media/cdrom/isolinux/{vesamenu.c32,boot.msg} /var/lib/tftpboot/</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x5F15;&#x5BFC;&#x83DC;&#x5355;default&#x6587;&#x4EF6;</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x521B;&#x5EFA;&#x76EE;&#x5F55;</span></span><br><span class="line">mkdir /var/lib/tftpboot/pxelinux.cfg</span><br><span class="line"><span class="comment"># &#x521B;&#x5EFA;&#x914D;&#x7F6E;&#x6587;&#x4EF6;</span></span><br><span class="line">vim /var/lib/tftpboot/pxelinux.cfg/default</span><br><span class="line"><span class="comment"># &#x6216;</span></span><br><span class="line">cp /media/cdrom/isolinux/isolinux.cfg /var/lib/tftpboot/pxelinux.cfg/default</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>&#x914D;&#x7F6E;FTP</strong><br>&#x590D;&#x5236;&#x955C;&#x50CF;&#x5B89;&#x88C5;&#x6587;&#x4EF6;&#x5230;ftp&#x76EE;&#x5F55;</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">yum install -y vsftpd</span><br><span class="line">cp -pvr /media/cdrom/* /var/ftp/pub/</span><br><span class="line"></span><br><span class="line">firewall-cmd --permanent --add-service=ftp</span><br><span class="line">firewall-cmd --reload</span><br><span class="line">setsebool -P ftpd_connect_all_unreserved=on</span><br><span class="line"></span><br><span class="line">systemctl restart vsftpd &amp;&amp; systemctl <span class="built_in">enable</span> vsftpd</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>&#x521B;&#x5EFA;kickstart&#x914D;&#x7F6E;&#x6587;&#x4EF6;</strong><br>&#x751F;&#x6210;kickstart&#x6587;&#x4EF6;<br><a href="https://access.redhat.com/labs/kickstartconfig/" target="_blank" rel="noopener">&#x4F7F;&#x7528;&#x5728;&#x7EBF;&#x751F;&#x6210;&#x5668;&#xFF08;&#x9700;&#x8981;&#x6CE8;&#x518C;&#x767B;&#x5F55;&#xFF09;</a><br>&#x751F;&#x6210;&#x540E;&#x4E0B;&#x8F7D;&#x547D;&#x540D;&#x5B58;&#x653E;&#x5230;/var/ftp/pub/ks.cfg<br>&#x6216;<br>&#x4F7F;&#x7528;&#x7528;&#x6237;&#x76EE;&#x5F55;&#x4E0B;&#x7684;&#x9ED8;&#x8BA4;&#x6A21;&#x677F;anaconda-ks.cfg</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cp /root/anaconda-ks.cfg /var/ftp/pub/ks.cfg</span><br><span class="line">chmod +r /var/ftp/pub/ks.cfg</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">---------------------dhcpd.confg--------------------------</span><br><span class="line"> allow booting;</span><br><span class="line"> allow bootp;</span><br><span class="line"> ddns-update-style interim;</span><br><span class="line"> ignore client-updates;</span><br><span class="line"> subnet 192.168.10.0 netmask 255.255.255.0 {</span><br><span class="line">     option subnet-mask 255.255.255.0;</span><br><span class="line">     option domain-name-servers 192.168.10.10;</span><br><span class="line">     range dynamic-bootp 192.168.10.100 192.168.10.200;</span><br><span class="line">     default-lease-time 21600;</span><br><span class="line">     max-lease-time 43200;</span><br><span class="line">     next-server 192.168.10.10;</span><br><span class="line">     filename &quot;pxelinux.0&quot;;</span><br><span class="line"> }</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">---------------------tftp-----------------------</span><br><span class="line">disable = no</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">---------------------default--------------------</span><br><span class="line">default linux</span><br><span class="line">...</span><br><span class="line"># 64 line &#x5730;&#x5740;&#x8981;&#x51C6;&#x786E;&#xFF0C;&#x955C;&#x50CF;&#x6587;&#x4EF6;&#x653E;&#x5728;&#x54EA;&#x4E2A;&#x76EE;&#x5F55;&#x5C31;&#x586B;&#x5230;&#x54EA;&#x4E2A;&#x76EE;&#x5F55;&#xFF0C;&#x9664;&#x975E;ftp&#x8BBE;&#x7F6E;&#x4E86;&#x9ED8;&#x8BA4;&#x76EE;&#x5F55;</span><br><span class="line">append initrd=initrd.img inst.stage2=ftp://192.168.128.120/pub ks=ftp://192.168.128.120/pub/ks.cfg quiet</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">---------------------ks.cfg---------------------</span><br><span class="line"># &#x7CFB;&#x7EDF;&#x8BA4;&#x8BC1;&#x8BBE;&#x7F6E;</span><br><span class="line">auth --enableshadown --passalgo=sha512</span><br><span class="line"># &#x6587;&#x4EF6;&#x670D;&#x52A1;&#x5730;&#x5740;</span><br><span class="line"></span><br><span class="line"># &#x5730;&#x5740;&#x8981;&#x51C6;&#x786E;&#xFF0C;&#x955C;&#x50CF;&#x6587;&#x4EF6;&#x653E;&#x5728;&#x54EA;&#x4E2A;&#x76EE;&#x5F55;&#x5C31;&#x586B;&#x5230;&#x54EA;&#x4E2A;&#x76EE;&#x5F55;</span><br><span class="line">url --url=ftp://192.168.128.120/pub</span><br><span class="line">firstboot --enable</span><br><span class="line">ignoredisk --only-use=sda</span><br><span class="line">keyboard --vckeymap=us --xlayouts=&apos;us&apos;</span><br><span class="line">lang en_US.UTF-8</span><br><span class="line">network --bootproto=dhcp --device=eno16777728 --onboot=off --ipv6=auto</span><br><span class="line">network --hostname=localhost.localdomain</span><br><span class="line">rootpw --iscrypted $6$pDjJf42g8C6pL069$iI.PX/yFaqpo0ENw2pa7MomkjLyoae2zjMz2UZJ7b H3UO4oWtR1.Wk/hxZ3XIGmzGJPcs/MgpYssoi8hPCt8b/</span><br><span class="line"># &#x65F6;&#x533A;&#x8BBE;&#x7F6E;</span><br><span class="line">timezone Asia/Shanghai --isUtc</span><br><span class="line"># &#x5206;&#x533A;&#x65B9;&#x5F0F;</span><br><span class="line">clearpart --all --initlabel</span><br><span class="line"># &#x5B89;&#x88C5;rpm&#x5305;</span><br><span class="line"> 31 %packages</span><br><span class="line"> 32 @base</span><br><span class="line"> 33 @core</span><br><span class="line"> 34 @desktop-debugging</span><br><span class="line"> 35 @dial-up</span><br><span class="line"> 36 @fonts</span><br><span class="line"> 37 @gnome-desktop</span><br><span class="line"> 38 @guest-agents</span><br><span class="line"> 39 @guest-desktop-agents</span><br><span class="line"> 40 @input-methods</span><br><span class="line"> 41 @internet-browser</span><br><span class="line"> 42 @multimedia</span><br><span class="line"> 43 @print-client</span><br><span class="line"> 44 @x11</span><br><span class="line"> 45 </span><br><span class="line"> 46 %end</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x68C0;&#x67E5;&#x670D;&#x52A1;&#x662F;&#x5426;&#x542F;&#x52A8;<br>systemctl status xinetd dhcpd</p>
+<h4 id="UEFI&#x6A21;&#x5F0F;"><a href="#UEFI&#x6A21;&#x5F0F;" class="headerlink" title="UEFI&#x6A21;&#x5F0F;"></a>UEFI&#x6A21;&#x5F0F;</h4><p>&#x5728;BOIS&#x6A21;&#x5F0F;&#x7684;&#x57FA;&#x7840;&#x4E0A;&#x66F4;&#x65B0;&#x5982;&#x4E0B;&#x914D;&#x7F6E;&#xFF1A;</p>
+<p>&#x66F4;&#x65B0;DHCP&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF0C;&#x53C2;&#x8003;&#x6A21;&#x677F;</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># DHCP Server Configuration file.</span></span><br><span class="line"><span class="comment">#   see /usr/share/doc/dhcp*/dhcpd.conf.example</span></span><br><span class="line"><span class="comment">#   see dhcpd.conf(5) man page</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">allow booting;</span><br><span class="line">allow bootp;</span><br><span class="line">ddns-update-style interim;</span><br><span class="line">ignore client-updates;</span><br><span class="line">option rfc3442-classless-static-routes code 121 = array of <span class="built_in">integer</span> 8;</span><br><span class="line">option ms-classless-static-routes code 249 = array of <span class="built_in">integer</span> 8;</span><br><span class="line">option space pxelinux;</span><br><span class="line">option pxelinux.magic code 208 = string;</span><br><span class="line">option pxelinux.configfile code 209 = text;</span><br><span class="line">option pxelinux.pathprefix code 210 = text;</span><br><span class="line">option pxelinux.reboottime code 211 = unsigned <span class="built_in">integer</span> 32;</span><br><span class="line">option architecture-type code 93 = unsigned <span class="built_in">integer</span> 16;</span><br><span class="line">subnet 192.168.128.0 netmask 255.255.255.0 {</span><br><span class="line">    option subnet-mask 255.255.255.0;</span><br><span class="line">    option domain-name-servers 192.168.128.120;</span><br><span class="line">    range dynamic-bootp 192.168.128.128 192.168.128.200;</span><br><span class="line">    default-lease-time 21600;</span><br><span class="line">    max-lease-time 43200;</span><br><span class="line"></span><br><span class="line">    class <span class="string">&quot;pxeclients&quot;</span>{</span><br><span class="line">        match <span class="keyword">if</span> substring(option vendor-class-identifier, 0, 9)=<span class="string">&quot;PXEClient&quot;</span>;</span><br><span class="line">        next-server 192.168.128.120;</span><br><span class="line">        <span class="keyword">if</span> option architecture-type = 00:07 {</span><br><span class="line">            filename <span class="string">&quot;shim.efi&quot;</span>;</span><br><span class="line">        } <span class="keyword">else</span> {</span><br><span class="line">            filename <span class="string">&quot;pxelinux.0&quot;</span>;</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x590D;&#x5236;uefi&#x5F15;&#x5BFC;&#x6587;&#x4EF6;</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cp -pr /media/cdrom/Packages/shim-0.9-2.el7.x86_64.rpm </span><br><span class="line">cp -pr /media/cdrom/Packages/grub2-efi-2.02-0.44.el7.x86_64.rpm</span><br><span class="line">rpm2cpio shim-0.9-2.el7.x86_64.rpm | cpio -dimv</span><br><span class="line">rpm2cpio grub2-efi-2.02-0.44.el7.x86_64.rpm</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x590D;&#x5236;&#x76F8;&#x5173;&#x5F15;&#x5BFC;&#x6587;&#x4EF6;&#x5230;tftpboot/&#x76EE;&#x5F55;&#x4E0B;</span></span><br><span class="line">cp ./bootloaders/boot/efi/EFI/redhat/shim.efi /var/lib/tftpboot/</span><br><span class="line">cp ./bootloaders/boot/efi/EFI/redhat/grubx64.efi /var/lib/tftpboot/</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x5728;/var/lib/tftpboot/&#x4E0B;&#x6DFB;&#x52A0;grub.cfg&#x914D;&#x7F6E;&#x6587;&#x4EF6;</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">vim /var/lib/tftpboot/uefi/grub.cfg&#xFF1A;</span><br><span class="line"><span class="built_in">set</span> timeout=60</span><br><span class="line"><span class="comment"># menuentry &apos;RHEL 7&apos;&#x662F;&#x5F15;&#x5BFC;&#x7684;&#x83DC;&#x5355;&#x540D;&#x79F0;</span></span><br><span class="line">menuentry <span class="string">&apos;RHEL 7&apos;</span> {</span><br><span class="line">	<span class="comment"># vmlinuz&#x7684;&#x5B58;&#x653E;&#x76EE;&#x5F55;,&#x5982;&#x679C;&#x6587;&#x4EF6;&#x5B58;&#x653E;&#x5728;/var/lib/tftpboot/&#x76EE;&#x5F55;&#x4E0B;&#xFF0C;&#x76F4;&#x63A5;&#x5148;vmlinuz</span></span><br><span class="line">    linuxefi vmlinuz ip=dhcp</span><br><span class="line">    <span class="comment"># &#x955C;&#x50CF;&#x5B89;&#x88C5;&#x6587;&#x4EF6;&#x7684;&#x5B58;&#x653E;&#x76EE;&#x5F55;</span></span><br><span class="line">    inst.repo=ftp://192.168.73.120/pub/</span><br><span class="line">    <span class="comment"># initrd.img&#x6587;&#x4EF6;&#x7684;&#x5B58;&#x653E;&#x53D1;&#x76EE;&#x5F55;</span></span><br><span class="line">    initrdefi initrd.img</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<blockquote>
+<p>&#x542F;&#x52A8;&#x6240;&#x6709;&#x670D;&#x52A1;systemctl restart xinetd dhcpd</p>
+</blockquote>
+<p>&#x590D;&#x5236;&#x955C;&#x50CF;&#x6587;&#x4EF6;&#x5230;uefi/&#x76EE;&#x5F55;&#x4E0B;</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp /media/cdrom/images/pxeboot/{vmlinuz,initrd.img} /var/lib/tftpboot/</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>&#x67E5;&#x770B;LInux&#x5904;&#x4E8E;BIOS&#x6A21;&#x5F0F;&#x8FD8;&#x662F;UEFI&#x6A21;&#x5F0F;</strong></p>
+<p>&#x5728;UEFI&#x6A21;&#x5F0F;&#x4E0B;Linux&#x7CFB;&#x7EDF;&#x5728;<code>/sys/firmware/</code>&#x76EE;&#x5F55;&#x4E0B;&#x5B58;&#x5728;<code>efi</code>&#x76EE;&#x5F55;&#xFF0C;BIOS&#x6A21;&#x5F0F;&#x662F;&#x6CA1;&#x6709;&#x8FD9;&#x4E2A;&#x76EE;&#x5F55;&#x7684;</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">ls -ld /sys/firmware/efi/</span><br><span class="line"></span><br><span class="line"><span class="comment"># BIOS&#x6A21;&#x5F0F;&#x4E0B;grub2&#x5F15;&#x5BFC;&#x6587;&#x4EF6;&#x4E3A;/etc/grub2.cfg</span></span><br><span class="line"><span class="comment"># EFI&#x6A21;&#x5F0F;&#x4E0B;grub2&#x5F15;&#x5BFC;&#x6587;&#x4EF6;&#x4E3A;/etc/grub2-efi.cfg</span></span><br><span class="line">[root@pxelab tftpboot]<span class="comment"># ls -lrt /etc/grub2.cfg</span></span><br><span class="line">lrwxrwxrwx. 1 root root 22 Jan 22 17:31 /etc/grub2.cfg -&gt; ../boot/grub2/grub.cfg</span><br><span class="line">[root@pxelab ~]<span class="comment"># ls -lrt /etc/grub2-efi.cfg</span></span><br><span class="line">lrwxrwxrwx. 1 root root 31 Jan 24 07:18 /etc/grub2-efi.cfg -&gt; ../boot/efi/EFI/redhat/grub.cfg</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x5982;&#x679C;&#x662F;EFI&#x6A21;&#x5F0F;&#x7684;&#x7CFB;&#x7EDF;&#xFF0C;&#x6709;&#x5982;&#x4E0B;&#x76EE;&#x5F55;/&#x6587;&#x4EF6;&#xFF1A;</p>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">[root@pxelab ~]<span class="comment"># ls -lrt /etc/grub2-efi.cfg</span></span><br><span class="line">lrwxrwxrwx. 1 root root 31 Jan 24 07:18 /etc/grub2-efi.cfg -&gt; ../boot/efi/EFI/redhat/grub.cfg</span><br><span class="line">[root@pxelab ~]<span class="comment"># ls -ld /boot/efi/EFI/</span></span><br><span class="line">drwx------. 4 root root 4096 Jan 24 07:19 /boot/efi/EFI/</span><br><span class="line">[root@pxelab ~]<span class="comment"># ls -lrt /boot/efi/EFI/</span></span><br><span class="line">total 8</span><br><span class="line">drwx------. 2 root root 4096 Jan 24 07:19 BOOTdrwx------. 3 root root 4096 Jan 24 07:21 redhat</span><br><span class="line">[root@pxelab ~]<span class="comment"># ls -lrt /boot/efi/EFI/*</span></span><br><span class="line">/boot/efi/EFI/BOOT:</span><br><span class="line">total 1340</span><br><span class="line">-rwx------. 1 root root   71784 Jul 20  2015 fallback.efi</span><br><span class="line">-rwx------. 1 root root 1295704 Jul 20  2015 BOOTX64.EFI</span><br><span class="line"></span><br><span class="line">/boot/efi/EFI/redhat:</span><br><span class="line">total 5812</span><br><span class="line">-rwx------. 1 root root 1289544 Jul 20  2015 shim-redhat.efi</span><br><span class="line">-rwx------. 1 root root 1295704 Jul 20  2015 shim.efi</span><br><span class="line">-rwx------. 1 root root 1282496 Jul 20  2015 MokManager.efi</span><br><span class="line">-rwx------. 1 root root     176 Jul 20  2015 BOOT.CSV</span><br><span class="line">-rwx------. 1 root root 1024464 Aug 29  2016 grubx64.efi</span><br><span class="line">-rwx------. 1 root root 1024464 Aug 29  2016 gcdx64.efi</span><br><span class="line">drwx------. 2 root root    4096 Jan 24 07:18 fonts</span><br><span class="line">-rwx------. 1 root root    1024 Jan 24 07:21 grubenv</span><br><span class="line">-rwx------. 1 root root    4245 Jan 24 07:21 grub.cfg</span><br><span class="line">[root@pxelab ~]<span class="comment">#</span></span><br></pre></td></tr></tbody></table></figure>
+<h3 id="Kickstart"><a href="#Kickstart" class="headerlink" title="Kickstart"></a>Kickstart</h3><p>&#x751F;&#x6210;kickstart&#x6587;&#x4EF6;<br>&#x4F7F;&#x7528;&#x5728;&#x7EBF;&#x751F;&#x6210;&#x5668;&#xFF08;&#x9700;&#x8981;&#x6CE8;&#x518C;&#x767B;&#x5F55;&#xFF09;<a href="https://access.redhat.com/labs/kickstartconfig/" target="_blank" rel="noopener">https://access.redhat.com/labs/kickstartconfig/</a><br>&#x6216;<br>&#x4F7F;&#x7528;&#x7528;&#x6237;&#x76EE;&#x5F55;&#x4E0B;&#x7684;&#x9ED8;&#x8BA4;&#x6A21;&#x677F;anaconda-ks.cfg</p>
+<blockquote>
+<p>&#x3010;&#x6CE8;&#x610F;&#xFF01;&#x3011;<br>&#x914D;&#x7F6E;&#x7684;&#x6BCF;&#x90E8;&#x5206;&#x5FC5;&#x987B;&#x6309;&#x987A;&#x5E8F;&#x6307;&#x5B9A;&#xFF0C;&#x6BCF;&#x90E8;&#x5206;&#x5185;&#x4E0D;&#x5FC5;&#x6309;&#x9700;&#x6392;&#x5E8F;<br>%addon&#x3001;%packages&#x3001;%pre&#x3001;%post&#x5FC5;&#x987B;&#x4EE5;%end&#x7ED3;&#x5C3E;</p>
+<p>#&#x6CE8;&#x91CA;</p>
+</blockquote>
+<p>&#x5B89;&#x88C5;kickstart&#x6587;&#x4EF6;&#x9A8C;&#x8BC1;&#x5668;</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install pykickstart</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x4F7F;&#x7528;ksvalidator&#x547D;&#x4EE4;&#x9A8C;&#x8BC1;ks&#x6587;&#x4EF6;&#x7684;&#x6B63;&#x786E;&#x6027;</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ksvalidator kickstart.ks</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>BIOS</strong></p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">append initrd=initrd.img inst.ks=[http/ftp/tftp/nfs]://192.168.73.120/var/lib/tftpboot/ks.cfg</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>UEFI</strong></p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kernel vmlinuz inst.ks=[http/ftp/tftp/nfs]://192.168.73.120/var/tftpboot/ks.cfg</span><br></pre></td></tr></tbody></table></figure>
+<p>kickstart&#x6587;&#x4EF6;&#x8BED;&#x6CD5;&#x53D8;&#x5316;</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ksverdiff -f RHEL6 -t RHEL7</span><br><span class="line"><span class="comment"># -f&#x6307;&#x5B9A;&#x6BD4;&#x8F83;&#x7B2C;&#x4E00;&#x4E2A;&#x53D1;&#x884C;&#x7248;&#xFF0C;-t&#x6307;&#x5B9A;&#x6BD4;&#x8F83;&#x6700;&#x540E;&#x4E00;&#x4E2A;&#x53D1;&#x884C;&#x7248;</span></span><br></pre></td></tr></tbody></table></figure>
+<p>&#x4F7F;&#x7528;SSL&#x534F;&#x8BAE;&#x65F6;&#xFF0C;&#x7981;&#x7528;SSLv2&#x548C;SSLv3&#xFF0C;&#x8BE5;&#x9009;&#x9879;&#x89E6;&#x53D1;CVE-2014-3566&#x6F0F;&#x6D1E;</p>
+<h3 id="Cobbler-Kickstart"><a href="#Cobbler-Kickstart" class="headerlink" title="Cobbler+Kickstart"></a>Cobbler+Kickstart</h3><p>&#x5173;&#x95ED;SELinux&#x548C;&#x9632;&#x706B;&#x5899;&#xFF0C;&#x91CD;&#x542F;Linux</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">systemctl stop firewalld</span><br><span class="line">systemctl <span class="built_in">disable</span> firewalld</span><br><span class="line">iptables -F</span><br><span class="line">setenforce 0</span><br><span class="line"></span><br><span class="line">sed -i <span class="string">&apos;s/SELINUX=enforcing/SELINUX=disabled/g&apos;</span> /etc/selinux/configf</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x66F4;&#x65B0;yum&#x6E90;&#x548C;epel&#x6E90;</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x76F4;&#x63A5;&#x4F7F;&#x7528;&#x9ED8;&#x8BA4;&#x6E90;</span></span><br><span class="line">yum install -y epel-release</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x5B89;&#x88C5;&#x5176;&#x4ED6;&#x670D;&#x52A1;</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y dhcp pykickstart httpd dhcp rsync tftp-server xinetd syslinux</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x5B89;&#x88C5;Cobbler</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install cobbler cobbler-web</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x4FEE;&#x6539;&#x670D;&#x52A1;&#x914D;&#x7F6E;&#x6587;&#x4EF6;</p>
+<blockquote>
+<p>vim /etc/cobbler/settings</p>
+</blockquote>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#x95EE;&#x9898; 1&#xFF1A;&#x4FEE;&#x6539; server &#x5730;&#x5740;&#x4E3A; 192.168.1.7</span><br><span class="line">&#x6539;&#xFF1A;390 server: 127.0.1</span><br><span class="line">&#x4E3A;&#xFF1A;390 server: 192.168.1.7</span><br><span class="line">&#x95EE;&#x9898; 2&#xFF1A;&#x4FEE;&#x6539; next_server &#x5730;&#x5740;&#x4E3A; 192.168.1.7</span><br><span class="line">&#x6539;&#xFF1A;278 next_server: 127.0.1</span><br><span class="line">&#x4E3A;&#xFF1A;278 next_server: 192.168.1.7</span><br><span class="line">&#x6539;&#xFF1A;242 manage_dhcp: 0</span><br><span class="line">&#x4E3A;&#xFF1A;242 manage_dhcp: 1</span><br></pre></td></tr></tbody></table></figure>
+<blockquote>
+<p>vim /etc/cobbler/dhcp.template</p>
+</blockquote>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&#x6539;&#xFF1A;22 option routers 192.168.1.5; <span class="comment">#&#x4FEE;&#x6539;&#x9ED8;&#x8BA4;&#x7F51;&#x5173;&#x5730;&#x5740;</span></span><br><span class="line">&#x4E3A;&#xFF1A;22 option routers 192.168.1.1; <span class="comment">#&#x4EE5;&#x5B9E;&#x9645;&#x7684;&#x7F51;&#x5173;&#x4E3A;&#x51C6;</span></span><br><span class="line">&#x6539;&#xFF1A;23 option domain-name-servers 192.168.1.1; <span class="comment">#&#x4FEE;&#x6539; DNS &#x5730;&#x5740;</span></span><br><span class="line">&#x4E3A;&#xFF1A;23 option domain-name-servers 114.114.114.114;</span><br><span class="line">&#x5982;&#x4E0B;&#xFF1A;</span><br><span class="line"></span><br><span class="line"> 21 subnet 192.168.1.0 netmask 255.255.255.0 {</span><br><span class="line"> 22      option routers             192.168.1.1;</span><br><span class="line"> 23      option domain-name-servers 114.114.114.114;</span><br><span class="line"> 24      option subnet-mask         255.255.255.0;</span><br><span class="line"> 25      range dynamic-bootp        192.168.1.100 192.168.1.254;</span><br><span class="line"> 26      default-lease-time         21600;</span><br><span class="line"> 27      max-lease-time             43200;</span><br><span class="line"> 28      next-server                <span class="variable">$next_server</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x542F;&#x52A8;&#x670D;&#x52A1;</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">systemctl start httpd cobblerd</span><br><span class="line">cobbler sync</span><br><span class="line">systemctl <span class="built_in">enable</span> httpd cobblerd</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x68C0;&#x67E5;cobbler&#x662F;&#x5426;&#x5B58;&#x5728;&#x9519;&#x8BEF;</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cobbler check</span><br><span class="line">systemctl restart cobblerd</span><br><span class="line">cobbler sync</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x6302;&#x8F7D;&#x5149;&#x9A71;&#x5BFC;&#x5165;&#x955C;&#x50CF;</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mount /dev/cdrom /mnt</span><br><span class="line">cobbler import --path=/mnt/ --name=CentOS7.6 --arch=x86_64</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x67E5;&#x770B;cobbler&#x955C;&#x50CF;&#x914D;&#x7F6E;&#x6587;&#x4EF6;</p>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cobbler list</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h2><h3 id="PXE-Server"><a href="#PXE-Server" class="headerlink" title="PXE Server"></a>PXE Server</h3><h3 id="&#x4FEE;&#x6539;Windows&#x955C;&#x50CF;"><a href="#&#x4FEE;&#x6539;Windows&#x955C;&#x50CF;" class="headerlink" title="&#x4FEE;&#x6539;Windows&#x955C;&#x50CF;"></a>&#x4FEE;&#x6539;Windows&#x955C;&#x50CF;</h3><script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2022-06-07T05:22:42.827Z" itemprop="dateUpdated">2022-06-07 13:22:42</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/97717e94/" target="_blank" rel="external">https://marnm.github.io/posts/97717e94/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='https://marnm.github.io'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/97717e94/&title=《PXE自动化部署》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/97717e94/&title=《PXE自动化部署》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/97717e94/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《PXE自动化部署》 — Deops's blog&url=https://marnm.github.io/posts/97717e94/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/97717e94/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/b382711f/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：VIM的使用
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/2fe5fc07/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：Linux计划任务实现">下一篇：Linux计划任务实现</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2022
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="https://marnm.github.io">marnm.github.io</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/97717e94/&title=《PXE自动化部署》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/97717e94/&title=《PXE自动化部署》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/97717e94/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《PXE自动化部署》 — Deops's blog&url=https://marnm.github.io/posts/97717e94/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/97717e94/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABy0lEQVR42u3awa6CQAwFUP//p33J2xrgdspUTM6sjKBzYNHQW16veL3/19Hnz/V55tH5rx0LFxe3zX2frs9zko3Pv0n+7fCScHFxB7lJ8UrKWYJOSt7h97i4uA/jrm2cl0VcXNzf5Z43LclRXFzcX+FWA468SFXbodt6NVxc3Aa3H5j2P4/mu7i4uI2pRBKe5r+6YXdcXNwRbr8h6YQjedW6rX/CxcWNufnwo0PMb8fikxcuLu4GbhJt5MFoJ/iIHpJwcXG3cfNilLcua5Un2hcXF3ecu1Zi8uFo/m+HF4OLizvCXQsm+oPV1gAVFxd3hNuJKvJhyW0tFi4u7jg3H7HkR/NHn3J+g4uLu5mbtz1rYWv+qtZF84OLizvIXYsz1kLV1qgGFxd3M7cagFaLXTUSvaHi4uLi3sqt5pN5G5Nf9sWNw8XFHeGuvZiVF7XqrSmcj4uLu437Lq7qqLX6MsfFr3BxcUe4nWFqK4mJh7u4uLjf4lZji3xoml9wPsTFxcWd5HZGLDsqaDRkxcXFfQA3j07yNqY8iMXFxX0kt9rSnI9OyyEILi7uILfa/OSvWVR3v3gkwsXFHeGuBaZrMehaE1Wm4+LirnP/AHARUsFuA8gRAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>

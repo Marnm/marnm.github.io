@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Linux文本四剑客 | Deops&#39;s blog | 运维开发工程师</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="awk1234567line1 f2 f3line2 f4 f5line3 f6 f7echo -e &quot;line1 f2 f3\nline2 f4 f5\nline3 f6 f7&quot; | awk &apos;&amp;#123;print &quot;Line No:&quot;NR&quot;, No of fields:&quot;NF, &quot;$0=&quot;$0, &quot;$1=&quot;$1, &quot;$2=&quot;$2, &quot;$3=&quot;$3&amp;#125;&apos; Line No:1, No o">
+<meta name="keywords" content="Echo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux文本四剑客">
+<meta property="og:url" content="https://marnm.github.io/posts/b7f1c6/index.html">
+<meta property="og:site_name" content="Deops&#39;s blog">
+<meta property="og:description" content="awk1234567line1 f2 f3line2 f4 f5line3 f6 f7echo -e &quot;line1 f2 f3\nline2 f4 f5\nline3 f6 f7&quot; | awk &apos;&amp;#123;print &quot;Line No:&quot;NR&quot;, No of fields:&quot;NF, &quot;$0=&quot;$0, &quot;$1=&quot;$1, &quot;$2=&quot;$2, &quot;$3=&quot;$3&amp;#125;&apos; Line No:1, No o">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-06-07T05:21:59.973Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux文本四剑客">
+<meta name="twitter:description" content="awk1234567line1 f2 f3line2 f4 f5line3 f6 f7echo -e &quot;line1 f2 f3\nline2 f4 f5\nline3 f6 f7&quot; | awk &apos;&amp;#123;print &quot;Line No:&quot;NR&quot;, No of fields:&quot;NF, &quot;$0=&quot;$0, &quot;$1=&quot;$1, &quot;$2=&quot;$2, &quot;$3=&quot;$3&amp;#125;&apos; Line No:1, No o">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
+                <i class="icon icon-lg icon-tv tv"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Linux文本四剑客</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#awk"><span class="post-toc-number">1.</span> <span class="post-toc-text">awk</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#增删改查"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">增删改查</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#添加操作"><span class="post-toc-number">1.1.1.</span> <span class="post-toc-text">添加操作</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#删除操作"><span class="post-toc-number">1.1.2.</span> <span class="post-toc-text">删除操作</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#修改操作"><span class="post-toc-number">1.1.3.</span> <span class="post-toc-text">修改操作</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#查询操作"><span class="post-toc-number">1.1.4.</span> <span class="post-toc-text">查询操作</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#替换"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">替换</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#替换字符"><span class="post-toc-number">1.2.1.</span> <span class="post-toc-text">替换字符</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#替换数字"><span class="post-toc-number">1.2.2.</span> <span class="post-toc-text">替换数字</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#替换英文"><span class="post-toc-number">1.2.3.</span> <span class="post-toc-text">替换英文</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#替换空行"><span class="post-toc-number">1.2.4.</span> <span class="post-toc-text">替换空行</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#正则表达式"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">正则表达式</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#标准"><span class="post-toc-number">1.3.1.</span> <span class="post-toc-text">标准</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#扩展"><span class="post-toc-number">1.3.2.</span> <span class="post-toc-text">扩展</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#条件"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">条件</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#列操作"><span class="post-toc-number">1.5.</span> <span class="post-toc-text">列操作</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#行操作"><span class="post-toc-number">1.6.</span> <span class="post-toc-text">行操作</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#sed"><span class="post-toc-number">2.</span> <span class="post-toc-text">sed</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#行操作-1"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">行操作</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#列操作-1"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">列操作</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#正则表达式-1"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">正则表达式</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#grep"><span class="post-toc-number">3.</span> <span class="post-toc-text">grep</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#正则表达式-2"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">正则表达式</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#find"><span class="post-toc-number">4.</span> <span class="post-toc-text">find</span></a></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-Linux文本四剑客" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Linux文本四剑客</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2022-06-07 12:38:58" datetime="2022-06-07T04:38:58.000Z" itemprop="datePublished">2022-06-07</time>
+
+            <br id="mybreak">
+            
+<script>
+	mybreak.style="display:none";
+</script>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">2</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="awk"><a href="#awk" class="headerlink" title="awk"></a>awk</h2><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">line1 f2 f3</span><br><span class="line">line2 f4 f5</span><br><span class="line">line3 f6 f7</span><br><span class="line">echo -e &quot;line1 f2 f3\nline2 f4 f5\nline3 f6 f7&quot; | awk &apos;{print &quot;Line No:&quot;NR&quot;, No of fields:&quot;NF, &quot;$0=&quot;$0, &quot;$1=&quot;$1, &quot;$2=&quot;$2, &quot;$3=&quot;$3}&apos; </span><br><span class="line">Line No:1, No of fields:3 $0=line1 f2 f3 $1=line1 $2=f2 $3=f3</span><br><span class="line">Line No:2, No of fields:3 $0=line2 f4 f5 $1=line2 $2=f4 $3=f5</span><br><span class="line">Line No:3, No of fields:3 $0=line3 f6 f7 $1=line3 $2=f6 $3=f7</span><br></pre></td></tr></tbody></table></figure>
+<a id="more"></a>
+<h3 id="&#x589E;&#x5220;&#x6539;&#x67E5;"><a href="#&#x589E;&#x5220;&#x6539;&#x67E5;" class="headerlink" title="&#x589E;&#x5220;&#x6539;&#x67E5;"></a>&#x589E;&#x5220;&#x6539;&#x67E5;</h3><h4 id="&#x6DFB;&#x52A0;&#x64CD;&#x4F5C;"><a href="#&#x6DFB;&#x52A0;&#x64CD;&#x4F5C;" class="headerlink" title="&#x6DFB;&#x52A0;&#x64CD;&#x4F5C;"></a>&#x6DFB;&#x52A0;&#x64CD;&#x4F5C;</h4><h4 id="&#x5220;&#x9664;&#x64CD;&#x4F5C;"><a href="#&#x5220;&#x9664;&#x64CD;&#x4F5C;" class="headerlink" title="&#x5220;&#x9664;&#x64CD;&#x4F5C;"></a>&#x5220;&#x9664;&#x64CD;&#x4F5C;</h4><h4 id="&#x4FEE;&#x6539;&#x64CD;&#x4F5C;"><a href="#&#x4FEE;&#x6539;&#x64CD;&#x4F5C;" class="headerlink" title="&#x4FEE;&#x6539;&#x64CD;&#x4F5C;"></a>&#x4FEE;&#x6539;&#x64CD;&#x4F5C;</h4><h4 id="&#x67E5;&#x8BE2;&#x64CD;&#x4F5C;"><a href="#&#x67E5;&#x8BE2;&#x64CD;&#x4F5C;" class="headerlink" title="&#x67E5;&#x8BE2;&#x64CD;&#x4F5C;"></a>&#x67E5;&#x8BE2;&#x64CD;&#x4F5C;</h4><h3 id="&#x66FF;&#x6362;"><a href="#&#x66FF;&#x6362;" class="headerlink" title="&#x66FF;&#x6362;"></a>&#x66FF;&#x6362;</h3><h4 id="&#x66FF;&#x6362;&#x5B57;&#x7B26;"><a href="#&#x66FF;&#x6362;&#x5B57;&#x7B26;" class="headerlink" title="&#x66FF;&#x6362;&#x5B57;&#x7B26;"></a>&#x66FF;&#x6362;&#x5B57;&#x7B26;</h4><h4 id="&#x66FF;&#x6362;&#x6570;&#x5B57;"><a href="#&#x66FF;&#x6362;&#x6570;&#x5B57;" class="headerlink" title="&#x66FF;&#x6362;&#x6570;&#x5B57;"></a><strong>&#x66FF;&#x6362;&#x6570;&#x5B57;</strong></h4><h4 id="&#x66FF;&#x6362;&#x82F1;&#x6587;"><a href="#&#x66FF;&#x6362;&#x82F1;&#x6587;" class="headerlink" title="&#x66FF;&#x6362;&#x82F1;&#x6587;"></a><strong>&#x66FF;&#x6362;&#x82F1;&#x6587;</strong></h4><h4 id="&#x66FF;&#x6362;&#x7A7A;&#x884C;"><a href="#&#x66FF;&#x6362;&#x7A7A;&#x884C;" class="headerlink" title="&#x66FF;&#x6362;&#x7A7A;&#x884C;"></a><strong>&#x66FF;&#x6362;&#x7A7A;&#x884C;</strong></h4><h3 id="&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;"><a href="#&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;" class="headerlink" title="&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;"></a>&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;</h3><h4 id="&#x6807;&#x51C6;"><a href="#&#x6807;&#x51C6;" class="headerlink" title="&#x6807;&#x51C6;"></a><strong>&#x6807;&#x51C6;</strong></h4><h4 id="&#x6269;&#x5C55;"><a href="#&#x6269;&#x5C55;" class="headerlink" title="&#x6269;&#x5C55;"></a><strong>&#x6269;&#x5C55;</strong></h4><h3 id="&#x6761;&#x4EF6;"><a href="#&#x6761;&#x4EF6;" class="headerlink" title="&#x6761;&#x4EF6;"></a>&#x6761;&#x4EF6;</h3><h3 id="&#x5217;&#x64CD;&#x4F5C;"><a href="#&#x5217;&#x64CD;&#x4F5C;" class="headerlink" title="&#x5217;&#x64CD;&#x4F5C;"></a>&#x5217;&#x64CD;&#x4F5C;</h3><h3 id="&#x884C;&#x64CD;&#x4F5C;"><a href="#&#x884C;&#x64CD;&#x4F5C;" class="headerlink" title="&#x884C;&#x64CD;&#x4F5C;"></a>&#x884C;&#x64CD;&#x4F5C;</h3><p>&#x6253;&#x5370;&#x7B2C;&#x4E00;&#x884C;<br></p><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk &apos;NR==1{print}&apos; /tmp/tmp.txt</span><br></pre></td></tr></tbody></table></figure><p></p>
+<h2 id="sed"><a href="#sed" class="headerlink" title="sed"></a>sed</h2><h3 id="&#x884C;&#x64CD;&#x4F5C;-1"><a href="#&#x884C;&#x64CD;&#x4F5C;-1" class="headerlink" title="&#x884C;&#x64CD;&#x4F5C;"></a>&#x884C;&#x64CD;&#x4F5C;</h3><p><strong>&#x6DFB;&#x52A0;&#x5185;&#x5BB9;&#x5230;&#x9996;&#x884C;</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x57FA;&#x672C;&#x8BED;&#x6CD5;&#xFF0C;&#xFF08;&#x7A7A;&#x683C;&#x53EF;&#x4EE5;&#x7701;&#x7565;&#xFF09;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> i&#x5728;&#x5F53;&#x524D;&#x884C;&#x63D2;&#x5165;&#x5185;&#x5BB9;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> a&#x5728;&#x5F53;&#x524D;&#x884C;&#x8FFD;&#x52A0;&#x5185;&#x5BB9;</span></span><br><span class="line">sed &apos;&#x4F5C;&#x7528;&#x8303;&#x56F4;&#x884C; &#x63D2;&#x5165;&#x884C;&#x524D;/&#x540E; &#x63D2;&#x5165;&#x5185;&#x5BB9;&apos; &#x6587;&#x4EF6;&#x540D;</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;file.txt&#x6587;&#x4EF6;&#x7B2C;1&#x884C;&#x524D;&#x9762;&#x63D2;&#x5165;hello</span></span><br><span class="line">sed -i &apos;1 i hello&apos; file.txt</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;file.txt&#x6587;&#x4EF6;&#x7B2C;1&#x884C;&#x540E;&#x9762;&#x63D2;&#x5165;world</span></span><br><span class="line">sed -i &apos;1 a world&apos; file.txt</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x6DFB;&#x52A0;&#x5185;&#x5BB9;&#x5230;&#x6307;&#x5B9A;&#x884C;</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;&#x7B2C;3&#x884C;&#x524D;&#x9762;&#x63D2;&#x5165;&#x5185;&#x5BB9;</span></span><br><span class="line">sed -i &apos;3i hello &apos; file.txt</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x5728;&#x6700;&#x540E;&#x4E00;&#x884C;&#x63D2;&#x5165;&#x5185;&#x5BB9;</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> $&#x8868;&#x793A;&#x6700;&#x540E;&#x4E00;&#x884C;</span></span><br><span class="line">sed -i &apos;$a hello&apos; sample.txt</span><br></pre></td></tr></tbody></table></figure><p></p>
+<h3 id="&#x5217;&#x64CD;&#x4F5C;-1"><a href="#&#x5217;&#x64CD;&#x4F5C;-1" class="headerlink" title="&#x5217;&#x64CD;&#x4F5C;"></a>&#x5217;&#x64CD;&#x4F5C;</h3><h3 id="&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;-1"><a href="#&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;-1" class="headerlink" title="&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;"></a>&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;</h3><h2 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h2><h3 id="&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;-2"><a href="#&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;-2" class="headerlink" title="&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;"></a>&#x6B63;&#x5219;&#x8868;&#x8FBE;&#x5F0F;</h3><h2 id="find"><a href="#find" class="headerlink" title="find"></a>find</h2><script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2022-06-07T05:21:59.973Z" itemprop="dateUpdated">2022-06-07 13:21:59</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/b7f1c6/" target="_blank" rel="external">https://marnm.github.io/posts/b7f1c6/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='https://marnm.github.io'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/b7f1c6/&title=《Linux文本四剑客》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/b7f1c6/&title=《Linux文本四剑客》 — Deops's blog&source=awk1234567line1 f2 f3line2 f4 f5line3 f6 f7echo -e " line1="" f2="" f3\nline2="" f4="" f5\..."="" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/b7f1c6/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Linux文本四剑客》 — Deops's blog&url=https://marnm.github.io/posts/b7f1c6/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/b7f1c6/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/38cc96c8/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：LVM磁盘管理
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/b382711f/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：VIM的使用">下一篇：VIM的使用</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2022
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="https://marnm.github.io">marnm.github.io</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/b7f1c6/&title=《Linux文本四剑客》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/b7f1c6/&title=《Linux文本四剑客》 — Deops's blog&source=awk1234567line1 f2 f3line2 f4 f5line3 f6 f7echo -e " line1="" f2="" f3\nline2="" f4="" f5\..."="" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/b7f1c6/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Linux文本四剑客》 — Deops's blog&url=https://marnm.github.io/posts/b7f1c6/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/b7f1c6/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAAByUlEQVR42u3aS04DMRAFQO5/6bBFimb0XnvsRKi8igjYZRat/vjnJ16vP+v951e/+f7t/d8+tnBxcZe5r9t1xb36fAVKdrg34OLinucmh92HthVKYsDFxf1m7n26kyQuuLi4/4/b1iZJ8YOLi/ud3DwFeeoa22s1XFzcBW5+2L7PW/q7uLi4I+6rXPlwpd0hOh0XF/cINw8oeVKy0liJhru4uLibuXmISUanswFt0VjBxcU9yG1Hqs9eL093cHFxz3Bn6Uty/CxQRv8+XFzcI9y2BGrRbQiLnnTg4uJu484eSbS42dimqNVwcXE3cO8LnjbYJVfNW6hRrYaLi/soNy9U8iDVJjHtxXBxcXdz86cSbQM0R+SNWlxc3DPcdnAyG7e0hVDdKsXFxd3Gbceobeqz8pzrspeDi4t7kFs/iSgHLW2LBBcX91Pc2cCjbZfMdh5uhIuLO+K+yjVrm84eXuDi4n6Ku/4koi11ivbHyjMOXFzcZW5bnOQHtMEu2gEXF/cgNx9pzK6UR9CoYYqLi/uV3Lw5slJiFV0TXFzcj3LbVGa9RbsUyHBxcRe4eXNzFlVWiLi4uOe5K6Enf0LRNkQe6O/i4uJOuL9biyn4r0LWEgAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>

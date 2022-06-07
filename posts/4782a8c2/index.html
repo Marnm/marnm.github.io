@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>DNS Server的配置与管理 | Deops&#39;s blog | 运维开发工程师</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="&amp;#x914D;&amp;#x7F6E;&amp;#x5B9E;&amp;#x73B0; &amp;#x4FEE;&amp;#x6539;/etc/named.conf&amp;#x914D;&amp;#x7F6E;&amp;#x6587;&amp;#x4EF6;  1234567891011121314151617181920212223242526options {    listen-on port 53 { any; };    listen-on-v6 po">
+<meta name="keywords" content="Echo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DNS Server的配置与管理">
+<meta property="og:url" content="https://marnm.github.io/posts/4782a8c2/index.html">
+<meta property="og:site_name" content="Deops&#39;s blog">
+<meta property="og:description" content="&amp;#x914D;&amp;#x7F6E;&amp;#x5B9E;&amp;#x73B0; &amp;#x4FEE;&amp;#x6539;/etc/named.conf&amp;#x914D;&amp;#x7F6E;&amp;#x6587;&amp;#x4EF6;  1234567891011121314151617181920212223242526options {    listen-on port 53 { any; };    listen-on-v6 po">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-06-07T05:25:10.622Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DNS Server的配置与管理">
+<meta name="twitter:description" content="&amp;#x914D;&amp;#x7F6E;&amp;#x5B9E;&amp;#x73B0; &amp;#x4FEE;&amp;#x6539;/etc/named.conf&amp;#x914D;&amp;#x7F6E;&amp;#x6587;&amp;#x4EF6;  1234567891011121314151617181920212223242526options {    listen-on port 53 { any; };    listen-on-v6 po">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
+                <i class="icon icon-lg icon-tv tv"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">DNS Server的配置与管理</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#配置实现"><span class="post-toc-number">1.</span> <span class="post-toc-text">配置实现</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#配置DNS转发"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">配置DNS转发</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#配置主从DNS服务"><span class="post-toc-number">2.</span> <span class="post-toc-text">配置主从DNS服务</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#DNS主从密钥认证"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">DNS主从密钥认证</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#常见问题解决"><span class="post-toc-number">3.</span> <span class="post-toc-text">常见问题解决</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#DNS配置解析"><span class="post-toc-number">4.</span> <span class="post-toc-text">DNS配置解析</span></a></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-DNSServer的配置与管理" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">DNS Server的配置与管理</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2022-06-07 12:35:39" datetime="2022-06-07T04:35:39.000Z" itemprop="datePublished">2022-06-07</time>
+
+            <br id="mybreak">
+            
+<script>
+	mybreak.style="display:none";
+</script>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">9</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="&#x914D;&#x7F6E;&#x5B9E;&#x73B0;"><a href="#&#x914D;&#x7F6E;&#x5B9E;&#x73B0;" class="headerlink" title="&#x914D;&#x7F6E;&#x5B9E;&#x73B0;"></a>&#x914D;&#x7F6E;&#x5B9E;&#x73B0;</h2><blockquote>
+<p>&#x4FEE;&#x6539;/etc/named.conf&#x914D;&#x7F6E;&#x6587;&#x4EF6;</p>
+</blockquote>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">options {</span><br><span class="line">    listen-on port 53 { any; };</span><br><span class="line">    listen-on-v6 port 53 { any; };</span><br><span class="line">    ...</span><br><span class="line">    allow-query { any; };</span><br><span class="line">    ...</span><br><span class="line">    recursion yes;  # &#x662F;&#x5426;&#x542F;&#x7528;&#x9012;&#x5F52;&#x67E5;&#x8BE2;</span><br><span class="line">    </span><br><span class="line">    dnssec-enable yes;</span><br><span class="line">    dnssec-validation yes;</span><br><span class="line">    dnssec-lookaside auto;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">##------------------------------------------------</span><br><span class="line">## &#x8BE5;&#x914D;&#x7F6E;&#x5EFA;&#x8BAE;&#x6DFB;&#x52A0;&#x5230;/etc//etc/named.rfc1912.zones</span><br><span class="line"># &#x65B0;&#x589E;&#x5982;&#x4E0B;</span><br><span class="line">zone &quot;abc.cn&quot; IN {</span><br><span class="line">    type master;</span><br><span class="line">    file &quot;abc.cn.zone&quot;;</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">zone &quot;73.168.192.in-addr.arpa&quot; IN {</span><br><span class="line">    type master;</span><br><span class="line">    file &quot;192.168.73.arpa&quot;;</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>&#x6DFB;&#x52A0;&#x6B63;&#x53CD;&#x5411;&#x89E3;&#x6790;</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x590D;&#x5236;&#x6B63;&#x5411;&#x89E3;&#x6790;&#x914D;&#x7F6E;&#x6A21;&#x677F;</span></span><br><span class="line">cp -p /var/named/named.localhost /var/named/abc.cn.zone</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x590D;&#x5236;&#x53CD;&#x5411;&#x89E3;&#x6790;&#x914D;&#x7F6E;&#x6A21;&#x677F;</span></span><br><span class="line">cp -p /var/named/named.empty /var/named/192.168.73.arpa</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#############################################</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6DFB;&#x52A0;&#x6B63;&#x5411;&#x89E3;&#x6790;&#x914D;&#x7F6E;</span></span><br><span class="line">vim /var/named/abc.cn.zone</span><br></pre></td></tr></tbody></table></figure><p></p>
+<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">$TTL 1D</span><br><span class="line">abc.cn. IN SOA  dns.abc.cn. root.abc.cn. (</span><br><span class="line">                    0   ; serial</span><br><span class="line">                    1D  ; refresh</span><br><span class="line">                    1H  ; retry</span><br><span class="line">                    1W  ; expire</span><br><span class="line">                    3H )    ; minimum</span><br><span class="line">abc.cn. NS  dns.abc.cn.</span><br><span class="line">dns.abc.cn. A   192.168.73.5</span><br><span class="line">www.abc.cn. A   192.168.73.5</span><br><span class="line">www1.abc.cn.    CNAME   www.abc.cn.</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6DFB;&#x52A0;&#x53CD;&#x5411;&#x89E3;&#x6790;&#x914D;&#x7F6E;</span></span><br><span class="line">vim /var/named/192.168.73.arpa</span><br><span class="line"></span><br><span class="line">$TTL 3H</span><br><span class="line">@   IN SOA  abc.cn. root.abc.cn. (</span><br><span class="line">                    0   ; serial</span><br><span class="line">                    1D  ; refresh</span><br><span class="line">                    1H  ; retry</span><br><span class="line">                    1W  ; expire</span><br><span class="line">                    3H )    ; minimum</span><br><span class="line">    NS  ns.abc.cn.</span><br><span class="line">ns  A   192.168.73.5</span><br><span class="line">5   PTR ns.abc.cn.</span><br><span class="line">5   PTR www.abc.cn.</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="&#x914D;&#x7F6E;DNS&#x8F6C;&#x53D1;"><a href="#&#x914D;&#x7F6E;DNS&#x8F6C;&#x53D1;" class="headerlink" title="&#x914D;&#x7F6E;DNS&#x8F6C;&#x53D1;"></a>&#x914D;&#x7F6E;DNS&#x8F6C;&#x53D1;</h3><figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/named.conf</span><br><span class="line"><span class="comment">################</span></span><br><span class="line">options{</span><br><span class="line">    forward first;</span><br><span class="line">    <span class="comment"># &#x591A;&#x4E2A;DNS&#x7528;;&#x9694;&#x5F00;</span></span><br><span class="line">    forwarders {</span><br><span class="line">        192.168.73.2;</span><br><span class="line">        114.114.114.114;</span><br><span class="line">        8.8.8.8;</span><br><span class="line">        8.8.4.4;</span><br><span class="line">        1.1.1.1;</span><br><span class="line">    };</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;DNS&#x670D;&#x52A1;"><a href="#&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;DNS&#x670D;&#x52A1;" class="headerlink" title="&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;DNS&#x670D;&#x52A1;"></a>&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;DNS&#x670D;&#x52A1;</h2><blockquote>
+<p>&#x4E3B;&#x4ECE;&#x673A;&#x5668;&#x8FDB;&#x884C;&#x65F6;&#x95F4;&#x540C;&#x6B65;</p>
+</blockquote>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ntpd</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>&#x4FEE;&#x6539;&#x4E3B;DNS&#x670D;&#x52A1;&#x5668;&#x914D;&#x7F6E;</strong><br></p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/named.conf</span><br><span class="line">###################</span><br><span class="line">zone &quot;abc.cn&quot; IN {</span><br><span class="line">    type master;</span><br><span class="line">    file &quot;abc.cn.zone&quot;;</span><br><span class="line">    allow-transfer { 192.168.73/24; };  # &#x6DFB;&#x52A0;&#x8BE5;&#x53C2;&#x6570;</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">zone &quot;73.168.192.in-addr.arpa&quot; IN {</span><br><span class="line">    type master;</span><br><span class="line">    file &quot;192.168.73.arpa&quot;;</span><br><span class="line">    allow-transfer { 192.168.73/24; };  # &#x6DFB;&#x52A0;&#x8BE5;&#x53C2;&#x6570;</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x4FEE;&#x6539;&#x4ECE;DNS&#x670D;&#x52A1;&#x5668;&#x914D;&#x7F6E;</strong></p>
+<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/named.conf</span><br><span class="line">options{</span><br><span class="line">    listen-on port 53 { any; };</span><br><span class="line">    listen-on-v6 port 53 { any; };</span><br><span class="line">    ...</span><br><span class="line">    allow-query     { any; };</span><br><span class="line">    </span><br><span class="line">    recursion yes;</span><br><span class="line">    ...</span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">    dnssec-validation no;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">zone &quot;abc.cn&quot; IN {</span><br><span class="line">    type slave;</span><br><span class="line">    file &quot;slaves/abc.cn.zone.file&quot;;</span><br><span class="line">    masters { 192.168.73.5; };</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">zone &quot;73.168.192.in-addr.arpa&quot; IN {</span><br><span class="line">    type slave;</span><br><span class="line">    file &quot;slaves/192.168.73.arpa.file&quot;;</span><br><span class="line">    masters { 192.168.73.5; };</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
+<blockquote>
+<p>&#x91CD;&#x542F;&#x4ECE;DNS&#x670D;&#x52A1;&#x5668;&#xFF0C;<br>&#x67E5;&#x770B;/var/named/slaves/&#x76EE;&#x5F55;&#x4E0B;&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;<br>&#x4ECE;DNS&#x670D;&#x52A1;&#x80FD;&#x591F;&#x4ECE;&#x4E3B;DNS&#x590D;&#x5236;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x8FC7;&#x6765;</p>
+</blockquote>
+<h3 id="DNS&#x4E3B;&#x4ECE;&#x5BC6;&#x94A5;&#x8BA4;&#x8BC1;"><a href="#DNS&#x4E3B;&#x4ECE;&#x5BC6;&#x94A5;&#x8BA4;&#x8BC1;" class="headerlink" title="DNS&#x4E3B;&#x4ECE;&#x5BC6;&#x94A5;&#x8BA4;&#x8BC1;"></a>DNS&#x4E3B;&#x4ECE;&#x5BC6;&#x94A5;&#x8BA4;&#x8BC1;</h3><blockquote>
+<p>ntpd&#x4E3B;&#x4ECE;&#x65F6;&#x95F4;&#x540C;&#x6B65;</p>
+</blockquote>
+<p><strong>&#x4E3B;DNS&#x670D;&#x52A1;&#x5668;&#x914D;&#x7F6E;</strong><br></p><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x751F;&#x6210;&#x5BC6;&#x94A5;</span></span><br><span class="line"><span class="built_in">cd</span> /var/named/chroot/etc/</span><br><span class="line">dnssec-keygen -a hmac-md5 -b 128 -n HOST &#x5BC6;&#x94A5;&#x540D;&#x79F0;</span><br><span class="line"><span class="comment"># &#x67E5;&#x770B;&#x5BC6;&#x94A5;&#x7684;&#x5BC6;&#x7801;</span></span><br><span class="line">cat k****.+**+***.key</span><br><span class="line">cat Kdnskey.+157+23495.key</span><br><span class="line">dnskey. IN KEY 512 3 157 Rg0mKvMMQ06YAoN0FcOCXQ==</span><br><span class="line">&#x590D;&#x5236;&#x5BC6;&#x7801;&#x4E32;</span><br><span class="line"><span class="comment">########################################</span></span><br><span class="line"><span class="comment"># &#x4FEE;&#x6539;&#x4E3B;DNS&#x670D;&#x52A1;&#x5668;&#x914D;&#x7F6E;&#x6587;&#x4EF6;</span></span><br><span class="line">vim /etc/named.conf</span><br><span class="line"><span class="comment"># &#x6DFB;&#x52A0;&#x5982;&#x4E0B;&#x914D;&#x7F6E;</span></span><br><span class="line">key <span class="string">&quot;dnskey&quot;</span> {</span><br><span class="line">    algorithm hmac-md5;</span><br><span class="line">    secret <span class="string">&quot;&#x7C98;&#x8D34;&#x751F;&#x6210;&#x7684;key&#x5BC6;&#x7801;&#x4E32;&quot;</span>;</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">zone <span class="string">&quot;abc.cn&quot;</span> IN {</span><br><span class="line">    <span class="built_in">type</span> master;</span><br><span class="line">    file <span class="string">&quot;abc.cn.zone&quot;</span>;</span><br><span class="line">    allow-transfer { key &#x5BC6;&#x94A5;&#x540D;&#x79F0; };</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">zone <span class="string">&quot;73.168.192.in-addr.arpa&quot;</span> IN {</span><br><span class="line">    <span class="built_in">type</span> master;</span><br><span class="line">    file <span class="string">&quot;192.168.73.apra&quot;</span>;</span><br><span class="line">    allow-transfer { key &#x5BC6;&#x94A5;&#x540D;&#x79F0; };</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x4ECE;DNS&#x670D;&#x52A1;&#x5668;&#x914D;&#x7F6E;</strong><br></p><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x4FEE;&#x6539;dns&#x914D;&#x7F6E;&#x6587;&#x4EF6;</span></span><br><span class="line">vim /etc/named.conf</span><br><span class="line"><span class="comment"># &#x6DFB;&#x52A0;&#x5982;&#x4E0B;&#x914D;&#x7F6E;</span></span><br><span class="line">key <span class="string">&quot;dnskey&quot;</span> {</span><br><span class="line">    algorithm hmac-md5;</span><br><span class="line">    secret <span class="string">&quot;&#x7C98;&#x8D34;&#x751F;&#x6210;&#x7684;&#x5BC6;&#x94A5;&#x5230;&#x8BE5;&#x5904;&quot;</span>;</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">zone <span class="string">&quot;abc.cn&quot;</span> IN {</span><br><span class="line">    <span class="built_in">type</span> slave;</span><br><span class="line">    file <span class="string">&quot;slaves/abc.cn.zone.file&quot;</span>;</span><br><span class="line">    masters { 192.168.73.5 key dnskey; };</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">zone <span class="string">&quot;73.168.192.in-addr.arpa&quot;</span> IN {</span><br><span class="line">    <span class="built_in">type</span> slave;</span><br><span class="line">    file <span class="string">&quot;slaves/192.168.73.arpa.file&quot;</span>;</span><br><span class="line">    masters { 192.168.73.5 key dnskey; };</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure><p></p>
+<h2 id="&#x5E38;&#x89C1;&#x95EE;&#x9898;&#x89E3;&#x51B3;"><a href="#&#x5E38;&#x89C1;&#x95EE;&#x9898;&#x89E3;&#x51B3;" class="headerlink" title="&#x5E38;&#x89C1;&#x95EE;&#x9898;&#x89E3;&#x51B3;"></a>&#x5E38;&#x89C1;&#x95EE;&#x9898;&#x89E3;&#x51B3;</h2><p><strong>&#x542F;&#x52A8;&#x72B6;&#x6001;&#x62A5;network unreachable&#x95EE;&#x9898;</strong><br></p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;./DNSKEY/IN&apos;: 2001:503:ba3e::2:30#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;./NS/IN&apos;: 2001:503:ba3e::2:30#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;dlv.isc.org/DNSKEY/IN&apos;: 2001:500:48::1#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;dlv.isc.org/DNSKEY/IN&apos;: 2001:4f8:0:2::19#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;ns.isc.afilias-nst.info/A/IN&apos;: 2001:500:2f::f#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;ns.isc.afilias-nst.info/AAAA/IN&apos;: 2001:500:2f::f#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;ns.isc.afilias-nst.info/A/IN&apos;: 2001:500:1::803f:235#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;ns.isc.afilias-nst.info/AAAA/IN&apos;: 2001:500:1::803f:235#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;ns.isc.afilias-nst.info/A/IN&apos;: 2001:503:c27::2:30#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;ns.isc.afilias-nst.info/AAAA/IN&apos;: 2001:503:c27::2:30#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;ns.isc.afilias-nst.info/A/IN&apos;: 2001:500:1a::1#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;dlv.isc.org/DNSKEY/IN&apos;: 2001:4f8:0:2::20#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;dlv.isc.org/DNSKEY/IN&apos;: 2001:500:60::29#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;ns1.isc.ultradns.net/A/IN&apos;: 2001:7fd::1#53</span><br></pre></td></tr></tbody></table></figure><p></p>
+<blockquote>
+<p>&#x914D;&#x7F6E;&#x9012;&#x5F52;&#x65F6;&#xFF0C;&#x8F6C;&#x53D1;&#x6570;&#x636E;&#x4F18;&#x5148;IPv6&#x8FED;&#x4EE3;</p>
+</blockquote>
+<p>&#x4FEE;&#x6539;<code>/etc/sysconfig/named</code><br></p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># &#x6DFB;&#x52A0;OPTIONS</span><br><span class="line">#/etc/sysconfig/named &#x662F;bind&#x5B88;&#x62A4;&#x8FDB;&#x7A0B;&#x542F;&#x52A8;&#x65F6;&#x4F20;&#x9012;&#x53C2;&#x6570;&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF0C;</span><br><span class="line"></span><br><span class="line">OPTIONS=&quot;-4&quot;</span><br><span class="line"># BIND named process options</span><br><span class="line"># ~~~~~~~~~~~~~~~~~~~~~~~~~~</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x53C2;&#x8003;&#xFF1A;<a href="https://www.cnblogs.com/zy09/p/14596993.html" target="_blank" rel="noopener">https://www.cnblogs.com/zy09/p/14596993.html</a></p>
+<p><strong>&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;DNS&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x65E0;&#x6CD5;&#x8BFB;&#x53D6;&#x4ECE;DNS&#x914D;&#x7F6E;</strong></p>
+<blockquote>
+<p>&#x4FEE;&#x6539;&#x4ECE;DNS&#x670D;&#x52A1;&#x5668;&#x914D;&#x7F6E;&#x6587;&#x4EF6;<br></p><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/named.conf</span><br><span class="line">dnssec-enable yes;  </span><br><span class="line">dnssec-validation no;   <span class="comment">#&#x5173;&#x95ED;&#x9A8C;&#x8BC1;</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+</blockquote>
+<h2 id="DNS&#x914D;&#x7F6E;&#x89E3;&#x6790;"><a href="#DNS&#x914D;&#x7F6E;&#x89E3;&#x6790;" class="headerlink" title="DNS&#x914D;&#x7F6E;&#x89E3;&#x6790;"></a>DNS&#x914D;&#x7F6E;&#x89E3;&#x6790;</h2><blockquote>
+<p>An example of a simple resource record (RR):<br>example.com.    86400    IN    A    192.0.2.1</p>
+</blockquote>
+<p>example.com, &#x8D44;&#x6E90;&#x8BB0;&#x5F55;<br>86400,  time to live(TTL)<br>IN  &#x201C;the Internet system&#x201D;, &#x6307;&#x660E;RR&#x7684;&#x7684;&#x7C7B;&#x522B;<br>A   &#x6307;&#x660E;RR&#x7684;&#x7C7B;&#x578B;&#xFF0C;a host address<br>192.0.2.1   &#x6307;&#x660E;RR&#x5305;&#x542B;&#x7684;IP&#x5730;&#x5740;</p>
+<blockquote>
+<p>/etc/named.conf&#xFF0C;bind&#x7684;&#x4E3B;&#x8981;&#x914D;&#x7F6E;&#x6587;&#x4EF6;<br>/var/named/&#xFF0C;&#x4E3B;&#x8981;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x7684;&#x8F85;&#x52A9;&#x76EE;&#x5F55;</p>
+</blockquote>
+<p>SOA &#xFF0C;Start of Authority Record&#xFF0C;&#x8D77;&#x59CB;&#x6388;&#x6743;&#x8BB0;&#x5F55;&#xFF0C;&#x6BCF;&#x4E2A;&#x533A;&#x5728;&#x533A;&#x7684;&#x5F00;&#x59CB;&#x90FD;&#x5305;&#x542B;&#x4E00;&#x4E2A;<br>NS&#xFF0C;Name Server&#xFF0C;&#x57DF;&#x540D;&#x670D;&#x52A1;&#x5668;&#x8BB0;&#x5F55;&#xFF0C;&#x7528;&#x6765;&#x6307;&#x5B9A;&#x8BE5;&#x57DF;&#x540D;&#x7531;&#x54EA;&#x4E2A;DNS&#x670D;&#x52A1;&#x5668;&#x6765;&#x8FDB;&#x884C;&#x89E3;&#x6790;&#xFF0C;&#x6BCF;&#x4E2A;&#x533A;&#x81F3;&#x5C11;&#x5305;&#x542B;&#x4E00;&#x4E2A;NS<br>A&#xFF0C;&#x5730;&#x5740;&#x8D44;&#x6E90;&#x8BB0;&#x5F55;&#xFF0C;&#x628A;FQDN&#xFF08;&#x5B8C;&#x5168;&#x5408;&#x683C;&#x57DF;&#x540D;&#xFF0C;&#x6216;&#x5B8C;&#x6574;&#x7684;&#x8BA1;&#x7B97;&#x673A;&#x540D;&#xFF09;&#x6620;&#x5C04;&#x5230;IP&#x5730;&#x5740;&#xFF0C;&#x8BE5;&#x8BB0;&#x5F55;&#x80FD;&#x591F;&#x89E3;&#x6790;FQDN&#x57DF;&#x540D;&#x5BF9;&#x5E94;&#x7684;IP&#x5730;&#x5740;&#x3002;<br>PTR&#xFF0C;&#x6307;&#x9488;&#x8BB0;&#x5F55;&#xFF0C;&#x628A;IP&#x5730;&#x5740;&#x6620;&#x5C04;&#x5230;FQDN&#xFF0C;&#x7528;&#x4E8E;&#x53CD;&#x5411;&#x67E5;&#x8BE2;&#xFF0C;&#x901A;&#x8FC7;IP&#x5730;&#x5740;&#x627E;&#x5230;&#x57DF;&#x540D;&#x3002;<br>CNAME&#xFF0C;&#x522B;&#x540D;&#x8BB0;&#x5F55;&#xFF0C;&#x521B;&#x5EFA;&#x7279;&#x5B9A;&#x7684;FQDN&#x522B;&#x540D;<br>MX&#xFF0C;&#x90AE;&#x4EF6;&#x4EA4;&#x6362;&#x8BB0;&#x5F55;&#xFF0C;&#x6307;&#x5B9A;&#x90AE;&#x4EF6;&#x4EA4;&#x6362;&#x670D;&#x52A1;&#x5668;&#x3002;</p>
+<p><strong>/etc/named.conf&#x5E38;&#x7528;&#x914D;&#x7F6E;&#x9009;&#x9879;</strong></p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>allow-query</td>
+<td></td>
+</tr>
+<tr>
+<td>allow-query-cache</td>
+<td></td>
+</tr>
+<tr>
+<td>blackhole</td>
+<td></td>
+</tr>
+<tr>
+<td>directory</td>
+<td></td>
+</tr>
+<tr>
+<td>disable-empty-zone</td>
+<td></td>
+</tr>
+<tr>
+<td>dnssec-enable</td>
+<td></td>
+</tr>
+<tr>
+<td>dnssec-validation</td>
+<td></td>
+</tr>
+<tr>
+<td>empty-zones-enable</td>
+<td></td>
+</tr>
+<tr>
+<td>forwarders</td>
+<td></td>
+</tr>
+<tr>
+<td>forward</td>
+<td></td>
+</tr>
+<tr>
+<td>listen-on</td>
+<td></td>
+</tr>
+<tr>
+<td>listen-on-v6</td>
+<td></td>
+</tr>
+<tr>
+<td>max-cache-size</td>
+<td></td>
+</tr>
+<tr>
+<td>notify</td>
+<td></td>
+</tr>
+<tr>
+<td>pid-file</td>
+<td></td>
+</tr>
+<tr>
+<td>recursion</td>
+<td></td>
+</tr>
+<tr>
+<td>statistics-file</td>
+</tr>
+</tbody>
+</table>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2022-06-07T05:25:10.622Z" itemprop="dateUpdated">2022-06-07 13:25:10</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/4782a8c2/" target="_blank" rel="external">https://marnm.github.io/posts/4782a8c2/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='https://marnm.github.io'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/4782a8c2/&title=《DNS Server的配置与管理》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/4782a8c2/&title=《DNS Server的配置与管理》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/4782a8c2/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《DNS Server的配置与管理》 — Deops's blog&url=https://marnm.github.io/posts/4782a8c2/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/4782a8c2/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/9d56e705/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：FTP/TFTP的配置与管理
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/9964b559/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：DHCP Server的配置与管理">下一篇：DHCP Server的配置与管理</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2022
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="https://marnm.github.io">marnm.github.io</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/4782a8c2/&title=《DNS Server的配置与管理》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/4782a8c2/&title=《DNS Server的配置与管理》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/4782a8c2/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《DNS Server的配置与管理》 — Deops's blog&url=https://marnm.github.io/posts/4782a8c2/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/4782a8c2/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABz0lEQVR42u3aQY7DIAwF0N7/0pntSG2Ybzuk0eixiioCjy4sbOf1isfxa7z//j7nfebZmq8dAxcXd8w9lmPNXSPWK6yPerojLi7ujdx843zOEYx8fVxc3OdzJyEPFxf3f3OTRKh6GcLFxX0Ot3oFWacxeTVjY66Gi4s74OZVyn3PW+q7uLi4Le5RHL2S6LoNU9gdFxf3Fm4eUK46TK8xg4uLeyc3STZ6zY+8vZr8NVH+hIuLu4Hbyz6qUbNXFvkQyHBxcW/n5teR/EOranD88IyLi3sjN2m49q4y1c811gfDxcW9k5u8ME+WJh2Tcq6Gi4t7fc7SvNYkM6sl1AiNi4u7gTtPbyaBr3owXFzc3dw8JK03SAJcr8Vymqvh4uJu4/aaqaN2SPGPOH0LFxd3M7d6EZnkVZNCDC4u7re41RJJteSRt1dHuRouLu5F3MlztfBRTasKdRpcXNwx9yiOPJfK12k2U3FxcbdxJ59EJBtUk5zeBQsXF3cH96rglbRYeoXXZozExcUdcycfXvRKJ3kydloWwcXFfQw3WXoymlUTXFzcr3J7aUyvePpHKwUXF3czt1rcTGZOKjFRTxgXF3cbt/fypEGy+6i4uLgD7g+TiSn4dXzTawAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>

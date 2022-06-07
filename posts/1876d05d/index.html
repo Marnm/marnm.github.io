@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>NetworkManager管理工具 | Deops&#39;s blog | 运维开发工程师</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="NetworkManager &amp;#x7F51;&amp;#x7EDC;&amp;#x7BA1;&amp;#x7406;&amp;#x5DE5;&amp;#x5177;NetworkManager&amp;#x53EF;&amp;#x4EE5;&amp;#x901A;&amp;#x8FC7;networkmanager&amp;#x5305;&amp;#x5B89;&amp;#x88C5;&amp;#xFF0C;&amp;#x5B89;&amp;#x88C5;&amp;#x540E;&amp;#x63D0;&amp;#x4F9B;&amp;#x4E">
+<meta name="keywords" content="Echo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NetworkManager管理工具">
+<meta property="og:url" content="https://marnm.github.io/posts/1876d05d/index.html">
+<meta property="og:site_name" content="Deops&#39;s blog">
+<meta property="og:description" content="NetworkManager &amp;#x7F51;&amp;#x7EDC;&amp;#x7BA1;&amp;#x7406;&amp;#x5DE5;&amp;#x5177;NetworkManager&amp;#x53EF;&amp;#x4EE5;&amp;#x901A;&amp;#x8FC7;networkmanager&amp;#x5305;&amp;#x5B89;&amp;#x88C5;&amp;#xFF0C;&amp;#x5B89;&amp;#x88C5;&amp;#x540E;&amp;#x63D0;&amp;#x4F9B;&amp;#x4E">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-06-07T05:19:51.835Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="NetworkManager管理工具">
+<meta name="twitter:description" content="NetworkManager &amp;#x7F51;&amp;#x7EDC;&amp;#x7BA1;&amp;#x7406;&amp;#x5DE5;&amp;#x5177;NetworkManager&amp;#x53EF;&amp;#x4EE5;&amp;#x901A;&amp;#x8FC7;networkmanager&amp;#x5305;&amp;#x5B89;&amp;#x88C5;&amp;#xFF0C;&amp;#x5B89;&amp;#x88C5;&amp;#x540E;&amp;#x63D0;&amp;#x4F9B;&amp;#x4E">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
+                <i class="icon icon-lg icon-tv tv"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">NetworkManager管理工具</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#NetworkManager-网络管理工具"><span class="post-toc-number">1.</span> <span class="post-toc-text">NetworkManager 网络管理工具</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#语法"><span class="post-toc-number">1.0.1.</span> <span class="post-toc-text">语法</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#选项"><span class="post-toc-number">1.0.2.</span> <span class="post-toc-text">选项</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#实例"><span class="post-toc-number">1.0.3.</span> <span class="post-toc-text">实例</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#创建网络会话"><span class="post-toc-number">1.0.4.</span> <span class="post-toc-text">创建网络会话</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-NetworkManager管理工具" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">NetworkManager管理工具</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2022-06-07 12:41:12" datetime="2022-06-07T04:41:12.000Z" itemprop="datePublished">2022-06-07</time>
+
+            <br id="mybreak">
+            
+<script>
+	mybreak.style="display:none";
+</script>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">3</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="NetworkManager-&#x7F51;&#x7EDC;&#x7BA1;&#x7406;&#x5DE5;&#x5177;"><a href="#NetworkManager-&#x7F51;&#x7EDC;&#x7BA1;&#x7406;&#x5DE5;&#x5177;" class="headerlink" title="NetworkManager &#x7F51;&#x7EDC;&#x7BA1;&#x7406;&#x5DE5;&#x5177;"></a>NetworkManager &#x7F51;&#x7EDC;&#x7BA1;&#x7406;&#x5DE5;&#x5177;</h1><p>NetworkManager&#x53EF;&#x4EE5;&#x901A;&#x8FC7;<code>networkmanager</code>&#x5305;&#x5B89;&#x88C5;&#xFF0C;&#x5B89;&#x88C5;&#x540E;&#x63D0;&#x4F9B;&#x4E00;&#x4E2A;daemon&#x3001;&#x4E00;&#x4E2A;&#x547D;&#x4EE4;&#x884C;&#x754C;&#x9762;<code>nmcli</code>&#x548C;&#x4E00;&#x4E2A;&#x57FA;&#x4E8E;curses&#x7684;&#x754C;&#x9762;<code>nmtui</code>&#x3002;</p>
+<p><strong>&#x542F;&#x7528;&#x4E0E;&#x5173;&#x95ED;</strong></p>
+<p>&#x901A;&#x8FC7;<code>NetworkManager.service</code>systemd&#x670D;&#x52A1;&#x542F;&#x52A8;&#x4E0E;&#x5173;&#x95ED;</p>
+<h3 id="&#x8BED;&#x6CD5;"><a href="#&#x8BED;&#x6CD5;" class="headerlink" title="&#x8BED;&#x6CD5;"></a>&#x8BED;&#x6CD5;</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmcli [OPTIONS] OBJECT { COMMAND | help }</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="&#x9009;&#x9879;"><a href="#&#x9009;&#x9879;" class="headerlink" title="&#x9009;&#x9879;"></a>&#x9009;&#x9879;</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">OPTIONS</span><br><span class="line">  -t[erse]                                  # terse output &#x7B80;&#x6D01;&#x7684;&#x8F93;&#x51FA;</span><br><span class="line">  -p[retty]                                 # pretty output &#x6F02;&#x4EAE;&#x7684;&#x8F93;&#x51FA;</span><br><span class="line">  -m[ode] tabular|multiline                 # output mode  &#x8F93;&#x51FA;&#x6A21;&#x5F0F;</span><br><span class="line">  -f[ields] &lt;field1,field2,...&gt;|all|common  # specify fields to output &#x6307;&#x5B9A;&#x8981;&#x8F93;&#x51FA;&#x7684;&#x5B57;&#x6BB5;</span><br><span class="line">  -e[scape] yes|no                          # escape columns separators in values &#x5728;&#x503C;&#x4E2D;&#x8F6C;&#x4E49;&#x5217;&#x5206;&#x9694;&#x7B26;</span><br><span class="line">  -n[ocheck]                                # &#x4E0D;&#x8981;&#x68C0;&#x67E5;nmcli&#x548C;NetworkManager&#x7248;&#x672C;</span><br><span class="line">  -a[sk]                                    # &#x8981;&#x6C42;&#x7F3A;&#x5C11;&#x53C2;&#x6570;</span><br><span class="line">  -w[ait] &lt;seconds&gt;                         # &#x8BBE;&#x7F6E;&#x8D85;&#x65F6;&#x7B49;&#x5F85;&#x6574;&#x7406;&#x64CD;&#x4F5C;</span><br><span class="line">  -v[ersion]                                # &#x663E;&#x793A;&#x7A0B;&#x5E8F;&#x7248;&#x672C;</span><br><span class="line">  -h[elp]                                   # &#x6253;&#x5370;&#x6B64;&#x5E2E;&#x52A9;</span><br><span class="line"></span><br><span class="line">OBJECT</span><br><span class="line">  g[eneral]       NetworkManager&#x7684;&#x4E00;&#x822C;&#x72B6;&#x6001;&#x548C;&#x64CD;&#x4F5C;</span><br><span class="line">  n[etworking]    &#x6574;&#x4F53;&#x7EC4;&#x7F51;&#x63A7;&#x5236;</span><br><span class="line">  r[adio]         NetworkManager&#x5207;&#x6362;&#x5F00;&#x5173;</span><br><span class="line">  c[onnection]    NetworkManager&#x7684;&#x8FDE;&#x63A5;</span><br><span class="line">  d[evice]        &#x7531;NetworkManager&#x7BA1;&#x7406;&#x7684;&#x8BBE;&#x5907;</span><br><span class="line">  a[gent]         NetworkManager&#x79D8;&#x5BC6;&#x4EE3;&#x7406;&#x6216;polkit&#x4EE3;&#x7406;</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="&#x5B9E;&#x4F8B;"><a href="#&#x5B9E;&#x4F8B;" class="headerlink" title="&#x5B9E;&#x4F8B;"></a>&#x5B9E;&#x4F8B;</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">nmcli connection show            # &#x67E5;&#x770B;&#x5F53;&#x524D;&#x8FDE;&#x63A5;&#x72B6;&#x6001;</span><br><span class="line">nmcli connection reload          # &#x91CD;&#x542F;&#x670D;&#x52A1;</span><br><span class="line">nmcli connection show -active    # &#x663E;&#x793A;&#x6D3B;&#x52A8;&#x7684;&#x8FDE;&#x63A5;</span><br><span class="line">nmcli connection show &quot;lan eth0&quot; # &#x663E;&#x793A;&#x6307;&#x5B9A;&#x4E00;&#x4E2A;&#x7F51;&#x7EDC;&#x8FDE;&#x63A5;&#x914D;&#x7F6E;</span><br><span class="line">nmcli device status              # &#x663E;&#x793A;&#x8BBE;&#x5907;&#x72B6;&#x6001;</span><br><span class="line">nmcli device show eno16777736    # &#x663E;&#x793A;&#x6307;&#x5B9A;&#x63A5;&#x53E3;&#x5C5E;&#x6027;</span><br><span class="line">nmcli device show                # &#x663E;&#x793A;&#x5168;&#x90E8;&#x63A5;&#x53E3;&#x5C5E;&#x6027;</span><br><span class="line">nmcli con up static              # &#x542F;&#x7528;static&#x8FDE;&#x63A5;&#x914D;&#x7F6E;</span><br><span class="line">nmcli con up default             # &#x542F;&#x7528;default&#x8FDE;&#x63A5;&#x914D;&#x7F6E; </span><br><span class="line">nmcli con add help               # &#x67E5;&#x770B;&#x5E2E;&#x52A9;</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="&#x521B;&#x5EFA;&#x7F51;&#x7EDC;&#x4F1A;&#x8BDD;"><a href="#&#x521B;&#x5EFA;&#x7F51;&#x7EDC;&#x4F1A;&#x8BDD;" class="headerlink" title="&#x521B;&#x5EFA;&#x7F51;&#x7EDC;&#x4F1A;&#x8BDD;"></a>&#x521B;&#x5EFA;&#x7F51;&#x7EDC;&#x4F1A;&#x8BDD;</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">nmcli connection add con-name company ifname ens33 autoconnect no type ethernet ip4 192.168.1.2/24 gw4 192.168.1.1</span><br><span class="line"><span class="meta">#</span><span class="bash"> con-name &#x6307;&#x5B9A;&#x4F1A;&#x8BDD;&#x540D;&#x79F0;&#xFF0C;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> ifname &#x6307;&#x5B9A;&#x672C;&#x673A;&#x7F51;&#x5361;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> autoconnect no/yes &#x662F;&#x5426;&#x81EA;&#x52A8;&#x8FDE;&#x63A5;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">type</span> &#x6307;&#x5B9A;&#x7F51;&#x5361;&#x7C7B;&#x578B;ethernet</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> ip4/ip6</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> gw4/gw6</span></span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> nmcli</span></span><br><span class="line">echo &quot;NetworkManager&#x7BA1;&#x7406;&#x811A;&#x672C;&quot;</span><br><span class="line">echo -e &quot;1.&#x67E5;&#x770B;&#x5F53;&#x524D;&#x8FDE;&#x63A5;&#x72B6;&#x6001;\n2.&#x91CD;&#x542F;&#x670D;&#x52A1;\n3.&#x663E;&#x793A;&#x6D3B;&#x52A8;&#x7684;&#x8FDE;&#x63A5;\n&quot;</span><br><span class="line"></span><br><span class="line">function net_stat(){</span><br><span class="line"><span class="meta">	#</span><span class="bash"> &#x67E5;&#x770B;&#x5168;&#x90E8;&#x72B6;&#x6001;</span></span><br><span class="line">	nmcli connection show</span><br><span class="line">	</span><br><span class="line"><span class="meta">	#</span><span class="bash"> &#x67E5;&#x770B;&#x8BE6;&#x7EC6;&#x4FE1;&#x606F;</span></span><br><span class="line">		nmcli connection show $0</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">while true</span><br><span class="line">do</span><br><span class="line">read -p &quot;&#x8BF7;&#x9009;&#x62E9;&#x60A8;&#x7684;&#x64CD;&#x4F5C;&#xFF1A;&quot; info</span><br><span class="line">case $info in</span><br><span class="line">1) nmcli connection show </span><br><span class="line">;;</span><br><span class="line">*) echo -e &quot;\e[1;31mError! &#x683C;&#x5F0F;&#x9519;&#x8BEF;&#xFF01;\e[0m&quot;</span><br><span class="line">done</span><br></pre></td></tr></tbody></table></figure><script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2022-06-07T05:19:51.835Z" itemprop="dateUpdated">2022-06-07 13:19:51</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/1876d05d/" target="_blank" rel="external">https://marnm.github.io/posts/1876d05d/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='https://marnm.github.io'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/1876d05d/&title=《NetworkManager管理工具》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/1876d05d/&title=《NetworkManager管理工具》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/1876d05d/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《NetworkManager管理工具》 — Deops's blog&url=https://marnm.github.io/posts/1876d05d/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/1876d05d/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/bae5d4f0/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：rhel修改网卡命名规则
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/1939d3e2/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：net-tools工具">下一篇：net-tools工具</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2022
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="https://marnm.github.io">marnm.github.io</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/1876d05d/&title=《NetworkManager管理工具》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/1876d05d/&title=《NetworkManager管理工具》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/1876d05d/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《NetworkManager管理工具》 — Deops's blog&url=https://marnm.github.io/posts/1876d05d/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/1876d05d/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAAB0ElEQVR42u3aQW7DMAwEwP7/0+61QCB3SVpKAoxOQeHGoxwEisufn3hdf9br31efX59f/e/DCxcXd8y9btfqmd5mku3dvwsXF/ck9/6g6T1zBSv/flxc3M/nJi/LCyZcXNxv5yYFUPXyg4uL+5ncXgnSu/yMNoyLi3uEmxcl+z5v6e/i4uK2uFdx5YdUfswV3o6Li3uEmx8ovUbGJIJdPomLi7uZmwch9wdW3jSpXqWWvysuLu5m7n35Mhmlqm64UJHh4uJu4+YBanVgqzqWUWig4OLiHuFOLidJW6R6hCUtFVxc3N3cPF5NiqF5RNrMhHFxcbdxe180b7k2DzJcXNzN3Dz+zEuWagEUNVhxcXE3c5OLylODVr2IZRmy4uLibuMmYUn1OMtHu+43FhVPuLi427iTJkh1eCvZxj+XIlxc3IPcXrDaOwSrLRJcXNx3cfPIszxKVRzqKlRhuLi4G7jzq0sSgfQGL3Bxcd/FfWwkohiv5t2a5mZwcXHH3OrlZD5Ukce0y4YpLi7uEW410shZvfGvwmAWLi7uB3B7YcljQSwuLu4Xch/o4N4/j4uLe5A7CVbnBVChwMLFxT3C7R09SaQ6aYg80N/FxcXtcH8BoY3iMSE+UhQAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>

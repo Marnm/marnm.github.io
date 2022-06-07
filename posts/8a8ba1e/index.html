@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>SHELL脚本练习 | Deops&#39;s blog | 运维开发工程师</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="Hello World123456#!/bin/bash&amp;lt;!--more--&amp;gt;function example {    echo &amp;quot;Hello World&amp;quot;}example  &amp;#x7528;&amp;#x6237;&amp;#x731C;&amp;#x6570;&amp;#x5B57; 1234567891011121314151617181920212223#!/bin/bash# &amp;#x8">
+<meta name="keywords" content="Echo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SHELL脚本练习">
+<meta property="og:url" content="https://marnm.github.io/posts/8a8ba1e/index.html">
+<meta property="og:site_name" content="Deops&#39;s blog">
+<meta property="og:description" content="Hello World123456#!/bin/bash&amp;lt;!--more--&amp;gt;function example {    echo &amp;quot;Hello World&amp;quot;}example  &amp;#x7528;&amp;#x6237;&amp;#x731C;&amp;#x6570;&amp;#x5B57; 1234567891011121314151617181920212223#!/bin/bash# &amp;#x8">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-06-07T05:03:43.249Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SHELL脚本练习">
+<meta name="twitter:description" content="Hello World123456#!/bin/bash&amp;lt;!--more--&amp;gt;function example {    echo &amp;quot;Hello World&amp;quot;}example  &amp;#x7528;&amp;#x6237;&amp;#x731C;&amp;#x6570;&amp;#x5B57; 1234567891011121314151617181920212223#!/bin/bash# &amp;#x8">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
+                <i class="icon icon-lg icon-tv tv"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">SHELL脚本练习</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+<article id="post-SHELL脚本练习" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">SHELL脚本练习</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2022-06-07 12:52:40" datetime="2022-06-07T04:52:40.000Z" itemprop="datePublished">2022-06-07</time>
+
+            <br id="mybreak">
+            
+<script>
+	mybreak.style="display:none";
+</script>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">9</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p><strong>Hello World</strong><br></p><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">&lt;!--more--&gt;</span><br><span class="line"><span class="keyword">function</span> example {</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Hello World&quot;</span></span><br><span class="line">}</span><br><span class="line">example</span><br></pre></td></tr></tbody></table></figure><p></p>
+<hr>
+<p><strong>&#x7528;&#x6237;&#x731C;&#x6570;&#x5B57;</strong></p>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x811A;&#x672C;&#x751F;&#x6210;&#x4E00;&#x4E2A;100&#x4EE5;&#x5185;&#x7684;&#x968F;&#x673A;&#x6570;&#xFF0C;&#x63D0;&#x793A;&#x7528;&#x6237;&#x731C;&#x6570;&#x5B57;&#xFF0C;&#x6839;&#x636E;&#x7528;&#x6237;&#x7684;&#x8F93;&#x5165;&#xFF0C;&#x63D0;&#x793A;&#x7528;&#x6237;&#x731C;&#x5BF9;&#x4E86;&#x3002;</span></span><br><span class="line"><span class="comment"># &#x731C;&#x5C0F;&#x4E86;&#x6216;&#x731C;&#x5927;&#x4E86;&#xFF0C;&#x76F4;&#x81F3;&#x7528;&#x6237;&#x731C;&#x5BF9; &#x811A;&#x672C;&#x7ED3;&#x675F;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># RANDOM &#x4E3A;&#x7CFB;&#x7EDF;&#x81EA;&#x5E26;&#x7684;&#x7CFB;&#x7EDF;&#x53D8;&#x91CF;&#xFF0C;&#x503C;&#x4E3A;0-32767&#x7684;&#x968F;&#x673A;&#x6570;</span></span><br><span class="line"><span class="comment"># &#x4F7F;&#x7528;&#x53D6;&#x4F59;&#x7B97;&#x6CD5;&#x5C06;&#x968F;&#x673A;&#x6570;&#x53D8;&#x4E3A;1-100&#x7684;&#x968F;&#x673A;&#x6570;</span></span><br><span class="line">num=$[ RANDOM%100+1 ]</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$num</span>&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x4F7F;&#x7528; read &#x63D0;&#x793A;&#x7528;&#x6237;&#x731C;&#x6570;&#x5B57;</span></span><br><span class="line"><span class="comment"># &#x4F7F;&#x7528; if &#x5224;&#x65AD;&#x7528;&#x6237;&#x731C;&#x6570;&#x5B57;&#x7684;&#x5927;&#x5C0F;&#x5173;&#x7CFB;&#xFF1A; </span></span><br><span class="line"><span class="comment"># -eq&#xFF08;&#x7B49;&#x4E8E;&#xFF09;, -ne&#xFF08;&#x4E0D;&#x7B49;&#x4E8E;&#xFF09;&#xFF0C;-gt&#xFF08;&#x5927;&#x4E8E;&#xFF09;,-lt&#x5C0F;&#x4E8E;&#xFF0C;-le&#xFF08;&#x5C0F;&#x4E8E;&#x7B49;&#x4E8E;&#xFF09;</span></span><br><span class="line"><span class="keyword">while</span> :</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    <span class="built_in">read</span> -p <span class="string">&quot;&#x8BA1;&#x7B97;&#x673A;&#x751F;&#x6210;&#x4E86;&#x4E00;&#x4E2A;1-100&#x7684;&#x968F;&#x673A;&#x6570;&#xFF0C;&#x4F60;&#x731C;&#xFF1A;&quot;</span> guess</span><br><span class="line">    <span class="keyword">if</span> [ <span class="variable">$guess</span> -eq <span class="variable">$num</span> ]</span><br><span class="line">    <span class="keyword">then</span> <span class="built_in">echo</span> <span class="string">&quot;&#x606D;&#x559C;&#xFF0C;&#x731C;&#x5BF9;&#x4E86;&quot;</span></span><br><span class="line">    <span class="keyword">elif</span> [ <span class="variable">$guess</span> -gt <span class="variable">$num</span> ]</span><br><span class="line">    <span class="keyword">then</span> <span class="built_in">echo</span> <span class="string">&quot;Oops&#xFF0C;&#x731C;&#x5927;&#x4E86;&quot;</span></span><br><span class="line">    <span class="keyword">else</span> <span class="built_in">echo</span> <span class="string">&quot;Oops, &#x731C;&#x5C0F;&#x4E86;&quot;</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></tbody></table></figure>
+<hr>
+<p><strong>&#x526A;&#x5200;&#x77F3;&#x5934;&#x5E03; &#x6E38;&#x620F;</strong><br></p><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">game=(&#x526A;&#x5200; &#x77F3;&#x5934; &#x5E03;)</span><br><span class="line">num=$[ RANDOM%3 ]</span><br><span class="line">computer=<span class="variable">${ game[$sum] }</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;&#x8BF7;&#x6839;&#x636E;&#x4E0B;&#x5217;&#x63D0;&#x793A;&#x9009;&#x62E9;&#x60A8;&#x7684;&#x51FA;&#x62F3;&#x624B;&#x52BF;&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;1. &#x77F3;&#x5934;&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;2. &#x526A;&#x5200;&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;3. &#x5E03;&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">read</span> -p <span class="string">&quot;&#x8BF7;&#x9009;&#x62E9; 1-3:&quot;</span> person</span><br><span class="line"><span class="keyword">case</span> <span class="variable">$person</span> <span class="keyword">in</span></span><br><span class="line">1)</span><br><span class="line">    <span class="keyword">if</span> [ <span class="variable">$num</span> -eq 0 ]</span><br><span class="line">    <span class="keyword">then</span> <span class="built_in">echo</span> <span class="string">&quot;&#x5E73;&#x5C40;&quot;</span></span><br><span class="line">    <span class="keyword">elif</span> [ <span class="variable">$num</span> -eq 1 ]</span><br><span class="line">    <span class="keyword">then</span> <span class="built_in">echo</span> <span class="string">&quot;&#x4F60;&#x8D62;&#x4E86;&quot;</span></span><br><span class="line">    <span class="keyword">else</span> </span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;&#x7535;&#x8111;&#x8D62;&quot;</span></span><br><span class="line">    <span class="keyword">fi</span>;;</span><br><span class="line">2)</span><br><span class="line">   <span class="keyword">if</span> [ <span class="variable">$num</span> -eq 0 ] </span><br><span class="line">   <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;&#x7535;&#x8111;&#x8D62;&quot;</span></span><br><span class="line">    <span class="keyword">elif</span> [ <span class="variable">$num</span> -eq 1 ]</span><br><span class="line">    <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;&#x5E73;&#x5C40;&quot;</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;&#x4F60;&#x8D62;&#x4E86;&quot;</span></span><br><span class="line">    <span class="keyword">fi</span>;;</span><br><span class="line">3)</span><br><span class="line">    <span class="keyword">if</span> [ <span class="variable">$num</span> -eq 0 ]</span><br><span class="line">    <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;&#x4F60;&#x8D62;&quot;</span></span><br><span class="line">    <span class="keyword">elif</span> [ <span class="variable">$num</span> -eq 1 ]</span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;&#x7535;&#x8111;&#x8D62;&quot;</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">&quot;&#x5E73;&#x5C40;&quot;</span></span><br><span class="line">    <span class="keyword">fi</span>;;</span><br><span class="line">*)</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;&#x5FC5;&#x987B;&#x8F93;&#x5165;1-3&#x7684;&#x6570;&#x5B57;&quot;</span></span><br><span class="line"><span class="keyword">esac</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<hr>
+<p><strong>&#x4E5D;&#x4E5D;&#x4E58;&#x6CD5;&#x8868;</strong><br></p><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> `seq 9`</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> `seq <span class="variable">$i</span>`</span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">        <span class="built_in">echo</span> -n <span class="string">&quot; <span class="variable">$j</span>*<span class="variable">$i</span>=$[i*j] &quot;</span></span><br><span class="line">    <span class="keyword">done</span></span><br><span class="line">        <span class="built_in">echo</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<hr>
+<p><strong>if&#x8FD0;&#x7B97;&#x8868;&#x8FBE;&#x5F0F;</strong><br></p><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$1</span> -eq 2 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;wo ai wenmin&quot;</span></span><br><span class="line"><span class="keyword">elif</span> [ <span class="variable">$1</span> -eq 3 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;wo ai wenxing&quot;</span></span><br><span class="line"><span class="keyword">elif</span> [ <span class="variable">$1</span> -eq 4 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;wo de xin&quot;</span></span><br><span class="line"><span class="keyword">elif</span> [ <span class="variable">$1</span> -eq 5 ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;wo de ai&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<hr>
+<p><strong>&#x6253;&#x5370;&#x56FD;&#x9645;&#x8C61;&#x68CB;&#x68CB;&#x76D8;</strong><br></p><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6253;&#x5370;&#x56FD;&#x9645;&#x8C61;&#x68CB;&#x68CB;&#x76D8;</span></span><br><span class="line"><span class="comment"># &#x8BBE;&#x7F6E;&#x4E24;&#x4E2A;&#x53D8;&#x91CF;&#xFF0C;i &#x548C; j&#xFF0C;&#x4E00;&#x4E2A;&#x4EE3;&#x8868;&#x884C;&#xFF0C;&#x4E00;&#x4E2A;&#x4EE3;&#x8868;&#x5217;&#xFF0C;&#x56FD;&#x9645;&#x8C61;&#x68CB;&#x4E3A; 8x8&#x68CB;&#x76D8;</span></span><br><span class="line"><span class="comment"># i=1 &#x662F;&#x4EE3;&#x8868;&#x51C6;&#x5907;&#x6253;&#x5370;&#x7B2C;&#x4E00;&#x884C;&#x68CB;&#x76D8;&#xFF0C;&#x7B2C;1&#x884C;&#x68CB;&#x76D8;&#x6709;&#x7070;&#x8272;&#x548C;&#x84DD;&#x8272;&#x95F4;&#x9694;&#x8F93;&#x51FA;&#xFF0C;&#x603B;&#x5171;&#x4E3A;8&#x5217;</span></span><br><span class="line"><span class="comment"># i=1 &#xFF0C;j=1 &#x4EE3;&#x8868;&#x7B2C;1&#x884C;&#x7684;&#x7B2C;1&#x5217;&#xFF0C;i=2&#xFF0C;j=3&#x4EE3;&#x8868;&#x7B2C;2&#x884C;&#x7684;&#x7B2C;3&#x5217;</span></span><br><span class="line"><span class="comment"># &#x68CB;&#x76D8;&#x7684;&#x89C4;&#x5F8B;&#x662F; i+j &#x5982;&#x679C;&#x662F;&#x5076;&#x6570;&#xFF0C;&#x5C31;&#x6253;&#x5370;&#x84DD;&#x8272;&#x8272;&#x5757;&#xFF0C;&#x5982;&#x679C;&#x662F;&#x6280;&#x672F;&#x5C31;&#x6253;&#x5370;&#x7070;&#x8272;&#x8272;&#x5757;</span></span><br><span class="line"><span class="comment"># &#x4F7F;&#x7528; echo -ne &#x6253;&#x5370;&#x8272;&#x5757;&#xFF0C;&#x5E76;&#x4E14;&#x6253;&#x5370;&#x5B8C;&#x6210;&#x8272;&#x5757;&#x540E;&#x4E0D;&#x81EA;&#x52A8;&#x6362;&#x884C;&#xFF0C;&#x5728;&#x540C;&#x4E00;&#x884C;&#x7EE7;&#x7EED;&#x8F93;&#x51FA;&#x5176;&#x4ED6;&#x8272;&#x5757;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> {1..8}</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> {1..8}</span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">        sum=$[ i+j ]</span><br><span class="line">        <span class="keyword">if</span> [ $[sum%2] -eq 0 ]; <span class="keyword">then</span></span><br><span class="line">            <span class="built_in">echo</span> -ne <span class="string">&quot;\033[46m \033[0m&quot;</span></span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="built_in">echo</span> -ne <span class="string">&quot;\033[47m \033[0m&quot;</span></span><br><span class="line">        <span class="keyword">fi</span></span><br><span class="line">    <span class="keyword">done</span></span><br><span class="line">    <span class="built_in">echo</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<hr>
+<p><strong>&#x4F7F;&#x7528;&#x811A;&#x672C;&#x5BF9;&#x8F93;&#x5165;&#x7684;&#x4E09;&#x4E2A;&#x6574;&#x6570;&#x8FDB;&#x884C;&#x6392;&#x5E8F;</strong><br></p><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x4E00;&#x6B21;&#x63D0;&#x793A;&#x7528;&#x6237;&#x8F93;&#x5165;3&#x4E2A;&#x6574;&#x6570;&#xFF0C;&#x811A;&#x672C;&#x6839;&#x636E;&#x6570;&#x5B57;&#x5927;&#x5C0F;&#x4F9D;&#x6B21;&#x6392;&#x5E8F;&#x8F93;&#x51FA;3&#x4E2A;&#x6570;&#x5B57;</span></span><br><span class="line"><span class="built_in">read</span> -p <span class="string">&quot;&#x8BF7;&#x8F93;&#x5165;&#x4E00;&#x4E2A;&#x6574;&#x6570;&#xFF1A;&quot;</span> num1</span><br><span class="line"><span class="built_in">read</span> -p <span class="string">&quot;&#x8BF7;&#x8F93;&#x5165;&#x4E00;&#x4E2A;&#x6574;&#x6570;&#xFF1A;&quot;</span> num2</span><br><span class="line"><span class="built_in">read</span> -p <span class="string">&quot;&#x8BF7;&#x8F93;&#x5165;&#x4E00;&#x4E2A;&#x6574;&#x6570;&#xFF1A;&quot;</span> num3</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x4E0D;&#x7BA1;&#x8C01;&#x5927;&#x8C01;&#x5C0F;&#xFF0C;&#x6700;&#x540E;&#x90FD;&#x6253;&#x5370; echo &quot;$num1, $num2, $num3&quot;</span></span><br><span class="line"><span class="comment"># num1 &#x4E2D;&#x6C38;&#x8FDC;&#x5B58;&#x6700;&#x5C0F;&#x7684;&#x503C;&#xFF0C;num2 &#x4E2D;&#x6C38;&#x8FDC;&#x5B58;&#x4E2D;&#x95F4;&#x503C;&#xFF0C; num3&#x6C38;&#x8FDC;&#x5B58;&#x6700;&#x5927;&#x503C;</span></span><br><span class="line"><span class="comment"># &#x5982;&#x679C;&#x8F93;&#x5165;&#x7684;&#x4E0D;&#x662F;&#x8FD9;&#x6837;&#x7684;&#x987A;&#x5E8F;&#xFF0C;&#x5219;&#x6539;&#x53D8;&#x6570;&#x7684;&#x5B58;&#x50A8;&#x4E66;&#x5E8F;&#xFF0C;&#x5982;&#xFF1A;&#x53EF;&#x4EE5;&#x5C06;num1&#x548C;num2&#x7684;&#x503C;&#x5BF9;&#x8C03;</span></span><br><span class="line"></span><br><span class="line">tmp=0</span><br><span class="line"><span class="comment"># &#x5982;&#x679C;num1 &#x5927;&#x4E8E; num2 &#xFF0C;&#x5C31;&#x628A;num1&#x548C;num2&#x7684;&#x503C;&#x4EA4;&#x6362;&#xFF0C;&#x786E;&#x4FDD;num1&#x53D8;&#x91CF;&#x4E2D;&#x5B58;&#x7684;&#x662F;&#x6700;&#x5C0F;&#x503C;</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$num1</span> -gt <span class="variable">$num2</span> ]; <span class="keyword">then</span></span><br><span class="line">    tmp=<span class="variable">$num1</span></span><br><span class="line">    num1=<span class="variable">$num2</span></span><br><span class="line">    num2=tmp</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x5982;&#x679C;num1&#x5927;&#x4E8E;num3&#xFF0C;&#x5C31;&#x628A;num1&#x548C;num3&#x7684;&#x503C;&#x4EA4;&#x6362;&#xFF0C;&#x786E;&#x4FDD;num1&#x7684;&#x53D8;&#x91CF;&#x4E2D;&#x5B58;&#x7684;&#x662F;&#x6700;&#x5C0F;&#x503C;</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$num1</span> -gt <span class="variable">$num3</span> ]; <span class="keyword">then</span></span><br><span class="line">    tmp=<span class="variable">$num1</span></span><br><span class="line">    num1=<span class="variable">$num3</span></span><br><span class="line">    num3=<span class="variable">$tmp</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x5982;&#x679C;num2&#x5927;&#x4E8E;num3&#xFF0C;&#x5C31;&#x628A;num2&#x548C;num3&#x7684;&#x503C;&#x4EA4;&#x6362;&#xFF0C;&#x786E;&#x4FDD;num2&#x7684;&#x53D8;&#x91CF;&#x4E2D;&#x5B58;&#x7684;&#x662F;&#x6700;&#x5C0F;&#x503C;</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$num2</span> -gt <span class="variable">$num3</span> ]; <span class="keyword">then</span></span><br><span class="line">    tmp=<span class="variable">$num2</span></span><br><span class="line">    num2=<span class="variable">$num3</span></span><br><span class="line">    num3=<span class="variable">$tmp</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;&#x6392;&#x5E8F;&#x540E;&#x7684;&#x6570;&#x636E;&#xFF08;&#x4ECE;&#x5C0F;&#x5230;&#x5927;&#xFF09;&#x4E3A;&#xFF1A;<span class="variable">$num1</span>,<span class="variable">$num2</span>,<span class="variable">$num3</span>&quot;</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<hr>
+<p><strong>for&#x5FAA;&#x73AF;&#x5224;&#x65AD;</strong><br></p><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">s=0;</span><br><span class="line"><span class="keyword">for</span>((i=1;i&lt;100;i++))</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    s=$[<span class="variable">$s</span>+<span class="variable">$i</span>]</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$s</span></span><br><span class="line"></span><br><span class="line">r=0;</span><br><span class="line">a=0;</span><br><span class="line">b=0;</span><br><span class="line"><span class="keyword">for</span>((x=1; x&lt;9; x++))</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    a=$[<span class="variable">$a</span>+<span class="variable">$x</span>]</span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$x</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> ((y=1; y&lt;9; y++))</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    b=$[<span class="variable">$b</span>+<span class="variable">$y</span>]</span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$y</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$r</span>=$[<span class="variable">$a</span>+<span class="variable">$b</span>]</span><br></pre></td></tr></tbody></table></figure><p></p>
+<figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="string">&quot;$*&quot;</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;wenmin xihua <span class="variable">$i</span>&quot;</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> j <span class="keyword">in</span> <span class="string">&quot;<span class="variable">$@</span>&quot;</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;wenmin xihuan <span class="variable">$j</span>&quot;</span></span><br><span class="line"><span class="keyword">done</span></span><br></pre></td></tr></tbody></table></figure>
+<hr>
+<p><strong>&#x4F7F;&#x7528;&#x51FD;&#x6570; &#x6C42;&#x548C;&#x8FD0;&#x7B97;</strong><br></p><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">sum</span></span>() {</span><br><span class="line">    s=0;</span><br><span class="line">    s=$[<span class="variable">$1</span>+<span class="variable">$2</span>]</span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$s</span></span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="built_in">read</span> -p <span class="string">&quot;input your parameter &quot;</span> p1</span><br><span class="line"><span class="built_in">read</span> -p <span class="string">&quot;input your parameter &quot;</span> p2</span><br><span class="line"></span><br><span class="line">sum <span class="variable">$p1</span> <span class="variable">$p2</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">multi</span></span>() {</span><br><span class="line">    r=0;</span><br><span class="line">    r=$[<span class="variable">$1</span>/<span class="variable">$2</span>]</span><br><span class="line">    <span class="built_in">echo</span> <span class="variable">$r</span></span><br><span class="line">}</span><br><span class="line"><span class="built_in">read</span> -p <span class="string">&quot;input your parameter &quot;</span> x1</span><br><span class="line"><span class="built_in">read</span> -p <span class="string">&quot;input your parameter &quot;</span> x2</span><br><span class="line"></span><br><span class="line">multi <span class="variable">$x1</span> <span class="variable">$x2</span></span><br><span class="line"></span><br><span class="line">v1=1</span><br><span class="line">v2=2</span><br><span class="line"><span class="built_in">let</span> v3=<span class="variable">$v1</span>+<span class="variable">$v2</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$v3</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<hr>
+<p><strong>case&#x2014;&#x2014;esac&#x5206;&#x652F;&#x7ED3;&#x6784;</strong><br></p><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> <span class="variable">$1</span> <span class="keyword">in</span></span><br><span class="line">1)</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;wenmin &quot;</span></span><br><span class="line">    ;;</span><br><span class="line">2)</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;wenxing &quot;</span></span><br><span class="line">    ;;</span><br><span class="line">3)</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;wemchang &quot;</span></span><br><span class="line">    ;;</span><br><span class="line">4)</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;yijun&quot;</span></span><br><span class="line">    ;;</span><br><span class="line">5)</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;sinian&quot;</span></span><br><span class="line">    ;;</span><br><span class="line">6)</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;sikeng&quot;</span></span><br><span class="line">    ;;</span><br><span class="line">7)</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;yanna&quot;</span></span><br><span class="line">    ;;</span><br><span class="line">*)</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;danlian&quot;</span></span><br><span class="line">    ;;</span><br><span class="line"><span class="keyword">esac</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<hr>
+<p><strong>&#x5BF9;&#x53D8;&#x91CF;&#x7684;&#x4F20;&#x5165;&#x4E0E;&#x83B7;&#x53D6;&#x4E2A;&#x6570;&#x53CA;&#x6253;&#x5370;</strong><br></p><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$0</span> <span class="variable">$1</span> <span class="variable">$2</span> <span class="variable">$3</span>&quot;</span>  //&#x4F20;&#x5165;&#x56DB;&#x4E2A;&#x53C2;&#x6570;</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$#</span> // &#x83B7;&#x53D6;&#x4F20;&#x5165;&#x53C2;&#x6570;&#x7684;&#x6570;&#x91CF;</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$@</span> //&#x6253;&#x5370;&#x83B7;&#x53D6;&#x4F20;&#x5165;&#x53C2;&#x6570;</span><br><span class="line"><span class="built_in">echo</span> $* //&#x6253;&#x5370;&#x83B7;&#x53D6;&#x4F20;&#x5165;&#x53C2;&#x6570;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<hr>
+<p><strong>&#x811A;&#x672C;&#x5B9A;&#x4E49;while&#x5FAA;&#x73AF;&#x8BED;&#x53E5;</strong><br></p><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">s=0</span><br><span class="line">i=1</span><br><span class="line"><span class="keyword">while</span> [ <span class="variable">$i</span> -le 100 ]</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    s=$[<span class="variable">$s</span> + <span class="variable">$i</span> ]</span><br><span class="line">    i=$[<span class="variable">$i</span> + 1]</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$s</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$i</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<hr>
+<p><strong>&#x8BFB;&#x53D6;&#x63A7;&#x5236;&#x53F0;&#x4F20;&#x5165;&#x53C2;&#x6570;</strong><br></p><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">read</span> -t 7 -p <span class="string">&quot;input your name &quot;</span> NAME</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$NAME</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">read</span> -t 11 -p <span class="string">&quot;input you age &quot;</span> AGE</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$AGE</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">read</span> -t 15 -p <span class="string">&quot;input your friend &quot;</span> FRIEND</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$FRIEND</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">read</span> -t 16 -p <span class="string">&quot;input your love &quot;</span> LOVE</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$LOVE</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x6253;&#x5370;&#x5B57;&#x6BCD;&#x6570;&#x5C0F;&#x4E8E;8&#x7684;&#x5355;&#x8BCD;</strong></p>
+<blockquote>
+<p><strong>&#x63CF;&#x8FF0;</strong><br>&#x5199;&#x4E00;&#x4E2A;bash&#x811A;&#x672C;&#x4EE5;&#x7EDF;&#x8BA1;&#x4E00;&#x4E2A;&#x6587;&#x672C;&#x6587;&#x4EF6;nowcoder.txt&#x4E2D;&#x5B57;&#x6BCD;&#x6570;&#x5C0F;&#x4E8E;8&#x7684;&#x5355;&#x8BCD;<br>&#x793A;&#x4F8B;&#xFF1A;<br>&#x5047;&#x8BBE;nowcoder.txt&#x5185;&#x5BB9;&#x5982;&#x4E0B;&#xFF1A;<br>how they are implemented and applied in computer<br>&#x4F60;&#x7684;&#x811A;&#x672C;&#x5E94;&#x5F53;&#x8F93;&#x51FA;&#xFF1A;<br>how<br>they<br>are<br>and<br>applied<br>in<br>&#x6CE8;&#x610F;&#xFF1A;&#x4E0D;&#x8981;&#x62C5;&#x5FC3;&#x4F60;&#x8F93;&#x51FA;&#x7684;&#x7A7A;&#x683C;&#x4EE5;&#x53CA;&#x6362;&#x884C;&#x7684;&#x95EE;&#x9898;</p>
+</blockquote>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">awk &apos;BEGIN{FS=&quot;&quot;;RS=&quot; &quot;;ORS=&quot;\n&quot;}{if(NF&lt;8)print$0}&apos; nowcoder.txt</span><br></pre></td></tr></tbody></table></figure><script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2022-06-07T05:03:43.249Z" itemprop="dateUpdated">2022-06-07 13:03:43</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/8a8ba1e/" target="_blank" rel="external">https://marnm.github.io/posts/8a8ba1e/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='https://marnm.github.io'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/8a8ba1e/&title=《SHELL脚本练习》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/8a8ba1e/&title=《SHELL脚本练习》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/8a8ba1e/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SHELL脚本练习》 — Deops's blog&url=https://marnm.github.io/posts/8a8ba1e/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/8a8ba1e/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/aa142b64/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：SQLite安装
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/f42b90f9/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：SHELL脚本工具">下一篇：SHELL脚本工具</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2022
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="https://marnm.github.io">marnm.github.io</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/8a8ba1e/&title=《SHELL脚本练习》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/8a8ba1e/&title=《SHELL脚本练习》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/8a8ba1e/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SHELL脚本练习》 — Deops's blog&url=https://marnm.github.io/posts/8a8ba1e/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/8a8ba1e/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABzUlEQVR42u3aS27DMAwFwNz/0u4BUjuPpKQGxWgVILY89oLgR69XvK639fzv+zV3e752LFxc3DH3elw56Pnxd3vmBlxc3PPc50DzvPXdPlewcgMuLu73c5Mre0ENFxf3v3KTEggXF/f7uXkKkjc+8tbJlloNFxd3wM0ftu/3lv4uLi5ui3sVVzWh6Q1gbp+Oi4t7hNtrZDwXKnkI6zVQcHFxd3Pzhkj+sOT6fBwbfVdcXNyl3Cpo1ZGLalvkl2+Mi4u7jZsXJ3makh/hqqZEuLi457nVQihvfFRD2IfiBxcX9wh3VRt0wXA0r9VwcXG3cfNSJy+E8pSomjDh4uKe4fa26L1AvtutChcX9wi31/rMG53zEcuHRAcXF3czNwk91aDWK4cKbRpcXNxt3EnDNL+rOmiJzpHh4uJu5lbTi3w4mqRBhdQHFxf3IHcy9kgCXC/Fqf+Ni4s75V7FlR+tmB+8wMXF/SvuqiMRk0NXScOl/DK4uLhjbrU4WTUISV6yHH1xcXGXcicTmN6QNS+oorYILi7uF3B75VC1xFoWyHBxcTdz5y2M6g6jQIaLizvg5k3P6uCk14mJZsK4uLjbuJObe62N6kfBxcU9yP0BMvZSwQOnovwAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>

@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>MySQL基础 | Deops&#39;s blog | 运维开发工程师</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="&amp;#x4E00;&amp;#x3001;SQL&amp;#x8BED;&amp;#x53E5;DDL    &amp;#x6570;&amp;#x636E;&amp;#x5E93;&amp;#x5B9A;&amp;#x4E49;&amp;#x8BED;&amp;#x8A00;    create drop alterDML    &amp;#x6570;&amp;#x636E;&amp;#x5E93;&amp;#x64CD;&amp;#x4F5C;&amp;#x8BED;&amp;#x8A00;    insert delete">
+<meta name="keywords" content="Echo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL基础">
+<meta property="og:url" content="https://marnm.github.io/posts/bce68613/index.html">
+<meta property="og:site_name" content="Deops&#39;s blog">
+<meta property="og:description" content="&amp;#x4E00;&amp;#x3001;SQL&amp;#x8BED;&amp;#x53E5;DDL    &amp;#x6570;&amp;#x636E;&amp;#x5E93;&amp;#x5B9A;&amp;#x4E49;&amp;#x8BED;&amp;#x8A00;    create drop alterDML    &amp;#x6570;&amp;#x636E;&amp;#x5E93;&amp;#x64CD;&amp;#x4F5C;&amp;#x8BED;&amp;#x8A00;    insert delete">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-06-07T05:15:46.622Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL基础">
+<meta name="twitter:description" content="&amp;#x4E00;&amp;#x3001;SQL&amp;#x8BED;&amp;#x53E5;DDL    &amp;#x6570;&amp;#x636E;&amp;#x5E93;&amp;#x5B9A;&amp;#x4E49;&amp;#x8BED;&amp;#x8A00;    create drop alterDML    &amp;#x6570;&amp;#x636E;&amp;#x5E93;&amp;#x64CD;&amp;#x4F5C;&amp;#x8BED;&amp;#x8A00;    insert delete">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
+                <i class="icon icon-lg icon-tv tv"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">MySQL基础</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#一、SQL语句"><span class="post-toc-number">1.</span> <span class="post-toc-text">一、SQL语句</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#二、表的存储引擎"><span class="post-toc-number">2.</span> <span class="post-toc-text">二、表的存储引擎</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#三、事务"><span class="post-toc-number">3.</span> <span class="post-toc-text">三、事务</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#四、如何获得MySQL相关资源"><span class="post-toc-number">4.</span> <span class="post-toc-text">四、如何获得MySQL相关资源</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#五、MySQL在企业中的应用场景"><span class="post-toc-number">5.</span> <span class="post-toc-text">五、MySQL在企业中的应用场景</span></a></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-MySQL基础" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">MySQL基础</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2022-06-07 12:43:21" datetime="2022-06-07T04:43:21.000Z" itemprop="datePublished">2022-06-07</time>
+
+            <br id="mybreak">
+            
+<script>
+	mybreak.style="display:none";
+</script>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">7</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="&#x4E00;&#x3001;SQL&#x8BED;&#x53E5;"><a href="#&#x4E00;&#x3001;SQL&#x8BED;&#x53E5;" class="headerlink" title="&#x4E00;&#x3001;SQL&#x8BED;&#x53E5;"></a>&#x4E00;&#x3001;SQL&#x8BED;&#x53E5;</h2><p>DDL    &#x6570;&#x636E;&#x5E93;&#x5B9A;&#x4E49;&#x8BED;&#x8A00;    create drop alter<br>DML    &#x6570;&#x636E;&#x5E93;&#x64CD;&#x4F5C;&#x8BED;&#x8A00;    insert delete update<br>DCL    &#x6570;&#x636E;&#x5E93;&#x63A7;&#x5236;&#x8BED;&#x8A00;    grant revoke<br>DQL    &#x6570;&#x636E;&#x5E93;&#x67E5;&#x8BE2;&#x8BED;&#x8A00;    select   </p>
+<p>&#x672C;&#x7AE0;&#x8981;&#x6C42;&#x638C;&#x63E1;sql&#x8BED;&#x53E5;&#x7684;&#x57FA;&#x672C;&#x7528;&#x6CD5;&#xFF0C;&#x5305;&#x62EC;create database,create table, drop database,drop table,insert into,update,delete from,grant,revoke; &#x5176;&#x4ED6;sql&#x8BED;&#x53E5;&#x4F5C;&#x4E3A;&#x62D3;&#x5C55;&#x3002;    </p>
+<p>MySQL&#x4E2D;&#x7684;&#x8BED;&#x6CD5;&#x683C;&#x5F0F;  </p>
+<ol>
+<li>&#x9ED8;&#x8BA4;&#x4EE5; <code>;</code> &#x63D0;&#x4EA4;</li>
+<li>&#x5173;&#x952E;&#x5B57;&#x5927;&#x5C0F;&#x5199;&#x4E0D;&#x654F;&#x611F;&#xFF1B;&#x5E93;&#x540D;&#x3001;&#x8868;&#x540D;&#x3001;&#x6570;&#x636E;&#x90FD;&#x662F;&#x533A;&#x5206;&#x5927;&#x5C0F;&#x5199;&#xFF1B;</li>
+<li>&#x4F7F;&#x7528;&#x7A7A;&#x683C;</li>
+</ol>
+<ul>
+<li>DQL    <ul>
+<li>&#x6570;&#x636E;&#x5E93;&#x67E5;&#x8BE2;&#x8BED;&#x8A00; select</li>
+<li>&#x67E5;&#x8BE2;&#x6570;&#x636E;&#x5E93;show databases;</li>
+<li>&#x67E5;&#x8BE2;&#x8868;<br>  show tables;<br>  show tables from test;</li>
+<li>&#x67E5;&#x770B;&#x8868;&#x7684;&#x7ED3;&#x6784;          desc mysql.user;</li>
+<li>&#x67E5;&#x770B;&#x8868;&#x4E2D;&#x7684;&#x6570;&#x636E;       select host,user,password from mysql.user where user=&#x2019;root&#x2019;;</li>
+</ul>
+</li>
+</ul>
+<p>-&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2013;  </p>
+<ul>
+<li><p>DDL    </p>
+<ul>
+<li>&#x6570;&#x636E;&#x5E93;&#x5B9A;&#x4E49;&#x8BED;&#x8A00; create drop alter</li>
+<li>&#x521B;&#x5EFA;&#x5E93; create database dbname;</li>
+<li>&#x5220;&#x9664;&#x5E93; drop database dbname;</li>
+<li>&#x521B;&#x5EFA;&#x8868; create table tbname (id int,name char(20),age int);</li>
+<li>&#x5220;&#x9664;&#x8868; drop table tbname;</li>
+</ul>
+</li>
+<li><p>&#x5E93;&#x540D;&#x8868;&#x540D;&#x547D;&#x540D;&#x89C4;&#x5219;</p>
+<ul>
+<li>&#x82F1;&#x6587;&#x5B57;&#x6BCD;&#x3001;&#x6570;&#x5B57;&#x3001;&#x4E0B;&#x5212;&#x7EBF;</li>
+<li>&#x4EE5;&#x82F1;&#x6587;&#x5B57;&#x6BCD;&#x5F00;&#x5934;</li>
+<li>&lt;=32&#x4E2A;&#x5B57;&#x7B26;</li>
+</ul>
+</li>
+</ul>
+<p>&#x5207;&#x6362;&#x5230;&#x6267;&#x884C;&#x6570;&#x636E;&#x5E93;&#xFF1A;<br></p><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; use dbname</span><br><span class="line">Database changed</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>-&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2013;  </p>
+<ul>
+<li>DML    &#x6570;&#x636E;&#x5E93;&#x64CD;&#x4F5C;&#x8BED;&#x8A00;     insert delete update<ul>
+<li>&#x63D2;&#x5165;&#x4E00;&#x884C;          <ul>
+<li>insert into dbname.tbname values (1,&#x2019;superman&#x2019;,21);</li>
+<li>insert into dbname.tbname set id=1,name=&#x2019;superman&#x2019;,age=21;</li>
+</ul>
+</li>
+<li>&#x63D2;&#x5165;&#x591A;&#x884C;         <ul>
+<li>insert into dbname.tbname values (2,&#x2019;batman1&#x2019;,21),(3,&#x2019;batman2&#x2019;,22),(4,&#x2019;batman3&#x2019;,23),(5,&#x2019;batman4&#x2019;,24);</li>
+<li>insert into dbname.tbname (id,age) values (6,26);    </li>
+</ul>
+</li>
+<li>update                 update dbname.tbname set age=14 where id=2 or id=3;</li>
+<li>delete                 delete from dbname.tbname where id=2;</li>
+</ul>
+</li>
+</ul>
+<p>-&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2014;&#x2013;</p>
+<ul>
+<li>DCL    &#x6570;&#x636E;&#x5E93;&#x63A7;&#x5236;&#x8BED;&#x8A00;    grant &#x6388;&#x6743; revoke &#x6536;&#x56DE;&#x6388;&#x6743;<ul>
+<li><code>grant all on *.* to &apos;batman&apos;@&apos;172.25.0.12&apos; identified by &apos;uplooking&apos;;</code><ul>
+<li>grant &#x5173;&#x952E;&#x5B57;</li>
+<li>all    &#x6240;&#x6709;&#x6743;&#x9650;&#x9664;&#x4E86;grant&#x4E4B;&#x5916;</li>
+<li>on <em>.</em>  &#x6240;&#x6709;&#x7684;&#x5E93;&#x6240;&#x6709;&#x7684;&#x8868;</li>
+<li>to user@host &#x6743;&#x9650;&#x662F;&#x7ED9;&#x8C01;&#x7684;&#xFF0C;&#x4ECE;&#x54EA;&#x91CC;&#x6765;&#x7684;</li>
+<li>identified by &#x5BC6;&#x7801;</li>
+</ul>
+</li>
+<li><code>flush privileges;</code> &#x5237;&#x65B0;&#x6388;&#x6743;&#x8868;</li>
+</ul>
+</li>
+</ul>
+<h2 id="&#x4E8C;&#x3001;&#x8868;&#x7684;&#x5B58;&#x50A8;&#x5F15;&#x64CE;"><a href="#&#x4E8C;&#x3001;&#x8868;&#x7684;&#x5B58;&#x50A8;&#x5F15;&#x64CE;" class="headerlink" title="&#x4E8C;&#x3001;&#x8868;&#x7684;&#x5B58;&#x50A8;&#x5F15;&#x64CE;"></a>&#x4E8C;&#x3001;&#x8868;&#x7684;&#x5B58;&#x50A8;&#x5F15;&#x64CE;</h2><p>&#x5B58;&#x50A8;&#x5F15;&#x64CE;  &#x6570;&#x636E;&#x5E93;&#x8BFB;&#x5199;&#x6570;&#x636E;&#x7684;&#x65B9;&#x5F0F;&#xFF0C;&#x51B3;&#x5B9A;&#x4E86;&#x8BFB;&#x5199;&#x6570;&#x636E;&#x7684;&#x5FEB;&#x6162;</p>
+<table>
+<thead>
+<tr>
+<th>&#x4E8B;&#x52A1;</th>
+<th>&#x9501;&#x673A;&#x5236;</th>
+<th>&#x9002;&#x7528;&#x573A;&#x666F;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>myisam</td>
+<td>no</td>
+<td>&#x8868;&#x9501;</td>
+<td>&#x5206;&#x6790;&#x578B;</td>
+</tr>
+</tbody>
+</table>
+<p>innodb |  yes    |   &#x884C;&#x9501;     |     &#x91D1;&#x94B1;+&#x7EBF;&#x4E0A;&#x9AD8;&#x5E76;&#x53D1; |</p>
+<h2 id="&#x4E09;&#x3001;&#x4E8B;&#x52A1;"><a href="#&#x4E09;&#x3001;&#x4E8B;&#x52A1;" class="headerlink" title="&#x4E09;&#x3001;&#x4E8B;&#x52A1;"></a>&#x4E09;&#x3001;&#x4E8B;&#x52A1;</h2><p>&#x4E8B;&#x52A1;(Transaction)&#x662F;&#x5E76;&#x53D1;&#x63A7;&#x5236;&#x7684;&#x57FA;&#x672C;&#x5355;&#x4F4D;&#x3002;</p>
+<p><code>&#x6240;&#x8C13;&#x4E8B;&#x52A1;,&#x5B83;&#x662F;&#x4E00;&#x4E2A;&#x64CD;&#x4F5C;&#x5E8F;&#x5217;,&#x8FD9;&#x4E9B;&#x64CD;&#x4F5C;&#x8981;&#x4E48;&#x90FD;&#x6267;&#x884C;,&#x8981;&#x4E48;&#x90FD;&#x4E0D;&#x6267;&#x884C;, &#x5B83;&#x662F;&#x4E00;&#x4E2A;&#x4E0D;&#x53EF;&#x5206;&#x5272;&#x7684;&#x5DE5;&#x4F5C;&#x5355;&#x4F4D;&#x3002;</code>&#x4F8B;&#x5982;,&#x94F6;&#x884C;&#x8F6C;&#x5E10;&#x5DE5;&#x4F5C;:&#x4ECE;&#x4E00;&#x4E2A;&#x5E10;&#x53F7;&#x6263;&#x6B3E;&#x5E76; &#x4F7F;&#x53E6;&#x4E00;&#x4E2A;&#x5E10;&#x53F7;&#x589E;&#x6B3E;,&#x8FD9;&#x4E24;&#x4E2A;&#x64CD;&#x4F5C;&#x8981;&#x4E48;&#x90FD;&#x6267;&#x884C;,&#x8981;&#x4E48;&#x90FD;&#x4E0D;&#x6267;&#x884C;&#x3002;</p>
+<p>&#x4E8B;&#x52A1;&#x7684;&#x56DB;&#x5927;&#x7279;&#x6027;ACID  </p>
+<ol>
+<li>&#x539F;&#x5B50;&#x6027;&#xFF08;Atomicity&#xFF09;&#x4E8B;&#x52A1;&#x662F;&#x4E00;&#x4E2A;&#x539F;&#x5B50;&#x64CD;&#x4F5C;&#xFF0C;&#x7531;&#x4E00;&#x7CFB;&#x5217;&#x52A8;&#x4F5C;&#x7EC4;&#x6210;&#x3002;&#x4E8B;&#x52A1;&#x7684;&#x539F;&#x5B50;&#x6027;&#x786E;&#x4FDD;&#x52A8;&#x4F5C;&#x8981;&#x4E48;&#x5168;&#x90E8;&#x5B8C;&#x6210;&#xFF0C;&#x8981;&#x4E48;&#x5B8C;&#x5168;&#x4E0D;&#x8D77;&#x4F5C;&#x7528;&#x3002; </li>
+<li>&#x4E00;&#x81F4;&#x6027;&#xFF08;Consistency&#xFF09;&#x4E8B;&#x52A1;&#x5728;&#x5B8C;&#x6210;&#x65F6;&#xFF0C;&#x5FC5;&#x987B;&#x662F;&#x6240;&#x6709;&#x7684;&#x6570;&#x636E;&#x90FD;&#x4FDD;&#x6301;&#x4E00;&#x81F4;&#x72B6;&#x6001;&#x3002;</li>
+<li>&#x9694;&#x79BB;&#x6027;&#xFF08;Isolation&#xFF09;&#x5E76;&#x53D1;&#x4E8B;&#x52A1;&#x6267;&#x884C;&#x4E4B;&#x95F4;&#x65E0;&#x5F71;&#x54CD;&#xFF0C;&#x5728;&#x4E00;&#x4E2A;&#x4E8B;&#x52A1;&#x5185;&#x90E8;&#x7684;&#x64CD;&#x4F5C;&#x5BF9;&#x5176;&#x4ED6;&#x4E8B;&#x52A1;&#x662F;&#x4E0D;&#x4EA7;&#x751F;&#x5F71;&#x54CD;&#xFF0C;&#x8FD9;&#x9700;&#x8981;&#x4E8B;&#x52A1;&#x9694;&#x79BB;&#x7EA7;&#x522B;&#x6765;&#x6307;&#x5B9A;&#x9694;&#x79BB;&#x6027;&#x3002;</li>
+<li>&#x6301;&#x4E45;&#x6027;&#xFF08;Durability&#xFF09;&#x4E00;&#x65E6;&#x4E8B;&#x52A1;&#x5B8C;&#x6210;&#xFF0C;&#x6570;&#x636E;&#x5E93;&#x7684;&#x6539;&#x53D8;&#x5FC5;&#x987B;&#x662F;&#x6301;&#x4E45;&#x5316;&#x7684;&#x3002;</li>
+</ol>
+<p>&#x67E5;&#x770B;&#x6240;&#x6709;&#x7684;&#x5B58;&#x50A8;&#x5F15;&#x64CE;      show engines;<br>&#x521B;&#x5EFA;&#x8868;&#x6307;&#x5B9A;&#x5B58;&#x50A8;&#x5F15;&#x64CE;      create table tbname (id int,name char(20),age int) engine=myisam;<br>&#x67E5;&#x770B;&#x8868;&#x7684;&#x5C5E;&#x6027;    use dbname; show table status where name=&#x2019;tbname&#x2019;;   </p>
+<h2 id="&#x56DB;&#x3001;&#x5982;&#x4F55;&#x83B7;&#x5F97;MySQL&#x76F8;&#x5173;&#x8D44;&#x6E90;"><a href="#&#x56DB;&#x3001;&#x5982;&#x4F55;&#x83B7;&#x5F97;MySQL&#x76F8;&#x5173;&#x8D44;&#x6E90;" class="headerlink" title="&#x56DB;&#x3001;&#x5982;&#x4F55;&#x83B7;&#x5F97;MySQL&#x76F8;&#x5173;&#x8D44;&#x6E90;"></a>&#x56DB;&#x3001;&#x5982;&#x4F55;&#x83B7;&#x5F97;MySQL&#x76F8;&#x5173;&#x8D44;&#x6E90;</h2><p>&#x4E3A;&#x4E86;&#x5B66;&#x4E60;&#x66F4;&#x591A;&#x7684;MySQL&#x77E5;&#x8BC6;,&#x8BF7;&#x8BBF;&#x95EE;MySQL&#x5B98;&#x7F51; <a href="https://www.mysql.com/" target="_blank" rel="noopener">https://www.mysql.com/</a></p>
+<h2 id="&#x4E94;&#x3001;MySQL&#x5728;&#x4F01;&#x4E1A;&#x4E2D;&#x7684;&#x5E94;&#x7528;&#x573A;&#x666F;"><a href="#&#x4E94;&#x3001;MySQL&#x5728;&#x4F01;&#x4E1A;&#x4E2D;&#x7684;&#x5E94;&#x7528;&#x573A;&#x666F;" class="headerlink" title="&#x4E94;&#x3001;MySQL&#x5728;&#x4F01;&#x4E1A;&#x4E2D;&#x7684;&#x5E94;&#x7528;&#x573A;&#x666F;"></a>&#x4E94;&#x3001;MySQL&#x5728;&#x4F01;&#x4E1A;&#x4E2D;&#x7684;&#x5E94;&#x7528;&#x573A;&#x666F;</h2><p>MySQL &#x62E5;&#x6709;&#x5E9E;&#x5927;&#x7684;&#x7528;&#x6237;&#x7FA4;,&#x56FD;&#x5916;&#x7684;&#x6709; Facebook&#x3001;Flickr&#x3001;eBay &#x7B49;,&#x56FD;&#x5185;&#x7684;&#x6709;&#x963F;&#x91CC;&#x3001;&#x817E;&#x8BAF;&#x3001;&#x65B0;&#x6D6A;&#x3001;&#x767E;&#x5EA6;&#x7B49;&#x3002;&#x800C;&#x8FD9;&#x4E9B;&#x4E92;&#x8054;&#x7F51;&#x548C;&#x5927;&#x90E8;&#x5206;&#x4F20;&#x7EDF;&#x516C;&#x53F8;&#x7684;&#x670D;&#x52A1;&#x9700;&#x8981;7&#xD7;24&#x5C0F;&#x65F6;&#x8FDE;&#x7EED;&#x5DE5;&#x4F5C;&#x3002;&#x5F53;&#x6B64;&#x7C7B;&#x578B;&#x7F51;&#x7AD9;&#x7684;&#x90E8;&#x5206;&#x6570;&#x636E;&#x5E93;&#x670D;&#x52A1;&#x5668;&#x5B95;&#x673A;&#x65F6;,&#x5C31;&#x9700;&#x8981;&#x9AD8;&#x53EF;&#x7528;&#x6280;&#x672F;&#x5C06;&#x6D41;&#x91CF;&#x7275;&#x5F15;&#x81F3;&#x5907;&#x4EFD;&#x4E3B;&#x673A;,&#x4ECE;&#x800C;&#x6B64;&#x65F6;&#x8FD9;&#x4E9B;&#x516C;&#x53F8;&#x9700;&#x8981;&#x901A;&#x8FC7;&#x5907;&#x4EFD;&#x548C;&#x6062;&#x590D;&#x624B;&#x6BB5;&#x6765;&#x4EA7;&#x751F;&#x5907;&#x673A;,&#x5E76;&#x901A;&#x8FC7;&#x590D;&#x5236;&#x6765;&#x540C;&#x6B65;&#x4E3B;&#x5907;&#x673A;&#x95F4;&#x7684;&#x72B6;&#x6001;,&#x540C;&#x65F6;&#x90E8;&#x7F72;&#x5404;&#x79CD;&#x76D1;&#x63A7;&#x8F6F;&#x4EF6;&#x6765;&#x76D1;&#x63A7;&#x670D;&#x52A1;&#x5668;&#x72B6;&#x6001;&#x3002;&#x5F53;&#x5F02;&#x5E38;&#x6570;&#x636E;&#x5E93;&#x670D;&#x52A1;&#x5668;&#x5B95;&#x673A;&#x65F6;,&#x901A;&#x8FC7;&#x624B;&#x5DE5;&#x6216;&#x81EA;&#x52A8;&#x5316;&#x624B;&#x6BB5;&#x5C06;&#x4E3B;&#x673A;&#x6D41;&#x91CF;&#x5207;&#x6362;&#x81F3;&#x5907;&#x673A;,&#x8FD9;&#x4E2A;&#x52A8;&#x4F5C;&#x53EB;&#x4F5C;failover&#x3002;&#x800C;&#x4E00;&#x4E9B;&#x5927;&#x578B;&#x516C;&#x53F8;&#x5728;&#x9762;&#x5BF9;&#x6210;&#x5343;&#x4E0A;&#x4E07;&#x53F0; MySQL &#x670D;&#x52A1;&#x5668;&#x65F6;,&#x901A;&#x5E38;&#x4F7F;&#x7528;<code>&#x81EA;&#x52A8;&#x5316;&#x8FD0;&#x7EF4;&#x811A;&#x672C;</code>&#x6216;&#x7A0B;&#x5E8F;&#x5B8C;&#x6210;&#x4E0A;&#x8FF0;&#x79CD;&#x79CD;&#x52A8;&#x4F5C;&#x3002;</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2022-06-07T05:15:46.622Z" itemprop="dateUpdated">2022-06-07 13:15:46</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/bce68613/" target="_blank" rel="external">https://marnm.github.io/posts/bce68613/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='https://marnm.github.io'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/bce68613/&title=《MySQL基础》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/bce68613/&title=《MySQL基础》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/bce68613/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《MySQL基础》 — Deops's blog&url=https://marnm.github.io/posts/bce68613/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/bce68613/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/16fc5dc4/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：MySQL5.6
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/a36562d7/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：MongoDB学习笔记">下一篇：MongoDB学习笔记</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2022
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="https://marnm.github.io">marnm.github.io</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/bce68613/&title=《MySQL基础》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/bce68613/&title=《MySQL基础》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/bce68613/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《MySQL基础》 — Deops's blog&url=https://marnm.github.io/posts/bce68613/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/bce68613/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABv0lEQVR42u3aQW7EIAwF0Nz/0um6qiDfENxp9VhFmSQ8ZoFs4+uKx/1jjH4d3Rl98zoxcHFxt7n3dOSg0Z3qr/O/BhcXt5M732hGm9dblMSAi4v7t7jVwAUXF/e/cpPn8+QHFxf3M7l5CDKnVAOdg7kaLi7uBjevUp67PlLfxcXFXeLexVGdPj+AiWbHxcVt4Z4rZFQLrPm8uLi4Pdzq9PlRa/XgJNn+cHFxT3PzskUSxORLrS7yW0SGi4vbwq1+Itl01pKih2tcXNx27k7NNYmh8j9luBXi4uK2c6sHHmvTby0eFxe3hZtUG9ae3C+vRPVdXFzcA9xqipIXStYCoIeF4eLitnNzRF42zQ9doi/j4uK2cPfTmOoxyU57KC4ubj+3epi6lghVw6aHXA0XF7eF+9AAEW86dzwKyQ8uLu4vcfN2q/0mjCTEuarT4+LibnPv4jiXFEWLwcXFbeG+23pVfava5IGLi9vJrSYn1XDn5dYuXFzcRm615LHTyFU9Snkoi+Di4n4MNw9K1lKsctUEFxf3A7h5c1W5gjt/HhcXt5G7ViRdu1Ml4uLi9nN3Xp6nPTsFkRfqu7i4uCvcL6iiAS9SdTo9AAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>

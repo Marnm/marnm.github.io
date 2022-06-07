@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>MySQL5.6 | Deops&#39;s blog | 运维开发工程师</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="&amp;#x6E90;&amp;#x7801;&amp;#x5B89;&amp;#x88C5;MySQL 5.61. &amp;#x5B89;&amp;#x88C5;&amp;#x4F9D;&amp;#x8D56;&amp;#x5305;&amp;#x53CA;&amp;#x7F16;&amp;#x8BD1;&amp;#x5DE5;&amp;#x5177;12[root@localhost&amp;#xA0;~]# cd /usr/local/src[root@localhost&amp;#xA0;src]#&amp;#xA0;">
+<meta name="keywords" content="Echo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL5.6">
+<meta property="og:url" content="https://marnm.github.io/posts/16fc5dc4/index.html">
+<meta property="og:site_name" content="Deops&#39;s blog">
+<meta property="og:description" content="&amp;#x6E90;&amp;#x7801;&amp;#x5B89;&amp;#x88C5;MySQL 5.61. &amp;#x5B89;&amp;#x88C5;&amp;#x4F9D;&amp;#x8D56;&amp;#x5305;&amp;#x53CA;&amp;#x7F16;&amp;#x8BD1;&amp;#x5DE5;&amp;#x5177;12[root@localhost&amp;#xA0;~]# cd /usr/local/src[root@localhost&amp;#xA0;src]#&amp;#xA0;">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-06-07T05:15:22.592Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL5.6">
+<meta name="twitter:description" content="&amp;#x6E90;&amp;#x7801;&amp;#x5B89;&amp;#x88C5;MySQL 5.61. &amp;#x5B89;&amp;#x88C5;&amp;#x4F9D;&amp;#x8D56;&amp;#x5305;&amp;#x53CA;&amp;#x7F16;&amp;#x8BD1;&amp;#x5DE5;&amp;#x5177;12[root@localhost&amp;#xA0;~]# cd /usr/local/src[root@localhost&amp;#xA0;src]#&amp;#xA0;">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
+                <i class="icon icon-lg icon-tv tv"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">MySQL5.6</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#源码安装MySQL-5-6"><span class="post-toc-number">1.</span> <span class="post-toc-text">源码安装MySQL 5.6</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#用脚本安装MySQL-5-6"><span class="post-toc-number">2.</span> <span class="post-toc-text">用脚本安装MySQL 5.6</span></a></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-MySQL5-6" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">MySQL5.6</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2022-06-07 12:43:37" datetime="2022-06-07T04:43:37.000Z" itemprop="datePublished">2022-06-07</time>
+
+            <br id="mybreak">
+            
+<script>
+	mybreak.style="display:none";
+</script>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">26</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="&#x6E90;&#x7801;&#x5B89;&#x88C5;MySQL-5-6"><a href="#&#x6E90;&#x7801;&#x5B89;&#x88C5;MySQL-5-6" class="headerlink" title="&#x6E90;&#x7801;&#x5B89;&#x88C5;MySQL 5.6"></a>&#x6E90;&#x7801;&#x5B89;&#x88C5;MySQL 5.6</h2><p><strong>1. &#x5B89;&#x88C5;&#x4F9D;&#x8D56;&#x5305;&#x53CA;&#x7F16;&#x8BD1;&#x5DE5;&#x5177;</strong><br></p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost&#xA0;~]# cd /usr/local/src</span><br><span class="line">[root@localhost&#xA0;src]#&#xA0;yum&#xA0;install&#xA0;&#x2010;y&#xA0;&#xA0;gcc*&#xA0;&#xA0;make&#xA0;&#xA0;ncurses* perl*</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>2. &#x5B89;&#x88C5;CMake&#x7F16;&#x8BD1;&#x5DE5;&#x5177;</strong><br></p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost&#xA0;src]#&#xA0;tar&#xA0;xvf&#xA0;cmake&#x2010;2.8.11.2.tar.gz</span><br><span class="line">[root@localhost&#xA0;src]#&#xA0;cd&#xA0;cmake&#x2010;2.8.11.2</span><br><span class="line">[root@localhost&#xA0;cmake&#x2010;2.8.11.2]#&#xA0;./configure</span><br><span class="line">[root@localhost&#xA0;cmake&#x2010;2.8.11.2]#&#xA0;make</span><br><span class="line">[root@localhost&#xA0;cmake&#x2010;2.8.11.2]#&#xA0;make&#xA0;install</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>3. &#x914D;&#x7F6E;MySQL</strong></p>
+<p>&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x7528;&#x4E8E;&#x6267;&#x884C;MySQL&#x670D;&#x52A1;&#x7A0B;&#x5E8F;&#x7684;&#x8D26;&#x6237;<br></p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost&#xA0;cmake&#x2010;2.8.11.2]#&#xA0;cd&#xA0;..</span><br><span class="line">[root@localhost&#xA0;src]#&#xA0;useradd&#xA0;mysql&#xA0;&#x2010;s&#xA0;/sbin/nologin</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x521B;&#x5EFA;&#x7528;&#x4E8E;&#x4FDD;&#x5B58;MySQL&#x6570;&#x636E;&#x5E93;&#x7A0B;&#x5E8F;&#x548C;&#x6570;&#x636E;&#x5E93;&#x6587;&#x4EF6;&#x7684;&#x76EE;&#x5F55;&#xFF0C;&#x5E76;&#x628A;&#x8BE5;&#x76EE;&#x5F55;&#x7684;&#x6240;&#x6709;&#x8005;&#x548C;&#x6240;&#x5C5E;&#x7EC4;&#x8EAB;&#x4EFD;<br>&#x4FEE;&#x6539;&#x4E3A;mysql  &#x5176;&#x4E2D;&#xFF0C;/usr/local/mysql &#x662F;&#x7528;&#x4E8E;&#x4FDD;&#x5B58;MySQL&#x6570;&#x636E;&#x5E93;&#x670D;&#x52A1;&#x7A0B;&#x5E8F;&#x7684;&#x76EE;<br>&#x5F55;&#xFF0C;/usr/local/mysql/var &#x5219;&#x662F;&#x7528;&#x4E8E;&#x4FDD;&#x5B58;&#x771F;&#x5B9E;&#x6570;&#x636E;&#x5E93;&#x6587;&#x4EF6;&#x7684;&#x76EE;&#x5F55;<br></p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost&#xA0;src]#&#xA0;mkdir&#xA0;&#x2010;p&#xA0;/usr/local/mysql/var</span><br><span class="line">[root@localhost&#xA0;src]#&#xA0;chown&#xA0;&#x2010;Rf&#xA0;mysql:mysql&#xA0;/usr/local/mysql</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x89E3;&#x538B;&#x3001;&#x7F16;&#x8BD1;&#x3001;&#x5B89;&#x88C5; MySQL &#x6570;&#x636E;&#x5E93;&#x670D;&#x52A1;&#x7A0B;&#x5E8F;&#x3002;&#x5728;&#x7F16;&#x8BD1;&#x6570;&#x636E;&#x5E93;&#x65F6;&#x4F7F;&#x7528;&#x7684;&#x662F; cmake &#x547D;&#x4EE4;&#xFF0C;&#x5176;<br>&#x4E2D;&#xFF0C;-DCMAKE_INSTALL_PREFIX &#x53C2;&#x6570;&#x7528;&#x4E8E;&#x5B9A;&#x4E49;&#x6570;&#x636E;&#x5E93;&#x670D;&#x52A1;&#x7A0B;&#x5E8F;&#x7684;&#x4FDD;&#x5B58;&#x76EE;&#x5F55;&#xFF0C;-<br>DMYSQL_DATADIR &#x53C2;&#x6570;&#x7528;&#x4E8E;&#x5B9A;&#x4E49;&#x771F;&#x5B9E;&#x6570;&#x636E;&#x5E93;&#x6587;&#x4EF6;&#x7684;&#x76EE;&#x5F55;&#xFF0C;-DSYSCONFDIR &#x5219;&#x662F;&#x5B9A;&#x4E49;<br>MySQL &#x6570;&#x636E;&#x5E93;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x7684;&#x4FDD;&#x5B58;&#x76EE;&#x5F55;<br></p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost&#xA0;src]#&#xA0;tar&#xA0;xvf&#xA0;mysql&#x2010;5.6.19.tar.gz</span><br><span class="line">[root@localhost&#xA0;src]#&#xA0;cd&#xA0;mysql&#x2010;5.6.19</span><br><span class="line">[root@localhost&#xA0;mysql&#x2010;5.6.19]#&#xA0;cmake&#xA0;.&#xA0;&#x2010;DCMAKE_INSTALL_PREFIX=/usr/local/mysql&#xA0;&#x2010;DMYSQL_DATADIR=/usr/local/mysql/var&#xA0;&#x2010;DSYSCONFDIR=/etc</span><br><span class="line">[root@localhost&#xA0;mysql&#x2010;5.6.19]#&#xA0;make&#xA0;&amp;&amp;&#xA0;make&#xA0;install</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x4E3A;&#x4E86;&#x8BA9; MySQL &#x6570;&#x636E;&#x5E93;&#x7A0B;&#x5E8F;&#x6B63;&#x5E38;&#x8FD0;&#x8F6C;&#x8D77;&#x6765;&#xFF0C;&#x9700;&#x8981;&#x5148;&#x5220;&#x9664; /etc &#x76EE;&#x5F55;&#x4E2D;&#x7684;&#x9ED8;&#x8BA4;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF0C;&#x7136;&#x540E;&#x5728; MySQL &#x6570;&#x636E;&#x5E93;&#x7A0B;&#x5E8F;&#x7684;&#x4FDD;&#x5B58;&#x76EE;&#x5F55; scripts &#x5185;&#x627E;&#x5230;&#x4E00;&#x4E2A;&#x540D;&#x4E3A; mysql_install_db &#x7684;&#x811A;&#x672C;&#x7A0B;&#x5E8F;&#xFF0C;&#x6267;&#x884C;&#x8FD9;&#x4E2A;&#x811A;&#x672C;&#x7A0B;&#x5E8F;&#x5E76;&#x4F7F;&#x7528; &#x2013;user &#x53C2;&#x6570;&#x6307;&#x5B9A; MySQL &#x670D;&#x52A1;&#x7684;&#x5BF9;&#x5E94;&#x8D26;&#x53F7;&#x540D;&#x79F0;&#xFF08;&#x5728;&#x524D;&#x9762;&#x6B65;&#x9AA4;&#x5DF2;&#x7ECF;&#x521B;&#x5EFA;&#xFF09;&#xFF0C;&#x4F7F;&#x7528; &#x2013;basedir &#x53C2;&#x6570;&#x6307;&#x5B9A;MySQL &#x670D;&#x52A1;&#x7A0B;&#x5E8F;&#x7684;&#x4FDD;&#x5B58;&#x76EE;&#x5F55;&#xFF0C;&#x4F7F;&#x7528; &#x2013;datadir &#x53C2;&#x6570;<br>&#x6307;&#x5B9A; MySQL &#x771F;&#x5B9E;&#x6570;&#x636E;&#x5E93;&#x7684;&#x6587;&#x4EF6;&#x4FDD;&#x5B58;&#x76EE;&#x5F55;&#xFF0C;&#x8FD9;&#x6837;&#x5373;&#x53EF;&#x751F;&#x6210;&#x7CFB;&#x7EDF;&#x6570;&#x636E;&#x5E93;&#x6587;&#x4EF6;&#xFF0C;&#x4E5F;&#x4F1A;&#x751F;&#x6210;&#x65B0;&#x7684;MySQL &#x670D;&#x52A1;&#x914D;&#x7F6E;&#x6587;&#x4EF6;<br></p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost&#xA0;mysql&#x2010;5.6.19]#&#xA0;rm&#xA0;&#x2010;rf&#xA0;/etc/my.cnf</span><br><span class="line">[root@localhost&#xA0;mysql&#x2010;5.6.19]#&#xA0;cd&#xA0;/usr/local/mysql</span><br><span class="line">[root@localhost&#xA0;mysql]#&#xA0;./scripts/mysql_install_db&#xA0;&#x2010;&#x2010;user=mysql&#xA0;&#x2010;&#x2010;basedir=/usr/local/mysql&#xA0;&#x2010;&#x2010;datadir=/usr/local/mysql/var</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x628A;Linux&#x7CFB;&#x7EDF;&#x65B0;&#x751F;&#x6210;&#x7684;MySQL&#x6570;&#x636E;&#x5E93;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x94FE;&#x63A5;&#x5230;/etc&#x76EE;&#x5F55;&#x4E2D;&#xFF0C;&#x7136;&#x540E;&#x628A;&#x7A0B;&#x5E8F;&#x76EE;&#x5F55;&#x4E2D;&#x7684;&#x5F00;&#x673A;&#x7A0B;&#x5E8F;&#x6587;&#x4EF6;&#x590D;&#x5236;&#x5230;/etc/rc.d/init.d&#x76EE;&#x5F55;&#x4E2D;&#xFF0C;&#x4EE5;&#x4FBF;&#x901A;&#x8FC7;service&#x547D;&#x4EE4;&#x6765;&#x7BA1;&#x7406;MySQL&#x6570;&#x636E;&#x5E93;&#x670D;&#x52A1;&#x7A0B;&#x5E8F;&#x3002;&#x8BB0;&#x5F97;&#x628A;&#x6570;&#x636E;&#x5E93;&#x811A;&#x672C;&#x6587;&#x4EF6;&#x7684;&#x6743;&#x9650;&#x4FEE;&#x6539;&#x6210;755&#x4EE5;&#x4FBF;&#x4E8E;&#x8BA9;&#x7528;&#x6237;&#x6709;&#x6267;&#x884C;&#x8BE5;&#x811A;&#x672C;&#x7684;&#x6743;&#x9650;<br></p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost&#xA0;mysql]#&#xA0;ls</span><br><span class="line">bin&#xA0;data&#xA0;include&#xA0;lib&#xA0;my.cnf&#xA0;README&#xA0;share&#xA0;support&#x2010;files</span><br><span class="line">COPYING&#xA0;docs&#xA0;INSTALL&#x2010;BINARY&#xA0;man&#xA0;mysql&#x2010;test&#xA0;scripts&#xA0;sql&#x2010;bench&#xA0;var</span><br><span class="line">[root@localhost&#xA0;mysql]#&#xA0;ln&#xA0;&#x2010;s&#xA0;my.cnf&#xA0;/etc/my.cnf</span><br><span class="line">[root@localhost&#xA0;mysql]#&#xA0;cp&#xA0;./support&#x2010;files/mysql.server&#xA0;/etc/rc.d/init.d/mysqld</span><br><span class="line">[root@localhost&#xA0;mysql]#&#xA0;chmod&#xA0;755&#xA0;/etc/rc.d/init.d/mysqld</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x7F16;&#x8F91;&#x521A;&#x521A;&#x590D;&#x5236;&#x7684;MySQL&#x6570;&#x636E;&#x5E93;&#x811A;&#x672C;&#x6587;&#x4EF6;&#xFF0C;&#x628A;&#x7B2C;46&#x3001;47&#x884C;&#x7684;basedir&#x4E0E;datadir&#x53C2;&#x6570;&#x5206;&#x522B;&#x4FEE;&#x6539;<br>&#x4E3A;MySQL&#x6570;&#x636E;&#x5E93;&#x7A0B;&#x5E8F;&#x7684;&#x4FDD;&#x5B58;&#x76EE;&#x5F55;&#x548C;&#x771F;&#x5B9E;&#x6570;&#x636E;&#x5E93;&#x7684;&#x6587;&#x4EF6;&#x5185;&#x5BB9;<br></p><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost&#xA0;mysql]#&#xA0;vim&#xA0;/etc/rc.d/init.d/mysqld</span><br><span class="line">&#xA0;46&#xA0;basedir=/usr/local/mysql</span><br><span class="line">&#xA0;47&#xA0;datadir=/usr/local/mysql/var</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x914D;&#x7F6E;&#x597D;&#x811A;&#x672C;&#x6587;&#x4EF6;&#x540E;&#x4FBF;&#x53EF;&#x4EE5;&#x7528;service&#x547D;&#x4EE4;&#x542F;&#x52A8;mysqld&#x6570;&#x636E;&#x5E93;&#x670D;&#x52A1;&#x4E86;&#x3002;mysqld&#x662F;MySQL&#x6570;&#x636E;<br>&#x5E93;&#x7A0B;&#x5E8F;&#x7684;&#x670D;&#x52A1;&#x540D;&#x79F0;&#xFF0C;&#x6CE8;&#x610F;&#x4E0D;&#x8981;&#x5199;&#x9519;&#x3002;&#x518D;&#x4F7F;&#x7528;chkconfig&#x547D;&#x4EE4;&#x628A;mysqld&#x670D;&#x52A1;&#x7A0B;&#x5E8F;&#x52A0;&#x5165;&#x5230;&#x5F00;&#x673A;<br>&#x542F;&#x52A8;&#x9879;&#x4E2D;<br></p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost&#xA0;mysql]#&#xA0;service&#xA0;mysqld&#xA0;start</span><br><span class="line">Unit&#xA0;mysqld.service&#xA0;could&#xA0;not&#xA0;be&#xA0;found.</span><br><span class="line">Starting&#xA0;MySQL.&#xA0;SUCCESS!</span><br><span class="line">[root@localhost&#xA0;mysql]#&#xA0;chkconfig&#xA0;mysqld&#xA0;on</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x5728;/etc/profile&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x7684;&#x6700;&#x540E;&#x52A0;&#x5165;export PATH=$PATH:/usr/local/mysql/bin<br></p><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost&#xA0;mysql]#&#xA0;vim&#xA0;/etc/profile</span><br><span class="line">&#xA0;export&#xA0;PATH=$PATH:/usr/local/mysql/bin</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>MySQL&#x6570;&#x636E;&#x5E93;&#x670D;&#x52A1;&#x7A0B;&#x5E8F;&#x8FD8;&#x4F1A;&#x8C03;&#x7528;&#x5230;&#x4E00;&#x4E9B;&#x7A0B;&#x5E8F;&#x6587;&#x4EF6;&#x548C;&#x51FD;&#x6570;&#x5E93;&#x6587;&#x4EF6;&#x3002;&#x7531;&#x4E8E;&#x5F53;&#x524D;&#x662F;&#x901A;&#x8FC7;&#x6E90;&#x7801;&#x5305;&#x65B9;&#x5F0F;&#x5B89;&#x88C5;MySQL&#x6570;&#x636E;&#x5E93;&#xFF0C;&#x56E0;&#x6B64;&#x73B0;&#x5728;&#x4E5F;&#x5FC5;&#x987B;&#x4EE5;&#x624B;&#x52A8;&#x65B9;&#x5F0F;&#x628A;&#x8FD9;&#x4E9B;&#x6587;&#x4EF6;&#x94FE;&#x63A5;&#x8FC7;&#x6765;<br></p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost&#xA0;mysql]#&#xA0;mkdir&#xA0; /var/lib/mysql</span><br><span class="line">[root@localhost&#xA0;mysql]#&#xA0;ln&#xA0;&#x2010;s&#xA0;/usr/local/mysql/lib/mysql&#xA0; /usr/lib/mysql</span><br><span class="line">[root@localhost&#xA0;mysql]#&#xA0;ln&#xA0;&#x2010;s /var/lib/mysql/mysql.sock&#xA0; /tmp/mysql.sock&#xA0;</span><br><span class="line">[root@localhost&#xA0;mysql]#&#xA0;ln&#xA0;&#x2010;s&#xA0;/usr/local/mysql/include/mysql&#xA0; /usr/include/mysql</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x73B0;&#x5728;&#xFF0C;MySQL&#x6570;&#x636E;&#x5E93;&#x670D;&#x52A1;&#x7A0B;&#x5E8F;&#x5DF2;&#x7ECF;&#x542F;&#x52A8;&#xFF0C;&#x8C03;&#x7528;&#x7684;&#x5404;&#x4E2A;&#x51FD;&#x6570;&#x6587;&#x4EF6;&#x5DF2;&#x7ECF;&#x5C31;&#x4F4D;&#xFF0C;PATH&#x73AF;&#x5883;&#x53D8;&#x91CF;<br>&#x4E2D;&#x4E5F;&#x52A0;&#x5165;&#x4E86;MySQL&#x6570;&#x636E;&#x5E93;&#x547D;&#x4EE4;&#x7684;&#x6240;&#x5728;&#x76EE;&#x5F55;&#x3002;&#x63A5;&#x4E0B;&#x6765;&#x51C6;&#x5907;&#x5BF9;MySQL&#x6570;&#x636E;&#x5E93;&#x8FDB;&#x884C;&#x521D;&#x59CB;&#x5316;&#xFF0C;&#x8FD9;&#x4E2A;<br>&#x521D;&#x59CB;&#x5316;&#x7684;&#x914D;&#x7F6E;&#x8FC7;&#x7A0B;&#x4E0E;MariaDB&#x6570;&#x636E;&#x5E93;&#x662F;&#x4E00;&#x6837;&#x7684;&#xFF0C;&#x53EA;&#x662F;&#x6700;&#x540E;&#x53D8;&#x6210;&#x4E86;Thanks for using MySQL!</p>
+<p><code>&#x6CE8;&#x610F;&#xFF1A;&#x5982;&#x679C; mysql_secure_installation &#x627E;&#x4E0D;&#x5230;&#xFF0C;&#x5219;&#x9700;&#x8981;&#x6267;&#x884C; source /etc/profile &#x540E;&#xFF0C;&#x518D;&#x6267;&#x884C; mysql_secure_installation &#x6765;&#x521D;&#x59CB;&#x5316;MySQL&#x6570;&#x636E;&#x5E93;&#xFF0C;&#x6216;&#x8005;&#x91CD;&#x65B0;&#x8FDE;&#x63A5; Linux &#x7CFB;&#x7EDF;&#x540E;&#x518D;&#x4F7F;&#x7528; mysql_secure_installation &#x6765;&#x521D;&#x59CB;&#x5316;MySQL&#x6570;&#x636E;&#x5E93;&#x3002;</code></p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost&#xA0;~]#&#xA0;mysql_secure_installation</span><br><span class="line">NOTE:&#xA0;RUNNING&#xA0;ALL&#xA0;PARTS&#xA0;OF&#xA0;THIS&#xA0;SCRIPT&#xA0;IS&#xA0;RECOMMENDED&#xA0;FOR&#xA0;ALL&#xA0;MySQL</span><br><span class="line">SERVERS&#xA0;IN&#xA0;PRODUCTION&#xA0;USE!&#xA0;PLEASE&#xA0;READ&#xA0;EACH&#xA0;STEP&#xA0;CAREFULLY!</span><br><span class="line">In&#xA0;order&#xA0;to&#xA0;log&#xA0;into&#xA0;MySQL&#xA0;to&#xA0;secure&#xA0;it,&#xA0;we&apos;ll&#xA0;need&#xA0;the&#xA0;current</span><br><span class="line">password&#xA0;for&#xA0;the&#xA0;root&#xA0;user.&#xA0;If&#xA0;you&apos;ve&#xA0;just&#xA0;installed&#xA0;MySQL,&#xA0;and</span><br><span class="line">you&#xA0;haven&apos;t&#xA0;set&#xA0;the&#xA0;root&#xA0;password&#xA0;yet,&#xA0;the&#xA0;password&#xA0;will&#xA0;be&#xA0;blank,</span><br><span class="line">so&#xA0;you&#xA0;should&#xA0;just&#xA0;press&#xA0;enter&#xA0;here.</span><br><span class="line">Enter&#xA0;current&#xA0;password&#xA0;for&#xA0;root&#xA0;(enter&#xA0;for&#xA0;none):&#xA0;&#x6B64;&#x5904;&#x53EA;&#x9700;&#x6309;&#x4E0B;&#x56DE;&#x8F66;&#x952E;</span><br><span class="line">OK,&#xA0;successfully&#xA0;used&#xA0;password,&#xA0;moving&#xA0;on...</span><br><span class="line">Setting&#xA0;the&#xA0;root&#xA0;password&#xA0;ensures&#xA0;that&#xA0;nobody&#xA0;can&#xA0;log&#xA0;into&#xA0;the&#xA0;MySQL</span><br><span class="line">root&#xA0;user&#xA0;without&#xA0;the&#xA0;proper&#xA0;authorisation.</span><br><span class="line">Set&#xA0;root&#xA0;password?&#xA0;[Y/n]&#xA0;y&#xA0;&#xFF08;&#x8981;&#x4E3A;root&#x7BA1;&#x7406;&#x5458;&#x8BBE;&#x7F6E;&#x6570;&#x636E;&#x5E93;&#x7684;&#x5BC6;&#x7801;&#xFF09;</span><br><span class="line">New&#xA0;password:&#xA0;&#x8F93;&#x5165;&#x8981;&#x4E3A;root&#x7BA1;&#x7406;&#x5458;&#x8BBE;&#x7F6E;&#x7684;&#x6570;&#x636E;&#x5E93;&#x5BC6;&#x7801;</span><br><span class="line">Re&#x2010;enter&#xA0;new&#xA0;password:&#xA0;&#x518D;&#x8F93;&#x5165;&#x4E00;&#x6B21;&#x5BC6;&#x7801;</span><br><span class="line">Password&#xA0;updated&#xA0;successfully!</span><br><span class="line">Reloading&#xA0;privilege&#xA0;tables..</span><br><span class="line">...&#xA0;Success!</span><br><span class="line">By&#xA0;default,&#xA0;a&#xA0;MySQL&#xA0;installation&#xA0;has&#xA0;an&#xA0;anonymous&#xA0;user,&#xA0;allowing&#xA0;anyone</span><br><span class="line">to&#xA0;log&#xA0;into&#xA0;MySQL&#xA0;without&#xA0;having&#xA0;to&#xA0;have&#xA0;a&#xA0;user&#xA0;account&#xA0;created&#xA0;for</span><br><span class="line">them.&#xA0;This&#xA0;is&#xA0;intended&#xA0;only&#xA0;for&#xA0;testing,&#xA0;and&#xA0;to&#xA0;make&#xA0;the&#xA0;installation</span><br><span class="line">go&#xA0;a&#xA0;bit&#xA0;smoother.&#xA0;You&#xA0;should&#xA0;remove&#xA0;them&#xA0;before&#xA0;moving&#xA0;into&#xA0;a</span><br><span class="line">production&#xA0;environment.</span><br><span class="line">Remove&#xA0;anonymous&#xA0;users?&#xA0;[Y/n]&#xA0;y&#xA0;&#xFF08;&#x5220;&#x9664;&#x533F;&#x540D;&#x8D26;&#x6237;&#xFF09;</span><br><span class="line">...&#xA0;Success!</span><br><span class="line">Normally,&#xA0;root&#xA0;should&#xA0;only&#xA0;be&#xA0;allowed&#xA0;to&#xA0;connect&#xA0;from&#xA0;&apos;localhost&apos;.&#xA0;This</span><br><span class="line">ensures&#xA0;that&#xA0;someone&#xA0;cannot&#xA0;guess&#xA0;at&#xA0;the&#xA0;root&#xA0;password&#xA0;from&#xA0;the&#xA0;network.</span><br><span class="line">Disallow&#xA0;root&#xA0;login&#xA0;remotely?&#xA0;[Y/n]&#xA0;y&#xA0;&#xFF08;&#x7981;&#x6B62;root&#x7BA1;&#x7406;&#x5458;&#x4ECE;&#x8FDC;&#x7A0B;&#x767B;&#x5F55;&#xFF09;</span><br><span class="line">...&#xA0;Success!</span><br><span class="line">By&#xA0;default,&#xA0;MySQL&#xA0;comes&#xA0;with&#xA0;a&#xA0;database&#xA0;named&#xA0;&apos;test&apos;&#xA0;that&#xA0;anyone&#xA0;can</span><br><span class="line">access.&#xA0;This&#xA0;is&#xA0;also&#xA0;intended&#xA0;only&#xA0;for&#xA0;testing,&#xA0;and&#xA0;should&#xA0;be&#xA0;removed</span><br><span class="line">before&#xA0;moving&#xA0;into&#xA0;a&#xA0;production&#xA0;environment.</span><br><span class="line">Remove&#xA0;test&#xA0;database&#xA0;and&#xA0;access&#xA0;to&#xA0;it?&#xA0;[Y/n]&#xA0;y&#xA0;&#xFF08;&#x5220;&#x9664;test&#x6570;&#x636E;&#x5E93;&#x5E76;&#x53D6;&#x6D88;&#x5BF9;&#x5176;&#x7684;&#x8BBF;&#x95EE;&#x6743;&#x9650;&#xFF09;</span><br><span class="line">&#x2010;&#xA0;Dropping&#xA0;test&#xA0;database...</span><br><span class="line">...&#xA0;Success!</span><br><span class="line">&#x2010;&#xA0;Removing&#xA0;privileges&#xA0;on&#xA0;test&#xA0;database...</span><br><span class="line">...&#xA0;Success!</span><br><span class="line">Reloading&#xA0;the&#xA0;privilege&#xA0;tables&#xA0;will&#xA0;ensure&#xA0;that&#xA0;all&#xA0;changes&#xA0;made&#xA0;so&#xA0;far</span><br><span class="line">will&#xA0;take&#xA0;effect&#xA0;immediately.</span><br><span class="line">Reload&#xA0;privilege&#xA0;tables&#xA0;now?&#xA0;[Y/n]&#xA0;y&#xA0;&#xFF08;&#x5237;&#x65B0;&#x6388;&#x6743;&#x8868;&#xFF0C;&#x8BA9;&#x521D;&#x59CB;&#x5316;&#x540E;&#x7684;&#x8BBE;&#x5B9A;&#x7ACB;&#x5373;&#x751F;&#x6548;&#xFF09;</span><br><span class="line">...&#xA0;Success!</span><br><span class="line">All&#xA0;done!&#xA0;If&#xA0;you&apos;ve&#xA0;completed&#xA0;all&#xA0;of&#xA0;the&#xA0;above&#xA0;steps,&#xA0;your&#xA0;MySQL</span><br><span class="line">installation&#xA0;should&#xA0;now&#xA0;be&#xA0;secure.</span><br><span class="line">Thanks&#xA0;for&#xA0;using&#xA0;MySQL!</span><br><span class="line">Cleaning&#xA0;up...</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x767B;&#x5F55;MySQL&#x6570;&#x636E;&#x5E93;&#xFF0C;&#x505A;&#x7B80;&#x5355;&#x64CD;&#x4F5C;&#xFF0C;&#x9A8C;&#x8BC1;&#x6570;&#x636E;&#x5E93;&#x662F;&#x5426;&#x6B63;&#x5E38;<br></p><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"> [root@localhost&#xA0;~]<span class="comment">#&#xA0;mysql&#xA0;&#x2010;u&#xA0;root&#xA0;&#x2010;p</span></span><br><span class="line"> Enter&#xA0;password:</span><br><span class="line"> Welcome&#xA0;to&#xA0;the&#xA0;MySQL&#xA0;monitor.&#xA0;Commands&#xA0;<span class="keyword">end</span>&#xA0;<span class="keyword">with</span>&#xA0;;&#xA0;or&#xA0;\g.</span><br><span class="line"> Your&#xA0;MySQL&#xA0;connection&#xA0;id&#xA0;is&#xA0;12</span><br><span class="line"> Server&#xA0;version:&#xA0;5.6.19&#xA0;Source&#xA0;distribution</span><br><span class="line"></span><br><span class="line"> Copyright&#xA0;(c)&#xA0;2000,&#xA0;2014,&#xA0;Oracle&#xA0;and/or&#xA0;its&#xA0;affiliates.&#xA0;All&#xA0;rights&#xA0;reserv</span><br><span class="line">ed.</span><br><span class="line"></span><br><span class="line"> Oracle&#xA0;is&#xA0;a&#xA0;registered&#xA0;trademark&#xA0;of&#xA0;Oracle&#xA0;Corporation&#xA0;and/or&#xA0;its</span><br><span class="line"> affiliates.&#xA0;Other&#xA0;names&#xA0;may&#xA0;be&#xA0;trademarks&#xA0;of&#xA0;their&#xA0;respective</span><br><span class="line"> owners.</span><br><span class="line"></span><br><span class="line"> Type&#xA0;&apos;<span class="keyword">help</span>;&apos;&#xA0;or&#xA0;&apos;\h&apos;&#xA0;for&#xA0;help.&#xA0;<span class="keyword">Type</span>&#xA0;<span class="string">&apos;\c&apos;</span>&#xA0;<span class="keyword">to</span>&#xA0;<span class="keyword">clear</span>&#xA0;the&#xA0;<span class="keyword">current</span>&#xA0;<span class="keyword">input</span>&#xA0;stat</span><br><span class="line">ement.</span><br><span class="line"></span><br><span class="line"> mysql&gt;&#xA0;<span class="keyword">show</span>&#xA0;<span class="keyword">databases</span>;</span><br><span class="line"> +&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;+</span><br><span class="line"> |&#xA0;Database&#xA0;|</span><br><span class="line"> +&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;+</span><br><span class="line"> |&#xA0;information_schema&#xA0;|</span><br><span class="line"> |&#xA0;mysql&#xA0;|</span><br><span class="line"> |&#xA0;performance_schema&#xA0;|</span><br><span class="line"> +&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;+</span><br><span class="line"> 3&#xA0;rows&#xA0;in&#xA0;<span class="keyword">set</span>&#xA0;(<span class="number">0.00</span>&#xA0;sec)</span><br><span class="line"></span><br><span class="line"> mysql&gt;&#xA0;<span class="keyword">create</span>&#xA0;<span class="keyword">database</span>&#xA0;<span class="keyword">test</span>;</span><br><span class="line"> Query&#xA0;OK,&#xA0;1&#xA0;row&#xA0;affected&#xA0;(0.00&#xA0;sec)</span><br><span class="line"></span><br><span class="line"> mysql&gt;&#xA0;show&#xA0;databases;</span><br><span class="line"> +&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;+</span><br><span class="line"> |&#xA0;Database&#xA0;|</span><br><span class="line"> +&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;+</span><br><span class="line"> |&#xA0;information_schema&#xA0;|</span><br><span class="line"> |&#xA0;mysql&#xA0;|</span><br><span class="line"> |&#xA0;performance_schema&#xA0;|</span><br><span class="line"> |&#xA0;test&#xA0;|</span><br><span class="line"> +&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;+</span><br><span class="line"> 4&#xA0;rows&#xA0;in&#xA0;<span class="keyword">set</span>&#xA0;(<span class="number">0.00</span>&#xA0;sec)</span><br><span class="line"></span><br><span class="line"> mysql&gt;&#xA0;<span class="keyword">create</span>&#xA0;<span class="keyword">database</span>&#xA0;test2;</span><br><span class="line"> Query&#xA0;OK,&#xA0;1&#xA0;row&#xA0;affected&#xA0;(0.00&#xA0;sec)</span><br><span class="line"></span><br><span class="line"> mysql&gt;&#xA0;show&#xA0;databases;</span><br><span class="line"> +&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;+</span><br><span class="line"> |&#xA0;Database&#xA0;|</span><br><span class="line"> +&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;+</span><br><span class="line"> |&#xA0;information_schema&#xA0;|</span><br><span class="line"> |&#xA0;mysql&#xA0;|</span><br><span class="line"> |&#xA0;performance_schema&#xA0;|</span><br><span class="line"> |&#xA0;test&#xA0;|</span><br><span class="line"> |&#xA0;test2&#xA0;|</span><br><span class="line"> +&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;+</span><br><span class="line"> 5&#xA0;rows&#xA0;in&#xA0;<span class="keyword">set</span>&#xA0;(<span class="number">0.00</span>&#xA0;sec)</span><br><span class="line"></span><br><span class="line"> mysql&gt;&#xA0;<span class="keyword">drop</span>&#xA0;<span class="keyword">database</span>&#xA0;test2;</span><br><span class="line"> Query&#xA0;OK,&#xA0;0&#xA0;rows&#xA0;affected&#xA0;(0.00&#xA0;sec)</span><br><span class="line"></span><br><span class="line"> mysql&gt;&#xA0;show&#xA0;databases;</span><br><span class="line"> +&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;+</span><br><span class="line"> |&#xA0;Database&#xA0;|</span><br><span class="line"> +&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;+</span><br><span class="line"> |&#xA0;information_schema&#xA0;|</span><br><span class="line"> |&#xA0;mysql&#xA0;|</span><br><span class="line"> |&#xA0;performance_schema&#xA0;|</span><br><span class="line"> |&#xA0;test&#xA0;|</span><br><span class="line"> +&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;&#x2010;+</span><br><span class="line"> 4&#xA0;rows&#xA0;in&#xA0;<span class="keyword">set</span>&#xA0;(<span class="number">0.00</span>&#xA0;sec)</span><br><span class="line"></span><br><span class="line"> mysql&gt;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<h2 id="&#x7528;&#x811A;&#x672C;&#x5B89;&#x88C5;MySQL-5-6"><a href="#&#x7528;&#x811A;&#x672C;&#x5B89;&#x88C5;MySQL-5-6" class="headerlink" title="&#x7528;&#x811A;&#x672C;&#x5B89;&#x88C5;MySQL 5.6"></a>&#x7528;&#x811A;&#x672C;&#x5B89;&#x88C5;MySQL 5.6</h2> <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br></pre></td><td class="code"><pre><span class="line"> [root@localhost src]# vim mysql.sh </span><br><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Explain:This is a script to quickly deploy the MySQL service.</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Author:Jaking</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Email:Jaking@vip.163.com</span></span><br><span class="line"><span class="meta">#</span><span class="bash">Date:2019-10-09</span></span><br><span class="line"><span class="meta">#</span><span class="bash">&#x6CE8;&#x610F;:&#x628A;&#x6240;&#x9700;&#x6E90;&#x7801;&#x5305;&#x653E;&#x5230;/usr/<span class="built_in">local</span>/src&#x76EE;&#x5F55;&#x4E0B;</span></span><br><span class="line"><span class="meta">#</span><span class="bash">&#x63A8;&#x8350;&#x5B89;&#x88C5;&#x5305;&#xFF1A;mysql-5.6.19.tar.gz cmake-2.8.11.2.tar.gz</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">&#x4F18;&#x5316;&#x73AF;&#x5883;</span></span><br><span class="line">sed -i &apos;s/SELINUX=enforcing/SELINUX=disabled/&apos; /etc/selinux/config &amp;&gt; /dev/null</span><br><span class="line">setenforce 0</span><br><span class="line">systemctl stop firewalld</span><br><span class="line">systemctl disable firewalld</span><br><span class="line">iptables -F</span><br><span class="line">systemctl stop NetworkManager &amp;&gt; /dev/null</span><br><span class="line">systemctl disable NetworkManager &amp;&gt; /dev/null</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">&#x68C0;&#x67E5;yum&#x6E90;&#x662F;&#x5426;&#x914D;&#x7F6E;&#x597D;&#xFF0C;&#x5982;&#x679C;&#x6CA1;&#x6709;&#x914D;&#x7F6E;&#x597D;&#x5219;&#x914D;&#x7F6E;yum&#x6E90;</span></span><br><span class="line">yum clean all 1&gt; /dev/null 2&gt;&amp;1 &amp;&amp; yum makecache &amp;&gt; /dev/null</span><br><span class="line">if [ $? -ne 0 ];then</span><br><span class="line"></span><br><span class="line">cd /etc/yum.repos.d</span><br><span class="line"></span><br><span class="line">cat &gt;rhel7.repo&lt;&lt;EOF</span><br><span class="line">[rhel7]</span><br><span class="line">name=rhel7</span><br><span class="line">baseurl=file:///media/cdrom</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">  mkdir -p /media/cdrom</span><br><span class="line">  mount /dev/cdrom /media/cdrom &amp;&gt;/dev/null</span><br><span class="line">  sed -i -e &apos;/iso9660/d&apos; /etc/fstab</span><br><span class="line">  echo &quot;/dev/cdrom /media/cdrom iso9660 defaults 0 0&quot; &gt;&gt; /etc/fstab</span><br><span class="line">  yum clean all &amp;&gt;/dev/null &amp;&amp; yum makecache &amp;&gt;/dev/null</span><br><span class="line"></span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">&#x5B89;&#x88C5;&#x4F9D;&#x8D56;&#x5305;&#x53CA;&#x7F16;&#x8BD1;&#x5DE5;&#x5177;</span></span><br><span class="line">yum install -y gcc* make ncurse* perl*</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">&#x5B89;&#x88C5;CMake&#x7F16;&#x8BD1;&#x5DE5;&#x5177;</span></span><br><span class="line">cd /usr/local/src</span><br><span class="line">tar xzvf cmake-2.8.11.2.tar.gz</span><br><span class="line">cd cmake-2.8.11.2</span><br><span class="line">./configure</span><br><span class="line">make &amp;&amp; make install</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">&#x90E8;&#x7F72;MySQL&#x6570;&#x636E;&#x5E93;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x540D;&#x4E3A;mysql&#x7684;&#x7528;&#x6237;</span></span><br><span class="line">useradd mysql -s /sbin/nologin</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x7528;&#x4E8E;&#x4FDD;&#x5B58;MySQL&#x6570;&#x636E;&#x5E93;&#x7A0B;&#x5E8F;&#x548C;&#x6570;&#x636E;&#x5E93;&#x6587;&#x4EF6;&#x7684;&#x76EE;&#x5F55;&#xFF0C;&#x5E76;&#x628A;&#x8BE5;&#x76EE;&#x5F55;&#x7684;&#x6240;&#x6709;&#x8005;&#x548C;&#x6240;&#x5C5E;&#x7EC4;&#x8EAB;&#x4EFD;&#x4FEE;&#x6539;&#x4E3A;mysql&#x3002;</span></span><br><span class="line">mkdir -p /usr/local/mysql/var</span><br><span class="line">chown -Rf mysql:mysql /usr/local/mysql</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">&#x89E3;&#x538B;&#x3001;&#x7F16;&#x8BD1;&#x3001;&#x5B89;&#x88C5;MySQL&#x6570;&#x636E;&#x5E93;&#x670D;&#x52A1;&#x7A0B;&#x5E8F;&#x3002;&#x5728;&#x7F16;&#x8BD1;&#x6570;&#x636E;&#x5E93;&#x65F6;&#x4F7F;&#x7528;&#x7684;&#x662F;cmake&#x547D;&#x4EE4;&#xFF0C;&#x5176;&#x4E2D;&#xFF0C;-DCMAKE_INSTALL_PREFIX&#x53C2;&#x6570;&#x7528;&#x4E8E;&#x5B9A;&#x4E49;&#x6570;&#x636E;&#x5E93;&#x670D;&#x52A1;&#x7A0B;&#x5E8F;&#x7684;&#x4FDD;&#x5B58;&#x76EE;&#x5F55;&#xFF0C;-DMYSQL_DATADIR&#x53C2;&#x6570;&#x7528;&#x4E8E;&#x5B9A;&#x4E49;&#x771F;&#x5B9E;&#x6570;&#x636E;&#x5E93;&#x6587;&#x4EF6;&#x7684;&#x76EE;&#x5F55;&#xFF0C;-DSYSCONFDIR&#x5219;&#x662F;&#x5B9A;&#x4E49;MySQL&#x6570;&#x636E;&#x5E93;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x7684;&#x4FDD;&#x5B58;&#x76EE;&#x5F55;&#x3002;</span></span><br><span class="line">cd /usr/local/src</span><br><span class="line">tar xzvf mysql-5.6.19.tar.gz</span><br><span class="line">cd mysql-5.6.19</span><br><span class="line">cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/mysql -DMYSQL_DATADIR=/usr/local/mysql/var -DSYSCONFDIR=/etc</span><br><span class="line">make &amp;&amp; make install</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">&#x4E3A;&#x4E86;&#x8BA9;MySQL&#x6570;&#x636E;&#x5E93;&#x7A0B;&#x5E8F;&#x6B63;&#x5E38;&#x8FD0;&#x8F6C;&#x8D77;&#x6765;&#xFF0C;&#x9700;&#x8981;&#x5148;&#x5220;&#x9664;/etc&#x76EE;&#x5F55;&#x4E2D;&#x7684;&#x9ED8;&#x8BA4;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF0C;&#x7136;&#x540E;&#x5728;MySQL&#x6570;&#x636E;&#x5E93;&#x7A0B;&#x5E8F;&#x7684;&#x4FDD;&#x5B58;&#x76EE;&#x5F55;scripts&#x5185;&#x627E;&#x5230;&#x4E00;&#x4E2A;&#x540D;&#x4E3A;mysql_install_db&#x7684;&#x811A;&#x672C;&#x7A0B;&#x5E8F;&#xFF0C;&#x6267;&#x884C;&#x8FD9;&#x4E2A;&#x811A;&#x672C;&#x7A0B;&#x5E8F;&#x5E76;&#x4F7F;&#x7528;--user&#x53C2;&#x6570;&#x6307;&#x5B9A;MySQL&#x670D;&#x52A1;&#x7684;&#x5BF9;&#x5E94;&#x8D26;&#x53F7;&#x540D;&#x79F0;&#xFF08;&#x5728;&#x524D;&#x9762;&#x6B65;&#x9AA4;&#x5DF2;&#x7ECF;&#x521B;&#x5EFA;&#xFF09;&#xFF0C;&#x4F7F;&#x7528;--basedir&#x53C2;&#x6570;&#x6307;&#x5B9A;MySQL&#x670D;&#x52A1;&#x7A0B;&#x5E8F;&#x7684;&#x4FDD;&#x5B58;&#x76EE;&#x5F55;&#xFF0C;&#x4F7F;&#x7528;--datadir&#x53C2;&#x6570;&#x6307;&#x5B9A;MySQL&#x771F;&#x5B9E;&#x6570;&#x636E;&#x5E93;&#x7684;&#x6587;&#x4EF6;&#x4FDD;&#x5B58;&#x76EE;&#x5F55;&#xFF0C;&#x8FD9;&#x6837;&#x5373;&#x53EF;&#x751F;&#x6210;&#x7CFB;&#x7EDF;&#x6570;&#x636E;&#x5E93;&#x6587;&#x4EF6;&#xFF0C;&#x4E5F;&#x4F1A;&#x751F;&#x6210;&#x51FA;&#x65B0;&#x7684;MySQL&#x670D;&#x52A1;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x3002;</span></span><br><span class="line">rm -rf /etc/my.cnf</span><br><span class="line">cd /usr/local/mysql</span><br><span class="line">./scripts/mysql_install_db --user=mysql --basedir=/usr/local/mysql --datadir=/usr/local/mysql/var</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">&#x628A;&#x7CFB;&#x7EDF;&#x65B0;&#x751F;&#x6210;&#x7684;MySQL&#x6570;&#x636E;&#x5E93;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x94FE;&#x63A5;&#x5230;/etc&#x76EE;&#x5F55;&#x4E2D;&#xFF0C;&#x7136;&#x540E;&#x628A;&#x7A0B;&#x5E8F;&#x76EE;&#x5F55;&#x4E2D;&#x7684;&#x5F00;&#x673A;&#x7A0B;&#x5E8F;&#x6587;&#x4EF6;&#x590D;&#x5236;&#x5230;/etc/rc.d/init.d&#x76EE;&#x5F55;&#x4E2D;&#xFF0C;&#x4EE5;&#x4FBF;&#x901A;&#x8FC7;service&#x547D;&#x4EE4;&#x6765;&#x7BA1;&#x7406;MySQL&#x6570;&#x636E;&#x5E93;&#x670D;&#x52A1;&#x7A0B;&#x5E8F;&#xFF0C;&#x628A;&#x6570;&#x636E;&#x5E93;&#x811A;&#x672C;&#x6587;&#x4EF6;&#x7684;&#x6743;&#x9650;&#x4FEE;&#x6539;&#x6210;755&#x4EE5;&#x4FBF;&#x4E8E;&#x8BA9;&#x7528;&#x6237;&#x6709;&#x6267;&#x884C;&#x8BE5;&#x811A;&#x672C;&#x7684;&#x6743;&#x9650;&#x3002;</span></span><br><span class="line">ln -s my.cnf /etc/my.cnf </span><br><span class="line">cp ./support-files/mysql.server /etc/rc.d/init.d/mysqld</span><br><span class="line">chmod 755 /etc/rc.d/init.d/mysqld</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">&#x7F16;&#x8F91;&#x521A;&#x521A;&#x590D;&#x5236;&#x7684;MySQL&#x6570;&#x636E;&#x5E93;&#x811A;&#x672C;&#x6587;&#x4EF6;&#xFF0C;&#x628A;&#x7B2C;46&#x3001;47&#x884C;&#x7684;basedir&#x4E0E;datadir&#x53C2;&#x6570;&#x5206;&#x522B;&#x4FEE;&#x6539;&#x4E3A;MySQL&#x6570;&#x636E;&#x5E93;&#x7A0B;&#x5E8F;&#x7684;&#x4FDD;&#x5B58;&#x76EE;&#x5F55;&#x548C;&#x771F;&#x5B9E;&#x6570;&#x636E;&#x5E93;&#x7684;&#x6587;&#x4EF6;&#x5185;&#x5BB9;&#x3002;</span></span><br><span class="line">sed -i &apos;46d&apos; /etc/rc.d/init.d/mysqld &amp;&amp; sed -i &apos;45 abasedir=/usr/local/mysql&apos; /etc/rc.d/init.d/mysqld </span><br><span class="line">sed -i &apos;47d&apos; /etc/rc.d/init.d/mysqld &amp;&amp; sed -i &apos;46 adatadir=/usr/local/mysql/var&apos; /etc/rc.d/init.d/mysqld</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">&#x8BBE;&#x7F6E;PATH&#x53D8;&#x91CF;</span></span><br><span class="line">sed -i &apos;74d&apos; /etc/profile &amp;&amp; sed -i &apos;73 aexport PATH=$PATH:/usr/local/mysql/bin&apos; /etc/profile</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">&#x521B;&#x5EFA;MySQL&#x9ED8;&#x8BA4;&#x7684;&#x6570;&#x636E;&#x6587;&#x6863;&#x5B58;&#x50A8;&#x76EE;&#x5F55;</span></span><br><span class="line">mkdir /var/lib/mysql</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">&#x521B;&#x5EFA;&#x94FE;&#x63A5;&#x6587;&#x4EF6;</span></span><br><span class="line">ln -s /usr/local/mysql/lib/mysql /usr/lib/mysql</span><br><span class="line">ln -s /tmp/mysql.sock /var/lib/mysql/mysql.sock </span><br><span class="line">ln -s /usr/local/mysql/include/mysql /usr/include/mysql</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">&#x542F;&#x52A8;MySQL,&#x628A;mysqld&#x52A0;&#x5165;&#x5F00;&#x673A;&#x542F;&#x52A8;&#x9879;&#x4E2D;&#x3002;</span></span><br><span class="line">service mysqld start</span><br><span class="line">chkconfig mysqld on</span><br><span class="line">echo &quot;MySQL&#x5DF2;&#x5B89;&#x88C5;&#x6210;&#x529F;&#xFF0C;&#x8BF7;&#x6267;&#x884C; source /etc/profile &#x540E;&#xFF0C;&#x518D;&#x6267;&#x884C; mysql_secure_installation &#x6765;&#x5B8C;&#x6210;MySQL&#x6570;&#x636E;&#x5E93;&#x7684;&#x521D;&#x59CB;&#x5316;&#xFF01;&quot;</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x6267;&#x884C;&#x811A;&#x672C;&#x5B89;&#x88C5;MySQL 5.6<br></p><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost src]# chmod 755 mysql.sh</span><br><span class="line">[root@localhost src]# ./mysql.sh </span><br><span class="line">Starting MySQL. SUCCESS! </span><br><span class="line">MySQL&#x5DF2;&#x5B89;&#x88C5;&#x6210;&#x529F;&#xFF0C;&#x8BF7;&#x6267;&#x884C; source /etc/profile &#x540E;&#xFF0C;&#x518D;&#x6267;&#x884C; mysql_secure_installation &#x6765;&#x5B8C;&#x6210;MySQL&#x6570;&#x636E;&#x5E93;&#x7684;&#x521D;&#x59CB;&#x5316;&#xFF01;</span><br><span class="line">[root@localhost src]# mysql_secure_installation</span><br><span class="line">-bash: mysql_secure_installation: command not found</span><br><span class="line">[root@localhost src]# </span><br><span class="line">[root@localhost src]# source /etc/profile</span><br><span class="line">Attempting to create directory /root/perl5</span><br></pre></td></tr></tbody></table></figure><p></p>
+<figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost src]# mysql_secure_installation</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">NOTE: RUNNING ALL PARTS OF THIS SCRIPT IS RECOMMENDED FOR ALL MySQL</span><br><span class="line">      SERVERS IN PRODUCTION USE!  PLEASE READ EACH STEP CAREFULLY!</span><br><span class="line"></span><br><span class="line">In order to log into MySQL to secure it, we&apos;ll need the current</span><br><span class="line">password for the root user.  If you&apos;ve just installed MySQL, and</span><br><span class="line">you haven&apos;t set the root password yet, the password will be blank,</span><br><span class="line">so you should just press enter here.</span><br><span class="line"></span><br><span class="line">Enter current password for root (enter for none): &#x76F4;&#x63A5;&#x56DE;&#x8F66;</span><br><span class="line">OK, successfully used password, moving on...</span><br><span class="line"></span><br><span class="line">Setting the root password ensures that nobody can log into the MySQL</span><br><span class="line">root user without the proper authorisation.</span><br><span class="line"></span><br><span class="line">Set root password? [Y/n] y</span><br><span class="line">New password: </span><br><span class="line">Re-enter new password: </span><br><span class="line">Password updated successfully!</span><br><span class="line">Reloading privilege tables..</span><br><span class="line"> ... Success!</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">By default, a MySQL installation has an anonymous user, allowing anyone</span><br><span class="line">to log into MySQL without having to have a user account created for</span><br><span class="line">them.  This is intended only for testing, and to make the installation</span><br><span class="line">go a bit smoother.  You should remove them before moving into a</span><br><span class="line">production environment.</span><br><span class="line"></span><br><span class="line">Remove anonymous users? [Y/n] y</span><br><span class="line"> ... Success!</span><br><span class="line"></span><br><span class="line">Normally, root should only be allowed to connect from &apos;localhost&apos;.  This</span><br><span class="line">ensures that someone cannot guess at the root password from the network.</span><br><span class="line"></span><br><span class="line">Disallow root login remotely? [Y/n] y</span><br><span class="line"> ... Success!</span><br><span class="line"></span><br><span class="line">By default, MySQL comes with a database named &apos;test&apos; that anyone can</span><br><span class="line">access.  This is also intended only for testing, and should be removed</span><br><span class="line">before moving into a production environment.</span><br><span class="line"></span><br><span class="line">Remove test database and access to it? [Y/n] y</span><br><span class="line"> - Dropping test database...</span><br><span class="line"> ... Success!</span><br><span class="line"> - Removing privileges on test database...</span><br><span class="line"> ... Success!</span><br><span class="line"></span><br><span class="line">Reloading the privilege tables will ensure that all changes made so far</span><br><span class="line">will take effect immediately.</span><br><span class="line"></span><br><span class="line">Reload privilege tables now? [Y/n] y</span><br><span class="line"> ... Success!</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">All done!  If you&apos;ve completed all of the above steps, your MySQL</span><br><span class="line">installation should now be secure.</span><br><span class="line"></span><br><span class="line">Thanks for using MySQL!</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Cleaning up...</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost src]<span class="comment"># mysql -uroot -puplooking</span></span><br><span class="line">Warning: Using a password on the command line interface can be insecure.</span><br><span class="line">Welcome to the MySQL monitor.  Commands <span class="keyword">end</span> <span class="keyword">with</span> ; or \g.</span><br><span class="line">Your MySQL connection id is 12</span><br><span class="line">Server version: 5.6.19 Source distribution</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2014, Oracle and/or its affiliates. All rights reserved.</span><br><span class="line"></span><br><span class="line">Oracle is a registered trademark of Oracle Corporation and/or its</span><br><span class="line">affiliates. Other names may be trademarks of their respective</span><br><span class="line">owners.</span><br><span class="line"></span><br><span class="line">Type &apos;<span class="keyword">help</span>;&apos; or &apos;\h&apos; for help. <span class="keyword">Type</span> <span class="string">&apos;\c&apos;</span> <span class="keyword">to</span> <span class="keyword">clear</span> the <span class="keyword">current</span> <span class="keyword">input</span> statement.</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">show</span> <span class="keyword">databases</span>;</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line">| Database           |</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line">| information_schema |</span><br><span class="line">| mysql              |</span><br><span class="line">| performance_schema |</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line">3 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">exit</span></span><br><span class="line">Bye</span><br><span class="line">[root@localhost src]<span class="comment">#</span></span><br></pre></td></tr></tbody></table></figure>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2022-06-07T05:15:22.592Z" itemprop="dateUpdated">2022-06-07 13:15:22</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/16fc5dc4/" target="_blank" rel="external">https://marnm.github.io/posts/16fc5dc4/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='https://marnm.github.io'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/16fc5dc4/&title=《MySQL5.6》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/16fc5dc4/&title=《MySQL5.6》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/16fc5dc4/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《MySQL5.6》 — Deops's blog&url=https://marnm.github.io/posts/16fc5dc4/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/16fc5dc4/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/61fb6d52/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：MySQL5.7
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/bce68613/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：MySQL基础">下一篇：MySQL基础</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2022
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="https://marnm.github.io">marnm.github.io</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/16fc5dc4/&title=《MySQL5.6》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/16fc5dc4/&title=《MySQL5.6》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/16fc5dc4/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《MySQL5.6》 — Deops's blog&url=https://marnm.github.io/posts/16fc5dc4/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/16fc5dc4/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABwUlEQVR42u3aS27DMAwFwNz/0ilQdFnLfNTHCTBaFUkjj7wgKJKvV3m9f9fV51ert+eChYuLO82tPDLderxP5fPLY+Pi4h7kjgPNeIurT8b/X3kduLi4n89Nk6FKYoSLi/vt3PED0rCFi4v7+dzK5aeX4tQD2eK7Gi4u7gR3JnFZ9ffG+i4uLm7IfYerd4z55/7thouLe4Q7TlAqqUmaoFRSqJsD4+LiHuHO0CtNl5QSXH5wcXE3cNPA0SutVgolpVeGi4t7kNtrgaRt1/pvbwIZLi7uEe58YbSSysw0af6Ju7i4uJu59cekyUo6fnGzMy4u7hFumojUS5zzh8HFxX2Kmw5jVbbuBanSi8DFxT3CrZdBU1DaTK1fw3BxcXdz45O1Ep3etzetFFxc3G3ctNXRC1Jrr1i4uLi7uc3zTUx+1ffBxcV9lpsOSPWaqWkhFRcX91lufdXDXFoimer24OLiLuWmAaWXpvT27LVscXFxV3Hnm6m9gJUWR3Bxcc9z6yMRFeLaAIeLi/vJ3LTAUflVfcgDFxf3W7irhreCgQxcXNyD3B2jFWlys/iuhouLu7LmGYxN9A4QjFzg4uKe5v4A+hwGHMakLYAAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>

@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>MySQL5.7 | Deops&#39;s blog | 运维开发工程师</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="&amp;#x6E90;&amp;#x7801;&amp;#x5B89;&amp;#x88C5;MySQL 5.71. &amp;#x5B89;&amp;#x88C5;&amp;#x4F9D;&amp;#x8D56; Boost C++ &amp;#x5E93;&amp;#x4ECE;MySQL5.7&amp;#x7248;&amp;#x672C;&amp;#x5F00;&amp;#x59CB;&amp;#xFF0C;&amp;#x5B89;&amp;#x88C5;MySQL&amp;#x9700;&amp;#x8981;&amp;#x4F9D;&amp;#x8">
+<meta name="keywords" content="Echo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL5.7">
+<meta property="og:url" content="https://marnm.github.io/posts/61fb6d52/index.html">
+<meta property="og:site_name" content="Deops&#39;s blog">
+<meta property="og:description" content="&amp;#x6E90;&amp;#x7801;&amp;#x5B89;&amp;#x88C5;MySQL 5.71. &amp;#x5B89;&amp;#x88C5;&amp;#x4F9D;&amp;#x8D56; Boost C++ &amp;#x5E93;&amp;#x4ECE;MySQL5.7&amp;#x7248;&amp;#x672C;&amp;#x5F00;&amp;#x59CB;&amp;#xFF0C;&amp;#x5B89;&amp;#x88C5;MySQL&amp;#x9700;&amp;#x8981;&amp;#x4F9D;&amp;#x8">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-06-07T05:15:11.175Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL5.7">
+<meta name="twitter:description" content="&amp;#x6E90;&amp;#x7801;&amp;#x5B89;&amp;#x88C5;MySQL 5.71. &amp;#x5B89;&amp;#x88C5;&amp;#x4F9D;&amp;#x8D56; Boost C++ &amp;#x5E93;&amp;#x4ECE;MySQL5.7&amp;#x7248;&amp;#x672C;&amp;#x5F00;&amp;#x59CB;&amp;#xFF0C;&amp;#x5B89;&amp;#x88C5;MySQL&amp;#x9700;&amp;#x8981;&amp;#x4F9D;&amp;#x8">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
+                <i class="icon icon-lg icon-tv tv"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">MySQL5.7</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#源码安装MySQL-5-7"><span class="post-toc-number">1.</span> <span class="post-toc-text">源码安装MySQL 5.7</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-安装依赖-Boost-C-库"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">1. 安装依赖 Boost C++ 库</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-安装相关编译工具和依赖包"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">2. 安装相关编译工具和依赖包</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-创建MySQL用户来运行MySQL数据库"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">3. 创建MySQL用户来运行MySQL数据库</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-创建存放数据的目录"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">4. 创建存放数据的目录</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-源码编译安装MySQL-5-7"><span class="post-toc-number">1.5.</span> <span class="post-toc-text">5. 源码编译安装MySQL 5.7</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-创建配置文件"><span class="post-toc-number">1.6.</span> <span class="post-toc-text">6. 创建配置文件</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#7-配置MySQL环境变量"><span class="post-toc-number">1.7.</span> <span class="post-toc-text">7. 配置MySQL环境变量</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#8-初始化MySQL-5-7"><span class="post-toc-number">1.8.</span> <span class="post-toc-text">8. 初始化MySQL 5.7</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#9-运行MySQL"><span class="post-toc-number">1.9.</span> <span class="post-toc-text">9. 运行MySQL</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#10-查找MySQL-root用户初始密码"><span class="post-toc-number">1.10.</span> <span class="post-toc-text">10. 查找MySQL root用户初始密码</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#11-修改默认密码"><span class="post-toc-number">1.11.</span> <span class="post-toc-text">11. 修改默认密码</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#12-创建MySQL-5-7-systemd启动文件"><span class="post-toc-number">1.12.</span> <span class="post-toc-text">12. 创建MySQL 5.7 systemd启动文件</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#13-编译优化"><span class="post-toc-number">1.13.</span> <span class="post-toc-text">13. 编译优化</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#使用rpm安装MySQL-5-7"><span class="post-toc-number">2.</span> <span class="post-toc-text">使用rpm安装MySQL 5.7</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-优化Linux系统"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">1. 优化Linux系统</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-获取MySQL-5-7的rpm包"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">2. 获取MySQL 5.7的rpm包</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-安装MySQL"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">3. 安装MySQL</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-初始化数据库"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">4. 初始化数据库</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-查看MySQL初始密码"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">5. 查看MySQL初始密码</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6-修改MySQL初始密码"><span class="post-toc-number">2.6.</span> <span class="post-toc-text">6. 修改MySQL初始密码</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#扩展：修改MySQL密码策略"><span class="post-toc-number">2.6.1.</span> <span class="post-toc-text">扩展：修改MySQL密码策略</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#MySQL-5-7多实例配置"><span class="post-toc-number">2.7.</span> <span class="post-toc-text">MySQL 5.7多实例配置</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#增加实例"><span class="post-toc-number">2.7.1.</span> <span class="post-toc-text">增加实例</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#修改MySQL端口"><span class="post-toc-number">3.</span> <span class="post-toc-text">修改MySQL端口</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#MySQL-5-7-忘记root密码"><span class="post-toc-number">4.</span> <span class="post-toc-text">MySQL 5.7 忘记root密码</span></a></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-MySQL5-7" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">MySQL5.7</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2022-06-07 12:43:47" datetime="2022-06-07T04:43:47.000Z" itemprop="datePublished">2022-06-07</time>
+
+            <br id="mybreak">
+            
+<script>
+	mybreak.style="display:none";
+</script>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">16</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="&#x6E90;&#x7801;&#x5B89;&#x88C5;MySQL-5-7"><a href="#&#x6E90;&#x7801;&#x5B89;&#x88C5;MySQL-5-7" class="headerlink" title="&#x6E90;&#x7801;&#x5B89;&#x88C5;MySQL 5.7"></a>&#x6E90;&#x7801;&#x5B89;&#x88C5;MySQL 5.7</h2><h3 id="1-&#x5B89;&#x88C5;&#x4F9D;&#x8D56;-Boost-C-&#x5E93;"><a href="#1-&#x5B89;&#x88C5;&#x4F9D;&#x8D56;-Boost-C-&#x5E93;" class="headerlink" title="1. &#x5B89;&#x88C5;&#x4F9D;&#x8D56; Boost C++ &#x5E93;"></a>1. &#x5B89;&#x88C5;&#x4F9D;&#x8D56; Boost C++ &#x5E93;</h3><p>&#x4ECE;MySQL5.7&#x7248;&#x672C;&#x5F00;&#x59CB;&#xFF0C;&#x5B89;&#x88C5;MySQL&#x9700;&#x8981;&#x4F9D;&#x8D56; Boost &#x7684;C++&#x6269;&#x5C55;&#xFF0C;&#x800C;&#x4E14;&#x53EA;&#x80FD;&#x662F; 1.59.0 &#x7248;&#x672C;&#x3002;<br>Boost &#x4E0B;&#x8F7D;&#x5730;&#x5740;&#xFF08;&#x4EFB;&#x4E00;&#x5730;&#x5740;&#x90FD;&#x53EF;&#x4E0B;&#x8F7D;&#xFF09;&#xFF1A;<br><a href="http://www.boost.org/users/history" target="_blank" rel="noopener">http://www.boost.org/users/history</a> &#xFF1B;<br><a href="https://www.boost.org/users/history/version_1_59_0.html" target="_blank" rel="noopener">https://www.boost.org/users/history/version_1_59_0.html</a><br><a href="https://sourceforge.net/projects/boost/files/boost/1.59.0/" target="_blank" rel="noopener">https://sourceforge.net/projects/boost/files/boost/1.59.0/</a><br><a href="https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-5.7.19.tar.gz" target="_blank" rel="noopener">https://downloads.mysql.com/archives/get/p/23/file/mysql-boost-5.7.19.tar.gz</a><br>&#x9009;&#x62E9;1.59.0&#x7248;&#x672C;&#x4E0B;&#x8F7D;&#xFF0C;&#x5728;&#x7F16;&#x8BD1;&#x662F;&#x586B;&#x5199;&#x76F8;&#x5E94;&#x53C2;&#x6570;&#xFF0C;&#x6307;&#x5B9A;Boost&#x6E90;&#x7801;&#x4F4D;&#x7F6E;&#x5373;&#x53EF;&#x3002;<br>Boost&#x5E93;&#x662F;&#x4E00;&#x4E2A;&#x53EF;&#x79FB;&#x690D;&#x3001;&#x63D0;&#x4F9B;&#x6E90;&#x4EE3;&#x7801;&#x7684;C++&#x5E93;&#xFF0C;&#x4F5C;&#x4E3A;&#x6807;&#x51C6;&#x5E93;&#x7684;&#x540E;&#x5907;&#xFF0C;&#x662F;C++&#x6807;&#x51C6;&#x5316;&#x8FDB;&#x7A0B;&#x7684;&#x5F00;&#x53D1;&#x5F15;&#x64CE;&#x4E4B;&#x4E00;&#x3002;<br>Boost&#x5E93;&#x7531;C++&#x6807;&#x51C6;&#x59D4;&#x5458;&#x4F1A;&#x5E93;&#x5DE5;&#x4F5C;&#x7EC4;&#x6210;&#x5458;&#x53D1;&#x8D77;&#xFF0C;&#x5176;&#x4E2D;&#x6709;&#x4E9B;&#x5185;&#x5BB9;&#x6709;&#x671B;&#x6210;&#x4E3A;&#x4E0B;&#x4E00;&#x4EE3;C++&#x6807;&#x51C6;&#x5E93;&#x5185;&#x5BB9;&#x3002;<br>&#x5728;C++&#x793E;&#x533A;&#x4E2D;&#x5F71;&#x54CD;&#x751A;&#x5927;&#xFF0C;&#x662F;&#x4E0D;&#x6298;&#x4E0D;&#x6263;&#x7684;&#x201C;&#x51C6;&#x201D;&#x6807;&#x51C6;&#x5E93;&#x3002;Boost&#x7531;&#x4E8E;&#x5176;&#x5BF9;&#x8DE8;&#x5E73;&#x53F0;&#x7684;&#x5F3A;&#x8C03;&#xFF0C;&#x5BF9;&#x6807;&#x51C6;C++&#x7684;&#x5F3A;&#x8C03;&#xFF0C;&#x4E0E;&#x7F16;&#x5199;&#x5E73;&#x53F0;&#x65E0;&#x5173;&#x3002;  </p>
+<p><strong>&#x4E0B;&#x8F7D;&#x89E3;&#x538B;Boost C++&#x5E93;</strong>  </p>
+<pre><code>wget http://sourceforge.net/projects/boost/files/boost/1.59.0/boost_1_59_0.tar.gz
+# &#x89E3;&#x538B;&#x5230;/usr/local/boost
+tar -zxvf boost_1_59_0.tar.gz 
+mv boost_1_59_0 /usr/local/boost
+</code></pre><h3 id="2-&#x5B89;&#x88C5;&#x76F8;&#x5173;&#x7F16;&#x8BD1;&#x5DE5;&#x5177;&#x548C;&#x4F9D;&#x8D56;&#x5305;"><a href="#2-&#x5B89;&#x88C5;&#x76F8;&#x5173;&#x7F16;&#x8BD1;&#x5DE5;&#x5177;&#x548C;&#x4F9D;&#x8D56;&#x5305;" class="headerlink" title="2. &#x5B89;&#x88C5;&#x76F8;&#x5173;&#x7F16;&#x8BD1;&#x5DE5;&#x5177;&#x548C;&#x4F9D;&#x8D56;&#x5305;"></a>2. &#x5B89;&#x88C5;&#x76F8;&#x5173;&#x7F16;&#x8BD1;&#x5DE5;&#x5177;&#x548C;&#x4F9D;&#x8D56;&#x5305;</h3><pre><code>yum install -y gcc-c++ cmake ncurses-devel
+</code></pre><h3 id="3-&#x521B;&#x5EFA;MySQL&#x7528;&#x6237;&#x6765;&#x8FD0;&#x884C;MySQL&#x6570;&#x636E;&#x5E93;"><a href="#3-&#x521B;&#x5EFA;MySQL&#x7528;&#x6237;&#x6765;&#x8FD0;&#x884C;MySQL&#x6570;&#x636E;&#x5E93;" class="headerlink" title="3. &#x521B;&#x5EFA;MySQL&#x7528;&#x6237;&#x6765;&#x8FD0;&#x884C;MySQL&#x6570;&#x636E;&#x5E93;"></a>3. &#x521B;&#x5EFA;MySQL&#x7528;&#x6237;&#x6765;&#x8FD0;&#x884C;MySQL&#x6570;&#x636E;&#x5E93;</h3><pre><code>groupadd -g 27 mysql
+useradd mysql -u 27 -g mysql -M -s /sbin/nologin
+</code></pre><h3 id="4-&#x521B;&#x5EFA;&#x5B58;&#x653E;&#x6570;&#x636E;&#x7684;&#x76EE;&#x5F55;"><a href="#4-&#x521B;&#x5EFA;&#x5B58;&#x653E;&#x6570;&#x636E;&#x7684;&#x76EE;&#x5F55;" class="headerlink" title="4. &#x521B;&#x5EFA;&#x5B58;&#x653E;&#x6570;&#x636E;&#x7684;&#x76EE;&#x5F55;"></a>4. &#x521B;&#x5EFA;&#x5B58;&#x653E;&#x6570;&#x636E;&#x7684;&#x76EE;&#x5F55;</h3><pre><code>mkdir -p /data/mysql
+chown -Rf mysql:mysql /data/mysql
+</code></pre><h3 id="5-&#x6E90;&#x7801;&#x7F16;&#x8BD1;&#x5B89;&#x88C5;MySQL-5-7"><a href="#5-&#x6E90;&#x7801;&#x7F16;&#x8BD1;&#x5B89;&#x88C5;MySQL-5-7" class="headerlink" title="5. &#x6E90;&#x7801;&#x7F16;&#x8BD1;&#x5B89;&#x88C5;MySQL 5.7"></a>5. &#x6E90;&#x7801;&#x7F16;&#x8BD1;&#x5B89;&#x88C5;MySQL 5.7</h3><p>MySQL&#x5B98;&#x65B9;&#x4E0B;&#x8F7D;&#x5730;&#x5740;&#xFF1A;<br><a href="https://downloads.mysql.com/archives/community/" target="_blank" rel="noopener">https://downloads.mysql.com/archives/community/</a></p>
+<p><strong>&#x4E0B;&#x8F7D;</strong></p>
+<pre><code>wget https://downloads.mysql.com/archives/get/p/23/file/mysql-5.7.19.tar.gz
+tar -zxvf mysql-5.7.19.tar.gz -C /usr/local/src
+</code></pre><p><strong>&#x7F16;&#x8BD1;&#x5B89;&#x88C5;</strong></p>
+<pre><code>cd /usr/local/src/mysql-5.7.19
+
+# &#x9884;&#x7F16;&#x8BD1;
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local/mysql57 -DMYSQL_DATADIR=/data/mysql -DDEFAULT_CHARSET=utf8 -DDEFAULT_COLLATION=utf8_general_ci -DMYSQL_TCP_PORT=3306 -DMYSQL_UNIX_ADDR=/tmp/mysql.sock -DMYSQL_USER=mysql -DWITH_MYISAM_STORAGE_ENGINE=1 -DWITH_INNOBASE_STORAGE_ENGINE=1 -DDOWNLOAD_BOOST=1 -DWITH_BOOST=/usr/local/boost -DWITH_INNODB_MEMCACHED=ON
+
+## &#x7F16;&#x8BD1;&#x5B89;&#x88C5;
+# &#x9ED8;&#x8BA4;&#x7F16;&#x8BD1;&#x901F;&#x5EA6;&#x975E;&#x5E38;&#x6162;&#xFF0C;&#x4E0D;&#x63A8;&#x8350;
+# &#x52A0;&#x901F;&#x7F16;&#x8BD1;&#x65B9;&#x6CD5;&#x770B;&#x6587;&#x672B;&#x64CD;&#x4F5C;
+make &amp;&amp; make install
+</code></pre><h3 id="6-&#x521B;&#x5EFA;&#x914D;&#x7F6E;&#x6587;&#x4EF6;"><a href="#6-&#x521B;&#x5EFA;&#x914D;&#x7F6E;&#x6587;&#x4EF6;" class="headerlink" title="6. &#x521B;&#x5EFA;&#x914D;&#x7F6E;&#x6587;&#x4EF6;"></a>6. &#x521B;&#x5EFA;&#x914D;&#x7F6E;&#x6587;&#x4EF6;</h3><pre><code>mv /etc/my.cnf /etc/my.cnf.bak
+</code></pre><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">cat &gt; /etc/my.cnf &lt;&lt;EOF</span><br><span class="line">[client]</span><br><span class="line">port=3306</span><br><span class="line">socket=/data/mysql/mysql.sock</span><br><span class="line">[mysqld]</span><br><span class="line">character-set-server=utf8</span><br><span class="line">collation-server=utf8_general_ci</span><br><span class="line">skip-name-resolve</span><br><span class="line">user=mysql</span><br><span class="line">port=3306</span><br><span class="line">basedir=/usr/<span class="built_in">local</span>/mysql57</span><br><span class="line">datadir=/data/mysql</span><br><span class="line">tmpdir=/tmp</span><br><span class="line">socket=/data/mysql/mysql.sock</span><br><span class="line"><span class="built_in">log</span>-error=/data/mysql/mysqld.log</span><br><span class="line">pid-file=/data/mysql/mysqld.pid</span><br><span class="line">EOF</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="7-&#x914D;&#x7F6E;MySQL&#x73AF;&#x5883;&#x53D8;&#x91CF;"><a href="#7-&#x914D;&#x7F6E;MySQL&#x73AF;&#x5883;&#x53D8;&#x91CF;" class="headerlink" title="7. &#x914D;&#x7F6E;MySQL&#x73AF;&#x5883;&#x53D8;&#x91CF;"></a>7. &#x914D;&#x7F6E;MySQL&#x73AF;&#x5883;&#x53D8;&#x91CF;</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&quot;export PATH=\$PATH:/usr/local/mysql57/bin&quot;</span> &gt;&gt; /etc/profile</span><br><span class="line"><span class="built_in">source</span> /etc/profile</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="8-&#x521D;&#x59CB;&#x5316;MySQL-5-7"><a href="#8-&#x521D;&#x59CB;&#x5316;MySQL-5-7" class="headerlink" title="8. &#x521D;&#x59CB;&#x5316;MySQL 5.7"></a>8. &#x521D;&#x59CB;&#x5316;MySQL 5.7</h3><pre><code>/usr/local/mysql57/bin/mysqld --defaults-file=/etc/my.cnf --initialize --user=mysql
+</code></pre><h3 id="9-&#x8FD0;&#x884C;MySQL"><a href="#9-&#x8FD0;&#x884C;MySQL" class="headerlink" title="9. &#x8FD0;&#x884C;MySQL"></a>9. &#x8FD0;&#x884C;MySQL</h3><pre><code>/usr/local/mysql57/support-files/mysql.server start
+
+/usr/local/mysql57/support-files/mysql.server status
+</code></pre><h3 id="10-&#x67E5;&#x627E;MySQL-root&#x7528;&#x6237;&#x521D;&#x59CB;&#x5BC6;&#x7801;"><a href="#10-&#x67E5;&#x627E;MySQL-root&#x7528;&#x6237;&#x521D;&#x59CB;&#x5BC6;&#x7801;" class="headerlink" title="10. &#x67E5;&#x627E;MySQL root&#x7528;&#x6237;&#x521D;&#x59CB;&#x5BC6;&#x7801;"></a>10. &#x67E5;&#x627E;MySQL root&#x7528;&#x6237;&#x521D;&#x59CB;&#x5BC6;&#x7801;</h3><pre><code>cd /data/mysql
+
+cat mysqld.log | grep root
+</code></pre><h3 id="11-&#x4FEE;&#x6539;&#x9ED8;&#x8BA4;&#x5BC6;&#x7801;"><a href="#11-&#x4FEE;&#x6539;&#x9ED8;&#x8BA4;&#x5BC6;&#x7801;" class="headerlink" title="11. &#x4FEE;&#x6539;&#x9ED8;&#x8BA4;&#x5BC6;&#x7801;"></a>11. &#x4FEE;&#x6539;&#x9ED8;&#x8BA4;&#x5BC6;&#x7801;</h3><p><strong>&#x4F7F;&#x7528;root&#x9ED8;&#x8BA4;&#x5BC6;&#x7801;&#x767B;&#x5F55;MySQL</strong></p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">USER</span> <span class="string">&apos;root&apos;</span>@<span class="string">&apos;localhost&apos;</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">&apos;New_password&apos;</span>;</span><br><span class="line"><span class="keyword">FLUSH</span> <span class="keyword">PRIVILEGES</span>;</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="12-&#x521B;&#x5EFA;MySQL-5-7-systemd&#x542F;&#x52A8;&#x6587;&#x4EF6;"><a href="#12-&#x521B;&#x5EFA;MySQL-5-7-systemd&#x542F;&#x52A8;&#x6587;&#x4EF6;" class="headerlink" title="12. &#x521B;&#x5EFA;MySQL 5.7 systemd&#x542F;&#x52A8;&#x6587;&#x4EF6;"></a>12. &#x521B;&#x5EFA;MySQL 5.7 systemd&#x542F;&#x52A8;&#x6587;&#x4EF6;</h3><p>&#x53C2;&#x8003;&#xFF1A;<a href="https://dev.mysql.com/doc/refman/5.7/en/using-systemd.html" target="_blank" rel="noopener">https://dev.mysql.com/doc/refman/5.7/en/using-systemd.html</a></p>
+<h3 id="13-&#x7F16;&#x8BD1;&#x4F18;&#x5316;"><a href="#13-&#x7F16;&#x8BD1;&#x4F18;&#x5316;" class="headerlink" title="13. &#x7F16;&#x8BD1;&#x4F18;&#x5316;"></a>13. &#x7F16;&#x8BD1;&#x4F18;&#x5316;</h3><p><strong>&#x5B89;&#x88C5;ccache&#x52A0;&#x5FEB;&#x7F16;&#x8BD1;&#x901F;&#x5EA6;</strong></p>
+<pre><code>yum install -y epel-release
+yum install -y ccache
+
+# &#x4F7F;&#x7528;ccache&#x63A5;&#x7BA1;gcc/g++
+cp ccache /usr/local/bin/
+ln -s ccache /usr/local/bin/gcc
+ln -s ccache /usr/local/bin/g++
+ln -s ccache /usr/local/bin/cc
+ln -s ccache /usr/local/bin/c++
+</code></pre><p><strong>make -j&#x5E76;&#x884C;&#x7F16;&#x8BD1;</strong><br>CPU&#x662F;&#x5F71;&#x54CD;&#x7F16;&#x8BD1;&#x901F;&#x5EA6;&#x7684;&#x4E00;&#x4E2A;&#x91CD;&#x8981;&#x56E0;&#x7D20;<br><code>make -j4</code> &#x8BA9;make&#x6700;&#x591A;&#x5141;&#x8BB8;4&#x4E2A;&#x7F16;&#x8BD1;&#x547D;&#x4EE4;&#x540C;&#x65F6;&#x6267;&#x884C;</p>
+<p>&#x5728;&#x591A;&#x6838;CPU&#x4E0A;&#xFF0C;&#x9002;&#x5F53;&#x7684;&#x8FDB;&#x884C;&#x5E76;&#x884C;&#x7F16;&#x8BD1;&#x8FD8;&#x662F;&#x53EF;&#x4EE5;&#x660E;&#x663E;&#x63D0;&#x9AD8;&#x7F16;&#x8BD1;&#x901F;&#x5EA6;&#x7684;&#x3002;&#x4F46;&#x5E76;&#x884C;&#x7684;&#x4EFB;&#x52A1;&#x4E0D;&#x5B9C;&#x592A;&#x591A;&#xFF0C;<strong>make -j &#x4E00;&#x822C;&#x662F;&#x4EE5;CPU&#x7684;&#x6838;&#x5FC3;&#x6570;&#x76EE;&#x7684;&#x4E24;&#x500D;</strong>&#x4E3A;&#x5B9C;&#x3002;</p>
+<p><strong>&#x6CE8;&#x610F;&#xFF01;</strong> &#x5728;&#x4F7F;&#x7528;&#x5E76;&#x884C;&#x7F16;&#x8BD1;&#x65F6;&#xFF0C;&#x7CFB;&#x7EDF;&#x5185;&#x5B58;&#x548C;&#x4EA4;&#x6362;&#x5206;&#x533A;&#x7ED9;&#x5927;&#x4E00;&#x4E9B;&#xFF0C;&#x5185;&#x5B58;&#x8FC7;&#x5C0F;&#x65F6;&#xFF0C;&#x7F16;&#x8BD1;&#x4F1A;&#x51FA;&#x9519;</p>
+<p>ccache&#x5B98;&#x65B9;&#x6587;&#x6863;<br><a href="https://ccache.dev/manual/4.3.html" target="_blank" rel="noopener">https://ccache.dev/manual/4.3.html</a></p>
+<hr>
+<hr>
+<h2 id="&#x4F7F;&#x7528;rpm&#x5B89;&#x88C5;MySQL-5-7"><a href="#&#x4F7F;&#x7528;rpm&#x5B89;&#x88C5;MySQL-5-7" class="headerlink" title="&#x4F7F;&#x7528;rpm&#x5B89;&#x88C5;MySQL 5.7"></a>&#x4F7F;&#x7528;rpm&#x5B89;&#x88C5;MySQL 5.7</h2><h3 id="1-&#x4F18;&#x5316;Linux&#x7CFB;&#x7EDF;"><a href="#1-&#x4F18;&#x5316;Linux&#x7CFB;&#x7EDF;" class="headerlink" title="1. &#x4F18;&#x5316;Linux&#x7CFB;&#x7EDF;"></a>1. &#x4F18;&#x5316;Linux&#x7CFB;&#x7EDF;</h3><pre><code>sed -i &apos;s/SELINUX=enforcing/SELINUX=disabled/&apos; /etc/selinux/config &amp;&gt; /dev/null
+setenforce 0
+systemctl stop firewalld
+systemctl disable firewalld
+iptables -F
+systemctl stop NetworkManager &amp;&gt; /dev/null
+systemctl disable NetworkManager &amp;&gt; /dev/null
+</code></pre><h3 id="2-&#x83B7;&#x53D6;MySQL-5-7&#x7684;rpm&#x5305;"><a href="#2-&#x83B7;&#x53D6;MySQL-5-7&#x7684;rpm&#x5305;" class="headerlink" title="2. &#x83B7;&#x53D6;MySQL 5.7&#x7684;rpm&#x5305;"></a>2. &#x83B7;&#x53D6;MySQL 5.7&#x7684;rpm&#x5305;</h3><p>&#x83B7;&#x53D6;&#x65B9;&#x5F0F;&#x4E00;&#xFF1A;<br>MySQL&#x5B98;&#x7F51;&#x4E0B;&#x8F7D;<br><a href="https://downloads.mysql.com/archives/community/" target="_blank" rel="noopener">https://downloads.mysql.com/archives/community/</a><br>&#x83B7;&#x53D6;&#x65B9;&#x5F0F;&#x4E8C;&#xFF1A;copy&#x955C;&#x50CF;&#x5B89;&#x88C5;&#x5305;   </p>
+<p><strong>&#x5206;&#x522B;&#x4E0B;&#x8F7D;&#x8FD9;5&#x4E2A;rpm&#x5305;&#xFF1A;</strong><br>MySQL&#x670D;&#x52A1;&#x7AEF;&#x7A0B;&#x5E8F;RPM Package, MySQL Server&#xFF1A;<br><a href="https://downloads.mysql.com/archives/get/p/23/file/mysql-community-server-5.7.24-1.el7.x86_64.rpm" target="_blank" rel="noopener">mysql-community-server-5.7.24-1.el7.x86_64.rpm</a><br>MySQL&#x5BA2;&#x6237;&#x7AEF;&#x5DE5;&#x5177;RPM Package, Client Utilities&#xFF1A;<br><a href="https://downloads.mysql.com/archives/get/p/23/file/mysql-community-client-5.7.24-1.el7.x86_64.rpm" target="_blank" rel="noopener">mysql-community-client-5.7.24-1.el7.x86_64.rpm</a><br>MySQL&#x5F00;&#x53D1;&#x5E93;RPM Package, Development Libraries&#xFF1A;<br><a href="https://downloads.mysql.com/archives/get/p/23/file/mysql-community-devel-5.7.24-1.el7.x86_64.rpm" target="_blank" rel="noopener">mysql-community-devel-5.7.24-1.el7.x86_64.rpm</a><br>MySQL&#x914D;&#x7F6E;&#x7A0B;&#x5E8F;RPM Package, MySQL Configuration&#xFF1A;<br><a href="https://downloads.mysql.com/archives/get/p/23/file/mysql-community-common-5.7.24-1.el7.x86_64.rpm" target="_blank" rel="noopener">mysql-community-common-5.7.24-1.el7.x86_64.rpm</a><br>MySQL&#x5171;&#x4EAB;&#x5E93;RPM Package, Shared Libraries&#xFF1A;<br><a href="https://downloads.mysql.com/archives/get/p/23/file/mysql-community-libs-5.7.24-1.el7.x86_64.rpm" target="_blank" rel="noopener">mysql-community-libs-5.7.24-1.el7.x86_64.rpm</a>  </p>
+<h3 id="3-&#x5B89;&#x88C5;MySQL"><a href="#3-&#x5B89;&#x88C5;MySQL" class="headerlink" title="3. &#x5B89;&#x88C5;MySQL"></a>3. &#x5B89;&#x88C5;MySQL</h3><p><strong>&#x5378;&#x8F7D;&#x7CFB;&#x7EDF;&#x4E2D;&#x9ED8;&#x8BA4;&#x5B89;&#x88C5;&#x7684;mariadb-libs&#x6570;&#x636E;&#x5E93;&#x5305;</strong></p>
+<pre><code>rpm -e --nodeps mariadb-libs
+</code></pre><p><strong>&#x5B89;&#x88C5;rpm&#x5305;</strong><br>&#x5B89;&#x88C5;&#x987A;&#x5E8F;&#xFF1A;</p>
+<pre><code>rpm -ivh mysql-community-common-5.7.24-1.el7.x86_64.rpm
+rpm -ivh mysql-community-libs-5.7.24-1.el7.x86_64.rpm
+rpm -ivh mysql-community-client-5.7.24-1.el7.x86_64.rpm
+rpm -ivh mysql-community-devel-5.7.24-1.el7.x86_64.rpm
+rpm -ivh mysql-community-server-5.7.24-1.el7.x86_64.rpm
+</code></pre><h3 id="4-&#x521D;&#x59CB;&#x5316;&#x6570;&#x636E;&#x5E93;"><a href="#4-&#x521D;&#x59CB;&#x5316;&#x6570;&#x636E;&#x5E93;" class="headerlink" title="4. &#x521D;&#x59CB;&#x5316;&#x6570;&#x636E;&#x5E93;"></a>4. &#x521D;&#x59CB;&#x5316;&#x6570;&#x636E;&#x5E93;</h3><pre><code>vim /etc/my.cnf
+
+# &#x672B;&#x884C;&#x6DFB;&#x52A0;skip-name-resolv&#xFF0C;&#x8DF3;&#x8FC7;&#x4E3B;&#x673A;&#x540D;&#x89E3;&#x6790;&#xFF0C;&#x63D0;&#x9AD8;&#x8FDE;&#x63A5;&#x901F;&#x5EA6;
+skip-name-resolv
+</code></pre><p><strong>&#x542F;&#x52A8;&#x6570;&#x636E;&#x5E93;</strong></p>
+<pre><code>systemctl start mysqld
+systemctl status mysqld
+systemctl enable mysqld
+</code></pre><h3 id="5-&#x67E5;&#x770B;MySQL&#x521D;&#x59CB;&#x5BC6;&#x7801;"><a href="#5-&#x67E5;&#x770B;MySQL&#x521D;&#x59CB;&#x5BC6;&#x7801;" class="headerlink" title="5. &#x67E5;&#x770B;MySQL&#x521D;&#x59CB;&#x5BC6;&#x7801;"></a>5. &#x67E5;&#x770B;MySQL&#x521D;&#x59CB;&#x5BC6;&#x7801;</h3><pre><code>cat /var/log/mysqld.log | grep &quot;password&quot;
+</code></pre><h3 id="6-&#x4FEE;&#x6539;MySQL&#x521D;&#x59CB;&#x5BC6;&#x7801;"><a href="#6-&#x4FEE;&#x6539;MySQL&#x521D;&#x59CB;&#x5BC6;&#x7801;" class="headerlink" title="6. &#x4FEE;&#x6539;MySQL&#x521D;&#x59CB;&#x5BC6;&#x7801;"></a>6. &#x4FEE;&#x6539;MySQL&#x521D;&#x59CB;&#x5BC6;&#x7801;</h3><p><strong>&#x4F7F;&#x7528;MySQL root&#x9ED8;&#x8BA4;&#x5BC6;&#x7801;&#x767B;&#x5F55;&#x6570;&#x636E;&#x5E93;</strong></p>
+<figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">USER</span> <span class="string">&apos;root&apos;</span>@<span class="string">&apos;localhost&apos;</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">&apos;new_PASSWORD&apos;</span>;</span><br><span class="line"><span class="keyword">FLUSH</span> <span class="keyword">PRIVILEGES</span>;</span><br><span class="line"><span class="comment"># &#x6216;&#x8005;</span></span><br><span class="line"><span class="keyword">update</span> mysql.user <span class="keyword">set</span> authentication_string=<span class="keyword">password</span>(<span class="string">&apos;123456&apos;</span>) <span class="keyword">where</span> <span class="keyword">user</span>=<span class="string">&apos;root&apos;</span> <span class="keyword">and</span> Host = <span class="string">&apos;localhost&apos;</span>;</span><br><span class="line"><span class="comment"># &#x6216;&#x8005;</span></span><br><span class="line"><span class="keyword">set</span> <span class="keyword">password</span> <span class="keyword">for</span> <span class="string">&apos;root&apos;</span>@<span class="string">&apos;localhost&apos;</span>=<span class="keyword">password</span>(<span class="string">&apos;123456&apos;</span>);</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="&#x6269;&#x5C55;&#xFF1A;&#x4FEE;&#x6539;MySQL&#x5BC6;&#x7801;&#x7B56;&#x7565;"><a href="#&#x6269;&#x5C55;&#xFF1A;&#x4FEE;&#x6539;MySQL&#x5BC6;&#x7801;&#x7B56;&#x7565;" class="headerlink" title="&#x6269;&#x5C55;&#xFF1A;&#x4FEE;&#x6539;MySQL&#x5BC6;&#x7801;&#x7B56;&#x7565;"></a>&#x6269;&#x5C55;&#xFF1A;&#x4FEE;&#x6539;MySQL&#x5BC6;&#x7801;&#x7B56;&#x7565;</h4><p>&#x5728;&#x4F7F;&#x7528;rpm&#x5B89;&#x88C5;MySQL 5.7&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x9ED8;&#x8BA4;&#x5BC6;&#x7801;&#x5F3A;&#x5EA6;&#x7B56;&#x7565;&#x662F;MEDIUM&#xFF0C;&#x4F7F;&#x7528;&#x521D;&#x59CB;&#x5BC6;&#x7801;&#x767B;&#x5F55;&#x540E;&#xFF0C;&#x5FC5;&#x987B;&#x4FEE;&#x6539;&#x9ED8;&#x8BA4;&#x5BC6;&#x7801;&#xFF0C;&#x4E0D;&#x7136;&#x5F88;&#x591A;&#x529F;&#x80FD;&#x90FD;&#x4E0D;&#x80FD;&#x7528;&#xFF0C;&#x4FEE;&#x6539;&#x5BC6;&#x7801;&#x540E;&#x624D;&#x80FD;&#x6B63;&#x5E38;&#x64CD;&#x4F5C;&#x3002;<br><strong>&#x65B9;&#x6CD5;&#x4E00;&#xFF1A;&#x5173;&#x95ED;&#x5BC6;&#x7801;&#x9A8C;&#x8BC1;&#x63D2;&#x4EF6;</strong><br>&#x4FEE;&#x6539;MySQL&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF0C;&#x6DFB;&#x52A0;&#x5982;&#x4E0B;&#x53C2;&#x6570;</p>
+<pre><code>validate_password=off
+</code></pre><p><strong>&#x65B9;&#x6CD5;&#x4E8C;&#xFF1A;&#x4FEE;&#x6539;&#x5BC6;&#x7801;&#x5F3A;&#x5EA6;&#x7B56;&#x7565;</strong>&#xFF08;&#x63A8;&#x8350;&#xFF09;<br></p><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- &#x67E5;&#x770B;&#x5BC6;&#x7801;&#x7B56;&#x7565;</span></span><br><span class="line"><span class="keyword">SHOW</span> <span class="keyword">VARIABLES</span> <span class="keyword">like</span> <span class="string">&quot;%password%&quot;</span>;</span><br><span class="line"><span class="keyword">SET</span> <span class="keyword">global</span> validate_password_length=<span class="number">6</span>;</span><br><span class="line"><span class="keyword">SET</span> <span class="keyword">global</span> validate_password_policy=<span class="number">0</span>;</span><br><span class="line"><span class="comment"># 0 &#x6216; LOW</span></span><br><span class="line"><span class="comment"># 1 &#x6216; MEDIUM</span></span><br><span class="line"><span class="comment"># 2 &#x6216; STRONG</span></span><br><span class="line"><span class="keyword">FLUSH</span> <span class="keyword">PRIVILEGES</span>;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<h3 id="MySQL-5-7&#x591A;&#x5B9E;&#x4F8B;&#x914D;&#x7F6E;"><a href="#MySQL-5-7&#x591A;&#x5B9E;&#x4F8B;&#x914D;&#x7F6E;" class="headerlink" title="MySQL 5.7&#x591A;&#x5B9E;&#x4F8B;&#x914D;&#x7F6E;"></a>MySQL 5.7&#x591A;&#x5B9E;&#x4F8B;&#x914D;&#x7F6E;</h3><p><strong>&#x5B89;&#x88C5;MySQL 5.7 rpm&#x5305;</strong></p>
+<pre><code>rpm -e --nodeps mariadb-libs
+
+rpm -ivh mysql-community-common-5.7.24-1.el7.x86_64.rpm
+rpm -ivh mysql-community-libs-5.7.24-1.el7.x86_64.rpm
+rpm -ivh mysql-community-client-5.7.24-1.el7.x86_64.rpm
+rpm -ivh mysql-community-devel-5.7.24-1.el7.x86_64.rpm
+rpm -ivh mysql-community-server-5.7.24-1.el7.x86_64.rpm
+</code></pre><p><strong>&#x521B;&#x5EFA;&#x6570;&#x636E;&#x5B58;&#x653E;&#x76EE;&#x5F55;</strong></p>
+<pre><code>mkdir -p /data/mysql/{3306, 3307}
+mkdir -p /data/mysql/3306/{data, binlog, logs}
+mkdir -p /data/mysql/3307/{data, binlog, logs}
+</code></pre><p><strong>&#x521B;&#x5EFA;&#x7528;&#x6237;&#xFF0C;&#x8BBE;&#x7F6E;&#x5C5E;&#x4E3B;&#x5C5E;&#x7EC4;</strong></p>
+<pre><code>chown -Rf mysql:mysql /data/mysql
+mv /etc/my.cnf /etc/my.cnf.bak
+</code></pre><p><strong>&#x65B0;&#x589E;&#x914D;&#x7F6E;&#x6587;&#x4EF6;my3306.cnf</strong><br></p><figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">cat&gt;&gt;/etc/my3306.cnf&lt;&lt;EOF</span><br><span class="line">[mysqld]</span><br><span class="line">user = mysql</span><br><span class="line">port = 3306</span><br><span class="line">server_id = 3306</span><br><span class="line">datadir = /data/mysql/3306/data</span><br><span class="line">socket = /data/mysql/3306/mysql3306.sock</span><br><span class="line">symbolic-links = 0</span><br><span class="line">log-error = /data/mysql/3306/logs/mysqld3306.log</span><br><span class="line">pid-file = /data/mysql/3306/mysqld3306.pid</span><br><span class="line">EOF</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x65B0;&#x589E;&#x914D;&#x7F6E;&#x6587;&#x4EF6;my3307.cnf</strong><br></p><figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">cp /etc/my3306.cnf /etc/my3307.cnf</span><br><span class="line">sed -i &apos;s/3306/3307/g&apos; /etc/my3307.cnf</span><br><span class="line"></span><br><span class="line">[root@jaking mysql5.7]# cat /etc/my3307.cnf</span><br><span class="line">[mysqld]</span><br><span class="line">user = mysql</span><br><span class="line">port = 3307</span><br><span class="line">server_id = 3307</span><br><span class="line">datadir = /data/mysql/3307/data</span><br><span class="line">socket = /data/mysql/3307/mysql3307.sock</span><br><span class="line">symbolic-links = 0</span><br><span class="line">log-error = /data/mysql/3307/logs/mysqld3307.log</span><br><span class="line">pid-file = /data/mysql/3307/mysqld3307.pid</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x5907;&#x4EFD;mysql&#x542F;&#x52A8;&#x670D;&#x52A1;&#x6587;&#x4EF6;</strong></p>
+<pre><code>mv /usr/lib/systemd/system/mysqld.service /usr/lib/systemd/system/mysqld.service.bak
+</code></pre><p><strong>&#x65B0;&#x589E;mysqld3306.service&#x542F;&#x52A8;&#x6587;&#x4EF6;</strong><br></p><figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">cat&gt;&gt;/usr/lib/systemd/system/mysqld3306.service&lt;&lt;EOF</span><br><span class="line">[Unit]</span><br><span class="line">Description=MySQL Server</span><br><span class="line">Documentation=man:mysqld(8)</span><br><span class="line">Documentation=http://dev.mysql.com/doc/refman/en/using-systemd.html</span><br><span class="line">After=network.target</span><br><span class="line">After=syslog.target</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">User=mysql</span><br><span class="line">Group=mysql</span><br><span class="line">Type=forking</span><br><span class="line">PIDFile=/data/mysql/3306/mysqld3306.pid</span><br><span class="line">TimeoutSec=0</span><br><span class="line">PermissionsStartOnly=true</span><br><span class="line">ExecStart=/usr/sbin/mysqld --defaults-file=/etc/my3306.cnf --daemonize --pid-file=/data/mysql/3306/mysqld3306.pid $MYSQLD_OPTS</span><br><span class="line">EnvironmentFile=-/etc/sysconfig/mysql</span><br><span class="line">LimitNOFILE = 5000</span><br><span class="line">Restart=on-failure</span><br><span class="line">RestartPreventExitStatus=1</span><br><span class="line">PrivateTmp=false</span><br><span class="line">EOF</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x65B0;&#x589E;mysqld3307.service&#x542F;&#x52A8;&#x6587;&#x4EF6;</strong><br></p><figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">cp /usr/lib/systemd/system/mysqld3306.service /usr/lib/systemd/system/mysqld3307.service</span><br><span class="line">sed -i &apos;s/3306/3307/g&apos; /usr/lib/systemd/system/mysqld3307.service</span><br><span class="line"></span><br><span class="line">[root@jaking mysql5.7]# cat /usr/lib/systemd/system/mysqld3307.service</span><br><span class="line">[Unit]</span><br><span class="line">Description=MySQL Server</span><br><span class="line">Documentation=man:mysqld(8)</span><br><span class="line">Documentation=http://dev.mysql.com/doc/refman/en/using-systemd.html</span><br><span class="line">After=network.target</span><br><span class="line">After=syslog.target</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">User=mysql</span><br><span class="line">Group=mysql</span><br><span class="line">Type=forking</span><br><span class="line">PIDFile=/data/mysql/3307/mysqld3307.pid</span><br><span class="line">TimeoutSec=0</span><br><span class="line">PermissionsStartOnly=true</span><br><span class="line">ExecStart=/usr/sbin/mysqld --defaults-file=/etc/my3307.cnf --daemonize --pid-file=/data/mysql/3307/mysqld3307.pid </span><br><span class="line">EnvironmentFile=-/etc/sysconfig/mysql</span><br><span class="line">LimitNOFILE = 5000</span><br><span class="line">Restart=on-failure</span><br><span class="line">RestartPreventExitStatus=1</span><br><span class="line">PrivateTmp=false</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x521D;&#x59CB;&#x5316;&#x591A;&#x5B9E;&#x4F8B;3306&#x3001;3307</strong></p>
+<pre><code>mysqld --defaults-file=/etc/my3306.cnf --initialize --user=mysql --datadir=/data/mysql/3306/data
+mysqld --defaults-file=/etc/mysql3307.cnf --initialize --user=mysql --datadir=/data/mysql/3307/data
+</code></pre><p><strong>&#x542F;&#x52A8;&#x591A;&#x5B9E;&#x4F8B;3306&#x3001;3307</strong></p>
+<pre><code>systemctl daemon-reload
+systemctl start mysqld3306
+systemctl start mysqld3307
+
+netstat -pantul | grep mysql
+
+ps aux | grep mysql
+</code></pre><p><strong>&#x67E5;&#x770B;MySQL root&#x521D;&#x59CB;&#x5BC6;&#x7801;</strong></p>
+<pre><code>cat /data/mysql/3306/logs/mysqld3306.log | grep root
+cat /data/mysql/3307/logs/mysqld3307.log | grep root
+</code></pre><p><strong>&#x767B;&#x5F55;&#x591A;&#x5B9E;&#x4F8B;&#x5E76;&#x4FEE;&#x6539;root&#x9ED8;&#x8BA4;&#x5BC6;&#x7801;</strong></p>
+<pre><code># mysql3306&#x5B9E;&#x4F8B;
+mysql -S /data/mysql/3306/mysql3306.sock -uroot -p 
+</code></pre><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x4FEE;&#x6539;&#x9ED8;&#x8BA4;&#x5BC6;&#x7801;</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">USER</span> <span class="string">&apos;root&apos;</span>@<span class="string">&apos;localhost&apos;</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">&apos;newPassword&apos;</span>;</span><br><span class="line"><span class="keyword">FLUSH</span> <span class="keyword">PRIVILEGES</span>;</span><br></pre></td></tr></tbody></table></figure>
+<pre><code># mysql3307&#x5B9E;&#x4F8B;
+mysql -S /data/mysql/3307/mysql3307.sock -uroot -p
+</code></pre><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x4FEE;&#x6539;&#x9ED8;&#x8BA4;&#x5BC6;&#x7801;</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">USER</span> <span class="string">&apos;root&apos;</span>@<span class="string">&apos;localhost&apos;</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">&apos;New_password&apos;</span>;</span><br><span class="line"><span class="keyword">FLUSH</span> <span class="keyword">PRIVILEGES</span>;</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="&#x589E;&#x52A0;&#x5B9E;&#x4F8B;"><a href="#&#x589E;&#x52A0;&#x5B9E;&#x4F8B;" class="headerlink" title="&#x589E;&#x52A0;&#x5B9E;&#x4F8B;"></a>&#x589E;&#x52A0;&#x5B9E;&#x4F8B;</h4><p><strong>&#x521B;&#x5EFA;&#x76EE;&#x5F55;&#xFF0C;&#x8BBE;&#x7F6E;&#x5C5E;&#x4E3B;&#x5C5E;&#x7EC4;</strong></p>
+<pre><code>mkdir -p /data/mysql/3308/{data, binlog, logs}
+chown -Rf mysql:mysql /data/mysql/3308
+</code></pre><p><strong>&#x65B0;&#x589E;&#x914D;&#x7F6E;&#x6587;&#x4EF6;my3308.cnf</strong></p>
+<pre><code>cp /etc/my3306.cnf /etc/my3308.cnf
+sed -i &apos;s/3306/3308/g&apos; /etc/my3308.cnf
+</code></pre><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/my3308.cnf</span><br><span class="line">[mysqld]</span><br><span class="line">user = mysql</span><br><span class="line">port = 3308</span><br><span class="line">server_id = 3308</span><br><span class="line">datadir = /data/mysql/3308/data</span><br><span class="line">socket = /data/mysql/3308/mysql3308.sock</span><br><span class="line">symbolic-links = 0</span><br><span class="line"><span class="built_in">log</span>-error = /data/mysql/3308/logs/mysqld3308.log</span><br><span class="line">pid-file = /data/mysql/3308/mysqld3308.pid</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>&#x6DFB;&#x52A0;mysqld3308.service&#x542F;&#x52A8;&#x6587;&#x4EF6;</strong></p>
+<pre><code>cp /usr/lib/systemd/system/mysqld3306.service /usr/lib/systemd/system/mysqld3308.service
+sed -i &apos;s/3306/3308/g&apos; /usr/lib/systemd/system/mysqld3308.service
+</code></pre><figure class="highlight sh"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">cat /usr/lib/systemd/system/mysqld3308.service</span><br><span class="line">[Unit]</span><br><span class="line">Description=MySQL Server</span><br><span class="line">Documentation=man:mysqld(8)</span><br><span class="line">Documentation=http://dev.mysql.com/doc/refman/en/using-systemd.html</span><br><span class="line">After=network.target</span><br><span class="line">After=syslog.target</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">User=mysql</span><br><span class="line">Group=mysql</span><br><span class="line">Type=forking</span><br><span class="line">PIDFile=/data/mysql/3308/mysqld3308.pid</span><br><span class="line">TimeoutSec=0</span><br><span class="line">PermissionsStartOnly=<span class="literal">true</span></span><br><span class="line">ExecStart=/usr/sbin/mysqld --defaults-file=/etc/my3308.cnf --daemonize --pid-file=/data/mysql/3308/mysqld3308.pid </span><br><span class="line">EnvironmentFile=-/etc/sysconfig/mysql</span><br><span class="line">LimitNOFILE = 5000</span><br><span class="line">Restart=on-failure</span><br><span class="line">RestartPreventExitStatus=1</span><br><span class="line">PrivateTmp=<span class="literal">false</span></span><br></pre></td></tr></tbody></table></figure>
+<p><strong>&#x521D;&#x59CB;&#x5316;&#x65B0;&#x589E;&#x5B9E;&#x4F8B;3308</strong></p>
+<pre><code>mysqld --defaults-file=/etc/my3308.cnf --initialize --user=mysql --datadir=/data/mysql/3308/data
+</code></pre><p><strong>&#x542F;&#x52A8;&#x65B0;&#x589E;&#x5B9E;&#x4F8B;3308</strong></p>
+<pre><code>systemctl start mysqld3308
+
+netstat -nutpl | grep mysql
+</code></pre><p><strong>&#x83B7;&#x53D6;mysql3308 root&#x521D;&#x59CB;&#x5316;&#x5BC6;&#x7801;</strong></p>
+<pre><code>cat /data/mysql/3308/logs/mysqld3308.log | grep root
+</code></pre><p><strong>&#x767B;&#x5F55;mysql3308&#x4FEE;&#x6539;&#x9ED8;&#x8BA4;&#x5BC6;&#x7801;</strong></p>
+<pre><code>mysql -S /data/mysql/3308/mysql3308.sock -uroot -p
+</code></pre><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">USER</span> <span class="string">&apos;root&apos;</span>@<span class="string">&apos;localhost&apos;</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">&quot;NewPassword&quot;</span>;</span><br><span class="line"><span class="keyword">FLUSH</span> <span class="keyword">PRIVILEGES</span>;</span><br></pre></td></tr></tbody></table></figure>
+<hr>
+<hr>
+<h2 id="&#x4FEE;&#x6539;MySQL&#x7AEF;&#x53E3;"><a href="#&#x4FEE;&#x6539;MySQL&#x7AEF;&#x53E3;" class="headerlink" title="&#x4FEE;&#x6539;MySQL&#x7AEF;&#x53E3;"></a>&#x4FEE;&#x6539;MySQL&#x7AEF;&#x53E3;</h2><pre><code>vim /etc/my.cnf
+
+[mysqld]
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+symbolic-links=0
+port=3307
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
+
+netstat -pantul | grep 3307
+</code></pre><hr>
+<hr>
+<h2 id="MySQL-5-7-&#x5FD8;&#x8BB0;root&#x5BC6;&#x7801;"><a href="#MySQL-5-7-&#x5FD8;&#x8BB0;root&#x5BC6;&#x7801;" class="headerlink" title="MySQL 5.7 &#x5FD8;&#x8BB0;root&#x5BC6;&#x7801;"></a>MySQL 5.7 &#x5FD8;&#x8BB0;root&#x5BC6;&#x7801;</h2><p><strong>&#x4FEE;&#x6539;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF0C;&#x7ED5;&#x8FC7;&#x5BC6;&#x7801;&#x9A8C;&#x8BC1;</strong></p>
+<pre><code>echo skip-grant-tables &gt;&gt; /etc/my.cnf
+/etc/init.d/mysqld restart
+</code></pre><p><strong>&#x4FEE;&#x6539;&#x6570;&#x636E;&#x5E93;root&#x5BC6;&#x7801;</strong></p>
+<pre><code>mysql
+</code></pre><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ALTER</span> <span class="keyword">USER</span> <span class="string">&apos;root&apos;</span>@<span class="string">&apos;localhost&apos;</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">&apos;new_Password&apos;</span>;</span><br><span class="line"><span class="keyword">FLUSH</span> <span class="keyword">PRIVILEGES</span>;</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>&#x4FEE;&#x6539;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF0C;&#x5220;&#x9664;skil-grant-tables&#xFF0C;&#x6062;&#x590D;&#x5BC6;&#x7801;&#x9A8C;&#x8BC1;</strong></p>
+<p><strong>&#x91CD;&#x542F;MySQL</strong></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2022-06-07T05:15:11.175Z" itemprop="dateUpdated">2022-06-07 13:15:11</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/61fb6d52/" target="_blank" rel="external">https://marnm.github.io/posts/61fb6d52/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='https://marnm.github.io'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/61fb6d52/&title=《MySQL5.7》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/61fb6d52/&title=《MySQL5.7》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/61fb6d52/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《MySQL5.7》 — Deops's blog&url=https://marnm.github.io/posts/61fb6d52/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/61fb6d52/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/f6e2d114/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：使用RPM包安装MySQL5.7数据库
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/16fc5dc4/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：MySQL5.6">下一篇：MySQL5.6</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2022
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="https://marnm.github.io">marnm.github.io</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/61fb6d52/&title=《MySQL5.7》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/61fb6d52/&title=《MySQL5.7》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/61fb6d52/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《MySQL5.7》 — Deops's blog&url=https://marnm.github.io/posts/61fb6d52/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/61fb6d52/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABvUlEQVR42u3aS5KDMAwFwNz/0swBMjF6MihUqr3KwkArC5c+fr3K63hbn/a871+/83XHwsXF3eYey7Xes8at91Te/09IuLi4g9zKwVT/3fs7SocdLi7ug7npU58CwMXF/Q1umr5Uih9cXNxncuspSBpGWj5dVqvh4uJucOtdyvt+39LfxcXFbXGPcKXPVtqpwddxcXFHuGmhsk5o0lKq+V1cXNwR7vrDaftjZ3BSv+qBi4s7w63T00HIuv2RJky4uLh3c+sP7xQ8leBLDRRcXNwRbj25qR9M9VFKGhguLu4Mt/eZdZa0NRxdB4CLizvI3b841WuSpuMWXFzcJ3B7DZE0iQkCw8XFHefupy/rgev+YAYXF3eG20tf0tIoLYdOUitcXNxxbpqCpPPbyv6TUHFxcce5vYtZ9WFq2qItDVlxcXHHub0RyM7bTnbi4uLezD3CleJ2Lm/h4uJ+i7t/SKXoa4e4uLi493F7xUnvmkUlmJMDDhcXd5CbjjR2WqXpKCVui+Di4n6V2xu09MYwuLi4T+ZWDqytDu56Py4u7iA3vVy1Uw6lRFxc3Hlub/BZT2t6DZEL+ru4uLgd7h8RCrloT5mxagAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>

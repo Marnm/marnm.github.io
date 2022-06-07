@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>MyCat教程全国省份分片枚举操作 | Deops&#39;s blog | 运维开发工程师</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="MyCat&amp;#x5206;&amp;#x7247;&amp;#x679A;&amp;#x4E3E;&amp;#x64CD;&amp;#x4F5C;&amp;#x2014;&amp;#x2014;&amp;#x5168;&amp;#x56FD;&amp;#x7701;&amp;#x4EFD;&amp;#x5206;&amp;#x7247;&amp;#x673A;&amp;#x5668;    IP &amp;#x7CFB;&amp;#x7EDF; &amp;#x89D2;&amp;#x8272;     192.168.73.20 CentOS 7">
+<meta name="keywords" content="Echo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MyCat教程全国省份分片枚举操作">
+<meta property="og:url" content="https://marnm.github.io/posts/8f74b0e7/index.html">
+<meta property="og:site_name" content="Deops&#39;s blog">
+<meta property="og:description" content="MyCat&amp;#x5206;&amp;#x7247;&amp;#x679A;&amp;#x4E3E;&amp;#x64CD;&amp;#x4F5C;&amp;#x2014;&amp;#x2014;&amp;#x5168;&amp;#x56FD;&amp;#x7701;&amp;#x4EFD;&amp;#x5206;&amp;#x7247;&amp;#x673A;&amp;#x5668;    IP &amp;#x7CFB;&amp;#x7EDF; &amp;#x89D2;&amp;#x8272;     192.168.73.20 CentOS 7">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-06-07T05:10:40.226Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MyCat教程全国省份分片枚举操作">
+<meta name="twitter:description" content="MyCat&amp;#x5206;&amp;#x7247;&amp;#x679A;&amp;#x4E3E;&amp;#x64CD;&amp;#x4F5C;&amp;#x2014;&amp;#x2014;&amp;#x5168;&amp;#x56FD;&amp;#x7701;&amp;#x4EFD;&amp;#x5206;&amp;#x7247;&amp;#x673A;&amp;#x5668;    IP &amp;#x7CFB;&amp;#x7EDF; &amp;#x89D2;&amp;#x8272;     192.168.73.20 CentOS 7">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
+                <i class="icon icon-lg icon-tv tv"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">MyCat教程全国省份分片枚举操作</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#MyCat分片枚举操作——全国省份分片"><span class="post-toc-number">1.</span> <span class="post-toc-text">MyCat分片枚举操作——全国省份分片</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#创建数据库"><span class="post-toc-number">1.0.1.</span> <span class="post-toc-text">创建数据库</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#配置MyCat服务"><span class="post-toc-number">1.0.2.</span> <span class="post-toc-text">配置MyCat服务</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#检查MyCat"><span class="post-toc-number">1.0.3.</span> <span class="post-toc-text">检查MyCat</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#导入数据库"><span class="post-toc-number">1.0.4.</span> <span class="post-toc-text">导入数据库</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#查询数据"><span class="post-toc-number">1.0.5.</span> <span class="post-toc-text">查询数据</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#查看分片数据"><span class="post-toc-number">1.0.6.</span> <span class="post-toc-text">查看分片数据</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#故障"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">故障</span></a></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-MyCat教程全国省份分片枚举操作" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">MyCat教程全国省份分片枚举操作</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2022-06-07 12:46:57" datetime="2022-06-07T04:46:57.000Z" itemprop="datePublished">2022-06-07</time>
+
+            <br id="mybreak">
+            
+<script>
+	mybreak.style="display:none";
+</script>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">27</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="MyCat&#x5206;&#x7247;&#x679A;&#x4E3E;&#x64CD;&#x4F5C;&#x2014;&#x2014;&#x5168;&#x56FD;&#x7701;&#x4EFD;&#x5206;&#x7247;"><a href="#MyCat&#x5206;&#x7247;&#x679A;&#x4E3E;&#x64CD;&#x4F5C;&#x2014;&#x2014;&#x5168;&#x56FD;&#x7701;&#x4EFD;&#x5206;&#x7247;" class="headerlink" title="MyCat&#x5206;&#x7247;&#x679A;&#x4E3E;&#x64CD;&#x4F5C;&#x2014;&#x2014;&#x5168;&#x56FD;&#x7701;&#x4EFD;&#x5206;&#x7247;"></a>MyCat&#x5206;&#x7247;&#x679A;&#x4E3E;&#x64CD;&#x4F5C;&#x2014;&#x2014;&#x5168;&#x56FD;&#x7701;&#x4EFD;&#x5206;&#x7247;</h1><p><strong>&#x673A;&#x5668;</strong></p>
+<table>
+<thead>
+<tr>
+<th>IP</th>
+<th>&#x7CFB;&#x7EDF;</th>
+<th>&#x89D2;&#x8272;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>192.168.73.20</td>
+<td>CentOS 7.4</td>
+<td>MyCat Server</td>
+</tr>
+<tr>
+<td>192.168.73.21</td>
+<td>RHEL 7.3</td>
+<td>MySQL Server 5.7</td>
+</tr>
+<tr>
+<td>192.168.73.22</td>
+<td>CentOS 7.4</td>
+<td>MySQL Server 5.7</td>
+</tr>
+<tr>
+<td>192.168.73.23</td>
+<td>RHEL 7.3</td>
+<td>MySQL Server 5.7</td>
+</tr>
+</tbody>
+</table>
+<h3 id="&#x521B;&#x5EFA;&#x6570;&#x636E;&#x5E93;"><a href="#&#x521B;&#x5EFA;&#x6570;&#x636E;&#x5E93;" class="headerlink" title="&#x521B;&#x5EFA;&#x6570;&#x636E;&#x5E93;"></a>&#x521B;&#x5EFA;&#x6570;&#x636E;&#x5E93;</h3><p><strong>192.168.73.21</strong><br></p><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">drop</span> <span class="keyword">database</span> jakingtestdb01;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">database</span> jakingtestdb02;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">database</span> jakingtestdb03;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb01 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb02 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb03 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb04 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb05 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb06 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb07 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb08 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb09 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb10 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb11 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb12 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8;</span><br><span class="line"><span class="keyword">show</span> <span class="keyword">databases</span>;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>192.168.73.22</strong><br></p><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">drop</span> <span class="keyword">database</span> jakingtestdb04;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">database</span> jakingtestdb05;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">database</span> jakingtestdb06;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb13 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb14 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb15 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb16 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb17 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb18 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb19 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb20 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb21 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb22 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb23 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb24 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8;</span><br><span class="line"><span class="keyword">show</span> <span class="keyword">databases</span>;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>192.168.73.23</strong><br></p><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">drop</span> <span class="keyword">database</span> jakingtestdb07;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">database</span> jakingtestdb08;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">database</span> jakingtestdb09;</span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb25 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb26 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb27 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb28 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb29 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb30 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb31 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb32 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb33 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb34 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb35 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8; </span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> jakingtestdb36 <span class="keyword">default</span> <span class="built_in">character</span> <span class="keyword">set</span> utf8;</span><br><span class="line"><span class="keyword">show</span> <span class="keyword">databases</span>;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<h3 id="&#x914D;&#x7F6E;MyCat&#x670D;&#x52A1;"><a href="#&#x914D;&#x7F6E;MyCat&#x670D;&#x52A1;" class="headerlink" title="&#x914D;&#x7F6E;MyCat&#x670D;&#x52A1;"></a>&#x914D;&#x7F6E;MyCat&#x670D;&#x52A1;</h3><p><code>server.xml</code></p>
+<figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- - - Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span></span><br><span class="line"><span class="comment">        - you may not use this file except in compliance with the License. - You</span></span><br><span class="line"><span class="comment">        may obtain a copy of the License at - - http://www.apache.org/licenses/LICENSE-2.0</span></span><br><span class="line"><span class="comment">        - - Unless required by applicable law or agreed to in writing, software -</span></span><br><span class="line"><span class="comment">        distributed under the License is distributed on an &quot;AS IS&quot; BASIS, - WITHOUT</span></span><br><span class="line"><span class="comment">        WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. - See the</span></span><br><span class="line"><span class="comment">        License for the specific language governing permissions and - limitations</span></span><br><span class="line"><span class="comment">        under the License. --&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE mycat:server SYSTEM &quot;server.dtd&quot;&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mycat:server</span> <span class="attr">xmlns:mycat</span>=<span class="string">&quot;http://io.mycat/&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">system</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;nonePasswordLogin&quot;</span>&gt;</span>0<span class="tag">&lt;/<span class="name">property</span>&gt;</span> <span class="comment">&lt;!-- 0&#x4E3A;&#x9700;&#x8981;&#x5BC6;&#x7801;&#x767B;&#x9646;&#x3001;1&#x4E3A;&#x4E0D;&#x9700;&#x8981;&#x5BC6;&#x7801;&#x767B;&#x9646; ,&#x9ED8;&#x8BA4;&#x4E3A;0&#xFF0C;&#x8BBE;&#x7F6E;&#x4E3A;1&#x5219;&#x9700;&#x8981;&#x6307;&#x5B9A;&#x9ED8;&#x8BA4;&#x8D26;&#x6237;--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;useHandshakeV10&quot;</span>&gt;</span>1<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;useSqlStat&quot;</span>&gt;</span>0<span class="tag">&lt;/<span class="name">property</span>&gt;</span>  <span class="comment">&lt;!-- 1&#x4E3A;&#x5F00;&#x542F;&#x5B9E;&#x65F6;&#x7EDF;&#x8BA1;&#x3001;0&#x4E3A;&#x5173;&#x95ED; --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;useGlobleTableCheck&quot;</span>&gt;</span>0<span class="tag">&lt;/<span class="name">property</span>&gt;</span>  <span class="comment">&lt;!-- 1&#x4E3A;&#x5F00;&#x542F;&#x5168;&#x52A0;&#x73ED;&#x4E00;&#x81F4;&#x6027;&#x68C0;&#x6D4B;&#x3001;0&#x4E3A;</span></span><br><span class="line"><span class="comment">&#x5173;&#x95ED; --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;sqlExecuteTimeout&quot;</span>&gt;</span>300<span class="tag">&lt;/<span class="name">property</span>&gt;</span>  <span class="comment">&lt;!-- SQL &#x6267;&#x884C;&#x8D85;&#x65F6; &#x5355;&#x4F4D;:&#x79D2;--&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;sequnceHandlerType&quot;</span>&gt;</span>2<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!--&lt;property name=&quot;sequnceHandlerPattern&quot;&gt;(?:(\s*next\s+value\s+for\s*MYCATSEQ_(\w+))(,|\)|\s)*)+&lt;/property&gt;--&gt;</span></span><br><span class="line">                <span class="comment">&lt;!--&#x5FC5;&#x987B;&#x5E26;&#x6709;MYCATSEQ_&#x6216;&#x8005; mycatseq_&#x8FDB;&#x5165;&#x5E8F;&#x5217;&#x5339;&#x914D;&#x6D41;&#x7A0B; &#x6CE8;&#x610F;MYCATSEQ_&#x6709;&#x7A7A;&#x683C;&#x7684;&#x60C5;&#x51B5;--&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;sequnceHandlerPattern&quot;</span>&gt;</span>(?:(\s*next\s+value\s+for\s*MYCATSEQ_(\w+))(,|\)|\s)*)+<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;subqueryRelationshipCheck&quot;</span>&gt;</span>false<span class="tag">&lt;/<span class="name">property</span>&gt;</span> <span class="comment">&lt;!-- &#x5B50;&#x67E5;&#x8BE2;&#x4E2D;&#x5B58;&#x5728;&#x5173;&#x8054;&#x67E5;&#x8BE2;&#x7684;&#x60C5;&#x51B5;&#x4E0B;,&#x68C0;&#x67E5;&#x5173;&#x8054;&#x5B57;&#x6BB5;&#x4E2D;&#x662F;&#x5426;&#x6709;&#x5206;&#x7247;&#x5B57;&#x6BB5; .&#x9ED8;&#x8BA4; false --&gt;</span></span><br><span class="line">      <span class="comment">&lt;!--  &lt;property name=&quot;useCompression&quot;&gt;1&lt;/property&gt;--&gt;</span> <span class="comment">&lt;!--1&#x4E3A;&#x5F00;&#x542F;mysql&#x538B;&#x7F29;&#x534F;&#x8BAE;--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--  &lt;property name=&quot;fakeMySQLVersion&quot;&gt;5.6.20&lt;/property&gt;--&gt;</span> <span class="comment">&lt;!--&#x8BBE;&#x7F6E;&#x6A21;&#x62DF;&#x7684;MySQL&#x7248;&#x672C; &#x53F7;--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- &lt;property name=&quot;processorBufferChunk&quot;&gt;40960&lt;/property&gt; --&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">        &lt;property name=&quot;processors&quot;&gt;1&lt;/property&gt;</span></span><br><span class="line"><span class="comment">        &lt;property name=&quot;processorExecutor&quot;&gt;32&lt;/property&gt;</span></span><br><span class="line"><span class="comment">         --&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--&#x9ED8;&#x8BA4;&#x4E3A;type 0: DirectByteBufferPool | type 1 ByteBufferArena | type 2 NettyBufferPool --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;processorBufferPoolType&quot;</span>&gt;</span>0<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!--&#x9ED8;&#x8BA4;&#x662F;65535 64K &#x7528;&#x4E8E;sql&#x89E3;&#x6790;&#x65F6;&#x6700;&#x5927;&#x6587;&#x672C;&#x957F;&#x5EA6; --&gt;</span></span><br><span class="line">                <span class="comment">&lt;!--&lt;property name=&quot;maxStringLiteralLength&quot;&gt;65535&lt;/property&gt;--&gt;</span></span><br><span class="line">                <span class="comment">&lt;!--&lt;property name=&quot;sequnceHandlerType&quot;&gt;0&lt;/property&gt;--&gt;</span></span><br><span class="line">                <span class="comment">&lt;!--&lt;property name=&quot;backSocketNoDelay&quot;&gt;1&lt;/property&gt;--&gt;</span></span><br><span class="line">                <span class="comment">&lt;!--&lt;property name=&quot;frontSocketNoDelay&quot;&gt;1&lt;/property&gt;--&gt;</span></span><br><span class="line">                <span class="comment">&lt;!--&lt;property name=&quot;processorExecutor&quot;&gt;16&lt;/property&gt;--&gt;</span></span><br><span class="line">                <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">                        &lt;property name=&quot;serverPort&quot;&gt;8066&lt;/property&gt; &lt;property name=&quot;managerPort&quot;&gt;9066&lt;/property&gt;</span></span><br><span class="line"><span class="comment">                        &lt;property name=&quot;idleTimeout&quot;&gt;300000&lt;/property&gt; &lt;property name=&quot;bindIp&quot;&gt;0.0.0.0&lt;/property&gt;</span></span><br><span class="line"><span class="comment">                        &lt;property name=&quot;dataNodeIdleCheckPeriod&quot;&gt;300000&lt;/property&gt; 5 * 60 * 1000L; //&#x8FDE;&#x63A5;&#x7A7A;&#x95F2;&#x68C0;&#x67E5;</span></span><br><span class="line"><span class="comment">                        &lt;property name=&quot;frontWriteQueueSize&quot;&gt;4096&lt;/property&gt; &lt;property name=&quot;processors&quot;&gt;32&lt;/property&gt; --&gt;</span></span><br><span class="line">                <span class="comment">&lt;!--&#x5206;&#x5E03;&#x5F0F;&#x4E8B;&#x52A1;&#x5F00;&#x5173;&#xFF0C;0&#x4E3A;&#x4E0D;&#x8FC7;&#x6EE4;&#x5206;&#x5E03;&#x5F0F;&#x4E8B;&#x52A1;&#xFF0C;1&#x4E3A;&#x8FC7;&#x6EE4;&#x5206;&#x5E03;&#x5F0F;&#x4E8B;&#x52A1;&#xFF08;&#x5982;&#x679C;&#x5206;&#x5E03;&#x5F0F;&#x4E8B;&#x52A1;&#x5185; &#x53EA;&#x6D89;&#x53CA;&#x5168;&#x5C40;&#x8868;&#xFF0C;&#x5219;&#x4E0D;&#x8FC7;&#x6EE4;&#xFF09;&#xFF0C;2&#x4E3A;&#x4E0D;&#x8FC7;&#x6EE4;&#x5206;&#x5E03;&#x5F0F;&#x4E8B;&#x52A1;,&#x4F46;&#x662F;&#x8BB0;&#x5F55;&#x5206;&#x5E03;&#x5F0F;&#x4E8B;&#x52A1;&#x65E5;&#x5FD7;--&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;handleDistributedTransactions&quot;</span>&gt;</span>0<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                        <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">                        off heap for merge/order/group/limit      1&#x5F00;&#x542F;   0&#x5173;&#x95ED;</span></span><br><span class="line"><span class="comment">                --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;useOffHeapForMerge&quot;</span>&gt;</span>0<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">                        &#x5355;&#x4F4D;&#x4E3A;m</span></span><br><span class="line"><span class="comment">                --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;memoryPageSize&quot;</span>&gt;</span>64k<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">                        &#x5355;&#x4F4D;&#x4E3A;k</span></span><br><span class="line"><span class="comment">                --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;spillsFileBufferSize&quot;</span>&gt;</span>1k<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;useStreamOutput&quot;</span>&gt;</span>0<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">                        &#x5355;&#x4F4D;&#x4E3A;m</span></span><br><span class="line"><span class="comment">                --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;systemReserveMemorySize&quot;</span>&gt;</span>384m<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                <span class="comment">&lt;!--&#x662F;&#x5426;&#x91C7;&#x7528;zookeeper&#x534F;&#x8C03;&#x5207;&#x6362;  --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;useZKSwitch&quot;</span>&gt;</span>false<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">&lt;!-- XA Recovery Log&#x65E5;&#x5FD7;&#x8DEF;&#x5F84; --&gt;</span></span><br><span class="line">                <span class="comment">&lt;!--&lt;property name=&quot;XARecoveryLogBaseDir&quot;&gt;./&lt;/property&gt;--&gt;</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">&lt;!-- XA Recovery Log&#x65E5;&#x5FD7;&#x540D;&#x79F0; --&gt;</span></span><br><span class="line">                <span class="comment">&lt;!--&lt;property name=&quot;XARecoveryLogBaseName&quot;&gt;tmlog&lt;/property&gt;--&gt;</span></span><br><span class="line">                <span class="comment">&lt;!--&#x5982;&#x679C;&#x4E3A; true&#x7684;&#x8BDD; &#x4E25;&#x683C;&#x9075;&#x5B88;&#x9694;&#x79BB;&#x7EA7;&#x522B;,&#x4E0D;&#x4F1A;&#x5728;&#x4EC5;&#x4EC5;&#x53EA;&#x6709;select&#x8BED;&#x53E5;&#x7684;&#x65F6;&#x5019;&#x5728;&#x4E8B;&#x52A1;&#x4E2D;&#x5207;&#x6362;&#x8FDE;&#x63A5;--&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;strictTxIsolation&quot;</span>&gt;</span>false<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;useZKSwitch&quot;</span>&gt;</span>true<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;/<span class="name">system</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!-- &#x5168;&#x5C40;SQL&#x9632;&#x706B;&#x5899;&#x8BBE;&#x7F6E; --&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--&#x767D;&#x540D;&#x5355;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x901A;&#x914D;&#x7B26;%&#x6216;&#x7740;*--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--&#x4F8B;&#x5982;&lt;host host=&quot;127.0.0.*&quot; user=&quot;root&quot;/&gt;--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--&#x4F8B;&#x5982;&lt;host host=&quot;127.0.*&quot; user=&quot;root&quot;/&gt;--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--&#x4F8B;&#x5982;&lt;host host=&quot;127.*&quot; user=&quot;root&quot;/&gt;--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--&#x4F8B;&#x5982;&lt;host host=&quot;1*7.*&quot; user=&quot;root&quot;/&gt;--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--&#x8FD9;&#x4E9B;&#x914D;&#x7F6E;&#x60C5;&#x51B5;&#x4E0B;&#x5BF9;&#x4E8E;127.0.0.1&#x90FD;&#x80FD;&#x4EE5;root&#x8D26;&#x6237;&#x767B;&#x5F55;--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">        &lt;firewall&gt;</span></span><br><span class="line"><span class="comment">           &lt;whitehost&gt;</span></span><br><span class="line"><span class="comment">              &lt;host host=&quot;1*7.0.0.*&quot; user=&quot;root&quot;/&gt;</span></span><br><span class="line"><span class="comment">           &lt;/whitehost&gt;</span></span><br><span class="line"><span class="comment">       &lt;blacklist check=&quot;false&quot;&gt;</span></span><br><span class="line"><span class="comment">       &lt;/blacklist&gt;</span></span><br><span class="line"><span class="comment">        &lt;/firewall&gt;</span></span><br><span class="line"><span class="comment">        --&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">user</span> <span class="attr">name</span>=<span class="string">&quot;root&quot;</span> <span class="attr">defaultAccount</span>=<span class="string">&quot;true&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span>&gt;</span>123456<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;schemas&quot;</span>&gt;</span>mycatdb<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">&lt;!-- &#x8868;&#x7EA7; DML &#x6743;&#x9650;&#x8BBE;&#x7F6E; --&gt;</span></span><br><span class="line">                <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">                &lt;privileges check=&quot;false&quot;&gt;</span></span><br><span class="line"><span class="comment">                        &lt;schema name=&quot;TESTDB&quot; dml=&quot;0110&quot; &gt;</span></span><br><span class="line"><span class="comment">                                &lt;table name=&quot;tb01&quot; dml=&quot;0000&quot;&gt;&lt;/table&gt;</span></span><br><span class="line"><span class="comment">                                &lt;table name=&quot;tb02&quot; dml=&quot;1111&quot;&gt;&lt;/table&gt;</span></span><br><span class="line"><span class="comment">                        &lt;/schema&gt;</span></span><br><span class="line"><span class="comment">                &lt;/privileges&gt;</span></span><br><span class="line"><span class="comment">                 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">user</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">user</span> <span class="attr">name</span>=<span class="string">&quot;user&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span>&gt;</span>ccc.456<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;schemas&quot;</span>&gt;</span>mycatdb<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;readOnly&quot;</span>&gt;</span>true<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">user</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">mycat:server</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure>
+<p><code>schema.xml</code></p>
+<figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot;?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE mycat:schema SYSTEM &quot;schema.dtd&quot;&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mycat:schema</span> <span class="attr">xmlns:mycat</span>=<span class="string">&quot;http://io.mycat/&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">schema</span> <span class="attr">name</span>=<span class="string">&quot;mycatdb&quot;</span> <span class="attr">checkSQLschema</span>=<span class="string">&quot;false&quot;</span> <span class="attr">sqlMaxLimit</span>=<span class="string">&quot;100&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">table</span> <span class="attr">name</span>=<span class="string">&quot;jaking_member&quot;</span> <span class="attr">dataNode</span>=<span class="string">&quot;dnmycatdb$1-35&quot;</span> <span class="attr">rule</span>=<span class="string">&quot;sharding-by-intfile-mycatdb-jakingtest_member&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">table</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">schema</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- &#x8BBE;&#x5B9A;&#x6570;&#x636E;&#x7ED3;&#x70B9; dnmycatdb1-dnmycatdb12 &#x5BF9;&#x5E94;&#x7684; 192.168.73.21 &#x670D;&#x52A1; &#x4EE5;&#x53CA;&#x5BF9;&#x5E94;&#x7684;&#x7269;&#x7406; schema --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb1&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.21&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb01&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb2&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.21&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb02&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb3&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.21&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb03&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb4&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.21&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb04&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb5&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.21&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb05&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb6&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.21&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb06&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb7&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.21&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb07&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb8&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.21&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb08&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb9&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.21&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb09&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb10&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.21&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb10&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb11&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.21&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb11&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb12&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.21&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb12&quot;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- &#x8BBE;&#x5B9A;&#x6570;&#x636E;&#x7ED3;&#x70B9; dnmycatdb13-dnmycatdb24 &#x5BF9;&#x5E94;&#x7684; 192.168.73.22 &#x670D;&#x52A1; &#x4EE5;&#x53CA;&#x5BF9;&#x5E94;&#x7684; &#x7269;&#x7406; schema --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb13&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.22&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb13&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb14&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.22&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb14&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb15&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.22&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb15&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb16&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.22&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb16&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb17&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.22&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb17&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb18&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.22&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb18&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb19&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.22&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb19&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb20&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.22&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb20&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb21&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.22&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb21&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb22&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.22&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb22&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb23&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.22&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb23&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb24&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.22&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb24&quot;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- &#x8BBE;&#x5B9A;&#x6570;&#x636E;&#x7ED3;&#x70B9; dnmycatdb25-dnmycatdb35 &#x5BF9;&#x5E94;&#x7684; 192.168.73.23 &#x670D;&#x52A1; &#x4EE5;&#x53CA;&#x5BF9;&#x5E94;&#x7684; &#x7269;&#x7406; schema --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb25&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.23&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb25&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb26&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.23&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb26&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb27&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.23&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb27&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb28&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.23&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb28&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb29&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.23&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb29&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb30&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.23&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb30&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb31&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.23&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb31&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb32&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.23&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb32&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb33&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.23&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb33&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb34&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.23&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb34&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataNode</span> <span class="attr">name</span>=<span class="string">&quot;dnmycatdb35&quot;</span> <span class="attr">dataHost</span>=<span class="string">&quot;192.168.73.23&quot;</span> <span class="attr">database</span>=<span class="string">&quot;jakingtestdb35&quot;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- &#x8BBE;&#x5B9A; 192.168.73.21 &#x76EE;&#x524D;&#x53EA;&#x914D;&#x4E86;&#x4E00;&#x53F0;&#x7269;&#x7406;&#x673A;&#xFF0C;&#x82E5;&#x8981;&#x505A;&#x8BFB;&#x5199;&#x5206;&#x79BB;&#x53EF;&#x4EE5;&#x53C2;&#x8003;&#x4E0A;&#x9762;&#x7684;&#x90E8;&#x5206; --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dataHost</span> <span class="attr">name</span>=<span class="string">&quot;192.168.73.21&quot;</span> <span class="attr">maxCon</span>=<span class="string">&quot;1000&quot;</span> <span class="attr">minCon</span>=<span class="string">&quot;10&quot;</span> <span class="attr">balance</span>=<span class="string">&quot;1&quot;</span></span></span><br><span class="line"><span class="tag"><span class="attr">writeType</span>=<span class="string">&quot;0&quot;</span> <span class="attr">dbType</span>=<span class="string">&quot;mysql&quot;</span> <span class="attr">dbDriver</span>=<span class="string">&quot;native&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">heartbeat</span>&gt;</span>select user()<span class="tag">&lt;/<span class="name">heartbeat</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- can have multi write hosts --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">writeHost</span> <span class="attr">host</span>=<span class="string">&quot;192.168.73.21&quot;</span> <span class="attr">url</span>=<span class="string">&quot;192.168.73.21:3306&quot;</span> <span class="attr">user</span>=<span class="string">&quot;root&quot;</span> <span class="attr">password</span>=<span class="string">&quot;ccc.456&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dataHost</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dataHost</span> <span class="attr">name</span>=<span class="string">&quot;192.168.73.22&quot;</span> <span class="attr">maxCon</span>=<span class="string">&quot;1000&quot;</span> <span class="attr">minCon</span>=<span class="string">&quot;10&quot;</span> <span class="attr">balance</span>=<span class="string">&quot;1&quot;</span></span></span><br><span class="line"><span class="tag"><span class="attr">writeType</span>=<span class="string">&quot;0&quot;</span> <span class="attr">dbType</span>=<span class="string">&quot;mysql&quot;</span> <span class="attr">dbDriver</span>=<span class="string">&quot;native&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">heartbeat</span>&gt;</span>select user()<span class="tag">&lt;/<span class="name">heartbeat</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- can have multi write hosts --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">writeHost</span> <span class="attr">host</span>=<span class="string">&quot;192.168.73.22&quot;</span> <span class="attr">url</span>=<span class="string">&quot;192.168.73.22:3306&quot;</span> <span class="attr">user</span>=<span class="string">&quot;root&quot;</span> <span class="attr">password</span>=<span class="string">&quot;ccc.456&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dataHost</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dataHost</span> <span class="attr">name</span>=<span class="string">&quot;192.168.73.23&quot;</span> <span class="attr">maxCon</span>=<span class="string">&quot;1000&quot;</span> <span class="attr">minCon</span>=<span class="string">&quot;10&quot;</span> <span class="attr">balance</span>=<span class="string">&quot;1&quot;</span></span></span><br><span class="line"><span class="tag"><span class="attr">writeType</span>=<span class="string">&quot;0&quot;</span> <span class="attr">dbType</span>=<span class="string">&quot;mysql&quot;</span> <span class="attr">dbDriver</span>=<span class="string">&quot;native&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">heartbeat</span>&gt;</span>select user()<span class="tag">&lt;/<span class="name">heartbeat</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- can have multi write hosts --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">writeHost</span> <span class="attr">host</span>=<span class="string">&quot;192.168.73.23&quot;</span> <span class="attr">url</span>=<span class="string">&quot;192.168.73.23:3306&quot;</span> <span class="attr">user</span>=<span class="string">&quot;root&quot;</span> <span class="attr">password</span>=<span class="string">&quot;ccc.456&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dataHost</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mycat:schema</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure>
+<p><code>rule.xml</code></p>
+<figure class="highlight xml"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE mycat:rule SYSTEM &quot;rule.dtd&quot;&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mycat:rule</span> <span class="attr">xmlns:mycat</span>=<span class="string">&quot;http://io.mycat/&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">tableRule</span> <span class="attr">name</span>=<span class="string">&quot;sharding-by-intfile-mycatdb-jakingtest_member&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">rule</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">columns</span>&gt;</span>region<span class="tag">&lt;/<span class="name">columns</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">algorithm</span>&gt;</span>hash-int<span class="tag">&lt;/<span class="name">algorithm</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">rule</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">tableRule</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">function</span> <span class="attr">name</span>=<span class="string">&quot;hash-int&quot;</span> <span class="attr">class</span>=<span class="string">&quot;io.mycat.route.function.PartitionByFileMap&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;mapFile&quot;</span>&gt;</span>partition-hash-int-mycatdb-jakingtest_member.txt<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;type&quot;</span>&gt;</span>1<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;defaultNode&quot;</span>&gt;</span>0<span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- type &#x9ED8;&#x8BA4;&#x503C;&#x4E3A;0&#xFF0C;0&#x8868;&#x793A;integer&#xFF0C;&#x975E;&#x96F6;&#x8868;&#x793A;string,&#x6240;&#x6709;&#x8282;&#x70B9;&#x914D;&#x7F6E;&#x90FD;&#x662F;&#x4ECE;0&#x5F00;&#x59CB;&#xFF0C;&#x53CA;0&#x4EE3;&#x8868;&#x8282;&#x70B9;1 --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">function</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mycat:rule</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure>
+<p><code>partition-hash-int-mycatdb-jakingtest_member.txt</code></p>
+<pre><code>vim /mysql/app/mycat/conf/partition-hash-int-mycatdb-jakingtest_member.txt
+</code></pre><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">&#x5317;&#x4EAC;&#x5E02;=0</span><br><span class="line">&#x4E0A;&#x6D77;&#x5E02;=1</span><br><span class="line">&#x4E91;&#x5357;&#x7701;=2</span><br><span class="line">&#x5185;&#x8499;&#x53E4;=3</span><br><span class="line">&#x8D35;&#x5DDE;&#x7701;=4</span><br><span class="line">&#x91CD;&#x5E86;&#x5E02;=5</span><br><span class="line">&#x53F0;&#x6E7E;&#x7701;=6</span><br><span class="line">&#x5409;&#x6797;&#x7701;=7</span><br><span class="line">&#x56DB;&#x5DDD;&#x7701;=8</span><br><span class="line">&#x5929;&#x6D25;&#x5E02;=9</span><br><span class="line">&#x5B81;&#x590F;&#x7701;=10</span><br><span class="line">&#x5B89;&#x5FBD;&#x7701;=11</span><br><span class="line">&#x5C71;&#x4E1C;&#x7701;=12</span><br><span class="line">&#x5C71;&#x897F;&#x7701;=13</span><br><span class="line">&#x5E7F;&#x4E1C;&#x7701;=14</span><br><span class="line">&#x5E7F;&#x897F;&#x7701;=15</span><br><span class="line">&#x65B0;&#x7586;&#x7701;=16</span><br><span class="line">&#x6C5F;&#x82CF;&#x7701;=17</span><br><span class="line">&#x6C5F;&#x897F;&#x7701;=18</span><br><span class="line">&#x6CB3;&#x5317;&#x7701;=19</span><br><span class="line">&#x6CB3;&#x5357;&#x7701;=20</span><br><span class="line">&#x6D59;&#x6C5F;&#x7701;=21</span><br><span class="line">&#x6D77;&#x5357;&#x7701;=22</span><br><span class="line">&#x6E56;&#x5317;&#x7701;=23</span><br><span class="line">&#x6E56;&#x5357;&#x7701;=24</span><br><span class="line">&#x6FB3;&#x95E8;=25</span><br><span class="line">&#x7518;&#x8083;&#x7701;=26</span><br><span class="line">&#x798F;&#x5EFA;&#x7701;=27</span><br><span class="line">&#x897F;&#x85CF;=28</span><br><span class="line">&#x8FBD;&#x5B81;&#x7701;=29</span><br><span class="line">&#x9655;&#x897F;&#x7701;=30</span><br><span class="line">&#x9752;&#x6D77;&#x7701;=31</span><br><span class="line">&#x9999;&#x6E2F;=32</span><br><span class="line">&#x9ED1;&#x9F99;&#x6C5F;&#x7701;=33</span><br><span class="line">DEFAULT_NODE=34</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="&#x68C0;&#x67E5;MyCat"><a href="#&#x68C0;&#x67E5;MyCat" class="headerlink" title="&#x68C0;&#x67E5;MyCat"></a>&#x68C0;&#x67E5;MyCat</h3><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; show @@databases;</span><br><span class="line">+<span class="comment">----------+</span></span><br><span class="line">| DATABASE |</span><br><span class="line">+<span class="comment">----------+</span></span><br><span class="line">| mycatdb  |</span><br><span class="line">+<span class="comment">----------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.01</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">show</span> @@datasource;</span><br><span class="line">+<span class="comment">-------------+---------------+-------+---------------+------+------+--------+------+------+---------+-----------+------------+</span></span><br><span class="line">| DATANODE    | NAME          | TYPE  | HOST          | PORT | W/R  | ACTIVE | IDLE | SIZE | <span class="keyword">EXECUTE</span> | READ_LOAD | WRITE_LOAD |</span><br><span class="line">+<span class="comment">-------------+---------------+-------+---------------+------+------+--------+------+------+---------+-----------+------------+</span></span><br><span class="line">| dnmycatdb22 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb23 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb20 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb21 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb4  | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb19 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb5  | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb2  | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb17 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb3  | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb18 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb15 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb1  | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb16 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb13 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb35 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb14 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb8  | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb9  | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb6  | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb7  | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb11 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb33 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb12 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb34 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb31 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb10 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb32 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb30 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb28 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb29 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb26 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb27 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb24 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">| dnmycatdb25 | <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | <span class="number">3306</span> | W    |      <span class="number">0</span> |    <span class="number">0</span> | <span class="number">1000</span> |       <span class="number">0</span> |         <span class="number">0</span> |          <span class="number">0</span> |</span><br><span class="line">+<span class="comment">-------------+---------------+-------+---------------+------+------+--------+------+------+---------+-----------+------------+</span></span><br><span class="line"><span class="number">35</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.01</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">show</span> @@heartbeat;</span><br><span class="line">+<span class="comment">---------------+-------+---------------+------+---------+-------+--------+---------+--------------+---------------------+-------+</span></span><br><span class="line">| NAME          | TYPE  | HOST          | PORT | RS_CODE | RETRY | STATUS | TIMEOUT | EXECUTE_TIME | LAST_ACTIVE_TIME    | <span class="keyword">STOP</span>  |</span><br><span class="line">+<span class="comment">---------------+-------+---------------+------+---------+-------+--------+---------+--------------+---------------------+-------+</span></span><br><span class="line">| <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.21</span> | <span class="number">3306</span> |      <span class="number">-1</span> |     <span class="number">1</span> | idle   |   <span class="number">30000</span> | <span class="number">14</span>,<span class="number">2443</span>,<span class="number">2443</span> | <span class="number">2022</span><span class="number">-05</span><span class="number">-10</span> <span class="number">00</span>:<span class="number">17</span>:<span class="number">53</span> | <span class="literal">false</span> |</span><br><span class="line">| <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.22</span> | <span class="number">3306</span> |      <span class="number">-1</span> |     <span class="number">1</span> | idle   |   <span class="number">30000</span> | <span class="number">15</span>,<span class="number">2443</span>,<span class="number">2443</span> | <span class="number">2022</span><span class="number">-05</span><span class="number">-10</span> <span class="number">00</span>:<span class="number">17</span>:<span class="number">53</span> | <span class="literal">false</span> |</span><br><span class="line">| <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | mysql | <span class="number">192.168</span><span class="number">.73</span><span class="number">.23</span> | <span class="number">3306</span> |      <span class="number">-1</span> |     <span class="number">1</span> | idle   |   <span class="number">30000</span> | <span class="number">16</span>,<span class="number">2444</span>,<span class="number">2444</span> | <span class="number">2022</span><span class="number">-05</span><span class="number">-10</span> <span class="number">00</span>:<span class="number">17</span>:<span class="number">53</span> | <span class="literal">false</span> |</span><br><span class="line">+<span class="comment">---------------+-------+---------------+------+---------+-------+--------+---------+--------------+---------------------+-------+</span></span><br><span class="line"><span class="number">3</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span> (<span class="number">0.01</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt;</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="&#x5BFC;&#x5165;&#x6570;&#x636E;&#x5E93;"><a href="#&#x5BFC;&#x5165;&#x6570;&#x636E;&#x5E93;" class="headerlink" title="&#x5BFC;&#x5165;&#x6570;&#x636E;&#x5E93;"></a>&#x5BFC;&#x5165;&#x6570;&#x636E;&#x5E93;</h3><p>&#x6CE8;&#x610F;&#xFF1A;&#x4E00;&#x5B9A;&#x8981;&#x628A;3&#x4E2A;&#x8282;&#x70B9;&#x7684;MySQL &#x81EA;&#x52A8;&#x63D0;&#x4EA4;&#x7684;&#x53C2;&#x6570;&#x6253;&#x5F00;&#xFF01;<br></p><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> autocommit=<span class="number">1</span>;</span><br><span class="line"><span class="keyword">show</span> <span class="keyword">variables</span> <span class="keyword">like</span> <span class="string">&quot;%autocommit%&quot;</span>;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<pre><code>mysql -h192.168.73.20 -P8066 -uroot -p123456 mycatdb &lt; jakingtest_member.sql
+</code></pre><h3 id="&#x67E5;&#x8BE2;&#x6570;&#x636E;"><a href="#&#x67E5;&#x8BE2;&#x6570;&#x636E;" class="headerlink" title="&#x67E5;&#x8BE2;&#x6570;&#x636E;"></a>&#x67E5;&#x8BE2;&#x6570;&#x636E;</h3><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; use mycatdb</span><br><span class="line">Reading table information for completion of table and column names</span><br><span class="line">You can turn off this feature to get a quicker startup <span class="keyword">with</span> -A</span><br><span class="line"></span><br><span class="line"><span class="keyword">Database</span> <span class="keyword">changed</span></span><br><span class="line">mysql&gt; <span class="keyword">show</span> <span class="keyword">tables</span>;</span><br><span class="line">+<span class="comment">-------------------+</span></span><br><span class="line">| Tables in mycatdb |</span><br><span class="line">+<span class="comment">-------------------+</span></span><br><span class="line">| jaking_member     |</span><br><span class="line">+<span class="comment">-------------------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> <span class="keyword">count</span>(*) <span class="keyword">from</span> jaking_member;</span><br><span class="line">+<span class="comment">--------+</span></span><br><span class="line">| COUNT0 |</span><br><span class="line">+<span class="comment">--------+</span></span><br><span class="line">|  50000 |</span><br><span class="line">+<span class="comment">--------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.03</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> jaking_member <span class="keyword">where</span> <span class="keyword">id</span> = <span class="number">20000210</span>;</span><br><span class="line">+<span class="comment">----------+----------------+-----+-----+-------------+---------------------+-----------+-------------+------------------+--------------------------+------------------------------------------------------------------------------------------------------+</span></span><br><span class="line">| ID       | NAME           | AGE | SEX | CARDID      | JOINDATE            | REGION    | TEL         | EMAIL            | RECOMMEND                | IDENTIFIER</span><br><span class="line">                                         |</span><br><span class="line">+<span class="comment">----------+----------------+-----+-----+-------------+---------------------+-----------+-------------+------------------+--------------------------+------------------------------------------------------------------------------------------------------+</span></span><br><span class="line">| 20000210 | jaking20000210 |  31 | &#x7537;  | 10050307335 | 2015-12-25 11:50:51 | &#x4E0A;&#x6D77;&#x5E02;    | 13108379727 | 123359043@qq.com | &#x5F6D;&#x7406;&#x90A6;&#x5C0F;&#x9C9C;&#x8089;&#x8001;&#x5E08;         | klbd muygjo xs iyz hqlghz duucn fjlap dgknrq kkz js ogsga hq cedyjm nzgmy unjpy kky jjh zevor juctq  |</span><br><span class="line">+<span class="comment">----------+----------------+-----+-----+-------------+---------------------+-----------+-------------+------------------+--------------------------+------------------------------------------------------------------------------------------------------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.02</span> sec)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">-- &#x67E5;&#x8BE2;&#x6570;&#x636E;&#x91CF;</span></span><br><span class="line">mysql&gt; <span class="keyword">select</span> table_schema,table_name <span class="keyword">as</span> <span class="string">&quot;Tables&quot;</span>,<span class="keyword">ROUND</span>(((data_length + index_length)/<span class="number">1024</span>/<span class="number">1024</span>), <span class="number">2</span>) <span class="string">&quot;Size in MB&quot;</span> <span class="keyword">from</span> information_schema.TABLES <span class="keyword">where</span> TABLE_NAME = <span class="string">&quot;jaking_member&quot;</span> <span class="keyword">order</span> <span class="keyword">by</span> (data_length + index_length) <span class="keyword">desc</span>;</span><br><span class="line">+<span class="comment">----------------+---------------+------------+</span></span><br><span class="line">| table_schema   | Tables        | Size in MB |</span><br><span class="line">+<span class="comment">----------------+---------------+------------+</span></span><br><span class="line">| jakingtestdb01 | jaking_member |       1.52 |</span><br><span class="line">| jakingtestdb02 | jaking_member |       0.41 |</span><br><span class="line">| jakingtestdb05 | jaking_member |       0.39 |</span><br><span class="line">| jakingtestdb03 | jaking_member |       0.39 |</span><br><span class="line">| jakingtestdb11 | jaking_member |       0.39 |</span><br><span class="line">| jakingtestdb08 | jaking_member |       0.39 |</span><br><span class="line">| jakingtestdb07 | jaking_member |       0.39 |</span><br><span class="line">| jakingtestdb06 | jaking_member |       0.38 |</span><br><span class="line">| jakingtestdb04 | jaking_member |       0.38 |</span><br><span class="line">| jakingtestdb12 | jaking_member |       0.38 |</span><br><span class="line">| jakingtestdb09 | jaking_member |       0.38 |</span><br><span class="line">| jakingtestdb10 | jaking_member |       0.36 |</span><br><span class="line">+<span class="comment">----------------+---------------+------------+</span></span><br><span class="line">12 rows in <span class="keyword">set</span> (<span class="number">0.01</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt;</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="&#x67E5;&#x770B;&#x5206;&#x7247;&#x6570;&#x636E;"><a href="#&#x67E5;&#x770B;&#x5206;&#x7247;&#x6570;&#x636E;" class="headerlink" title="&#x67E5;&#x770B;&#x5206;&#x7247;&#x6570;&#x636E;"></a>&#x67E5;&#x770B;&#x5206;&#x7247;&#x6570;&#x636E;</h3><p><strong>192.168.73.21</strong><br></p><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select count(*) ,region from jakingtestdb10.jaking_member group by region;</span><br><span class="line">+<span class="comment">----------+-----------+</span></span><br><span class="line">| count(*) | region    |</span><br><span class="line">+<span class="comment">----------+-----------+</span></span><br><span class="line">|     1363 | &#x5929;&#x6D25;&#x5E02;    |</span><br><span class="line">+<span class="comment">----------+-----------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.01</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>192.168.73.22</strong><br></p><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select count(*) ,region from jakingtestdb20.jaking_member group by region;</span><br><span class="line">+<span class="comment">----------+-----------+</span></span><br><span class="line">| count(*) | region    |</span><br><span class="line">+<span class="comment">----------+-----------+</span></span><br><span class="line">|     1448 | &#x6CB3;&#x5317;&#x7701;    |</span><br><span class="line">+<span class="comment">----------+-----------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>192.168.73.23</strong><br></p><figure class="highlight sql"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">mysql&gt; select count(*) ,region from jakingtestdb30.jaking_member group by region;</span><br><span class="line">+<span class="comment">----------+-----------+</span></span><br><span class="line">| count(*) | region    |</span><br><span class="line">+<span class="comment">----------+-----------+</span></span><br><span class="line">|     1448 | &#x8FBD;&#x5B81;&#x7701;    |</span><br><span class="line">+<span class="comment">----------+-----------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<h2 id="&#x6545;&#x969C;"><a href="#&#x6545;&#x969C;" class="headerlink" title="&#x6545;&#x969C;"></a>&#x6545;&#x969C;</h2><figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">2022-05-10 01:28:18.943  INFO [$_NIOREACTOR-0-RW] (io.mycat.backend.datasource.PhysicalDatasource$1$1.connectionError(PhysicalDatasource.java:508)) - connection connectionError</span><br><span class="line">2022-05-10 01:28:18.944  INFO [$_NIOREACTOR-0-RW] (io.mycat.net.AbstractConnection.close(AbstractConnection.java:520)) - close connection,reason:stream closed ,MySQLConnection [id=53, lastTime=1652117298929, user=root, schema=jakingtestdb04, old shema=jakingtestdb04, borrowed=false, fromSlaveDB=false, threadId=634, charset=utf8, txIsolation=3, autocommit=true, attachment=null, respHandler=null, host=192.168.73.21, port=3306, statusSync=null, writeQueue=0, modifiedSQLExecuted=false]</span><br><span class="line">2022-05-10 01:28:18.944  INFO [$_NIOREACTOR-0-RW] (io.mycat.backend.datasource.PhysicalDatasource$1$1.connectionError(PhysicalDatasource.java:508)) - connection connectionError</span><br><span class="line">2022-05-10 01:28:18.944  INFO [$_NIOREACTOR-0-RW] (io.mycat.net.AbstractConnection.close(AbstractConnection.java:520)) - close connection,reason:stream closed ,MySQLConnection [id=54, lastTime=1652117298929, user=root, schema=jakingtestdb35, old shema=jakingtestdb35, borrowed=false, fromSlaveDB=false, threadId=566, charset=latin1, txIsolation=3, autocommit=true, attachment=null, respHandler=null, host=192.168.73.23, port=3306, statusSync=null, writeQueue=0, modifiedSQLExecuted=false]</span><br><span class="line">2022-05-10 01:28:18.944  INFO [$_NIOREACTOR-0-RW] (io.mycat.backend.datasource.PhysicalDatasource$1$1.connectionError(PhysicalDatasource.java:508)) - connection connectionError</span><br></pre></td></tr></tbody></table></figure><script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2022-06-07T05:10:40.226Z" itemprop="dateUpdated">2022-06-07 13:10:40</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/8f74b0e7/" target="_blank" rel="external">https://marnm.github.io/posts/8f74b0e7/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='https://marnm.github.io'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/8f74b0e7/&title=《MyCat教程全国省份分片枚举操作》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/8f74b0e7/&title=《MyCat教程全国省份分片枚举操作》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/8f74b0e7/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《MyCat教程全国省份分片枚举操作》 — Deops's blog&url=https://marnm.github.io/posts/8f74b0e7/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/8f74b0e7/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/d2802762/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：Nginx高可用架构配置
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/176dc5f3/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：MyCat垂直分表操作">下一篇：MyCat垂直分表操作</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2022
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="https://marnm.github.io">marnm.github.io</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/8f74b0e7/&title=《MyCat教程全国省份分片枚举操作》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/8f74b0e7/&title=《MyCat教程全国省份分片枚举操作》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/8f74b0e7/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《MyCat教程全国省份分片枚举操作》 — Deops's blog&url=https://marnm.github.io/posts/8f74b0e7/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/8f74b0e7/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAAByklEQVR42u3aS04DMRAFQO5/6SCxYpFM3rPjTkDlVQRhXMOi1b+vr/jcfk7y+ffJn/nig4uLu829XZ5Hj370neQ5a3+Li4s7z02CVxLO8t9ef+fhz3FxcT+Me31lnrjg4uL+J+5+0oOLi/u3uGtFSx749gsnXFzcSe5rG6Zrn9/W38XFxS2nEmvBK09c6ttxcXFHuEm7Mw9n+evtlEO4uLinudcXtAPXpLBpS6M7IQwXF3eE2xY8bfpyPXopAisuLu4It01fkiFrXt7UgQwXF3eEm4ebdqS6FuCe3IKLizvIbQeu+VCkbYIUsRYXF/cYNx92tgOPttQphq+4uLiHuXnasRaSdpa67rwALi7uCHenzdHGmZ3OBi4u7iQ3L2DypCT/P+XJDS4u7iR3p0navka+wvUkzOHi4h7m5tfvJ0DtShYuLu57ue1iVh0py+ZsMWTFxcU9xj0xJkkapsVgtZ3n4OLibnDbgNKmKWuBsr0RFxf3BDcPXklbMw9Yi4tfuLi4g9z9lYi8VdoGTVxc3E/mtm3QfDyTNE9xcXE/mdsueraJVLRBhouLO8Jde1C+hLE2RNmq1XBxcV/Z8+wLknKI0r4eLi7uIPcboSeVjLwP2DYAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>

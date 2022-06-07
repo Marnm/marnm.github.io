@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>SSH原理与应用 | Deops&#39;s blog | 运维开发工程师</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="SSH&amp;#x539F;&amp;#x7406;SSH&amp;#x5B89;&amp;#x88C5;&amp;#x4E0E;&amp;#x914D;&amp;#x7F6E;SSH&amp;#x57FA;&amp;#x672C;&amp;#x7528;&amp;#x6CD5;SSH&amp;#x53E3;&amp;#x4EE4;&amp;#x767B;&amp;#x5F55;&amp;#x4E0E;&amp;#x516C;&amp;#x94A5;&amp;#x767B;&amp;#x5F55;&amp;#x53E3;&amp;#x4EE4;&amp;#x767B;&amp;#x5">
+<meta name="keywords" content="Echo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SSH原理与应用">
+<meta property="og:url" content="https://marnm.github.io/posts/e228b71f/index.html">
+<meta property="og:site_name" content="Deops&#39;s blog">
+<meta property="og:description" content="SSH&amp;#x539F;&amp;#x7406;SSH&amp;#x5B89;&amp;#x88C5;&amp;#x4E0E;&amp;#x914D;&amp;#x7F6E;SSH&amp;#x57FA;&amp;#x672C;&amp;#x7528;&amp;#x6CD5;SSH&amp;#x53E3;&amp;#x4EE4;&amp;#x767B;&amp;#x5F55;&amp;#x4E0E;&amp;#x516C;&amp;#x94A5;&amp;#x767B;&amp;#x5F55;&amp;#x53E3;&amp;#x4EE4;&amp;#x767B;&amp;#x5">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-06-07T05:18:57.890Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SSH原理与应用">
+<meta name="twitter:description" content="SSH&amp;#x539F;&amp;#x7406;SSH&amp;#x5B89;&amp;#x88C5;&amp;#x4E0E;&amp;#x914D;&amp;#x7F6E;SSH&amp;#x57FA;&amp;#x672C;&amp;#x7528;&amp;#x6CD5;SSH&amp;#x53E3;&amp;#x4EE4;&amp;#x767B;&amp;#x5F55;&amp;#x4E0E;&amp;#x516C;&amp;#x94A5;&amp;#x767B;&amp;#x5F55;&amp;#x53E3;&amp;#x4EE4;&amp;#x767B;&amp;#x5">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
+                <i class="icon icon-lg icon-tv tv"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">SSH原理与应用</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#SSH原理"><span class="post-toc-number">1.</span> <span class="post-toc-text">SSH原理</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#SSH安装与配置"><span class="post-toc-number">2.</span> <span class="post-toc-text">SSH安装与配置</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#SSH基本用法"><span class="post-toc-number">3.</span> <span class="post-toc-text">SSH基本用法</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#SSH口令登录与公钥登录"><span class="post-toc-number">4.</span> <span class="post-toc-text">SSH口令登录与公钥登录</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#口令登录"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">口令登录</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#公钥认证登录"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">公钥认证登录</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Windows与Linux之间实现免密登录"><span class="post-toc-number">4.2.1.</span> <span class="post-toc-text">Windows与Linux之间实现免密登录</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#SSH端口转发"><span class="post-toc-number">5.</span> <span class="post-toc-text">SSH端口转发</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#本地端口转发"><span class="post-toc-number">5.1.</span> <span class="post-toc-text">本地端口转发</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#远程转发"><span class="post-toc-number">5.2.</span> <span class="post-toc-text">远程转发</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#例子："><span class="post-toc-number">5.2.1.</span> <span class="post-toc-text">例子：</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#动态转发"><span class="post-toc-number">5.3.</span> <span class="post-toc-text">动态转发</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#中间人攻击"><span class="post-toc-number">6.</span> <span class="post-toc-text">中间人攻击</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#配置文件参数解释"><span class="post-toc-number">7.</span> <span class="post-toc-text">配置文件参数解释</span></a></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-SSH原理与应用" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">SSH原理与应用</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2022-06-07 12:41:45" datetime="2022-06-07T04:41:45.000Z" itemprop="datePublished">2022-06-07</time>
+
+            <br id="mybreak">
+            
+<script>
+	mybreak.style="display:none";
+</script>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">4</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="SSH&#x539F;&#x7406;"><a href="#SSH&#x539F;&#x7406;" class="headerlink" title="SSH&#x539F;&#x7406;"></a>SSH&#x539F;&#x7406;</h2><h2 id="SSH&#x5B89;&#x88C5;&#x4E0E;&#x914D;&#x7F6E;"><a href="#SSH&#x5B89;&#x88C5;&#x4E0E;&#x914D;&#x7F6E;" class="headerlink" title="SSH&#x5B89;&#x88C5;&#x4E0E;&#x914D;&#x7F6E;"></a>SSH&#x5B89;&#x88C5;&#x4E0E;&#x914D;&#x7F6E;</h2><h2 id="SSH&#x57FA;&#x672C;&#x7528;&#x6CD5;"><a href="#SSH&#x57FA;&#x672C;&#x7528;&#x6CD5;" class="headerlink" title="SSH&#x57FA;&#x672C;&#x7528;&#x6CD5;"></a>SSH&#x57FA;&#x672C;&#x7528;&#x6CD5;</h2><h2 id="SSH&#x53E3;&#x4EE4;&#x767B;&#x5F55;&#x4E0E;&#x516C;&#x94A5;&#x767B;&#x5F55;"><a href="#SSH&#x53E3;&#x4EE4;&#x767B;&#x5F55;&#x4E0E;&#x516C;&#x94A5;&#x767B;&#x5F55;" class="headerlink" title="SSH&#x53E3;&#x4EE4;&#x767B;&#x5F55;&#x4E0E;&#x516C;&#x94A5;&#x767B;&#x5F55;"></a>SSH&#x53E3;&#x4EE4;&#x767B;&#x5F55;&#x4E0E;&#x516C;&#x94A5;&#x767B;&#x5F55;</h2><h3 id="&#x53E3;&#x4EE4;&#x767B;&#x5F55;"><a href="#&#x53E3;&#x4EE4;&#x767B;&#x5F55;" class="headerlink" title="&#x53E3;&#x4EE4;&#x767B;&#x5F55;"></a>&#x53E3;&#x4EE4;&#x767B;&#x5F55;</h3><h3 id="&#x516C;&#x94A5;&#x8BA4;&#x8BC1;&#x767B;&#x5F55;"><a href="#&#x516C;&#x94A5;&#x8BA4;&#x8BC1;&#x767B;&#x5F55;" class="headerlink" title="&#x516C;&#x94A5;&#x8BA4;&#x8BC1;&#x767B;&#x5F55;"></a>&#x516C;&#x94A5;&#x8BA4;&#x8BC1;&#x767B;&#x5F55;</h3><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C &quot;your_mail@example.com&quot; -f github_rsa</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="Windows&#x4E0E;Linux&#x4E4B;&#x95F4;&#x5B9E;&#x73B0;&#x514D;&#x5BC6;&#x767B;&#x5F55;"><a href="#Windows&#x4E0E;Linux&#x4E4B;&#x95F4;&#x5B9E;&#x73B0;&#x514D;&#x5BC6;&#x767B;&#x5F55;" class="headerlink" title="Windows&#x4E0E;Linux&#x4E4B;&#x95F4;&#x5B9E;&#x73B0;&#x514D;&#x5BC6;&#x767B;&#x5F55;"></a>Windows&#x4E0E;Linux&#x4E4B;&#x95F4;&#x5B9E;&#x73B0;&#x514D;&#x5BC6;&#x767B;&#x5F55;</h4><pre><code># Windows&#x5BA2;&#x6237;&#x7AEF;&#xFF1A;
+ssh-keygen
+...id_rsa_ubuntu
+...
+...
+scp keygen_file.pub linux@addree:~/.ssh/
+# Linux&#x670D;&#x52A1;&#x5668;:
+cat .ssh/id_rsa_ubuntu.pub &gt; authorized_keys
+
+# Windows&#x5BA2;&#x6237;&#x7AEF;:
+notepad C:\Users\Administrator\.ssh\config
+Host 192.168.73.30
+HostName 192.168.73.30
+User echo
+PreferredAuthentications publickey
+IdentityFile ~/.ssh/id_rsa_ubuntu
+</code></pre><h2 id="SSH&#x7AEF;&#x53E3;&#x8F6C;&#x53D1;"><a href="#SSH&#x7AEF;&#x53E3;&#x8F6C;&#x53D1;" class="headerlink" title="SSH&#x7AEF;&#x53E3;&#x8F6C;&#x53D1;"></a>SSH&#x7AEF;&#x53E3;&#x8F6C;&#x53D1;</h2><h3 id="&#x672C;&#x5730;&#x7AEF;&#x53E3;&#x8F6C;&#x53D1;"><a href="#&#x672C;&#x5730;&#x7AEF;&#x53E3;&#x8F6C;&#x53D1;" class="headerlink" title="&#x672C;&#x5730;&#x7AEF;&#x53E3;&#x8F6C;&#x53D1;"></a>&#x672C;&#x5730;&#x7AEF;&#x53E3;&#x8F6C;&#x53D1;</h3><p><strong>&#x4EE5;MySQL&#x4E3A;&#x4F8B;</strong></p>
+<blockquote>
+<p>MySQL&#x670D;&#x52A1;&#x5668;&#x4E0D;&#x5141;&#x8BB8;MySQL&#x8FDC;&#x7A0B;&#x8BBF;&#x95EE;<br>&#x5728;&#x5BA2;&#x6237;&#x7AEF;&#x5EFA;&#x7ACB;&#x4E0E;MySQL&#x670D;&#x52A1;&#x5668;&#x7684;ssh&#x7AEF;&#x53E3;&#x8F6C;&#x53D1;&#x8FDE;&#x63A5;</p>
+</blockquote>
+<p><strong>&#x4E09;&#x79CD;&#x683C;&#x5F0F;&#xFF08;&#x4EFB;&#x610F;&#x4E00;&#x79CD;&#x5199;&#x6CD5;&#x90FD;&#x884C;&#xFF09;&#xFF1A;</strong></p>
+<pre><code>ssh -L 127.0.0.1:3306:127.0.0.1:3306 echo@192.168.73.30
+</code></pre><p>&#x672C;&#x5730;&#x7F51;&#x5361;&#x5730;&#x5740;&#x53EF;&#x4EE5;&#x7701;&#x7565;&#xFF1A;</p>
+<pre><code>ssh -L 3306:127.0.0.1:3306 root@192.168.73.30
+</code></pre><p>&#x82E5;&#x4E24;&#x53F0;&#x673A;&#x5668;&#x7684;&#x767B;&#x5F55;&#x7528;&#x6237;&#x540D;&#x76F8;&#x540C;&#xFF0C;&#x53EF;&#x4EE5;&#x7701;&#x7565;&#x767B;&#x5F55;&#x7528;&#x6237;&#x540D;&#xFF1A;</p>
+<pre><code>ssh -L 3306:127.0.0.1:3306 192.168.73.30
+</code></pre><p>&#x8FDC;&#x7A0B;&#x547D;&#x4EE4;</p>
+<pre><code>ssh user@ip &apos;command&apos;
+
+ssh root@192.168.10.12 &apos;uname -a&apos;
+tar -cz test | ssh root@192.168.10.12 &apos;tar -xz&apos;
+</code></pre><p><em>&#x3010;&#x6CE8;&#x610F;&#xFF01;&#x3011;&#x5BA2;&#x6237;&#x7AEF;&#x7528;&#x4E8E;&#x5EFA;&#x7ACB;&#x6620;&#x5C04;&#x7684;&#x7AEF;&#x53E3;&#x4E0D;&#x80FD;&#x88AB;&#x5360;&#x7528;</em></p>
+<p><strong>&#x3010;&#x6D4B;&#x8BD5;&#x3011;</strong></p>
+<blockquote>
+<p>&#x5728;MySQL&#x670D;&#x52A1;&#x5668;&#x67E5;&#x770B;&#x6570;&#x636E;&#x5E93;&#x5982;&#x4E0B;&#xFF1A;</p>
+</blockquote>
+<p>.png</p>
+<blockquote>
+<p>&#x5728;&#x53E6;&#x4E00;&#x53F0;&#x673A;&#x5668;&#x4E0A;&#x53EF;&#x4EE5;&#x767B;&#x5F55;&#x5230;MySQL&#x670D;&#x52A1;&#x5668;&#xFF1A;</p>
+</blockquote>
+<p>.png</p>
+<blockquote>
+<p>&#x5173;&#x95ED;&#x7AEF;&#x53E3;&#x8F6C;&#x53D1;&#x8FDE;&#x63A5;&#xFF0C;&#x8F93;&#x5165;&#x5BC6;&#x7801;&#x65E0;&#x6CD5;&#x767B;&#x5F55;&#xFF1A;</p>
+</blockquote>
+<p>.png</p>
+<p><strong>&#x6CE8;&#x610F;&#xFF1A;</strong> &#x5982;&#x679C;&#x4F60;&#x4E00;&#x76F4;&#x8BBF;&#x95EE;&#x7740;&#x8FDC;&#x7A0B;&#x6570;&#x636E;&#x5E93;&#xFF0C;&#x90A3;&#x4E48;ssh&#x7AEF;&#x53E3;&#x8F6C;&#x53D1;&#x8FDE;&#x63A5;&#x65E0;&#x6CD5;&#x5173;&#x95ED;</p>
+<hr>
+<p><strong>Apache/Nginx&#x7684;&#x7AEF;&#x53E3;&#x8F6C;&#x53D1;&#xFF1A;</strong></p>
+<pre><code>ssh -L 192.168.73.10:80:127.0.0.1:80 echo@192.168.73.30
+</code></pre><blockquote>
+<p>&#x628A;&#x672C;&#x5730;&#x7684;&#x67D0;&#x4E2A;&#x7AEF;&#x53E3;&#x8F6C;&#x53D1;&#x5230;&#x8FDC;&#x7A0B;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#xFF1A;</p>
+</blockquote>
+<p><strong>Nginx&#x670D;&#x52A1;&#x5668;</strong><br>.png</p>
+<p><strong>&#x5BA2;&#x6237;&#x7AEF;</strong><br>.png</p>
+<p>ssh -f -N -L 192.168.73.10:80:192.168.73.30:80 <a href="mailto:echo@192.168.73.30" target="_blank" rel="noopener">echo@192.168.73.30</a></p>
+<p>.png<br>.png</p>
+<h3 id="&#x8FDC;&#x7A0B;&#x8F6C;&#x53D1;"><a href="#&#x8FDC;&#x7A0B;&#x8F6C;&#x53D1;" class="headerlink" title="&#x8FDC;&#x7A0B;&#x8F6C;&#x53D1;"></a>&#x8FDC;&#x7A0B;&#x8F6C;&#x53D1;</h3><blockquote>
+<p>&#x8FDC;&#x7A0B;&#x8F6C;&#x53D1;&#x662F;&#x901A;&#x8FC7;&#x7AEF;&#x53E3;&#x6620;&#x5C04;&#x95F4;&#x5185;&#x7F51;&#x7AEF;&#x53E3;&#x6620;&#x5C04;&#x5230;&#x516C;&#x7F51;&#x7AEF;&#x53E3;&#x4E0A;<br>&#x4F7F;&#x7528;&#x8FDC;&#x7A0B;&#x8F6C;&#x53D1;&#x9700;&#x8981;&#x5148;&#x4FEE;&#x6539;&#x914D;&#x7F6E;&#x6587;&#x4EF6;<br>&#x5141;&#x8BB8;&#x7AEF;&#x53E3;&#x8F6C;&#x53D1;&#x548C;&#x5141;&#x8BB8;&#x7AEF;&#x53E3;&#x7ED1;&#x5B9A;</p>
+</blockquote>
+<pre><code>vim /etc/ssh/sshd_config
+AllowTcpForwarding yes
+GatewayPorts yes
+</code></pre><h4 id="&#x4F8B;&#x5B50;&#xFF1A;"><a href="#&#x4F8B;&#x5B50;&#xFF1A;" class="headerlink" title="&#x4F8B;&#x5B50;&#xFF1A;"></a><strong>&#x4F8B;&#x5B50;&#xFF1A;</strong></h4><p>CentOS 7&#xFF1A;192.168.110.20<br>RHEL 7: 192.168.73.10<br>Ubuntu 18.04(Nginx Server): 192.168.73.30</p>
+<hr>
+<p>Ubuntu:<br>&#x5C06;&#x672C;&#x5730;80&#x7AEF;&#x53E3;&#x6620;&#x5C04;&#x5230;rhel 7&#x4E0A;</p>
+<pre><code>ssh -R 0.0.0.0:80:localhost:80 root@192.168.73.10
+</code></pre><p>rhel 7:<br>&#x5C06;&#x672C;&#x5730;&#x7AEF;&#x53E3;&#x6620;&#x5C04;&#x5230;CentOS 7&#x4E0A;</p>
+<pre><code>ssh -R 0.0.0.0:80:localhost:80 root@192.168.110.20
+</code></pre><h3 id="&#x52A8;&#x6001;&#x8F6C;&#x53D1;"><a href="#&#x52A8;&#x6001;&#x8F6C;&#x53D1;" class="headerlink" title="&#x52A8;&#x6001;&#x8F6C;&#x53D1;"></a>&#x52A8;&#x6001;&#x8F6C;&#x53D1;</h3><p>ssh -D [&#x672C;&#x5730;&#x5730;&#x5740;]:&#x672C;&#x5730;&#x7AEF;&#x53E3;&#x53F7; &#x8FDC;&#x7A0B;&#x7528;&#x6237;@&#x8FDC;&#x7A0B;&#x5730;&#x5740;</p>
+<p><strong>&#x7AEF;&#x53E3;&#x8F6C;&#x53D1;&#x7EF4;&#x6301;</strong><br>&#x52A8;&#x6001;&#x8F6C;&#x53D1; ssh -D 1080 user@server1_ip<br>&#x7EF4;&#x6301;&#x94FE;&#x63A5; ssh -o ServerAliveInterval=time user@ip</p>
+<p><strong>&#x6587;&#x6863;</strong><a href="https://www.ssh.com/academy/ssh/tunneling/example" target="_blank" rel="noopener">https://www.ssh.com/academy/ssh/tunneling/example</a></p>
+<h2 id="&#x4E2D;&#x95F4;&#x4EBA;&#x653B;&#x51FB;"><a href="#&#x4E2D;&#x95F4;&#x4EBA;&#x653B;&#x51FB;" class="headerlink" title="&#x4E2D;&#x95F4;&#x4EBA;&#x653B;&#x51FB;"></a>&#x4E2D;&#x95F4;&#x4EBA;&#x653B;&#x51FB;</h2><h2 id="&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x53C2;&#x6570;&#x89E3;&#x91CA;"><a href="#&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x53C2;&#x6570;&#x89E3;&#x91CA;" class="headerlink" title="&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x53C2;&#x6570;&#x89E3;&#x91CA;"></a>&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x53C2;&#x6570;&#x89E3;&#x91CA;</h2><script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2022-06-07T05:18:57.890Z" itemprop="dateUpdated">2022-06-07 13:18:57</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/e228b71f/" target="_blank" rel="external">https://marnm.github.io/posts/e228b71f/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='https://marnm.github.io'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/e228b71f/&title=《SSH原理与应用》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/e228b71f/&title=《SSH原理与应用》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/e228b71f/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SSH原理与应用》 — Deops's blog&url=https://marnm.github.io/posts/e228b71f/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/e228b71f/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/6efb91e0/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：tcpdump与Wireshark的使用
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/bae5d4f0/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：rhel修改网卡命名规则">下一篇：rhel修改网卡命名规则</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2022
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="https://marnm.github.io">marnm.github.io</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/e228b71f/&title=《SSH原理与应用》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/e228b71f/&title=《SSH原理与应用》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/e228b71f/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SSH原理与应用》 — Deops's blog&url=https://marnm.github.io/posts/e228b71f/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/e228b71f/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAAByElEQVR42u3aS27DMAwFwNz/0i7QVReV/EhFigOMVoFjy+MNIX5er3hdv2t05fqzRleSPd+2cHFxl7nXdI1wo2dX7p8bcHFxz3PngWYemObXR0Fw9Ek3O+Pi4j6MOw86vVMKLi7ut3OTFGh+eMLFxf0ubpL8JCspeRzK1XBxcRe41YLpjt8b67u4uLhF7lVcyVGmWi4pvB0XF/cIN2mgvvdosp4O4eLi7uautDyrbZJeavRPCMPFxf0Qt7xRK1SVh8BwcXGPcKst1bzJutKUje7ExcXdxq2mIgmx+m/+FC4u7nluPnixHpKae+Li4h7h5q2RarEjb6BWiya4uLhnuNXkJ7+/2mIpt1VwcXE3cKvflA9h9IosN+/CxcU9yC0UJloHlCp9GOZwcXGPcFdGMPOUKRnWzI87uLi4u7l50bM6UFUdBo0OQLi4uAe5SQm1V2ytcm8+ABcX9yA3X72Q1Bu8KG+Ki4v7Jm41oCQJTP76leIsLi7ubm4edJIUJQ+I1eIILi7uee7KBEezUlsMmri4uM/kricteRI13B8XF/fx3GrDtZo44eLifpbbK3b0jke9QgwuLu5J7srDc0pyGGqGM1xc3F3cHzXvbMPiZGP0AAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>

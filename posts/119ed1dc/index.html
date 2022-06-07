@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Redis持久化 | Deops&#39;s blog | 运维开发工程师</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="Redis&amp;#x6301;&amp;#x4E45;&amp;#x5316;&amp;#x9ED8;&amp;#x8BA4;&amp;#x60C5;&amp;#x51B5;&amp;#x4E0B;&amp;#xFF0C;Redis&amp;#x5DE5;&amp;#x4F5C;&amp;#x65F6;&amp;#x6240;&amp;#x6709;&amp;#x6570;&amp;#x636E;&amp;#x90FD;&amp;#x96C6;&amp;#x90FD;&amp;#x662F;&amp;#x5B58;&amp;#x50A8;&amp;#x4E0E;&amp;#x518">
+<meta name="keywords" content="Echo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Redis持久化">
+<meta property="og:url" content="https://marnm.github.io/posts/119ed1dc/index.html">
+<meta property="og:site_name" content="Deops&#39;s blog">
+<meta property="og:description" content="Redis&amp;#x6301;&amp;#x4E45;&amp;#x5316;&amp;#x9ED8;&amp;#x8BA4;&amp;#x60C5;&amp;#x51B5;&amp;#x4E0B;&amp;#xFF0C;Redis&amp;#x5DE5;&amp;#x4F5C;&amp;#x65F6;&amp;#x6240;&amp;#x6709;&amp;#x6570;&amp;#x636E;&amp;#x90FD;&amp;#x96C6;&amp;#x90FD;&amp;#x662F;&amp;#x5B58;&amp;#x50A8;&amp;#x4E0E;&amp;#x518">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-06-07T05:07:06.344Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Redis持久化">
+<meta name="twitter:description" content="Redis&amp;#x6301;&amp;#x4E45;&amp;#x5316;&amp;#x9ED8;&amp;#x8BA4;&amp;#x60C5;&amp;#x51B5;&amp;#x4E0B;&amp;#xFF0C;Redis&amp;#x5DE5;&amp;#x4F5C;&amp;#x65F6;&amp;#x6240;&amp;#x6709;&amp;#x6570;&amp;#x636E;&amp;#x90FD;&amp;#x96C6;&amp;#x90FD;&amp;#x662F;&amp;#x5B58;&amp;#x50A8;&amp;#x4E0E;&amp;#x518">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
+                <i class="icon icon-lg icon-tv tv"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Redis持久化</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Redis持久化"><span class="post-toc-number">1.</span> <span class="post-toc-text">Redis持久化</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#RDB"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">RDB</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#AOF"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">AOF</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-Redis持久化" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Redis持久化</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2022-06-07 12:49:38" datetime="2022-06-07T04:49:38.000Z" itemprop="datePublished">2022-06-07</time>
+
+            <br id="mybreak">
+            
+<script>
+	mybreak.style="display:none";
+</script>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">6</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="Redis&#x6301;&#x4E45;&#x5316;"><a href="#Redis&#x6301;&#x4E45;&#x5316;" class="headerlink" title="Redis&#x6301;&#x4E45;&#x5316;"></a>Redis&#x6301;&#x4E45;&#x5316;</h1><p>&#x9ED8;&#x8BA4;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;Redis&#x5DE5;&#x4F5C;&#x65F6;&#x6240;&#x6709;&#x6570;&#x636E;&#x90FD;&#x96C6;&#x90FD;&#x662F;&#x5B58;&#x50A8;&#x4E0E;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#xFF0C;&#x4E0D;&#x8BBA;&#x662F;&#x5426;&#x6709;&#x78C1;&#x76D8;&#x4E0A;&#x7684;&#x6301;&#x4E45;&#x5316;&#x6570;&#x636E;&#xFF0C;&#x90FD;&#x662F;&#x5DE5;&#x4F5C;&#x4E8E;&#x5185;&#x5B58;&#x5F53;&#x4E2D;&#xFF0C;redis&#x672C;&#x8EAB;&#x5C31;&#x662F;&#x4E00;&#x4E2A;&#x5185;&#x5B58;&#x7684;&#x6570;&#x636E;&#x5E93;&#xFF0C;&#x628A;&#x6240;&#x6709;&#x6570;&#x636E;&#x5E93;&#x76F8;&#x5173;&#x7684;&#x5B58;&#x50A8;&#x90FD;&#x5B58;&#x50A8;&#x5728;&#x5185;&#x5B58;&#x4E2D;&#xFF0C;&#x5982;&#x679C;redis&#x5D29;&#x6E83;&#x6216;&#x65AD;&#x7535;&#x5BFC;&#x81F4;&#x6240;&#x6709;&#x6570;&#x636E;&#x4E22;&#x5931;&#xFF0C;&#x6240;&#x4EE5;redis&#x63D0;&#x4F9B;&#x4E86;&#x6301;&#x4E45;&#x5316;&#x529F;&#x80FD;&#x6765;&#x4FDD;&#x8BC1;&#x6570;&#x636E;&#x7684;&#x53EF;&#x9760;&#x6027;&#xFF0C;redis&#x6301;&#x4E45;&#x5316;&#x6709;&#x4E24;&#x79CD;&#x5B9E;&#x73B0;&#x65B9;&#x5F0F;&#x3002;RDB&#x548C;AOF</p>
+<h2 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h2><p>RDB&#x5B58;&#x50A8;&#x4E3A;&#x4E8C;&#x8FDB;&#x5236;&#x683C;&#x5F0F;&#x7684;&#x6570;&#x636E;&#x6587;&#x4EF6;&#xFF0C;&#x9ED8;&#x8BA4;&#x542F;&#x52A8;&#x7684;&#x6301;&#x4E45;&#x5316;&#x673A;&#x5236;&#xFF0C;&#x6309;&#x4E8B;&#x5148;&#x6307;&#x5B9A;&#x7684;&#x7B56;&#x7565;&#xFF0C;&#x5468;&#x671F;&#x6027;&#x5730;&#x5C06;&#x6570;&#x636E;&#x4FDD;&#x5B58;&#x81F3;&#x78C1;&#x76D8;&#xFF0C;&#x4F7F;&#x7528;save&#x547D;&#x4EE4;&#x5373;&#x53EF;&#x8BBE;&#x5B9A;&#x5468;&#x671F;&#x548C;&#x7B56;&#x7565;&#x5373;&#x53EF;&#xFF1B;&#x6570;&#x636E;&#x6587;&#x4EF6;&#x9ED8;&#x8BA4;&#x4E3A;dump.rdb&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x8FDE;&#x63A5;&#x670D;&#x52A1;&#x5668;&#x53EF;&#x4EE5;&#x7528;save&#x547D;&#x4EE4;&#x8FDB;&#x884C;&#x4FDD;&#x5B58;&#x81F3;&#x6570;&#x636E;&#x81F3;&#x78C1;&#x76D8;&#x3002;</p>
+<p><strong>&#x4FDD;&#x5B58;&#x5FEB;&#x7167;&#x6709;&#x4E24;&#x79CD;&#x65B9;&#x5F0F;</strong></p>
+<p>1&#x3001;&#x5BA2;&#x6237;&#x7AEF;&#x4E5F;&#x53EF;&#x663E;&#x5F0F;&#x4F7F;&#x7528;<code>SAVE</code>&#x548C;<code>BGSAVE</code>&#x547D;&#x4EE4;&#x542F;&#x52A8;&#x5FEB;&#x7167;&#x4FDD;&#x5B58;&#x673A;&#x5236;&#xFF1B;<br>2&#x3001;&#x501F;&#x52A9;&#x4E8E;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x6240;&#x5B9A;&#x4E49;&#x7684;save&#x548C;&#x7B56;&#x7565;&#x8FDB;&#x884C;&#x4FDD;&#x5B58;&#xFF1B;</p>
+<p><strong>SAVE&#xFF1A;</strong> &#x662F;&#x540C;&#x6B65;&#x4FDD;&#x5B58;&#xFF0C;&#x5728;&#x5BA2;&#x6237;&#x7AEF;&#x4F7F;&#x7528;save&#x4FDD;&#x5B58;&#x5FEB;&#x7167;&#x65F6;&#xFF0C;&#x662F;&#x5728;redis&#x4E3B;&#x7EBF;&#x7A0B;&#x4E2D;&#x4FDD;&#x5B58;&#x5FEB;&#x7167;&#xFF1B;&#x56E0;&#x4E3A;redis&#x7684;&#x4E3B;&#x7EBF;&#x7A0B;&#x662F;&#x7528;&#x4E8E;&#x5904;&#x7406;&#x8BF7;&#x6C42;&#x7684;&#xFF0C;&#x6240;&#x4EE5;&#x6B64;&#x65F6;&#x4F1A;&#x963B;&#x585E;&#x6240;&#x6709;&#x5BA2;&#x6237;&#x7AEF;&#x8BF7;&#x6C42;&#xFF0C;&#x6BCF;&#x6B21;&#x7684;&#x4FDD;&#x5B58;&#x5FEB;&#x7167;&#x90FD;&#x662F;&#x628A;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x6570;&#x636E;&#x5B8C;&#x6574;&#x7684;&#x4FDD;&#x5B58;&#x4E00;&#x4EFD;&#xFF0C;&#x5E76;&#x975E;&#x662F;&#x589E;&#x91CF;&#x7684;&#xFF0C;&#x5982;&#x679C;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x6570;&#x636E;&#x6BD4;&#x8F83;&#x5927;&#xFF0C;&#x800C;&#x8FD8;&#x6709;&#x5927;&#x91CF;&#x7684;&#x5199;&#x64CD;&#x4F5C;&#x65F6;&#xFF0C;&#x6B64;&#x65B9;&#x5F0F;&#x4F1A;&#x5F15;&#x8D77;&#x5927;&#x91CF;&#x7684;I/O&#xFF0C;&#x4F1A;&#x5BFC;&#x81F4;redis&#x6027;&#x80FD;&#x4E0B;&#x964D;</p>
+<p><strong>BGSAVE&#xFF1A;</strong> &#x5F02;&#x6B65;&#x65B9;&#x5F0F;&#xFF0C;&#x5C06;&#x7ACB;&#x5373;&#x8FD4;&#x56DE;&#x7ED3;&#x679C;&#xFF0C;&#x4F46;&#x81EA;&#x52A8;&#x5728;&#x540E;&#x53F0;&#x4FDD;&#x6301;&#x64CD;&#x4F5C;&#xFF0C;&#x6240;&#x4EE5;BGSAVE&#x547D;&#x4EE4;&#x542F;&#x52A8;&#x4EE5;&#x540E;&#xFF0C;&#x524D;&#x53F0;&#x4E0D;&#x4F1A;&#x88AB;&#x5360;&#x7528;&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x8BF7;&#x6C42;&#x662F;&#x4E0D;&#x4F1A;&#x88AB;&#x963B;&#x585E;&#xFF08;&#x4E3B;&#x8FDB;&#x7A0B;&#x4E0D;&#x4F1A;&#x88AB;&#x963B;&#x585E;&#xFF09;</p>
+<p>&#x5982;&#x679C;&#x662F;&#x5728;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x4E2D;&#x5B9A;&#x4E49;&#x7684;save&#xFF0C;&#x90A3;&#x4E48;redis&#x5728;&#x6301;&#x4E45;&#x5316;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x5219;&#x4F1A;&#x5F00;&#x542F;&#x53E6;&#x5916;&#x7684;&#x8FDB;&#x7A0B;&#x53BB;&#x5904;&#x7406;&#xFF0C;&#x4E0D;&#x4F1A;&#x963B;&#x585E;redis&#x7684;&#x4E3B;&#x8FDB;&#x7A0B;</p>
+<p>RDB&#x6301;&#x4E45;&#x5316;&#x4E0D;&#x8DB3;&#x4E4B;&#x5904;&#x5219;&#x662F;&#xFF0C;&#x4E00;&#x65E6;&#x6570;&#x636E;&#x51FA;&#x73B0;&#x95EE;&#x9898;&#xFF0C;&#x7531;&#x4E8E;RDB&#x7684;&#x6570;&#x636E;&#x4E0D;&#x662F;&#x6700;&#x65B0;&#x7684;&#xFF0C;&#x6240;&#x4EE5;&#x57FA;&#x4E8E;RDB&#x6062;&#x590D;&#x8FC7;&#x6765;&#x7684;&#x6570;&#x636E;&#x4E00;&#x5B9A;&#x4F1A;&#x6709;&#x4E00;&#x90E8;&#x5206;&#x6570;&#x636E;&#x4E22;&#x5931;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;RDB&#x4FDD;&#x5B58;&#x4E4B;&#x540E;&#x7684;&#x4FEE;&#x6539;&#x6570;&#x636E;&#x4F1A;&#x4E22;&#x5931;&#x3002;</p>
+<h2 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h2><p><strong>AOF&#xFF1A;</strong> Append Only File&#xFF0C;&#x6709;&#x7740;&#x66F4;&#x597D;&#x7684;&#x6301;&#x4E45;&#x5316;&#x80FD;&#x529B;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#xFF0C;AOF&#x7C7B;&#x4F3C;&#x4E8E;MySQL&#x7684;&#x4E8C;&#x8FDB;&#x5236;&#x65E5;&#x5FD7;&#xFF0C;&#x8BB0;&#x5F55;&#x6BCF;&#x4E00;&#x6B21;Redis&#x7684;&#x5199;&#x64CD;&#x4F5C;&#x547D;&#x4EE4;&#xFF0C;&#x4EE5;&#x987A;&#x5E8F;IO&#x65B9;&#x5F0F;&#x9644;&#x52A0;&#x5728;&#x6307;&#x5B9A;&#x6587;&#x4EF6;&#x7684;&#x5C3E;&#x90E8;&#xFF0C;&#x662F;&#x4F7F;&#x7528;&#x8FFD;&#x52A0;&#x65B9;&#x5F0F;&#x5B9E;&#x73B0;&#x7684;&#xFF0C;&#x8FD9;&#x4E5F;&#x53EB;&#x505A;&#x4E00;&#x79CD;<strong>&#x9644;&#x52A0;&#x65E5;&#x5FD7;</strong>&#x7C7B;&#x578B;&#x7684;&#x6301;&#x4E45;&#x5316;&#x673A;&#x5236;&#xFF0C;&#x7531;&#x4E8E;&#x6BCF;&#x4E00;&#x6B21;&#x7684;&#x64CD;&#x7EB5;&#x90FD;&#x8BB0;&#x5F55;&#xFF0C;&#x5219;&#x4F1A;&#x968F;&#x7740;&#x65F6;&#x95F4;&#x589E;&#x957F;&#x800C;&#x589E;&#x5927;&#x6587;&#x4EF6;&#x7684;&#x5BB9;&#x91CF;&#xFF0C;&#x5E76;&#x4E14;&#x6709;&#x4E9B;&#x8BB0;&#x5F55;&#x7684;&#x547D;&#x4EE4;&#x662F;&#x591A;&#x4F59;&#x7684;&#xFF0C;AOF&#x4E0D;&#x50CF;RDB&#xFF0C;RDB&#x662F;&#x4FDD;&#x5B58;&#x6570;&#x636E;&#x96C6;&#x7684;&#x672C;&#x8EAB;</p>
+<p>&#x4F46;&#x662F;Redis&#x8FDB;&#x7A0B;&#x80FD;&#x591F;&#x81EA;&#x52A8;&#x7684;&#x53BB;&#x626B;&#x63CF;&#x8FD9;&#x4E2A;&#x5BF9;&#x5E94;&#x7684;AOF&#x6587;&#x4EF6;&#xFF0C;&#x628A;&#x5176;&#x4E2D;&#x4E00;&#x4E9B;&#x5197;&#x4F59;&#x7684;&#x64CD;&#x4F5C;&#x7ED9;&#x5408;&#x5E76;&#x6210;&#x4E00;&#x4E2A;&#xFF0C;&#x4EE5;&#x5B9E;&#x73B0;&#x5C06;&#x6765;&#x4E00;&#x6B21;&#x6027;&#x628A;&#x6570;&#x636E;&#x6062;&#x590D;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x8BF4;Redis&#x80FD;&#x591F;&#x5408;&#x5E76;&#x91CD;&#x5199;AOF&#x7684;&#x6301;&#x4E45;&#x5316;&#x6587;&#x4EF6;&#xFF0C;&#x7531;BGREWRITEAOF&#x547D;&#x4EE4;&#x6765;&#x5B9E;&#x73B0;&#xFF0C;BGREWIRTEAOF&#x547D;&#x4EE4;&#x662F;&#x5DE5;&#x4F5C;&#x4E8E;&#x540E;&#x53F0;&#x7684;&#x91CD;&#x5199;AOF&#x6587;&#x4EF6;&#x7684;&#x547D;&#x4EE4;&#xFF0C;&#x91CD;&#x5199;&#x540E;Redis&#x5C06;&#x4F1A;&#x4EE5;&#x5FEB;&#x7167;&#x7684;&#x65B9;&#x5F0F;&#x5C06;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x6570;&#x636E;&#x4EE5;&#x547D;&#x4EE4;&#x65B9;&#x5F0F;&#x4FDD;&#x5B58;&#x5728;&#x4E34;&#x65F6;&#x6587;&#x4EF6;&#x4E2D;&#xFF0C;&#x6700;&#x540E;&#x66FF;&#x6362;&#x539F;&#x6765;&#x7684;&#x6587;&#x4EF6;&#xFF0C;&#x91CD;&#x5199;AOF&#x6587;&#x4EF6;&#x65B9;&#x5F0F;&#xFF0C;&#x5E76;&#x6CA1;&#x6709;&#x8BFB;&#x53D6;&#x65E7;AOF&#x6587;&#x4EF6;&#xFF0C;&#x800C;&#x662F;&#x76F4;&#x63A5;&#x5C06;&#x5F53;&#x524D;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x6240;&#x6709;&#x6570;&#x636E;&#x76F4;&#x63A5;&#x751F;&#x6210;&#x4E00;&#x4E2A;&#x7C7B;&#x4F3C;&#x4E8E;MySQL&#x4E8C;&#x8FDB;&#x5236;&#x65E5;&#x5FD7;&#x547D;&#x4EE4;&#x4E00;&#x6837;&#x7684;&#x64CD;&#x4F5C;&#x3002;</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2022-06-07T05:07:06.344Z" itemprop="dateUpdated">2022-06-07 13:07:06</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/119ed1dc/" target="_blank" rel="external">https://marnm.github.io/posts/119ed1dc/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='https://marnm.github.io'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/119ed1dc/&title=《Redis持久化》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/119ed1dc/&title=《Redis持久化》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/119ed1dc/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Redis持久化》 — Deops's blog&url=https://marnm.github.io/posts/119ed1dc/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/119ed1dc/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/2acd829b/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：Redis安装部署——主从复制
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/e3fb0a3e/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：Redis的数据备份与恢复">下一篇：Redis的数据备份与恢复</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2022
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="https://marnm.github.io">marnm.github.io</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/119ed1dc/&title=《Redis持久化》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/119ed1dc/&title=《Redis持久化》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/119ed1dc/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Redis持久化》 — Deops's blog&url=https://marnm.github.io/posts/119ed1dc/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/119ed1dc/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABwklEQVR42u3ay27CQAwFUP7/p6mEWNBF0uvxxETVmRUqxTmzsfzI4xGf5+sknz9PHnPzwcXFbXOfp+ecdR4hv1JiwMXFnecmyauazo7iJ/9z+HdcXNybcXeVKbi4uP+Jm5c1eUGDi4t7Z27SwByBqmORoV4NFxe3wd07MF37/LX5Li4ubnErkQxA83Kn89x3NFxc3BHu+eOTx+Tf7mqHcHFxZ7h5ujlvhJLGJqEsNj+4uLibuEnhkl8gGaCsvbD1qyLDxcUd4SaJKQ+dtzeLiQwXF/dibt5m5A1PkuDyBUw0FsHFxb2Mmyedai+Vt0NRTFxc3BFutXDpj06Sy+Di4n6LW31BqrqCzdueaMCKi4s7wq02OXl5VKUkv8LFxZ3hVl+66uw6OwkLFxd3kru2Iu0MSvqJDxcX92pu9QfVoWdeKkUFEC4u7iA3GZuupZ4q948L4OLiDnLXRqLVomfDYhUXF3eEu7Z2XRuA5jEL811cXNzLuNXVaXXYsZbIcHFx78CtNj+dK1UTHC4u7p25haBLK9joeri4uLfkVpepa4OSQxsuLu4gtxNo16Bkc6+Gi4vb4PYHpnnyKr9ygYuLO839ATtPbMOXd22JAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>

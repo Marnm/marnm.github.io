@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>MongoDB学习笔记 | Deops&#39;s blog | 运维开发工程师</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="&amp;#x8FDE;&amp;#x63A5;&amp;#x6570;&amp;#x636E;&amp;#x5E93;# mongo MongoDB shell version v3.6.13 connecting to: test &amp;gt;  &amp;#x9ED8;&amp;#x8BA4;shell&amp;#x8FDE;&amp;#x63A5;&amp;#x7684;&amp;#x662F;&amp;#x672C;&amp;#x673A;localhost&amp;#xFF0C;nonnecting">
+<meta name="keywords" content="Echo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MongoDB学习笔记">
+<meta property="og:url" content="https://marnm.github.io/posts/a36562d7/index.html">
+<meta property="og:site_name" content="Deops&#39;s blog">
+<meta property="og:description" content="&amp;#x8FDE;&amp;#x63A5;&amp;#x6570;&amp;#x636E;&amp;#x5E93;# mongo MongoDB shell version v3.6.13 connecting to: test &amp;gt;  &amp;#x9ED8;&amp;#x8BA4;shell&amp;#x8FDE;&amp;#x63A5;&amp;#x7684;&amp;#x662F;&amp;#x672C;&amp;#x673A;localhost&amp;#xFF0C;nonnecting">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-06-07T05:17:01.061Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MongoDB学习笔记">
+<meta name="twitter:description" content="&amp;#x8FDE;&amp;#x63A5;&amp;#x6570;&amp;#x636E;&amp;#x5E93;# mongo MongoDB shell version v3.6.13 connecting to: test &amp;gt;  &amp;#x9ED8;&amp;#x8BA4;shell&amp;#x8FDE;&amp;#x63A5;&amp;#x7684;&amp;#x662F;&amp;#x672C;&amp;#x673A;localhost&amp;#xFF0C;nonnecting">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
+                <i class="icon icon-lg icon-tv tv"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">MongoDB学习笔记</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#连接数据库"><span class="post-toc-number">1.</span> <span class="post-toc-text">连接数据库</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#插入记录"><span class="post-toc-number">2.</span> <span class="post-toc-text">插入记录</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#id-key"><span class="post-toc-number">3.</span> <span class="post-toc-text">_id key</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#查询记录"><span class="post-toc-number">4.</span> <span class="post-toc-text">查询记录</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#普通查询"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">普通查询</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#条件查询"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">条件查询</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#findOne"><span class="post-toc-number">4.3.</span> <span class="post-toc-text">findOne()</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#limit"><span class="post-toc-number">4.4.</span> <span class="post-toc-text">limit</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#修改记录"><span class="post-toc-number">5.</span> <span class="post-toc-text">修改记录</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#删除记录"><span class="post-toc-number">6.</span> <span class="post-toc-text">删除记录</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#高级查询"><span class="post-toc-number">7.</span> <span class="post-toc-text">高级查询</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#条件操作符"><span class="post-toc-number">8.</span> <span class="post-toc-text">条件操作符</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#排序"><span class="post-toc-number">8.1.</span> <span class="post-toc-text">排序</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#游标"><span class="post-toc-number">9.</span> <span class="post-toc-text">游标</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#存储过程"><span class="post-toc-number">10.</span> <span class="post-toc-text">存储过程</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考："><span class="post-toc-number">11.</span> <span class="post-toc-text">参考：</span></a></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-MongoDB学习笔记" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">MongoDB学习笔记</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2022-06-07 12:43:09" datetime="2022-06-07T04:43:09.000Z" itemprop="datePublished">2022-06-07</time>
+
+            <br id="mybreak">
+            
+<script>
+	mybreak.style="display:none";
+</script>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">21</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="&#x8FDE;&#x63A5;&#x6570;&#x636E;&#x5E93;"><a href="#&#x8FDE;&#x63A5;&#x6570;&#x636E;&#x5E93;" class="headerlink" title="&#x8FDE;&#x63A5;&#x6570;&#x636E;&#x5E93;"></a>&#x8FDE;&#x63A5;&#x6570;&#x636E;&#x5E93;</h2><pre><code># mongo
+MongoDB shell version v3.6.13
+connecting to: test
+&gt; 
+</code></pre><p>&#x9ED8;&#x8BA4;shell&#x8FDE;&#x63A5;&#x7684;&#x662F;&#x672C;&#x673A;localhost&#xFF0C;<code>nonnecting to:</code>&#x663E;&#x793A;&#x4F60;&#x6B63;&#x5728;&#x4F7F;&#x7528;&#x7684;&#x6570;&#x636E;&#x5E93;&#x540D;&#x79F0;&#xFF0C;&#x2019;test&#x2019;&#x662F;MongoDB&#x7684;&#x9ED8;&#x8BA4;&#x5E93;&#xFF0C;&#x5207;&#x6362;&#x6570;&#x636E;&#x5E93;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;<code>use &apos;dbName&apos;</code>&#x547D;&#x4EE4;</p>
+<h2 id="&#x63D2;&#x5165;&#x8BB0;&#x5F55;"><a href="#&#x63D2;&#x5165;&#x8BB0;&#x5F55;" class="headerlink" title="&#x63D2;&#x5165;&#x8BB0;&#x5F55;"></a>&#x63D2;&#x5165;&#x8BB0;&#x5F55;</h2><pre><code>&gt; j = {name:&quot;mongo&quot;};
+{ &quot;name&quot; : &quot;mongo&quot; }
+&gt; t={x:3}
+{ &quot;x&quot; : 3 }
+&gt; db.things.save(j)
+WriteResult({ &quot;nInserted&quot; : 1 })
+&gt; db.things.save(t)
+WriteResult({ &quot;nInserted&quot; : 1 })
+&gt; db.things.find()
+{ &quot;_id&quot; : ObjectId(&quot;627e7e064b7e83be0e107f68&quot;), &quot;name&quot; : &quot;mongo&quot; }
+{ &quot;_id&quot; : ObjectId(&quot;627e7e124b7e83be0e107f69&quot;), &quot;x&quot; : 3 }
+</code></pre><ul>
+<li>&#x4E0D;&#x9700;&#x8981;&#x9884;&#x5148;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x96C6;&#x5408;&#xFF0C;&#x5728;&#x7B2C;&#x4E00;&#x6B21;&#x63D2;&#x5165;&#x6570;&#x636E;&#x65F6;&#x5019;&#x4F1A;&#x81EA;&#x52A8;&#x521B;&#x5EFA;.</li>
+<li>&#x5728;&#x6587;&#x6863;&#x6C47;&#x603B;&#x5176;&#x5B9E;&#x53EF;&#x4EE5;&#x5B58;&#x50A8;&#x4EFB;&#x4F55;&#x7ED3;&#x6784;&#x7684;&#x6570;&#x636E;&#xFF0C;&#x5F53;&#x7136;&#x5728;&#x5B9E;&#x9645;&#x5E94;&#x7528;&#x6211;&#x4EEC;&#x5B58;&#x50A8;&#x7684;&#x8FD8;&#x662F;&#x76F8;&#x540C;&#x7C7B;&#x578B;&#x6587;&#x6863;&#x7684;&#x96C6;&#x5408;</li>
+<li>&#x6BCF;&#x6B21;&#x63D2;&#x5165;&#x6570;&#x636E;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x96C6;&#x5408;&#x4E2D;&#x90FD;&#x4F1A;&#x6709; &#x4E00;&#x4E2A;ID&#xFF0C;&#x540D;&#x5B57;&#x53EB;<code>_id</code>.</li>
+</ul>
+<p><strong>&#x4F7F;&#x7528;&#x5FAA;&#x73AF;&#x63D2;&#x5165;</strong><br></p><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="keyword">for</span>(<span class="keyword">var</span> i=<span class="number">1</span>;i&lt;=<span class="number">10</span>;i++)db.c2.insert({<span class="attr">name</span>:<span class="string">&quot;user&quot;</span>+i, <span class="attr">age</span>:<span class="number">18</span>+i})</span><br><span class="line">WriteResult({ <span class="string">&quot;nInserted&quot;</span> : <span class="number">1</span> })</span><br><span class="line">&gt; db.c2.find()</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97ab&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user1&quot;</span>, <span class="string">&quot;age&quot;</span> : <span class="number">19</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97ac&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user2&quot;</span>, <span class="string">&quot;age&quot;</span> : <span class="number">20</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97ad&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user3&quot;</span>, <span class="string">&quot;age&quot;</span> : <span class="number">21</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97ae&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user4&quot;</span>, <span class="string">&quot;age&quot;</span> : <span class="number">22</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97af&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user5&quot;</span>, <span class="string">&quot;age&quot;</span> : <span class="number">23</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97b0&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user6&quot;</span>, <span class="string">&quot;age&quot;</span> : <span class="number">24</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97b1&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user7&quot;</span>, <span class="string">&quot;age&quot;</span> : <span class="number">25</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97b2&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user8&quot;</span>, <span class="string">&quot;age&quot;</span> : <span class="number">26</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97b3&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user9&quot;</span>, <span class="string">&quot;age&quot;</span> : <span class="number">27</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97b4&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user10&quot;</span>, <span class="string">&quot;age&quot;</span> : <span class="number">28</span> }</span><br><span class="line">&gt;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<h2 id="id-key"><a href="#id-key" class="headerlink" title="_id key"></a><code>_id</code> key</h2><p>MongoDB&#x652F;&#x6301;&#x7684;&#x6570;&#x636E;&#x7C7B;&#x578B;&#x4E2D;&#xFF0C;<code>_id</code>&#x662F;&#x5176;&#x81EA;&#x6709;&#x4EA7;&#x7269;&#x3002;</p>
+<p>&#x5B58;&#x50A8;&#x5728;MongoDB&#x96C6;&#x5408;&#x4E2D;&#x7684;&#x6BCF;&#x4E2A;&#x6587;&#x6863;&#x90FD;&#x6709;&#x4E00;&#x4E2A;&#x9ED8;&#x8BA4;&#x7684;<strong>&#x4E3B;&#x952E;</strong> <code>_id</code> &#xFF0C; &#x8FD9;&#x4E2A;&#x4E3B;&#x952E;&#x540D;&#x79F0;&#x662F;&#x56FA;&#x5B9A;&#x7684;&#xFF0C;&#x5B83;&#x53EF;&#x4EE5;&#x662F;MongoDB&#x652F;&#x6301;&#x7684;&#x4EFB;&#x4F55;&#x6570;&#x636E;&#x7C7B;&#x578B;&#xFF0C;&#x9ED8;&#x8BA4;&#x662F;<code>ObjectId</code>&#x3002;</p>
+<p>_id key &#x4E3E;&#x4F8B;&#x8BF4;&#x660E;</p>
+<pre><code> db.test.find()
+{ &quot;_id&quot; : ObjectId(&quot;627d3ef6de66cb02cb45d3e1&quot;), &quot;name&quot; : &quot;zhangya&quot;, &quot;age&quot; : &quot;21&quot;, &quot;addr&quot; : &quot;&#x5317;&#x4EAC;&#x5E02;&#x671D;&#x9633;&#x533A;&quot; }
+{ &quot;_id&quot; : ObjectId(&quot;627d3fffde66cb02cb45d3e2&quot;), &quot;name&quot; : &quot;zhang3&quot;, &quot;age&quot; : &quot;24&quot;, &quot;addr&quot; : &quot;&#x4E0A;&#x6D77;&#x6D66;&#x4E1C;&#x533A;&quot; }
+&gt;
+</code></pre><p>&#x5728;MongoDB&#x4E2D;&#xFF0C;&#x6BCF;&#x4E00;&#x4E2A;&#x96C6;&#x5408;&#x90FD;&#x5FC5;&#x987B;&#x6709;&#x4E00;&#x4E2A;&#x53EB;&#x505A;<strong>_id</strong>&#x7684;&#x5B57;&#x6BB5;&#xFF0C;&#x5B57;&#x6BB5;&#x7684;&#x9ED8;&#x8BA4;&#x7C7B;&#x578B;&#x662F;ObjectId&#xFF0C;&#x6362;&#x53E5;&#x8BDD;&#x8BF4;&#xFF0C;&#x5B57;&#x6BB5;&#x7C7B;&#x578B;&#x53EF;&#x4EE5;&#x4E0D;&#x662F;ObjectId&#xFF0C;&#x4F8B;&#x5982;&#xFF1A;</p>
+<p><code>db.collection.insert</code></p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&gt; db.things.insert({<span class="attr">_id</span>:<span class="number">3</span>,<span class="attr">name</span>:<span class="string">&quot;Bill&quot;</span>,<span class="attr">age</span>:<span class="number">34</span>})</span><br><span class="line">&gt; db.things.find()</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e7e064b7e83be0e107f68&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;mongo&quot;</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e7e124b7e83be0e107f69&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">3</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6a&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">1</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6b&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">2</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6c&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">3</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6d&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">4</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6e&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">5</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6f&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">6</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f70&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">7</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f71&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">8</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f72&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">9</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : <span class="number">3</span>, <span class="string">&quot;name&quot;</span> : <span class="string">&quot;Bill&quot;</span>, <span class="string">&quot;age&quot;</span> : <span class="number">34</span> }</span><br></pre></td></tr></tbody></table></figure>
+<p>&#xFF01;&#x867D;&#x7136;<strong>_id</strong> &#x7684;&#x7C7B;&#x578B;&#x53EF;&#x4EE5;&#x81EA;&#x7531;&#x6307;&#x5B9A;&#xFF0C;&#x4F46;&#x662F;&#x5728;&#x540C;&#x4E00;&#x4E2A;&#x96C6;&#x5408;&#x4E2D;&#x5FC5;&#x987B;&#x552F;&#x4E00;&#xFF0C;&#x5982;&#x679C;&#x63D2;&#x5165;&#x91CD;&#x590D;&#x503C;&#x7684;&#x8BDD;&#x7CFB;&#x7EDF;&#x5C06;&#x4F1A;&#x629B;&#x51FA;&#x5F02;&#x5E38;</p>
+<p><code>db.collection.insertOne()</code><br></p><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt; db.test.insertOne({<span class="attr">name</span>:<span class="string">&quot;fnaichu&quot;</span>, <span class="attr">age</span>: <span class="number">24</span>})</span><br><span class="line">{</span><br><span class="line">        <span class="string">&quot;acknowledged&quot;</span> : <span class="literal">true</span>,</span><br><span class="line">        <span class="string">&quot;insertedId&quot;</span> : ObjectId(<span class="string">&quot;627f80462c1c696497b0e31e&quot;</span>)</span><br><span class="line">}</span><br><span class="line">&gt;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><code>db.collection.insertMany()</code><br></p><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&gt; db.test.insertMany([</span><br><span class="line">... {<span class="attr">name</span>:<span class="string">&quot;li4&quot;</span>, <span class="attr">age</span>: <span class="number">35</span>, <span class="attr">addr</span>:<span class="string">&quot;&#x5E7F;&#x5DDE;&#x5E02;&quot;</span>},</span><br><span class="line">... {<span class="attr">name</span>:<span class="string">&quot;wang5&quot;</span>, <span class="attr">age</span>: <span class="number">42</span>, <span class="attr">addr</span>:<span class="string">&quot;&#x5357;&#x4EAC;&#x5E02;&quot;</span>},</span><br><span class="line">... {<span class="attr">name</span>:<span class="string">&quot;qiang7&quot;</span>, <span class="attr">age</span>: <span class="number">28</span>, <span class="attr">addr</span>:<span class="string">&quot;&#x4E0A;&#x6D77;&#x5E02;&quot;</span>}])</span><br><span class="line">{</span><br><span class="line">        <span class="string">&quot;acknowledged&quot;</span> : <span class="literal">true</span>,</span><br><span class="line">        <span class="string">&quot;insertedIds&quot;</span> : [</span><br><span class="line">                ObjectId(<span class="string">&quot;627f82648f2637720618c4f4&quot;</span>),</span><br><span class="line">                ObjectId(<span class="string">&quot;627f82648f2637720618c4f5&quot;</span>),</span><br><span class="line">                ObjectId(<span class="string">&quot;627f82648f2637720618c4f6&quot;</span>)</span><br><span class="line">        ]</span><br><span class="line">}</span><br><span class="line">&gt;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<hr>
+<h2 id="&#x67E5;&#x8BE2;&#x8BB0;&#x5F55;"><a href="#&#x67E5;&#x8BE2;&#x8BB0;&#x5F55;" class="headerlink" title="&#x67E5;&#x8BE2;&#x8BB0;&#x5F55;"></a>&#x67E5;&#x8BE2;&#x8BB0;&#x5F55;</h2><h3 id="&#x666E;&#x901A;&#x67E5;&#x8BE2;"><a href="#&#x666E;&#x901A;&#x67E5;&#x8BE2;" class="headerlink" title="&#x666E;&#x901A;&#x67E5;&#x8BE2;"></a>&#x666E;&#x901A;&#x67E5;&#x8BE2;</h3><p>&#x53EF;&#x4EE5;&#x7B80;&#x5355;&#x7684;&#x901A;&#x8FC7;<code>find()</code>&#x6765;&#x67E5;&#x8BE2;&#xFF0C;&#x5B83;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x4EFB;&#x610F;&#x7ED3;&#x6784;&#x7684;&#x96C6;&#x5408;</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="keyword">var</span> cursor=db.things.find()</span><br><span class="line">&gt; <span class="keyword">while</span>(cursor.hasNext()) printjson(cursor.next())</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e7e064b7e83be0e107f68&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;mongo&quot;</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e7e124b7e83be0e107f69&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">3</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6a&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">1</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6b&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">2</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6c&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">3</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6d&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">4</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6e&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">5</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6f&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">6</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f70&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">7</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f71&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">8</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f72&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">9</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : <span class="number">3</span>, <span class="string">&quot;name&quot;</span> : <span class="string">&quot;Bill&quot;</span>, <span class="string">&quot;age&quot;</span> : <span class="number">34</span> }</span><br><span class="line">&gt;</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x4E0A;&#x9762;&#x4F8B;&#x5B50;&#x663E;&#x793A;&#x4E86;&#x6E38;&#x6807;&#x98CE;&#x683C;&#x7684;&#x8FED;&#x4EE3;&#x8F93;&#x51FA;&#x3002;<code>hasNext()</code>&#x51FD;&#x6570;&#x544A;&#x8BC9;&#x6211;&#x4EEC;&#x662F;&#x5426;&#x8FD8;&#x6709;&#x6570;&#x636E;&#xFF0C;&#x5982;&#x679C;&#x6709;&#x5219;&#x53EF;&#x4EE5;&#x8C03;&#x7528;<code>next()</code>&#x51FD;&#x6570;.</p>
+<p>&#x5F53;&#x7136;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x7684;&#x662F;JavaScript shell&#xFF0C;&#x53EF;&#x4EE5;&#x7528;&#x5230;JS&#x7684;&#x7279;&#x6027;&#xFF0C;forEach&#x5C31;&#x53EF;&#x4EE5;&#x8F93;&#x51FA;&#x6E38;&#x6807;&#x4E86;&#xFF0C;&#x4E0B;&#x9762;&#x7684;&#x4F8B;&#x5B50;&#x5C31;&#x662F;&#x4F7F;&#x7528;forEach()&#x6765;&#x5FAA;&#x73AF;&#x8F93;&#x51FA;&#x7684;: forEach()&#x5FC5;&#x987B;&#x5B9A;&#x4E49;&#x4E00;&#x4E2A;&#x51FD;&#x6570;&#x4F9B;&#x6BCF;&#x4E2A;&#x6E38;&#x6807;&#x5143;&#x7D20;&#x8C03;&#x7528;&#xFF1A;<br></p><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&gt; db.things.find().forEach(printjson)</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e7e064b7e83be0e107f68&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;mongo&quot;</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e7e124b7e83be0e107f69&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">3</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6a&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">1</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6b&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">2</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6c&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">3</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6d&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">4</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6e&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">5</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6f&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">6</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f70&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">7</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f71&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">8</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f72&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">9</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : <span class="number">3</span>, <span class="string">&quot;name&quot;</span> : <span class="string">&quot;Bill&quot;</span>, <span class="string">&quot;age&quot;</span> : <span class="number">34</span> }</span><br><span class="line">&gt;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x5728;MongoDB shell&#x91CC;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x628A;&#x6E38;&#x6807;&#x5F53;&#x4F5C;&#x6570;&#x7EC4;&#x6765;&#x7528;&#xFF1A;<br></p><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> cursor=db.things.find()</span><br><span class="line">&gt; printjson(cursor[<span class="number">1</span>])</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e7e124b7e83be0e107f69&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">3</span> }</span><br><span class="line">&gt; printjson(cursor[<span class="number">2</span>])</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6a&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">1</span> }</span><br><span class="line">&gt; printjson(cursor[<span class="number">0</span>])</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e7e064b7e83be0e107f68&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;mongo&quot;</span> }</span><br><span class="line">&gt; printjson(cursor[<span class="number">12</span>])</span><br><span class="line"><span class="literal">undefined</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x4F7F;&#x7528;&#x6E38;&#x6807;&#x7684;&#x65F6;&#x5019;&#x8BF7;&#x6CE8;&#x610F;&#x5360;&#x7528;&#x5185;&#x5B58;&#x7684;&#x95EE;&#x9898;&#xFF0C;&#x7279;&#x522B;&#x662F;&#x5F88;&#x5927;&#x7684;&#x6E38;&#x6807;&#x5BF9;&#x8C61;&#xFF0C;&#x6709;&#x53EF;&#x80FD;&#x4F1A;&#x5185;&#x5B58;&#x6EA2;&#x51FA;&#x3002;&#x6240;&#x4EE5;&#x5E94;&#x8BE5;&#x7528;&#x8FED;&#x4EE3;&#x7684;&#x65B9;&#x5F0F;&#x8F93;&#x51FA;&#x3002;&#x628A;&#x6E38;&#x6807;&#x8F6C;&#x6362;&#x6210;&#x771F;&#x5B9E;&#x7684;&#x6570;&#x7EC4;&#x7C7B;&#x578B;&#xFF1A;<br></p><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="keyword">var</span> arr=db.things.find().toArray()</span><br><span class="line">&gt; arr[<span class="number">0</span>]</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e7e064b7e83be0e107f68&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;mongo&quot;</span> }</span><br><span class="line">&gt; arr[<span class="number">11</span>]</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : <span class="number">3</span>, <span class="string">&quot;name&quot;</span> : <span class="string">&quot;Bill&quot;</span>, <span class="string">&quot;age&quot;</span> : <span class="number">34</span> }</span><br><span class="line">&gt; arr[<span class="number">12</span>]</span><br><span class="line">&gt;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x8BF7;&#x6CE8;&#x610F;&#x8FD9;&#x4E9B;&#x7279;&#x6027;&#x77E5;&#x8BC6;&#x5728;MongoDB shell&#x91CC;&#x4F7F;&#x7528;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x6240;&#x6709;&#x7684;&#x5176;&#x4ED6;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x9A71;&#x52A8;&#x90FD;&#x652F;&#x6301;&#x3002;MongoDB&#x6E38;&#x6807;&#x5BF9;&#x8C61;&#x4E0D;&#x662F;&#x6CA1;&#x6709;&#x5FEB;&#x7167;&#xFF0C;&#x5982;&#x679C;&#x6709;&#x5176;&#x4ED6;&#x7528;&#x6237;&#x5728;&#x96C6;&#x5408;&#x91CC;&#x7B2C;&#x4E00;&#x6B21;&#x6216;&#x8005;&#x6700;&#x540E;&#x4E00;&#x6B21;&#x8C03;&#x7528;<code>next()</code>&#xFF0C;&#x4F60;&#x53EF;&#x80FD;&#x5F97;&#x4E0D;&#x5230;&#x6E38;&#x6807;&#x91CC;&#x7684;&#x6570;&#x636E;&#x3002;&#x6240;&#x4EE5;&#x8981;&#x660E;&#x786E;&#x7684;&#x9501;&#x5B9A;&#x4F60;&#x8981;&#x67E5;&#x8BE2;&#x7684;&#x6E38;&#x6807;&#x3002;</p>
+<h3 id="&#x6761;&#x4EF6;&#x67E5;&#x8BE2;"><a href="#&#x6761;&#x4EF6;&#x67E5;&#x8BE2;" class="headerlink" title="&#x6761;&#x4EF6;&#x67E5;&#x8BE2;"></a>&#x6761;&#x4EF6;&#x67E5;&#x8BE2;</h3><p>&#x4E00;&#x4E2A;&#x7C7B;&#x4F3C;SQL&#x7684;&#x67E5;&#x8BE2;&#xFF0C;&#x662F;&#x600E;&#x4E48;&#x5728;MongoDB&#x91CC;&#x5B9E;&#x73B0;&#x7684;&#xFF1F;&#x8FD9;&#x91CC;&#x662F;&#x5728;MongoDB shell&#x91CC;&#x67E5;&#x8BE2;&#xFF0C;&#x5F53;&#x7136;&#x4F60;&#x4E5F;&#x53EF;&#x4EE5;&#x7528;&#x5176;&#x4ED6;&#x7684;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x9A71;&#x52A8;&#x6216;&#x8005;&#x8BED;&#x8A00;&#x6765;&#x5B9E;&#x73B0;&#xFF1A;<br>| |<br>| &#x2014; |<br>| <strong>SQL&#xFF1A;</strong> |<br>| SELECT * FROM things WHERE name=&#x201D;mongo&#x201D;; |<br>| <strong>MongoDB&#xFF1A;</strong> |<br>| db.things.find({name:&#x201D;mongo&#x201D;}).forEach(printjson) |</p>
+<table>
+<thead>
+<tr>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SQL&#xFF1A;</strong></td>
+</tr>
+<tr>
+<td>SELECT * FROM things WHERE x=4;</td>
+</tr>
+<tr>
+<td><strong>MongoDB&#xFF1A;</strong></td>
+</tr>
+<tr>
+<td>db.things.find({x:4}).forEach(printjson)</td>
+</tr>
+</tbody>
+</table>
+<p>&#x67E5;&#x8BE2;&#x6761;&#x4EF6;&#x65F6;<code>{a:A, b:B}</code>&#x7C7B;&#x4F3C;&#x4E8E;<code>where a==A and b==B and ...</code></p>
+<p>&#x4E0A;&#x9762;&#x663E;&#x793A;&#x7684;&#x662F;&#x6240;&#x6709;&#x7684;&#x5143;&#x7D20;&#xFF0C;&#x5F53;&#x7136;&#x6211;&#x4EEC;&#x4E5F;&#x53EF;&#x4EE5;&#x8FD4;&#x56DE;&#x7279;&#x5B9A;&#x7684;&#x5143;&#x7D20;&#xFF0C;&#x7C7B;&#x4F3C;&#x4E8E;&#x8FD4;&#x56DE;&#x8868;&#x91CC;&#x7684;&#x67D0;&#x5B57;&#x6BB5;&#x7684;&#x503C;&#xFF0C;&#x53EA;&#x9700;&#x8981;&#x5728;find({x:4})&#x91CC;&#x6307;&#x5B9A;&#x5143;&#x7D20;&#x7684;&#x540D;&#x5B57;</p>
+<table>
+<thead>
+<tr>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SQL&#xFF1A;</strong></td>
+</tr>
+<tr>
+<td>SELECT j FROM things WHERE x=4</td>
+</tr>
+<tr>
+<td><strong>MongoDB&#xFF1A;</strong></td>
+</tr>
+<tr>
+<td>db.things.find({x:4},{j:true})</td>
+</tr>
+</tbody>
+</table>
+<h3 id="findOne"><a href="#findOne" class="headerlink" title="findOne()"></a><code>findOne()</code></h3><p>&#x4E3A;&#x4E86;&#x65B9;&#x4FBF;&#x8003;&#x8651;&#xFF0C;MongoDB shell&#x907F;&#x514D;&#x6E38;&#x6807;&#x53EF;&#x80FD;&#x5E26;&#x6765;&#x7684;&#x5F00;&#x9500;&#xFF0C;&#x63D0;&#x4F9B;&#x4E00;&#x4E2A;<code>findOne()</code>&#x51FD;&#x6570;&#x3002;&#x8FD9;&#x4E2A;&#x51FD;&#x6570;&#x548C;find()&#x51FD;&#x6570;&#x4E00;&#x6837;&#xFF0C;&#x4E0D;&#x8FC7;&#x5B83;&#x8FD4;&#x56DE;&#x7684;&#x662F;&#x6E38;&#x6807;&#x91CC;&#x7684;&#x7B2C;&#x4E00;&#x6761;&#x6570;&#x636E;&#xFF0C;&#x5982;&#x679C;&#x6CA1;&#x6709;&#x627E;&#x5230;&#x5185;&#x5BB9;&#x5219;&#x8FD4;&#x56DE;null&#x503C;&#x3002;</p>
+<figure class="highlight"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; printjson(db.things.findOne({name:&quot;mongo&quot;}))</span><br><span class="line">{ &quot;_id&quot; : ObjectId(&quot;627e7e064b7e83be0e107f68&quot;), &quot;name&quot; : &quot;mongo&quot; }</span><br><span class="line">&gt;</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="limit"><a href="#limit" class="headerlink" title="limit"></a><code>limit</code></h3><p>&#x5982;&#x679C;&#x9700;&#x8981;&#x9650;&#x5236;&#x7ED3;&#x679C;&#x96C6;&#x7684;&#x957F;&#x5EA6;&#xFF0C;&#x90A3;&#x4E48;&#x53EF;&#x4EE5;&#x8C03;&#x7528;<code>limit</code>&#x65B9;&#x6CD5;&#xFF0C;&#x8FD9;&#x662F;&#x5F3A;&#x70C8;&#x63A8;&#x8350;&#x89E3;&#x51B3;&#x6027;&#x80FD;&#x95EE;&#x9898;&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x5C31;&#x662F;&#x901A;&#x8FC7;&#x9650;&#x5236;&#x6761;&#x6570;&#x6765;&#x51CF;&#x5C11;&#x7F51;&#x7EDC;&#x4F20;&#x8F93;&#xFF0C;&#x4F8B;&#x5982;<br></p><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&gt; db.things.find().limit(<span class="number">4</span>)</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e7e064b7e83be0e107f68&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;mongo&quot;</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e7e124b7e83be0e107f69&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">3</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6a&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">1</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6b&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">2</span> }</span><br><span class="line">&gt;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<hr>
+<h2 id="&#x4FEE;&#x6539;&#x8BB0;&#x5F55;"><a href="#&#x4FEE;&#x6539;&#x8BB0;&#x5F55;" class="headerlink" title="&#x4FEE;&#x6539;&#x8BB0;&#x5F55;"></a>&#x4FEE;&#x6539;&#x8BB0;&#x5F55;</h2><p>&#x7528;&#x6570;&#x636E;&#x5E93;&#x7684;&#x63CF;&#x8FF0;&#x65B9;&#x5F0F;&#x5C31;&#x662F;&#xFF1A;&#x5C06;name&#x5B57;&#x6BB5;&#xFF0C;&#x503C;&#x4E3A;mongo&#x7684;&#x4E00;&#x6761;&#x5185;&#x5BB9;&#x4FEE;&#x6539;&#x4E3A;mongo_new&#xFF1A;<br></p><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; db.things.update({<span class="attr">name</span>:<span class="string">&quot;mongo&quot;</span>},{<span class="attr">$set</span>:{<span class="attr">name</span>:<span class="string">&quot;mong_new&quot;</span>}})</span><br><span class="line">WriteResult({ <span class="string">&quot;nMatched&quot;</span> : <span class="number">1</span>, <span class="string">&quot;nUpserted&quot;</span> : <span class="number">0</span>, <span class="string">&quot;nModified&quot;</span> : <span class="number">1</span> })</span><br></pre></td></tr></tbody></table></figure><p></p>
+<h2 id="&#x5220;&#x9664;&#x8BB0;&#x5F55;"><a href="#&#x5220;&#x9664;&#x8BB0;&#x5F55;" class="headerlink" title="&#x5220;&#x9664;&#x8BB0;&#x5F55;"></a>&#x5220;&#x9664;&#x8BB0;&#x5F55;</h2><p>&#x5C06;&#x7528;&#x6237;name&#x662F;mong_new&#x7684;&#x8BB0;&#x5F55;&#x5220;&#x9664;:<br></p><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&gt; printjson(db.things.findOne({<span class="attr">name</span>:<span class="string">&quot;mong_new&quot;</span>}))</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e7e064b7e83be0e107f68&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;mong_new&quot;</span> }</span><br><span class="line"></span><br><span class="line">&gt; db.things.remove({<span class="attr">name</span>:<span class="string">&quot;mong_new&quot;</span>})</span><br><span class="line">WriteResult({ <span class="string">&quot;nRemoved&quot;</span> : <span class="number">1</span> })</span><br><span class="line">&gt; db.things.findOne({<span class="attr">name</span>:<span class="string">&quot;mong_new&quot;</span>})</span><br><span class="line"><span class="literal">null</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<h2 id="&#x9AD8;&#x7EA7;&#x67E5;&#x8BE2;"><a href="#&#x9AD8;&#x7EA7;&#x67E5;&#x8BE2;" class="headerlink" title="&#x9AD8;&#x7EA7;&#x67E5;&#x8BE2;"></a>&#x9AD8;&#x7EA7;&#x67E5;&#x8BE2;</h2><h2 id="&#x6761;&#x4EF6;&#x64CD;&#x4F5C;&#x7B26;"><a href="#&#x6761;&#x4EF6;&#x64CD;&#x4F5C;&#x7B26;" class="headerlink" title="&#x6761;&#x4EF6;&#x64CD;&#x4F5C;&#x7B26;"></a>&#x6761;&#x4EF6;&#x64CD;&#x4F5C;&#x7B26;</h2><p><code>&lt;</code>&#x3001;<code>&lt;=</code>&#x3001;<code>&gt;</code>&#x3001;<code>&gt;=</code></p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">db.collection.find({<span class="string">&quot;fields&quot;</span>: {<span class="attr">$gt</span>: value}})</span><br><span class="line">db.collection.find({<span class="string">&quot;fields&quot;</span>: {<span class="attr">$lt</span>: value}})</span><br><span class="line">db.collection.find({<span class="string">&quot;fields&quot;</span>: {<span class="attr">$gte</span>: value}})</span><br><span class="line">db.collection.find({<span class="string">&quot;fields&quot;</span>: {<span class="attr">$lge</span>: value}})</span><br><span class="line"><span class="comment">// &#x591A;&#x4E2A;&#x6761;&#x4EF6;</span></span><br><span class="line">db.collection.find({<span class="string">&quot;fields&quot;</span>:{<span class="attr">$gt</span>:value1, <span class="attr">$lt</span>: value2}});</span><br></pre></td></tr></tbody></table></figure>
+<p><strong><code>$exists</code></strong> &#x5224;&#x65AD;&#x5B57;&#x6BB5;&#x662F;&#x5426;&#x5B58;&#x5728;</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//&#x67E5;&#x8BE2;&#x5B58;&#x5728;age&#x5B57;&#x6BB5;&#x7684;&#x8BB0;&#x5F55;</span></span><br><span class="line">db.c1.find({<span class="attr">age</span>:{<span class="attr">$exists</span>:<span class="literal">true</span>}})</span><br><span class="line"></span><br><span class="line"><span class="comment">// &#x67E5;&#x8BE2;name&#x5B57;&#x6BB5;&#x4E0D;&#x5B58;&#x5728;&#x7684;&#x8BB0;&#x5F55;</span></span><br><span class="line">db.c2.find({<span class="attr">name</span>:{<span class="attr">$exists</span>:<span class="literal">false</span>}})</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>NULL</strong> &#x503C;&#x5904;&#x7406;<br></p><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// &#x67E5;&#x8BE2;&#x8BB0;&#x5F55;&#x6392;&#x67E5;null&#x503C;</span></span><br><span class="line">db.c1.find({<span class="string">&quot;age&quot;</span>:<span class="string">&quot;$in&quot;</span>:[<span class="literal">null</span>],<span class="string">&quot;$exists&quot;</span>:<span class="literal">true</span>})</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong><code>$mod</code></strong> &#x53D6;&#x6A21;&#x8FD0;&#x7B97;</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// &#x67E5;&#x8BE2;age&#x5B57;&#x6BB5;&#xFF0C;&#x53D6;&#x6A21;6&#x7B49;&#x4E8E;1&#x7684;&#x6570;&#x636E;</span></span><br><span class="line">&gt; db.c2.find({<span class="attr">age</span>:{<span class="attr">$mod</span>:[<span class="number">6</span>,<span class="number">1</span>]}})</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97ab&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user1&quot;</span>, <span class="string">&quot;age&quot;</span> : <span class="number">19</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97b1&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user7&quot;</span>, <span class="string">&quot;age&quot;</span> : <span class="number">25</span> }</span><br><span class="line"><span class="comment">// &#x67E5;&#x8BE2;age&#x5B57;&#x6BB5;&#xFF0C;&#x53D6;&#x6A21;2&#x7B49;&#x4E8E;0&#x7684;&#x6570;&#x636E;</span></span><br><span class="line">&gt; db.c2.find({<span class="attr">age</span>:{<span class="attr">$mod</span>:[<span class="number">2</span>,<span class="number">0</span>]}})</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97ac&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user2&quot;</span>, <span class="string">&quot;age&quot;</span> : <span class="number">20</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97ae&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user4&quot;</span>, <span class="string">&quot;age&quot;</span> : <span class="number">22</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97b0&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user6&quot;</span>, <span class="string">&quot;age&quot;</span> : <span class="number">24</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97b2&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user8&quot;</span>, <span class="string">&quot;age&quot;</span> : <span class="number">26</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97b4&quot;</span>), <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user10&quot;</span>, <span class="string">&quot;age&quot;</span> : <span class="number">28</span> }</span><br><span class="line">&gt;</span><br></pre></td></tr></tbody></table></figure>
+<p><strong><code>$ne</code></strong> &#x4E0D;&#x7B49;&#x4E8E;</p>
+<figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// &#x67E5;&#x8BE2;x&#x4E0D;&#x7B49;&#x4E8E;3&#x7684;&#x8BB0;&#x5F55;</span></span><br><span class="line">&gt; db.things.find({<span class="attr">x</span>:{<span class="attr">$ne</span>:<span class="number">3</span>}})</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6a&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">1</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6b&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">2</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6c&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">3</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6d&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">4</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6e&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">5</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f6f&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">6</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f70&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">7</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f71&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">8</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627e811d4b7e83be0e107f72&quot;</span>), <span class="string">&quot;x&quot;</span> : <span class="number">4</span>, <span class="string">&quot;j&quot;</span> : <span class="number">9</span> }</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : <span class="number">3</span>, <span class="string">&quot;name&quot;</span> : <span class="string">&quot;Bill&quot;</span>, <span class="string">&quot;age&quot;</span> : <span class="number">34</span> }</span><br><span class="line">&gt;</span><br></pre></td></tr></tbody></table></figure>
+<p><strong><code>$in</code> &#x548C; <code>$nin</code> </strong>&#xFF0C;&#x5305;&#x542B;&#x548C;&#x4E0D;&#x5305;&#x542B;<br></p><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; db.c2.find({<span class="string">&quot;name&quot;</span>:{<span class="string">&quot;$in&quot;</span>:[<span class="number">20</span>,<span class="number">21</span>,<span class="number">22</span>]}})</span><br><span class="line"></span><br><span class="line">&gt; db.c2.find({<span class="string">&quot;name&quot;</span>:{<span class="string">&quot;$nin&quot;</span>:[<span class="number">20</span>]}})</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong><code>count()</code></strong> &#x67E5;&#x8BE2;&#x8BB0;&#x5F55;&#x6761;&#x6570;<br></p><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.things.find().count()</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong><code>skip()</code></strong> &#x9650;&#x5236;&#x8FD4;&#x56DE;&#x8BB0;&#x5F55;&#x7684;&#x8D77;&#x70B9;<br></p><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// &#x4ECE;&#x7B2C;31&#x6761;&#x8BB0;&#x5F55;&#x5F00;&#x59CB;&#xFF0C;&#x8FD4;&#x56DE;10&#x6761;&#x8BB0;&#x5F55;</span></span><br><span class="line">db.userProfile.find().skip(<span class="number">31</span>).limit(<span class="number">10</span>)</span><br></pre></td></tr></tbody></table></figure><p></p>
+<h3 id="&#x6392;&#x5E8F;"><a href="#&#x6392;&#x5E8F;" class="headerlink" title="&#x6392;&#x5E8F;"></a>&#x6392;&#x5E8F;</h3><p><strong>&#x4EE5;&#x5E74;&#x9F84;&#x5347;&#x5E8F;ASC</strong><br></p><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.c2.find().sort({<span class="attr">age</span>: <span class="number">1</span>})</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x4EE5;&#x5E74;&#x9F84;&#x964D;&#x5E8F;DESC</strong><br></p><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.c2.find().sort({<span class="attr">age</span>:<span class="number">-1</span>})</span><br></pre></td></tr></tbody></table></figure><p></p>
+<h2 id="&#x6E38;&#x6807;"><a href="#&#x6E38;&#x6807;" class="headerlink" title="&#x6E38;&#x6807;"></a>&#x6E38;&#x6807;</h2><p>&#x50CF;&#x5927;&#x591A;&#x6570;&#x6570;&#x636E;&#x5E93;&#x4EA7;&#x54C1;&#x4E00;&#x6837;&#xFF0C;MongoDB&#x4E5F;&#x662F;&#x7528;&#x6E38;&#x6807;&#x6765;&#x5FAA;&#x73AF;&#x5904;&#x7406;&#x6BCF;&#x4E00;&#x6761;&#x7ED3;&#x679C;&#x6570;&#x636E;<br></p><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="keyword">for</span>(<span class="keyword">var</span> c=db.c2.find();c.hasNext();){</span><br><span class="line">... printjson(c.next())}</span><br><span class="line">{</span><br><span class="line">        <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97ab&quot;</span>),</span><br><span class="line">        <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;age&quot;</span> : <span class="number">19</span></span><br><span class="line">}</span><br><span class="line">{</span><br><span class="line">        <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97ac&quot;</span>),</span><br><span class="line">        <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user2&quot;</span>,</span><br><span class="line">        <span class="string">&quot;age&quot;</span> : <span class="number">20</span></span><br><span class="line">}</span><br><span class="line">{</span><br><span class="line">        <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97ad&quot;</span>),</span><br><span class="line">        <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user3&quot;</span>,</span><br><span class="line">        <span class="string">&quot;age&quot;</span> : <span class="number">21</span></span><br><span class="line">}</span><br><span class="line">{</span><br><span class="line">        <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97ae&quot;</span>),</span><br><span class="line">        <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user4&quot;</span>,</span><br><span class="line">        <span class="string">&quot;age&quot;</span> : <span class="number">22</span></span><br><span class="line">}</span><br><span class="line">{</span><br><span class="line">        <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97af&quot;</span>),</span><br><span class="line">        <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user5&quot;</span>,</span><br><span class="line">        <span class="string">&quot;age&quot;</span> : <span class="number">23</span></span><br><span class="line">}</span><br><span class="line">{</span><br><span class="line">        <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97b0&quot;</span>),</span><br><span class="line">        <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user6&quot;</span>,</span><br><span class="line">        <span class="string">&quot;age&quot;</span> : <span class="number">24</span></span><br><span class="line">}</span><br><span class="line">{</span><br><span class="line">        <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97b1&quot;</span>),</span><br><span class="line">        <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user7&quot;</span>,</span><br><span class="line">        <span class="string">&quot;age&quot;</span> : <span class="number">25</span></span><br><span class="line">}</span><br><span class="line">{</span><br><span class="line">        <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97b2&quot;</span>),</span><br><span class="line">        <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user8&quot;</span>,</span><br><span class="line">        <span class="string">&quot;age&quot;</span> : <span class="number">26</span></span><br><span class="line">}</span><br><span class="line">{</span><br><span class="line">        <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97b3&quot;</span>),</span><br><span class="line">        <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user9&quot;</span>,</span><br><span class="line">        <span class="string">&quot;age&quot;</span> : <span class="number">27</span></span><br><span class="line">}</span><br><span class="line">{</span><br><span class="line">        <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97b4&quot;</span>),</span><br><span class="line">        <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user10&quot;</span>,</span><br><span class="line">        <span class="string">&quot;age&quot;</span> : <span class="number">28</span></span><br><span class="line">}</span><br><span class="line"><span class="comment">// &#x53E6;&#x4E00;&#x79CD;&#x65B9;&#x5F0F;</span></span><br><span class="line">&gt; db.c2.find().forEach(<span class="function"><span class="keyword">function</span>(<span class="params">u</span>)</span>{printjson(u)})</span><br><span class="line">{</span><br><span class="line">        <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97ab&quot;</span>),</span><br><span class="line">        <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user1&quot;</span>,</span><br><span class="line">        <span class="string">&quot;age&quot;</span> : <span class="number">19</span></span><br><span class="line">}</span><br><span class="line">{</span><br><span class="line">        <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97ac&quot;</span>),</span><br><span class="line">        <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user2&quot;</span>,</span><br><span class="line">        <span class="string">&quot;age&quot;</span> : <span class="number">20</span></span><br><span class="line">}</span><br><span class="line">{</span><br><span class="line">        <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97ad&quot;</span>),</span><br><span class="line">        <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user3&quot;</span>,</span><br><span class="line">        <span class="string">&quot;age&quot;</span> : <span class="number">21</span></span><br><span class="line">}</span><br><span class="line">{</span><br><span class="line">        <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97ae&quot;</span>),</span><br><span class="line">        <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user4&quot;</span>,</span><br><span class="line">        <span class="string">&quot;age&quot;</span> : <span class="number">22</span></span><br><span class="line">}</span><br><span class="line">{</span><br><span class="line">        <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97af&quot;</span>),</span><br><span class="line">        <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user5&quot;</span>,</span><br><span class="line">        <span class="string">&quot;age&quot;</span> : <span class="number">23</span></span><br><span class="line">}</span><br><span class="line">{</span><br><span class="line">        <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97b0&quot;</span>),</span><br><span class="line">        <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user6&quot;</span>,</span><br><span class="line">        <span class="string">&quot;age&quot;</span> : <span class="number">24</span></span><br><span class="line">}</span><br><span class="line">{</span><br><span class="line">        <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97b1&quot;</span>),</span><br><span class="line">        <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user7&quot;</span>,</span><br><span class="line">        <span class="string">&quot;age&quot;</span> : <span class="number">25</span></span><br><span class="line">}</span><br><span class="line">{</span><br><span class="line">        <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97b2&quot;</span>),</span><br><span class="line">        <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user8&quot;</span>,</span><br><span class="line">        <span class="string">&quot;age&quot;</span> : <span class="number">26</span></span><br><span class="line">}</span><br><span class="line">{</span><br><span class="line">        <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97b3&quot;</span>),</span><br><span class="line">        <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user9&quot;</span>,</span><br><span class="line">        <span class="string">&quot;age&quot;</span> : <span class="number">27</span></span><br><span class="line">}</span><br><span class="line">{</span><br><span class="line">        <span class="string">&quot;_id&quot;</span> : ObjectId(<span class="string">&quot;627fd46019fb40ff16ec97b4&quot;</span>),</span><br><span class="line">        <span class="string">&quot;name&quot;</span> : <span class="string">&quot;user10&quot;</span>,</span><br><span class="line">        <span class="string">&quot;age&quot;</span> : <span class="number">28</span></span><br><span class="line">}</span><br><span class="line">&gt;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<h2 id="&#x5B58;&#x50A8;&#x8FC7;&#x7A0B;"><a href="#&#x5B58;&#x50A8;&#x8FC7;&#x7A0B;" class="headerlink" title="&#x5B58;&#x50A8;&#x8FC7;&#x7A0B;"></a>&#x5B58;&#x50A8;&#x8FC7;&#x7A0B;</h2><p>MongoDB&#x540C;&#x6837;&#x652F;&#x6301;&#x5B58;&#x50A8;&#x8FC7;&#x7A0B;&#x3002;&#x5173;&#x4E8E;&#x5B58;&#x50A8;&#x8FC7;&#x7A0B;&#x4F60;&#x9700;&#x8981;&#x77E5;&#x9053;&#x7684;&#x7B2C;&#x4E00;&#x4EF6;&#x4E8B;&#x5C31;&#x662F;&#x5B83;&#x662F;&#x7528;JavaScript&#x6765;&#x5199;&#x7684;&#x3002;<br>MongoDB&#x5B58;&#x50A8;&#x8FC7;&#x7A0B;&#x662F;&#x5B58;&#x50A8;&#x5728;db.system.js&#x8868;&#x4E2D;&#x3002;</p>
+<p>MongoDB&#x7684;&#x5B58;&#x50A8;&#x8FC7;&#x7A0B;&#x521B;&#x5EFA;&#x8FC7;&#x7A0B;&#x5982;&#x4E0B;&#xFF1A;<br></p><figure class="highlight js"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// &#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x5B58;&#x50A8;&#x8FC7;&#x7A0B;</span></span><br><span class="line">&gt; db.system.save({<span class="attr">_id</span>:<span class="string">&quot;addNumbers&quot;</span>,<span class="attr">value</span>:<span class="function"><span class="keyword">function</span>(<span class="params">x,y</span>)</span>{<span class="keyword">return</span> x+y}})</span><br><span class="line">WriteResult({ <span class="string">&quot;nMatched&quot;</span> : <span class="number">0</span>, <span class="string">&quot;nUpserted&quot;</span> : <span class="number">1</span>, <span class="string">&quot;nModified&quot;</span> : <span class="number">0</span>, <span class="string">&quot;_id&quot;</span> : <span class="string">&quot;addNumbers&quot;</span> })</span><br><span class="line"></span><br><span class="line"><span class="comment">//&#x53EF;&#x4EE5;&#x4EE5;&#x4E0B;&#x65B9;&#x6CD5;&#x68C0;&#x67E5;&#x5B58;&#x50A8;</span></span><br><span class="line">&gt; db.system.js.find()</span><br><span class="line">{ <span class="string">&quot;_id&quot;</span> : <span class="string">&quot;addNumbers&quot;</span>, <span class="string">&quot;value&quot;</span> : { <span class="string">&quot;code&quot;</span> : <span class="string">&quot;function (x,y){return x+y}&quot;</span> } }</span><br><span class="line"></span><br><span class="line"><span class="comment">// &#x8C03;&#x7528;&#x5B58;&#x50A8;&#x8FC7;&#x7A0B;</span></span><br><span class="line">&gt; db.eval(<span class="string">&apos;addNumber(3,4.2)&apos;</span>)</span><br><span class="line">WARNING: db.eval is deprecated</span><br><span class="line"><span class="number">7.2</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<h2 id="&#x53C2;&#x8003;&#xFF1A;"><a href="#&#x53C2;&#x8003;&#xFF1A;" class="headerlink" title="&#x53C2;&#x8003;&#xFF1A;"></a>&#x53C2;&#x8003;&#xFF1A;</h2><p><a href="https://www.mongodb.com/docs/v4.2/reference/method/js-collection/" target="_blank" rel="noopener">https://www.mongodb.com/docs/v4.2/reference/method/js-collection/</a></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2022-06-07T05:17:01.061Z" itemprop="dateUpdated">2022-06-07 13:17:01</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/a36562d7/" target="_blank" rel="external">https://marnm.github.io/posts/a36562d7/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='https://marnm.github.io'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/a36562d7/&title=《MongoDB学习笔记》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/a36562d7/&title=《MongoDB学习笔记》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/a36562d7/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《MongoDB学习笔记》 — Deops's blog&url=https://marnm.github.io/posts/a36562d7/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/a36562d7/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/bce68613/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：MySQL基础
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/55c06d78/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：MongoDB安装部署">下一篇：MongoDB安装部署</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2022
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="https://marnm.github.io">marnm.github.io</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/a36562d7/&title=《MongoDB学习笔记》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/a36562d7/&title=《MongoDB学习笔记》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/a36562d7/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《MongoDB学习笔记》 — Deops's blog&url=https://marnm.github.io/posts/a36562d7/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/a36562d7/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABy0lEQVR42u3ay26DMBAF0Pz/T1Mp6iKLQu6MH6DqeBXRYo5ZXNkzvF7xON7j8/fnuL6ezDl54OLiDnOPy5FMfQSjutTTZePi4m7k5uF19tez2c6uJK8DFxf3+dwElG9ucHFx/wc3H/mGBhcX98nc6oNnHZYWntVwcXEHuL2C6dzfy+u7uLi4k7oS14GSFDtmPfd3Tlxc3C3cvMSZF0SSRY4ch3BxcXdyq8F0fX1uyxYXF/cubm+bks/Qm/mPK7i4uFu4eZRU2669Mmi5YIqLizuVWz325Ief6iuI4g8XF3cLN3lkNdRGiiBR1uLi4i7mVksVeRMlb6A2K7u4uLjLuHmsJJubkZAqtFVwcXEXc/NPK6qN1d5ivrwOXFzcjdy86FnOyFbknb4gXFzcLdwkmKr/U22TlIuwuLi4i7lJAyPf0FRDrVrxwMXF3cnNS5z5pxi9Y9WXBeDi4m7kVuOpGkm9Dy/Kk+Li4k7iVgOl9wHHSOO2F3+4uLjj3F47pFcu6W2GcHFx7+L2mqnVRmkv4HBxcZ/MTQ451a1SMvMrvwEXF/cm7ngLNg9EXFzce7m9iXr3VgsxzbMaLi7uAHf85pFmSTPOcHFxV3F/AFnTtHtbSVcrAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>

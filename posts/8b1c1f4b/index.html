@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>MongoDB介绍 | Deops&#39;s blog | 运维开发工程师</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="MongoDB&amp;#x4ECB;&amp;#x7ECD;Mongodb &amp;#x7531; C++&amp;#x8BED;&amp;#x8A00;&amp;#x7F16;&amp;#x5199;&amp;#x7684;&amp;#xFF0C;&amp;#x662F;&amp;#x4E00;&amp;#x4E2A;&amp;#x57FA;&amp;#x4E8E;&amp;#x5206;&amp;#x5E03;&amp;#x5F0F;&amp;#x6587;&amp;#x4EF6;&amp;#x5B58;&amp;#x50A8;&amp;#x7684;&amp;#x5F">
+<meta name="keywords" content="Echo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MongoDB介绍">
+<meta property="og:url" content="https://marnm.github.io/posts/8b1c1f4b/index.html">
+<meta property="og:site_name" content="Deops&#39;s blog">
+<meta property="og:description" content="MongoDB&amp;#x4ECB;&amp;#x7ECD;Mongodb &amp;#x7531; C++&amp;#x8BED;&amp;#x8A00;&amp;#x7F16;&amp;#x5199;&amp;#x7684;&amp;#xFF0C;&amp;#x662F;&amp;#x4E00;&amp;#x4E2A;&amp;#x57FA;&amp;#x4E8E;&amp;#x5206;&amp;#x5E03;&amp;#x5F0F;&amp;#x6587;&amp;#x4EF6;&amp;#x5B58;&amp;#x50A8;&amp;#x7684;&amp;#x5F">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-06-07T05:17:42.383Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MongoDB介绍">
+<meta name="twitter:description" content="MongoDB&amp;#x4ECB;&amp;#x7ECD;Mongodb &amp;#x7531; C++&amp;#x8BED;&amp;#x8A00;&amp;#x7F16;&amp;#x5199;&amp;#x7684;&amp;#xFF0C;&amp;#x662F;&amp;#x4E00;&amp;#x4E2A;&amp;#x57FA;&amp;#x4E8E;&amp;#x5206;&amp;#x5E03;&amp;#x5F0F;&amp;#x6587;&amp;#x4EF6;&amp;#x5B58;&amp;#x50A8;&amp;#x7684;&amp;#x5F">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
+                <i class="icon icon-lg icon-tv tv"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">MongoDB介绍</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#MongoDB介绍"><span class="post-toc-number">1.</span> <span class="post-toc-text">MongoDB介绍</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-1-MongoDB-数据格式"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">2.1 MongoDB 数据格式</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-1-1-JSON"><span class="post-toc-number">1.1.1.</span> <span class="post-toc-text">2.1.1 JSON</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-1-2-BSON"><span class="post-toc-number">1.1.2.</span> <span class="post-toc-text">2.1.2 BSON</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-2-MongoDB-特点"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">2.2 MongoDB 特点</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-3-MongoDB-包含的程序"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">2.3 MongoDB 包含的程序</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#应用场景"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">应用场景</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-MongoDB介绍" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">MongoDB介绍</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2022-06-07 12:42:46" datetime="2022-06-07T04:42:46.000Z" itemprop="datePublished">2022-06-07</time>
+
+            <br id="mybreak">
+            
+<script>
+	mybreak.style="display:none";
+</script>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">11</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="MongoDB&#x4ECB;&#x7ECD;"><a href="#MongoDB&#x4ECB;&#x7ECD;" class="headerlink" title="MongoDB&#x4ECB;&#x7ECD;"></a>MongoDB&#x4ECB;&#x7ECD;</h1><p>Mongodb &#x7531; C++&#x8BED;&#x8A00;&#x7F16;&#x5199;&#x7684;&#xFF0C;&#x662F;&#x4E00;&#x4E2A;&#x57FA;&#x4E8E;&#x5206;&#x5E03;&#x5F0F;&#x6587;&#x4EF6;&#x5B58;&#x50A8;&#x7684;&#x5F00;&#x6E90;&#x6570;&#x636E;&#x5E93;&#x7CFB;&#x7EDF;&#x3002;&#xFF0C;&#x662F;&#x4E13;&#x4E3A;&#x53EF;&#x6269;&#x5C55;&#x6027;&#xFF0C;&#x9AD8;&#x6027;&#x80FD;&#x548C;&#x9AD8;&#x53EF;&#x7528;&#x6027;&#x800C;&#x8BBE;&#x8BA1;&#x7684;&#x6570;&#x636E;&#x5E93;&#xFF0C; &#x662F;&#x975E;&#x5173;&#x7CFB;&#x578B;&#x6570;&#x636E;&#x5E93;&#x4E2D;&#x529F;&#x80FD;&#x6700;&#x4E30;&#x5BCC;&#xFF0C;&#x6700;&#x50CF;&#x5173;&#x7CFB;&#x578B;&#x6570;&#x636E;&#x5E93;&#x7684;&#xFF0C;&#x5B83;&#x652F;&#x6301;&#x7684;&#x6570;&#x636E;&#x7ED3;&#x6784;&#x975E;&#x5E38;&#x6563;&#xFF0C;&#x662F;&#x7C7B;&#x4F3C; json &#x7684; bjson &#x683C;&#x5F0F;&#xFF0C;&#x56E0;&#x6B64;&#x53EF;&#x4EE5;&#x5B58;&#x50A8;&#x6BD4;&#x8F83;&#x590D;&#x6742;&#x7684;&#x6570;&#x636E;&#x7C7B;&#x578B;&#x3002;</p>
+<p>MongoDB &#x7684;&#xFF08;&#x6765;&#x81EA;&#x4E8E;&#x82F1;&#x6587;&#x5355;&#x8BCD;&#x201C;&#x4E86; Humongous&#x201D;&#xFF0C;&#x4E2D;&#x6587;&#x542B;&#x4E49;&#x4E3A;&#x201C;&#x5E9E;&#x5927;&#x201D;&#xFF09;&#x662F;&#x53EF;&#x4EE5;&#x5E94;&#x7528;&#x4E8E;&#x5404;&#x79CD;&#x89C4;&#x6A21;&#x7684;&#x4F01;&#x4E1A;&#xFF0C;&#x5404;&#x4E2A;&#x884C;&#x4E1A;&#x4EE5;&#x53CA;&#x5404;&#x7C7B;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x7684;&#x5F00;&#x6E90;&#x6570;&#x636E;&#x5E93;&#x3002;&#x4F5C;&#x4E3A;&#x4E00;&#x4E2A;&#x9002;&#x7528;&#x4E8E;&#x654F;&#x6377;&#x5F00;&#x53D1;&#x7684;&#x6570;&#x636E;&#x5E93;&#xFF0C;MongoDB&#x7684;&#x6570;&#x636E;&#x6A21;&#x5F0F;&#x53EF;&#x4EE5;&#x968F;&#x7740;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x7684;&#x53D1;&#x5C55;&#x800C;&#x7075;&#x6D3B;&#x5730;&#x66F4;&#x65B0;&#x3002;<br>MongoDB &#x4EE5;&#x4E00;&#x79CD;&#x53EB;&#x505A; BSON&#xFF08;&#x4E8C;&#x8FDB;&#x5236; JSON&#xFF09;&#x7684;&#x5B58;&#x50A8;&#x5F62;&#x5F0F;&#x5C06;&#x6570;&#x636E;&#x4F5C;&#x4E3A;&#x6587;&#x6863;&#x5B58;&#x50A8;&#x3002;&#x5177;&#x6709;&#x76F8;&#x4F3C;&#x7ED3;&#x6784;&#x7684;&#x6587;&#x6863;&#x901A;&#x5E38;&#x88AB;&#x6574;&#x7406;&#x6210;&#x96C6;&#x5408;&#x3002;&#x53EF;&#x4EE5;&#x628A;&#x8FD9;&#x4E9B;&#x96C6;&#x5408;&#x770B;&#x6210;&#x7C7B;&#x4F3C;&#x4E8E;&#x5173;&#x7CFB;&#x6570;&#x636E;&#x5E93;&#x4E2D;&#x7684;&#x8868;&#xFF1A; &#x6587;&#x6863;&#x548C;&#x884C;&#x76F8;&#x4F3C;&#xFF0C; &#x5B57;&#x6BB5;&#x548C;&#x5217;&#x76F8;&#x4F3C;&#x3002;</p>
+<blockquote>
+<p>MongoDB&#x662F;&#x4E13;&#x4E3A;&#x53EF;&#x6269;&#x5C55;&#x6027;&#xFF0C;&#x9AD8;&#x6027;&#x80FD;&#x548C;&#x9AD8;&#x53EF;&#x7528;&#x6027;&#x800C;&#x8BBE;&#x8BA1;&#x7684;&#x6570;&#x636E;&#x5E93;&#x3002;&#x5B83;&#x53EF;&#x4EE5;&#x4ECE;&#x5355;&#x670D;&#x52A1;&#x5668;&#x90E8;&#x7F72;&#x6269;&#x5C55;&#x5230;&#x5927;&#x578B;&#x3001;&#x590D;&#x6742;&#x7684;&#x591A;&#x6570;&#x636E;&#x4E2D;&#x5FC3;&#x67B6;&#x6784;&#x3002;&#x5229;&#x7528;&#x5185;&#x5B58;&#x8BA1;&#x7B97;&#x7684;&#x4F18;&#x52BF;&#xFF0C;MongoDB&#x80FD;&#x591F;&#x63D0;&#x4F9B;&#x9AD8;&#x6027;&#x80FD;&#x7684;&#x6570;&#x636E;&#x8BFB;&#x5199;&#x64CD;&#x4F5C;&#x3002; MongoDB&#x7684;&#x672C;&#x5730;&#x590D;&#x5236;&#x548C;&#x81EA;&#x52A8;&#x6545;&#x969C;&#x8F6C;&#x79FB;&#x529F;&#x80FD;&#x4F7F;&#x60A8;&#x7684;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x5177;&#x6709;&#x4F01;&#x4E1A;&#x7EA7;&#x7684;&#x53EF;&#x9760;&#x6027;&#x548C;&#x64CD;&#x4F5C;&#x7075;&#x6D3B;&#x6027;</p>
+</blockquote>
+<h2 id="2-1-MongoDB-&#x6570;&#x636E;&#x683C;&#x5F0F;"><a href="#2-1-MongoDB-&#x6570;&#x636E;&#x683C;&#x5F0F;" class="headerlink" title="2.1 MongoDB &#x6570;&#x636E;&#x683C;&#x5F0F;"></a>2.1 MongoDB &#x6570;&#x636E;&#x683C;&#x5F0F;</h2><h3 id="2-1-1-JSON"><a href="#2-1-1-JSON" class="headerlink" title="2.1.1 JSON"></a>2.1.1 JSON</h3><p>JSON(JavaScript Object Notation) &#x662F;&#x4E00;&#x79CD;&#x8F7B;&#x91CF;&#x7EA7;&#x7684;&#x6570;&#x636E;&#x4EA4;&#x6362;&#x683C;&#x5F0F;&#x3002;JSON &#x91C7;&#x7528;&#x5B8C;&#x5168;&#x72EC;&#x7ACB;&#x4E8E;&#x8BED;&#x8A00;&#x7684;&#x6587;&#x672C;&#x683C;&#x5F0F;&#xFF0C;&#x4F46;&#x662F;&#x4E5F;&#x4F7F;&#x7528;&#x4E86;&#x7C7B;&#x4F3C;&#x4E8E; C &#x8BED;&#x8A00;&#x5BB6;&#x65CF;&#x7684;&#x4E60;&#x60EF;&#xFF08;&#x5305;&#x62EC; C&#x3001; C++&#x3001; C#&#x3001; Java&#x3001;JavaScript&#x3001; Perl&#x3001;Python &#x7B49;&#xFF09;&#x3002;&#x8FD9;&#x4E9B;&#x7279;&#x6027;&#x4F7F; JSON &#x6210;&#x4E3A;&#x7406;&#x60F3;&#x7684;&#x6570;&#x636E;&#x4EA4;&#x6362;&#x8BED;&#x8A00;.&#x6613;&#x4E8E;&#x4EBA;&#x9605;&#x8BFB;&#x548C;&#x7F16;&#x5199;&#xFF0C;&#x540C;&#x65F6;&#x4E5F;&#x6613;&#x4E8E;&#x673A;&#x5668;&#x89E3;&#x6790;&#x548C;&#x751F;&#x6210;(&#x4E00;&#x822C;&#x7528;&#x4E8E;&#x63D0;&#x5347;&#x7F51;&#x7EDC;&#x4F20;&#x8F93;&#x901F;&#x7387;)&#x3002;JSON &#x7684;&#x5B98;&#x65B9; MIME &#x7C7B;&#x578B;&#x662F; application/json,&#x6587;&#x4EF6;&#x6269;&#x5C55;&#x540D;&#x662F;.json&#x3002;</p>
+<p>MongoDB &#x4F7F;&#x7528; JSON&#xFF08;JavaScript ObjectNotation&#xFF09;&#x6587;&#x6863;&#x5B58;&#x50A8;&#x8BB0;&#x5F55;&#x3002;<br>JSON &#x7B80;&#x5355;&#x8BF4;&#x5C31;&#x662F; JavaScript &#x4E2D;&#x7684;&#x5BF9;&#x8C61;&#x548C;&#x6570;&#x7EC4;&#xFF0C;&#x901A;&#x8FC7;&#x5BF9;&#x8C61;&#x548C;&#x6570;&#x7EC4;&#x53EF;&#x4EE5;&#x8868;&#x793A;&#x5404;&#x79CD;&#x590D;&#x6742;&#x7684;&#x7ED3;&#x6784;&#x3002;</p>
+<p><strong>&#x5BF9;&#x8C61;&#xFF1A;</strong><br>&#x5BF9;&#x8C61;&#x5728; js &#x4E2D;&#x8868;&#x793A;&#x4E3A;&#x201C;{}&#x201D;&#x62EC;&#x8D77;&#x6765;&#x7684;&#x5185;&#x5BB9;&#xFF0C;&#x6570;&#x636E;&#x7ED3;&#x6784;&#x4E3A; {key&#xFF1A; value,key&#xFF1A; value,&#x2026;}&#x7684;&#x952E;&#x503C;&#x5BF9;&#x7684;&#x7ED3;&#x6784;&#xFF0C;&#x5728;&#x9762;&#x5411;&#x5BF9;&#x8C61;&#x7684;&#x8BED;&#x8A00;&#x4E2D;&#xFF0C; key &#x4E3A;&#x5BF9;&#x8C61;&#x7684;&#x5C5E;&#x6027;&#xFF0C; value &#x4E3A;&#x5BF9;&#x5E94;&#x7684;&#x5C5E;&#x6027;&#x503C;&#xFF0C;&#x6240;&#x4EE5;&#x5F88;&#x5BB9;&#x6613;&#x7406;&#x89E3;&#xFF0C;&#x53D6;&#x503C;&#x65B9;&#x6CD5;&#x4E3A; &#x5BF9;&#x8C61;.key &#x83B7;&#x53D6;&#x5C5E;&#x6027;&#x503C;&#xFF0C;&#x8FD9;&#x4E2A;&#x5C5E;&#x6027;&#x503C;&#x7684;&#x7C7B;&#x578B;&#x53EF;&#x4EE5;&#x662F; &#x6570;&#x5B57;&#x3001;&#x5B57;&#x7B26;&#x4E32;&#x3001;&#x6570;&#x7EC4;&#x3001;&#x5BF9;&#x8C61;&#x51E0;&#x79CD;&#x3002;<br>&#x4F8B;&#x5982;&#xFF1A; {&#x201C;FirstName&#x201D;:&#x201D;ke&#x201D;,&#x201D;LastName&#x201D;:&#x201D;me&#x201D;,&#x201D;email&#x201D;:&#x201D;hikeme@aa&#x201D;}<br>&#x53D6;&#x503C;&#x65B9;&#x5F0F;&#x548C;&#x6240;&#x6709;&#x8BED;&#x8A00;&#x4E2D;&#x4E00;&#x6837;,&#x4F7F;&#x7528; key &#x83B7;&#x53D6;,&#x5B57;&#x6BB5;&#x503C;&#x7684;&#x7C7B;&#x578B;&#x53EF;&#x4EE5;&#x662F; &#x6570;&#x5B57;&#x3001;&#x5B57;&#x7B26;&#x4E32;&#x3001;&#x6570;&#x7EC4;&#x3001;&#x5BF9;&#x8C61;&#x51E0;&#x79CD;&#x3002;</p>
+<h3 id="2-1-2-BSON"><a href="#2-1-2-BSON" class="headerlink" title="2.1.2 BSON"></a>2.1.2 BSON</h3><p>BSON &#x662F;&#x4E00;&#x79CD;&#x7C7B; JSON &#x7684;&#x4E00;&#x79CD;&#x4E8C;&#x8FDB;&#x5236;&#x5F62;&#x5F0F;&#x7684;&#x5B58;&#x50A8;&#x683C;&#x5F0F;&#xFF0C;&#x7B80;&#x79F0; Binary JSON&#xFF0C;&#x5B83;&#x548C; JSON &#x4E00;&#x6837;&#xFF0C;&#x652F;&#x6301;&#x5185;&#x5D4C;&#x7684;&#x6587;&#x6863;&#x5BF9;&#x8C61;&#x548C;&#x6570;&#x7EC4;&#x5BF9;&#x8C61;&#xFF0C;&#x4F46;&#x662F; BSON &#x6709; JSON &#x6CA1;&#x6709;&#x7684;&#x4E00;&#x4E9B;&#x6570;&#x636E;&#x7C7B;&#x578B;&#xFF0C;&#x5982; Date &#x548C; BinData &#x7C7B;&#x578B;&#x3002;  </p>
+<p>&#x5B83;&#x7684;&#x4F18;&#x70B9;&#x662F;&#x7075;&#x6D3B;&#x6027;&#x9AD8;&#xFF0C;&#x4F46;&#x5B83;&#x7684;&#x7F3A;&#x70B9;&#x662F;&#x7A7A;&#x95F4;&#x5229;&#x7528;&#x7387;&#x4E0D;&#x662F;&#x5F88;&#x7406;&#x60F3;&#x3002;<br>BSON &#x6709;&#x4E09;&#x4E2A;&#x7279;&#x70B9;&#xFF1A;&#x8F7B;&#x91CF;&#x6027;&#x3001;&#x53EF;&#x904D;&#x5386;&#x6027;&#x3001;&#x9AD8;&#x6548;&#x6027;&#x3002;<br>&#x5BF9;JSON &#x6765;&#x8BF4;&#xFF0C;&#x6570;&#x636E;&#x5B58;&#x50A8;&#x662F;&#x65E0;&#x7C7B;&#x578B;&#x7684;&#xFF0C;&#x6BD4;&#x5982;&#x4F60;&#x8981;&#x4FEE;&#x6539;&#x57FA;&#x672C;&#x4E00;&#x4E2A;&#x503C;&#xFF0C;&#x4ECE; 9 &#x5230; 10&#xFF0C;&#x7531;&#x4E8E;&#x4ECE;&#x4E00;&#x4E2A;&#x5B57;&#x7B26;&#x53D8;&#x6210;&#x4E86;&#x4E24;&#x4E2A;&#xFF0C;&#x6240;&#x4EE5;&#x53EF;&#x80FD;&#x5176;&#x540E;&#x9762;&#x7684;&#x6240;&#x6709;&#x5185;&#x5BB9;&#x90FD;&#x9700;&#x8981;&#x5F80;&#x540E;&#x79FB;&#x4E00;&#x4F4D;&#x624D;&#x53EF;&#x4EE5;&#x3002;&#x800C;&#x4F7F;&#x7528; BSON&#xFF0C;&#x4F60;&#x53EF;&#x4EE5;&#x6307;&#x5B9A;&#x8FD9;&#x4E2A;&#x5217;&#x4E3A;&#x6570;&#x5B57;&#x5217;&#xFF0C;&#x90A3;&#x4E48;&#x65E0;&#x8BBA;&#x6570;&#x5B57;&#x4ECE; 9 &#x957F;&#x5230; 10 &#x8FD8;&#x662F; 100&#xFF0C;&#x6211;&#x4EEC;&#x90FD;&#x53EA;&#x662F;&#x5728;&#x5B58;&#x50A8;&#x6570;&#x5B57;&#x7684;&#x90A3;&#x4E00;&#x4F4D;&#x4E0A;&#x8FDB;&#x884C;&#x4FEE;&#x6539;&#xFF0C;&#x4E0D;&#x4F1A;&#x5BFC;&#x81F4;&#x6570;&#x636E;&#x603B;&#x957F;&#x53D8;&#x5927;&#x3002;&#x5F53;&#x7136;&#xFF0C;&#x5728; MongoDB &#x4E2D;&#xFF0C;&#x5982;&#x679C;&#x6570;&#x5B57;&#x4ECE;&#x6574;&#x5F62;&#x589E;&#x5927;&#x5230;&#x957F;&#x6574;&#x578B;&#xFF0C;&#x8FD8;&#x662F;&#x4F1A;&#x5BFC;&#x81F4;&#x6570;&#x636E;&#x603B;&#x957F;&#x53D8;&#x5927;&#x7684;&#x3002;</p>
+<p>&#x6709;&#x65F6; BSON &#x76F8;&#x5BF9; JSON &#x6765;&#x8BF4;&#x4E5F;&#x5E76;&#x6CA1;&#x6709;&#x7A7A;&#x95F4;&#x4E0A;&#x7684;&#x4F18;&#x52BF;&#xFF0C;&#x6BD4;&#x5982;&#x5BF9;{&#x201C;sex&#x201D;:1}&#xFF0C;&#x5728; JSON &#x7684;&#x5B58;&#x50A8;&#x4E0A;,&#x2019;1&#x2019;&#x53EA;&#x4F7F;&#x7528;&#x4E86;&#x4E00;&#x4E2A;&#x5B57;&#x8282;&#xFF0C;&#x800C;&#x5982;&#x679C;&#x7528; BSON&#xFF0C;&#x90A3;&#x5C31;&#x662F;&#x81F3;&#x5C11; 4 &#x4E2A;&#x5B57;&#x8282;</p>
+<h2 id="2-2-MongoDB-&#x7279;&#x70B9;"><a href="#2-2-MongoDB-&#x7279;&#x70B9;" class="headerlink" title="2.2 MongoDB &#x7279;&#x70B9;"></a>2.2 MongoDB &#x7279;&#x70B9;</h2><p><strong>&#x9AD8;&#x6027;&#x80FD;&#xFF1A;</strong> Mongodb &#x63D0;&#x4F9B;&#x9AD8;&#x6027;&#x80FD;&#x7684;&#x6570;&#x636E;&#x6301;&#x4E45;&#x6027;&#xFF0C;&#x5C24;&#x5176;&#x662F;&#x652F;&#x6301;&#x5D4C;&#x5165;&#x5F0F;&#x6570;&#x636E;&#x6A21;&#x578B;&#x51CF;&#x5C11;&#x6570;&#x636E;&#x5E93;&#x7CFB;&#x7EDF;&#x4E0A;&#x7684;I/O &#x64CD;&#x4F5C;&#xFF0C;&#x7D22;&#x5F15;&#x652F;&#x6301;&#x80FD;&#x5FEB;&#x7684;&#x67E5;&#x8BE2;&#xFF0C;&#x5E76;&#x4E14;&#x53EF;&#x4EE5;&#x5305;&#x62EC;&#x6765;&#x5D4C;&#x5165;&#x5F0F;&#x6587;&#x6863;&#x548C;&#x6570;&#x7EC4;&#x4E2D;&#x7684;&#x952E;</p>
+<p><strong>&#x4E30;&#x5BCC;&#x7684;&#x8BED;&#x8A00;&#x67E5;&#x8BE2;&#xFF1A;</strong> Mongodb &#x652F;&#x6301;&#x4E30;&#x5BCC;&#x7684;&#x67E5;&#x8BE2;&#x8BED;&#x8A00;&#x6765;&#x652F;&#x6301;&#x8BFB;&#x5199;&#x64CD;&#x4F5C;&#xFF08;CRUD&#xFF09;&#x4EE5;&#x53CA;&#x6570;&#x636E;&#x6C47;&#x603B;&#xFF0C;&#x6587;&#x672C;&#x641C;&#x7D22;&#x548C;&#x5730;&#x7406;&#x7A7A;&#x95F4;&#x7D22;&#x5F15;</p>
+<p><strong>&#x9AD8;&#x53EF;&#x7528;&#x6027;&#xFF1A;</strong> Mongodb &#x7684;&#x590D;&#x5236;&#x5DE5;&#x5177;&#xFF0C;&#x6210;&#x4E3A;&#x526F;&#x672C;&#x96C6;&#xFF0C;&#x63D0;&#x4F9B;&#x81EA;&#x52A8;&#x6545;&#x969C;&#x8F6C;&#x79FB;&#x548C;&#x6570;&#x636E;&#x5197;&#x4F59;&#xFF0C;&#x6C34;&#x5E73;&#x53EF;&#x6269;&#x5C55;&#x6027;&#xFF1A; Mongodb &#x63D0;&#x4F9B;&#x4E86;</p>
+<p><strong>&#x53EF;&#x6269;&#x5C55;&#x6027;</strong>&#xFF0C;&#x4F5C;&#x4E3A;&#x5176;&#x6838;&#x5FC3;&#x529F;&#x80FD;&#x7684;&#x4E00;&#x90E8;&#x5206;&#xFF0C;&#x5206;&#x7247;&#x662F;&#x5C06;&#x6570;&#x636E;&#x5206;&#xFF0C;&#x5728;&#x4E00;&#x7EC4;&#x8BA1;&#x7B97;&#x673A;&#x4E0A;&#x3002;</p>
+<p><strong>&#x652F;&#x6301;&#x591A;&#x79CD;&#x5B58;&#x50A8;&#x5F15;&#x64CE;&#xFF1A;</strong> WiredTiger &#x5B58;&#x50A8;&#x5F15;&#x64CE;&#x548C;&#x3001; MMAPv1 &#x5B58;&#x50A8;&#x5F15;&#x64CE;&#x548C; InMemory &#x5B58;&#x50A8;&#x5F15;&#x64CE;</p>
+<h2 id="2-3-MongoDB-&#x5305;&#x542B;&#x7684;&#x7A0B;&#x5E8F;"><a href="#2-3-MongoDB-&#x5305;&#x542B;&#x7684;&#x7A0B;&#x5E8F;" class="headerlink" title="2.3 MongoDB &#x5305;&#x542B;&#x7684;&#x7A0B;&#x5E8F;"></a>2.3 MongoDB &#x5305;&#x542B;&#x7684;&#x7A0B;&#x5E8F;</h2><p><code>MongoDB Drivers</code><br>&#x5B98;&#x65B9; MongoDB &#x5BA2;&#x6237;&#x7AEF;&#x5E93;&#x63D0;&#x4F9B; C&#xFF0C; C ++&#xFF0C; C&#xFF03;&#xFF0C; Java&#xFF0C; Node.JS&#xFF0C; Perl&#xFF0C; PHP&#xFF0C;Python&#xFF0C; Ruby&#x548C;Scala &#x9A71;&#x52A8;&#x7A0B;&#x5E8F;&#x7684;&#x53C2;&#x8003;&#x6307;&#x5357;&#x3002;</p>
+<p><code>MongoDB Stitch</code><br>&#x4E3A;&#x5F00;&#x53D1;&#x4EBA;&#x5458;&#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x4E2A; API &#x5230; MongoDB &#x548C;&#x5176;&#x4ED6;&#x540E;&#x7AEF;&#x670D;&#x52A1;&#x3002;&#x4FDD;&#x6301; MongoDB &#x7684;&#x5168;&#x90E8;&#x529F;&#x80FD;&#x548C;&#x7075;&#x6027;&#xFF0C;&#x540C;&#x65F6;&#x53D7;&#x76CA;&#x4E8E;&#x5F3A;&#x5927;&#x7684;&#x7CFB;&#x7EDF;&#x6765;&#x914D;&#x7F6E;&#x7EC6;&#x7C92;&#x5EA6;&#x7684;&#x6570;&#x636E;&#x8BBF;&#x95EE;&#x63A7;&#x5236;&#x3002;</p>
+<p><code>MongoDB Atlas</code><br>MongoDB &#x5728;&#x4E91;&#x4E2D;&#x90E8;&#x7F72;&#xFF0C;&#x64CD;&#x4F5C;&#x548C;&#x6269;&#x5C55;&#x7684;&#x6700;&#x4F73;&#x65B9;&#x5F0F;&#x3002;&#x9002;&#x7528;&#x4E8E; AWS&#xFF0C;Azure &#x548C; Google Cloud Platform&#x3002;&#x8F7B;&#x677E;&#x5C06;&#x6570;&#x636E;&#x8FC1;&#x79FB;&#x5230; MongoDB Atlas&#xFF0C;&#x96F6;&#x505C;&#x673A;</p>
+<p><code>MongoDB Cloud Manager</code><br>&#x662F;&#x4E00;&#x4E2A;&#x7528;&#x4E8E;&#x7BA1;&#x7406; MongoDB &#x90E8;&#x7F72;&#x7684;&#x8F6F;&#x4EF6;&#x5305;&#x3002; Ops Manager &#x63D0;&#x4F9B; Ops Manager &#x76D1;&#x63A7;&#x548C; Ops Manager &#x5907;&#x4EFD;&#xFF0C;&#x53EF;&#x5E2E;&#x52A9;&#x7528;&#x6237;&#x4F18;&#x5316;&#x7FA4;&#x96C6;&#x5E76;&#x964D;&#x4F4E;&#x64CD;&#x4F5C;&#x98CE;&#x9669;</p>
+<p><code>MongoDB Charts</code><br>&#x53EF;&#x4EE5;&#x6700;&#x5FEB;&#x901F;&#x6700;&#x7B80;&#x5355;&#x7684;&#x521B;&#x5EFA; Mongodb &#x53EF;&#x89C6;&#x5316;&#x56FE;&#x8868;</p>
+<p><code>MongoDB Connector for BI</code><br>MongoDB &#x5546;&#x4E1A;&#x667A;&#x80FD;&#x8FDE;&#x63A5;&#x5668;&#xFF08;BI&#xFF09;&#x5141;&#x8BB8;&#x7528;&#x6237;&#x4F7F;&#x7528; SQL &#x521B;&#x5EFA;&#x67E5;&#x8BE2;&#xFF0C;&#x5E76;&#x4F7F;&#x7528;&#x73B0;&#x6709;&#x7684;&#x5173;&#x7CFB;&#x5546;&#x4E1A;&#x667A;&#x80FD;&#x5DE5;&#x5177;&#xFF08;&#x5982; Tableau&#xFF0C; MicroStrategy &#x548C; Qlik&#xFF09;&#x5BF9;&#x5176; MongoDB Enterprise &#x6570;&#x636E;&#x8FDB;&#x884C;&#x53EF;&#x89C6;&#x5316;&#xFF0C;&#x56FE;&#x5F62;&#x5316;&#x548C;&#x62A5;&#x544A;&#x3002;</p>
+<p><code>MongoDB Compass</code><br>&#x901A;&#x8FC7;&#x4ECE;&#x96C6;&#x5408;&#x4E2D;&#x968F;&#x673A;&#x62BD;&#x6837;&#x4E00;&#x4E2A;&#x6587;&#x6863;&#x5B50;&#x96C6;&#xFF0C;&#x4E3A;&#x7528;&#x6237;&#x63D0;&#x4F9B;&#x5176; MongoDB &#x6A21;&#x5F0F;&#x7684;&#x56FE;&#x5F62;&#x89C6;&#x56FE;&#x3002;&#x91C7;&#x6837;&#x6587;&#x4EF6;&#x53EF;&#x6700;&#x5927;&#x7A0B;&#x5EA6;&#x5730;&#x964D;&#x4F4E;&#x5BF9;&#x6570;&#x636E;&#x5E93;&#x7684;&#x5F71;&#x54CD;&#xFF0C;&#x5E76;&#x80FD;&#x5FEB;&#x901F;&#x4EA7;&#x751F;&#x7ED3;&#x679C;&#x3002;&#x6709;&#x5173; &#x62BD;&#x6837;&#x7684;&#x66F4;&#x591A;&#x4FE1;&#x606F;</p>
+<p><code>MongoDB Spark Connector</code><br>&#x4F7F;&#x7528;&#x8FDE;&#x63A5;&#x5668;&#xFF0C;&#x60A8;&#x53EF;&#x4EE5;&#x8BBF;&#x95EE;&#x6240;&#x6709;&#x4F7F;&#x7528; MongoDB &#x6570;&#x636E;&#x96C6;&#x7684; Spark &#x5E93;&#xFF1A;&#x7528; SQL &#x8FDB;&#x884C;&#x5206;&#x6790;&#x7684;&#x6570;&#x636E;&#x96C6;&#xFF08;&#x53D7;&#x76CA;&#x4E8E;&#x81EA;&#x52A8;&#x6A21;&#x5F0F;&#x63A8;&#x7406;&#xFF09;&#xFF0C;&#x6D41;&#x5F0F;&#x4F20;&#x8F93;&#xFF0C;&#x673A;&#x5668;&#x5B66;&#x4E60;&#x548C;&#x56FE;&#x5F62; API&#x3002;&#x60A8;&#x4E5F;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x8FDE;&#x63A5;&#x5668;&#x4E0E; Spark Shell&#x3002;</p>
+<h2 id="&#x5E94;&#x7528;&#x573A;&#x666F;"><a href="#&#x5E94;&#x7528;&#x573A;&#x666F;" class="headerlink" title="&#x5E94;&#x7528;&#x573A;&#x666F;"></a>&#x5E94;&#x7528;&#x573A;&#x666F;</h2><script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2022-06-07T05:17:42.383Z" itemprop="dateUpdated">2022-06-07 13:17:42</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/8b1c1f4b/" target="_blank" rel="external">https://marnm.github.io/posts/8b1c1f4b/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='https://marnm.github.io'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/8b1c1f4b/&title=《MongoDB介绍》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/8b1c1f4b/&title=《MongoDB介绍》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/8b1c1f4b/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《MongoDB介绍》 — Deops's blog&url=https://marnm.github.io/posts/8b1c1f4b/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/8b1c1f4b/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/55c06d78/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：MongoDB安装部署
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/36ba38f9/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：NoSQL知识">下一篇：NoSQL知识</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2022
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="https://marnm.github.io">marnm.github.io</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/8b1c1f4b/&title=《MongoDB介绍》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/8b1c1f4b/&title=《MongoDB介绍》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/8b1c1f4b/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《MongoDB介绍》 — Deops's blog&url=https://marnm.github.io/posts/8b1c1f4b/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/8b1c1f4b/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABvUlEQVR42u3awa6DMAwEwP7/T/OuXMhb2yWganKqKCIDB8vZ5POJx3Ea5yvrf89Xrp75uWPg4uKOucdyrO9ZT5+8Um7AxcXdz10XmqvfycvknyMqdri4uK/nrluZ9XVcXNxf4iZNTLKwwcXFfT83b0EmzcqkDcLFxd3JzVPK+37fku/i4uK2uEdxzGPW0ey4uLhbuHlBGQUZxTBlPS8uLu5Obm+aSYHLO5n/3gAXF/eb3OTARLX09ELVQkeGi4u7hZssTiaVJCl2UYCCi4u7hTuPUPMGaB6d4OLi7uf2Fi0JevIhLp+Di4t7GzcpItWDFL3INSpkuLi4j3LzY1jVJdAolsXFxd3C7ZWn+QZJb2MGFxd3P7f60OpGSL4cKkSluLi4t3GrS5eclR/OKBzhwsXFfQG32vT0Sluh9cHFxd3OrQaa1Ui02uIUOiBcXNwvcXuNSzLB/OAFLi7uU9z5kYhJe5Q8p/kyuLi4Y24v4KhuslY/QXnPBxcX9wbufFE02i6dB6a4uLiPcvOmpDeaqQkuLu4LuNXXqN5zeT8uLu5GbrL4mRyumhBxcXH3cyfT9zZI8o8yyndxcXE73D9CPXGwVVYrigAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>

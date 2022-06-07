@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>swap交换分区 | Deops&#39;s blog | 运维开发工程师</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="&amp;#x6269;&amp;#x5C55;&amp;#x4EA4;&amp;#x6362;&amp;#x5206;&amp;#x533A;&amp;#x65B9;&amp;#x6CD5;&amp;#x4E00;&amp;#xFF1A;&amp;#x521B;&amp;#x5EFA;&amp;#x4EA4;&amp;#x6362;&amp;#x5206;&amp;#x533A;  &amp;#x4F7F;&amp;#x7528;fdisk/gdisk&amp;#x7B49;&amp;#x5206;&amp;#x533A;&amp;#x5DE5;&amp;#x5177;&amp;#x">
+<meta name="keywords" content="Echo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="swap交换分区">
+<meta property="og:url" content="https://marnm.github.io/posts/37ca92de/index.html">
+<meta property="og:site_name" content="Deops&#39;s blog">
+<meta property="og:description" content="&amp;#x6269;&amp;#x5C55;&amp;#x4EA4;&amp;#x6362;&amp;#x5206;&amp;#x533A;&amp;#x65B9;&amp;#x6CD5;&amp;#x4E00;&amp;#xFF1A;&amp;#x521B;&amp;#x5EFA;&amp;#x4EA4;&amp;#x6362;&amp;#x5206;&amp;#x533A;  &amp;#x4F7F;&amp;#x7528;fdisk/gdisk&amp;#x7B49;&amp;#x5206;&amp;#x533A;&amp;#x5DE5;&amp;#x5177;&amp;#x">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-06-07T05:25:46.405Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="swap交换分区">
+<meta name="twitter:description" content="&amp;#x6269;&amp;#x5C55;&amp;#x4EA4;&amp;#x6362;&amp;#x5206;&amp;#x533A;&amp;#x65B9;&amp;#x6CD5;&amp;#x4E00;&amp;#xFF1A;&amp;#x521B;&amp;#x5EFA;&amp;#x4EA4;&amp;#x6362;&amp;#x5206;&amp;#x533A;  &amp;#x4F7F;&amp;#x7528;fdisk/gdisk&amp;#x7B49;&amp;#x5206;&amp;#x533A;&amp;#x5DE5;&amp;#x5177;&amp;#x">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
+                <i class="icon icon-lg icon-tv tv"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">swap交换分区</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#扩展交换分区"><span class="post-toc-number">1.</span> <span class="post-toc-text">扩展交换分区</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#删除交换空间"><span class="post-toc-number">2.</span> <span class="post-toc-text">删除交换空间</span></a></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-swap交换分区" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">swap交换分区</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2022-06-07 12:32:42" datetime="2022-06-07T04:32:42.000Z" itemprop="datePublished">2022-06-07</time>
+
+            <br id="mybreak">
+            
+<script>
+	mybreak.style="display:none";
+</script>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">1</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h3 id="&#x6269;&#x5C55;&#x4EA4;&#x6362;&#x5206;&#x533A;"><a href="#&#x6269;&#x5C55;&#x4EA4;&#x6362;&#x5206;&#x533A;" class="headerlink" title="&#x6269;&#x5C55;&#x4EA4;&#x6362;&#x5206;&#x533A;"></a>&#x6269;&#x5C55;&#x4EA4;&#x6362;&#x5206;&#x533A;</h3><p><strong>&#x65B9;&#x6CD5;&#x4E00;&#xFF1A;&#x521B;&#x5EFA;&#x4EA4;&#x6362;&#x5206;&#x533A;</strong></p>
+<blockquote>
+<p>&#x4F7F;&#x7528;fdisk/gdisk&#x7B49;&#x5206;&#x533A;&#x5DE5;&#x5177;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;<br>&#x4F7F;&#x7528;mkswap&#x521B;&#x5EFA;&#x4EA4;&#x6362;&#x5206;&#x533A;</p>
+</blockquote>
+<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">fdisk /dev/sdb</span><br><span class="line">n</span><br><span class="line">...</span><br><span class="line">+1G</span><br><span class="line">...</span><br><span class="line">w</span><br><span class="line"><span class="comment"># &#x8BBE;&#x7F6E;&#x4EA4;&#x6362;&#x5206;&#x533A;</span></span><br><span class="line">mkswap /dev/sdb1</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x542F;&#x7528;&#x4EA4;&#x6362;&#x5206;&#x533A;</span></span><br><span class="line">swapon /dev/sdb1</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x5F00;&#x673A;&#x6302;&#x8F7D;</span></span><br><span class="line">vim /etc/fstab</span><br><span class="line"><span class="comment">#&#x6DFB;&#x52A0;&#x5982;&#x4E0B;&#x53C2;&#x6570;</span></span><br><span class="line">/dev/sdb1   swap swap   defaults 0 0</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>&#x65B9;&#x6CD5;&#x4E8C;&#xFF1A;&#x521B;&#x5EFA;&#x4EA4;&#x6362;&#x6587;&#x4EF6;</strong><br></p><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x4EE5;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;512MB&#x5927;&#x5C0F;&#x7684;&#x6587;&#x4EF6;&#x4E3A;&#x4F8B;&#xFF1A;</span></span><br><span class="line">dd <span class="keyword">if</span>=/dev/zero of=/swapfile bs=1024 count=524288</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x521B;&#x5EFA;swap&#x683C;&#x5F0F;&#x6587;&#x4EF6;</span></span><br><span class="line">mkswap /swapfile</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x542F;&#x7528;&#x4EA4;&#x6362;&#x5206;&#x533A;</span></span><br><span class="line">swapon /swapfile</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x5F00;&#x673A;&#x6302;&#x8F7D;</span></span><br><span class="line">vim /etc/fstab</span><br><span class="line">/swapfile   swap    swap    defaults 0 0</span><br></pre></td></tr></tbody></table></figure><p></p>
+<h3 id="&#x5220;&#x9664;&#x4EA4;&#x6362;&#x7A7A;&#x95F4;"><a href="#&#x5220;&#x9664;&#x4EA4;&#x6362;&#x7A7A;&#x95F4;" class="headerlink" title="&#x5220;&#x9664;&#x4EA4;&#x6362;&#x7A7A;&#x95F4;"></a>&#x5220;&#x9664;&#x4EA4;&#x6362;&#x7A7A;&#x95F4;</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># &#x7981;&#x7528;&#x4EA4;&#x6362;&#x5206;&#x533A;/&#x4EA4;&#x6362;&#x6587;&#x4EF6;</span></span><br><span class="line">swapoff /dev/sdb1</span><br><span class="line"><span class="comment">#swapoff /swapfile</span></span><br></pre></td></tr></tbody></table></figure>
+<p>&#x4ECE;<code>/etc/fstab</code>&#x5220;&#x9664;swap&#x9879;&#x76EE;&#xFF0C;&#x4F7F;&#x7528;fdisk&#x6216;yast&#x5DE5;&#x5177;&#x5220;&#x9664;&#x5206;&#x533A;</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2022-06-07T05:25:46.405Z" itemprop="dateUpdated">2022-06-07 13:25:46</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/37ca92de/" target="_blank" rel="external">https://marnm.github.io/posts/37ca92de/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='https://marnm.github.io'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/37ca92de/&title=《swap交换分区》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/37ca92de/&title=《swap交换分区》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/37ca92de/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《swap交换分区》 — Deops's blog&url=https://marnm.github.io/posts/37ca92de/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/37ca92de/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/f0a65eeb/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：根分区扩容
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/d4e5e907/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：Nginx访问控制">下一篇：Nginx访问控制</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2022
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="https://marnm.github.io">marnm.github.io</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/37ca92de/&title=《swap交换分区》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/37ca92de/&title=《swap交换分区》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/37ca92de/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《swap交换分区》 — Deops's blog&url=https://marnm.github.io/posts/37ca92de/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/37ca92de/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABxUlEQVR42u3aQW7DMAwEwPz/0+kDWitL0lKMYnQK4EQe50CQK79e8Xq3VrLna8fCxcUdc5NbJojfV9c7XF398Ni4uLgHuevb55ResUsMuLi4T+ZWW5l1l4KLi/s/uKMGJd4fFxf3Cdx5C5LgkuHqtlkNFxd3wM2bkn2ft+S7uLi4Le48wlgXnerVD3fHxcU9ws0LSt58rHH5wczlN3FxcR/A7ZW53igVBbK4uLhHuNVS1StGa0qhxcHFxT3C7f1s3cQk7U4yVv2xMy4u7mZuUlDy49hegJJHJ7i4uGe4+Ua9YWlybFPoxXBxcW/l9mLQ3usReZmL6i4uLu5mbi+y7D1Ystvlg+Hi4h7hTgKOajOUtFCF4QcXF/cItxpu9oKPvBm6LJe4uLgP4OaJRPVotlf+cHFxT3LzwjSJPKqHLtGZMC4u7jZudSzpnW5UW5zCf4OLi3sT911ck5Gp+uIFLi7ut7i9VyKqYUc+5Nz2MgcuLu6Y2xtOJsFHHrBGgSkuLu42bn6kMY9Kq0cpH86EcXFxH8DNb9BbzdQEFxf3AdxJqDH6Pi4u7kFuHm5WbzB/JFxc3PPcSenpFbj8Txnlu7i4uB3uD70+uWj/7YXyAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>

@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Linux的PAM模块 | Deops&#39;s blog | 运维开发工程师</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="&amp;#x4E00;&amp;#x3001;pam&amp;#x7B80;&amp;#x4ECB;  Linux-PAM&amp;#xFF08;Pluggable Authentication Module for Linux&amp;#xFF0C;Linux&amp;#x53EF;&amp;#x63D2;&amp;#x5165;&amp;#x8BA4;&amp;#x8BC1;&amp;#x6A21;&amp;#x5757;&amp;#xFF09;&amp;#x662F;&amp;#x4E00;&amp;#x5957;&amp;#x5">
+<meta name="keywords" content="Echo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux的PAM模块">
+<meta property="og:url" content="https://marnm.github.io/posts/ee2f9f35/index.html">
+<meta property="og:site_name" content="Deops&#39;s blog">
+<meta property="og:description" content="&amp;#x4E00;&amp;#x3001;pam&amp;#x7B80;&amp;#x4ECB;  Linux-PAM&amp;#xFF08;Pluggable Authentication Module for Linux&amp;#xFF0C;Linux&amp;#x53EF;&amp;#x63D2;&amp;#x5165;&amp;#x8BA4;&amp;#x8BC1;&amp;#x6A21;&amp;#x5757;&amp;#xFF09;&amp;#x662F;&amp;#x4E00;&amp;#x5957;&amp;#x5">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://gitee.com/fnaichu/mypicbed/raw/master/img/202205072144562.png">
+<meta property="og:image" content="https://gitee.com/fnaichu/mypicbed/raw/master/img/202205072145957.png">
+<meta property="og:image" content="https://gitee.com/fnaichu/mypicbed/raw/master/img/202205072145318.png">
+<meta property="og:image" content="https://gitee.com/fnaichu/mypicbed/raw/master/img/202205072145698.png">
+<meta property="og:image" content="https://gitee.com/fnaichu/mypicbed/raw/master/img/202205072145551.png">
+<meta property="og:updated_time" content="2022-06-07T05:01:53.535Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux的PAM模块">
+<meta name="twitter:description" content="&amp;#x4E00;&amp;#x3001;pam&amp;#x7B80;&amp;#x4ECB;  Linux-PAM&amp;#xFF08;Pluggable Authentication Module for Linux&amp;#xFF0C;Linux&amp;#x53EF;&amp;#x63D2;&amp;#x5165;&amp;#x8BA4;&amp;#x8BC1;&amp;#x6A21;&amp;#x5757;&amp;#xFF09;&amp;#x662F;&amp;#x4E00;&amp;#x5957;&amp;#x5">
+<meta name="twitter:image" content="https://gitee.com/fnaichu/mypicbed/raw/master/img/202205072144562.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
+                <i class="icon icon-lg icon-tv tv"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Linux的PAM模块</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#一、pam简介"><span class="post-toc-number">1.</span> <span class="post-toc-text">一、pam简介</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#PAM的配置文件介绍"><span class="post-toc-number">2.</span> <span class="post-toc-text">PAM的配置文件介绍</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-PAM的模块类型"><span class="post-toc-number">3.</span> <span class="post-toc-text">1. PAM的模块类型</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-PAM的控制标记"><span class="post-toc-number">4.</span> <span class="post-toc-text">2. PAM的控制标记</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-模块路径"><span class="post-toc-number">5.</span> <span class="post-toc-text">3. 模块路径</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-模块参数"><span class="post-toc-number">6.</span> <span class="post-toc-text">4. 模块参数</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5-常用PAM模块介绍"><span class="post-toc-number">7.</span> <span class="post-toc-text">5. 常用PAM模块介绍</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4-实例"><span class="post-toc-number">8.</span> <span class="post-toc-text">4. 实例</span></a></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-Linux的PAM模块" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Linux的PAM模块</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2022-06-07 12:53:50" datetime="2022-06-07T04:53:50.000Z" itemprop="datePublished">2022-06-07</time>
+
+            <br id="mybreak">
+            
+<script>
+	mybreak.style="display:none";
+</script>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">13</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h3 id="&#x4E00;&#x3001;pam&#x7B80;&#x4ECB;"><a href="#&#x4E00;&#x3001;pam&#x7B80;&#x4ECB;" class="headerlink" title="&#x4E00;&#x3001;pam&#x7B80;&#x4ECB;"></a>&#x4E00;&#x3001;pam&#x7B80;&#x4ECB;</h3><p>  Linux-PAM&#xFF08;Pluggable Authentication Module for Linux&#xFF0C;Linux&#x53EF;&#x63D2;&#x5165;&#x8BA4;&#x8BC1;&#x6A21;&#x5757;&#xFF09;&#x662F;&#x4E00;&#x5957;&#x5171;&#x4EAB;&#x5E93;&#xFF0C;&#x4F7F;&#x672C;&#x5730;&#x7CFB;&#x7EDF;&#x7BA1;&#x7406;&#x5458;&#x53EF;&#x4EE5;&#x968F;&#x610F;&#x9009;&#x62E9;&#x7A0B;&#x5E8F;&#x7684;&#x8BA4;&#x8BC1;&#x65B9;&#x5F0F;&#x3002;&#x6362;&#x53E5;&#x8BDD;&#x8BF4;&#xFF0C;&#x4E0D;&#x7528;&#xFF08;&#x91CD;&#x5199;&#x7F16;&#x5199;&#xFF09;&#x91CD;&#x65B0;&#x7F16;&#x8BD1;&#x4E00;&#x4E2A;&#x5305;&#x542B;PAM&#x529F;&#x80FD;&#x7684;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x6539;&#x53D8;&#x5B83;&#x4F7F;&#x7528;&#x7684;&#x8BA4;&#x8BC1;&#x673A;&#x5236;&#x3002;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x4E0B;&#xFF0C;&#x5C31;&#x7B97;&#x5347;&#x7EA7;&#x672C;&#x5730;&#x8BA4;&#x8BC1;&#x673A;&#x5236;&#xFF0C;&#x4E5F;&#x4E0D;&#x7528;&#x4FEE;&#x6539;&#x7A0B;&#x5E8F;&#x3002;</p>
+<p>   PAM&#x4F7F;&#x7528;&#x914D;&#x7F6E;<code>/etc/pam.d/</code> &#x4E0B;&#x7684;&#x6587;&#x4EF6;&#x6765;&#x7BA1;&#x7406;&#x5BF9;&#x7A0B;&#x5E8F;&#x7684;&#x8BA4;&#x8BC1;&#x65B9;&#x5F0F;&#x3002;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#xFF0C;&#x8C03;&#x7528;&#x54CD;&#x5E94;&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF0C;&#x4ECE;&#x800C;&#x8C03;&#x7528;&#x672C;&#x5730;&#x7684;&#x8BA4;&#x8BC1;&#x6A21;&#x5757;&#x3002;&#x6A21;&#x5757;&#x653E;&#x7F6E;&#x5728;<code>/lib64/security</code>&#xFF08;x86&#x7CFB;&#x7EDF;&#x653E;&#x5728;/lib/security&#xFF09;&#x76EE;&#x5F55;&#x4E0B;&#xFF0C;&#x4EE5;&#x52A0;&#x8F7D;&#x52A8;&#x6001;&#x5E93;&#x7684;&#x5F62;&#x5F0F;&#x8FDB;&#x5165;&#xFF0C;&#x50CF;&#x6211;&#x4EEC;&#x4F7F;&#x7528;su&#x547D;&#x4EE4;&#x65F6;&#xFF0C;&#x7CFB;&#x7EDF;&#x4F1A;&#x63D0;&#x793A;&#x8F93;&#x5165;root&#x7528;&#x6237;&#x7684;&#x5BC6;&#x7801;&#x3002;&#x8FD9;&#x5C31;&#x662F;su&#x547D;&#x4EE4;&#x901A;&#x8FC7;&#x8C03;&#x7528;PAM&#x6A21;&#x5757;&#x5B9E;&#x73B0;&#x7684;&#x3002;</p>
+<h3 id="PAM&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x4ECB;&#x7ECD;"><a href="#PAM&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x4ECB;&#x7ECD;" class="headerlink" title="PAM&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x4ECB;&#x7ECD;"></a>PAM&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x4ECB;&#x7ECD;</h3><p>  PAM&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x6709;&#x4E24;&#x79CD;&#x5199;&#x6CD5;:</p>
+<ul>
+<li>&#x4E00;&#x79CD;&#x662F;&#x5199;&#x5728;/etc/pam.conf&#x6587;&#x4EF6;&#x4E2D;&#xFF0C;&#x4F46;centos6&#x4E4B;&#x540E;&#x7684;&#x7CFB;&#x7EDF;&#x4E2D;&#xFF0C;&#x8FD9;&#x4E2A;&#x6587;&#x4EF6;&#x5C31;&#x6CA1;&#x6709;&#x4E86;&#x3002;</li>
+<li>&#x53E6;&#x4E00;&#x79CD;&#x5199;&#x6CD5;&#x662F;,&#x5C06;PAM&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x653E;&#x5230;/etc/pam.d/&#x76EE;&#x5F55;&#x4E0B;,&#x5176;&#x89C4;&#x5219;&#x5185;&#x5BB9;&#x90FD;&#x662F;&#x4E0D;&#x5305;&#x542B; service &#x90E8;&#x5206;&#x7684;&#xFF0C;&#x5373;&#x4E0D;&#x5305;&#x542B;&#x670D;&#x52A1;&#x540D;&#x79F0;&#xFF0C;&#x800C;/etc/pam.d &#x76EE;&#x5F55;&#x4E0B;&#x6587;&#x4EF6;&#x7684;&#x540D;&#x5B57;&#x5C31;&#x662F;&#x670D;&#x52A1;&#x540D;&#x79F0;&#x3002;&#x5982;: vsftpd,login&#x7B49;.,&#x53EA;&#x662F;&#x5C11;&#x4E86;&#x6700;&#x5DE6;&#x8FB9;&#x7684;&#x670D;&#x52A1;&#x540D;&#x5217;.&#x5982;:/etc/pam.d/sshd</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://gitee.com/fnaichu/mypicbed/raw/master/img/202205072144562.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>&#x7531;&#x4E0A;&#x56FE;&#x53EF;&#x4EE5;&#x5C06;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x5206;&#x4E3A;&#x56DB;&#x5217;&#xFF0C;<br>&#x7B2C;&#x4E00;&#x5217;&#x4EE3;&#x8868;&#x6A21;&#x5757;&#x7C7B;&#x578B;<br>&#x7B2C;&#x4E8C;&#x5217;&#x4EE3;&#x8868;&#x63A7;&#x5236;&#x6807;&#x8BB0;<br>&#x7B2C;&#x4E09;&#x5217;&#x4EE3;&#x8868;&#x6A21;&#x5757;&#x8DEF;&#x5F84;<br>&#x7B2C;&#x56DB;&#x3001;&#x4E94;&#x5217;&#x4EE3;&#x8868;&#x6A21;&#x5757;&#x53C2;&#x6570;</p>
+<h3 id="1-PAM&#x7684;&#x6A21;&#x5757;&#x7C7B;&#x578B;"><a href="#1-PAM&#x7684;&#x6A21;&#x5757;&#x7C7B;&#x578B;" class="headerlink" title="1. PAM&#x7684;&#x6A21;&#x5757;&#x7C7B;&#x578B;"></a>1. PAM&#x7684;&#x6A21;&#x5757;&#x7C7B;&#x578B;</h3><p>Linux-PAM&#x6709;&#x56DB;&#x79CD;&#x6A21;&#x5757;&#x7C7B;&#x578B;&#xFF0C;&#x5206;&#x522B;&#x4EE3;&#x8868;&#x56DB;&#x79CD;&#x4E0D;&#x540C;&#x7684;&#x4EFB;&#x52A1;<br>&#x5B83;&#x4EEC;&#x662F;&#xFF1A;&#x8BA4;&#x8BC1;&#x7BA1;&#x7406;auth&#x3001;&#x8D26;&#x53F7;&#x7BA1;&#x7406;account&#x3001;&#x4F1A;&#x8BDD;&#x7BA1;&#x7406;session&#x3001;&#x5BC6;&#x7801;&#x7BA1;&#x7406;password&#xFF0C;&#x4E00;&#x4E2A;&#x7C7B;&#x578B;&#x53EF;&#x80FD;&#x6709;&#x591A;&#x884C;&#xFF0C;&#x5B83;&#x4EEC;&#x6309;&#x987A;&#x5E8F;&#x4E00;&#x6B21;&#x7531;PAM&#x6A21;&#x5757;&#x8C03;&#x7528;&#x3002;</p>
+<table>
+<thead>
+<tr>
+<th>&#x7BA1;&#x7406;&#x65B9;&#x5F0F;</th>
+<th>&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>auth</td>
+<td>&#x7528;&#x6765;&#x5BF9;&#x7528;&#x6237;&#x7684;&#x8EAB;&#x4EFD;&#x8FDB;&#x884C;&#x8BC6;&#x522B;&#x3002;&#x5982;&#xFF1A;&#x63D0;&#x793A;&#x7528;&#x6237;&#x8F93;&#x5165;&#x5BC6;&#x7801;&#xFF0C;&#x6216;&#x5224;&#x65AD;&#x4F7F;&#x7528;&#x662F;&#x5426;&#x4E3A;root&#x7B49;</td>
+</tr>
+<tr>
+<td>account</td>
+<td>&#x5BF9;&#x8D26;&#x53F7;&#x7684;&#x4E2A;&#x5411;&#x5C5E;&#x6027;&#x8FDB;&#x884C;&#x68C0;&#x67E5;&#x3002;&#x5982;&#xFF1A;&#x662F;&#x5426;&#x5141;&#x8BB8;&#x767B;&#x5F55;&#xFF0C;&#x662F;&#x5426;&#x8FBE;&#x5230;&#x6700;&#x5927;&#x7528;&#x6237;&#x6570;&#xFF0C;&#x6216;&#x662F;root&#x7528;&#x6237;&#x662F;&#x5426;&#x5141;&#x8BB8;&#x5728;&#x8FD9;&#x4E2A;&#x7EC8;&#x7AEF;&#x767B;&#x5F55;&#x7B49;</td>
+</tr>
+<tr>
+<td>session</td>
+<td>&#x8FD9;&#x4E2A;&#x6A21;&#x5757;&#x7528;&#x6765;&#x5B9A;&#x4E49;&#x7528;&#x6237;&#x6265;&#x4F30;&#x524D;&#x7684;&#xFF0C;&#x53CA;&#x7528;&#x6237;&#x9000;&#x51FA;&#x540E;&#x6240;&#x8981;&#x8FDB;&#x884C;&#x7684;&#x64CD;&#x4F5C;&#x3002;&#x5982;&#xFF1A;&#x767B;&#x5F55;&#x8FDE;&#x63A5;&#x4FE1;&#x606F;&#xFF0C;&#x7528;&#x6237;&#x6570;&#x7684;&#x6253;&#x5F00;&#x4E0E;&#x5173;&#x95ED;&#xFF0C;&#x6302;&#x8F7D;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#x7B49;&#x3002;</td>
+</tr>
+<tr>
+<td>password</td>
+<td>&#x4F7F;&#x7528;&#x7528;&#x6237;&#x4FE1;&#x606F;&#x6765;&#x66F4;&#x65B0;&#x3002;&#x5982;&#xFF1A;&#x4FEE;&#x6539;&#x7528;&#x6237;&#x5BC6;&#x7801;</td>
+</tr>
+</tbody>
+</table>
+<h3 id="2-PAM&#x7684;&#x63A7;&#x5236;&#x6807;&#x8BB0;"><a href="#2-PAM&#x7684;&#x63A7;&#x5236;&#x6807;&#x8BB0;" class="headerlink" title="2. PAM&#x7684;&#x63A7;&#x5236;&#x6807;&#x8BB0;"></a>2. PAM&#x7684;&#x63A7;&#x5236;&#x6807;&#x8BB0;</h3><p>PAM&#x4F7F;&#x7528;&#x63A7;&#x5236;&#x6807;&#x8BB0;&#x6765;&#x5904;&#x7406;&#x548C;&#x5224;&#x65AD;&#x5404;&#x4E2A;&#x6A21;&#x5757;&#x7684;&#x8FD4;&#x56DE;&#x503C;&#x3002;&#xFF08;&#x5728;&#x6B64;&#x53EA;&#x8BF4;&#x660E;&#x7B80;&#x5355;&#x7684;&#x8BA4;&#x8BC1;&#x6807;&#x8BB0;&#xFF09;</p>
+<table>
+<thead>
+<tr>
+<th>&#x63A7;&#x5236;&#x6807;&#x8BB0;</th>
+<th>&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>required</td>
+<td>&#x8868;&#x793A;&#x53CA;&#x65F6;&#x67D0;&#x4E2A;&#x6A21;&#x5757;&#x5BF9;&#x7528;&#x6237;&#x7684;&#x6768;&#x5CE5;&#x5931;&#x8D25;&#xFF0C;&#x4E5F;&#x8981;&#x7B49;&#x6240;&#x6709;&#x7684;&#x6A21;&#x5757;&#x90FD;&#x6267;&#x884C;&#x5B8C;&#x6BD5;&#x540E;&#xFF0C;PAM&#x624D;&#x653E;&#x56DE;&#x9519;&#x8BEF;&#x4FE1;&#x606F;&#x3002;&#x8FD9;&#x6837;&#x505A;&#x662F;&#x4E3A;&#x4E86;&#x4E0D;&#x8BA9;&#x7528;&#x6237;&#x77E5;&#x9053;&#x88AB;&#x54EA;&#x4E2A;&#x6A21;&#x5757;&#x62D2;&#x7EDD;&#x3002;&#x5982;&#x679C;&#x5BF9;&#x7528;&#x6237;&#x9A8C;&#x8BC1;&#x6210;&#x529F;&#xFF0C;&#x6240;&#x6709;&#x7684;&#x6A21;&#x5757;&#x90FD;&#x4F1A;&#x8FD4;&#x56DE;&#x6210;&#x529F;&#x4FE1;&#x606F;&#x3002;</td>
+</tr>
+<tr>
+<td>requisite</td>
+<td>&#x4E0E;required&#x76F8;&#x4F3C;&#xFF0C;&#x4F46;&#x662F;&#x5982;&#x679C;&#x8FD9;&#x4E2A;&#x6A21;&#x5757;&#x8FD4;&#x56DE;&#x5931;&#x8D25;&#xFF0C;&#x5219;&#x7ACB;&#x523B;&#x5411;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x8FD4;&#x56DE;&#x5931;&#x8D25;&#xFF0C;&#x8868;&#x793A;&#x6B64;&#x7C7B;&#x578B;&#x5931;&#x8D25;&#x3002;&#x4E0D;&#x518D;&#x8FDB;&#x884C;&#x540E;&#x9762;&#x7684;&#x64CD;&#x4F5C;&#x3002;</td>
+</tr>
+<tr>
+<td>sufficient</td>
+<td>&#x8868;&#x793A;&#x5982;&#x679C;&#x4E00;&#x4E2A;&#x7528;&#x6237;&#x901A;&#x8FC7;&#x8FD9;&#x4E2A;&#x6A21;&#x5757;&#x7684;&#x9A8C;&#x8BC1;&#xFF0C;PAM&#x7ED3;&#x6784;&#x5C31;&#x7ACB;&#x523B;&#x8FD4;&#x56DE;&#x9A8C;&#x8BC1;&#x6210;&#x529F;&#x4FE1;&#x606F;&#xFF08;&#x5373;&#x4F7F;&#x524D;&#x9762;&#x6709;&#x6A21;&#x5757;fail&#x4E86;&#xFF0C;&#x4E5F;&#x4F1A;&#x628A;fail&#x7ED3;&#x679C;&#x5FFD;&#x7565;&#x6389;&#xFF09;&#xFF0C;&#x628A;&#x63A7;&#x5236;&#x6743;&#x4EA4;&#x56DE;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x3002;&#x540E;&#x9762;&#x7684;&#x5C42;&#x53E0;&#x6A21;&#x5757;&#x5373;&#x4F7F;&#x4F7F;&#x7528;requisite&#x6216;&#x8005;required&#x63A7;&#x5236;&#x6807;&#x5FD7;&#xFF0C;&#x4E5F;&#x4E0D;&#x518D;&#x6267;&#x884C;&#x3002;&#x5982;&#x679C;&#x9A8C;&#x8BC1;&#x5931;&#x8D25;&#xFF0C;sufficent&#x7684;&#x4F5C;&#x7528;&#x548C;optional&#x76F8;&#x540C;</td>
+</tr>
+<tr>
+<td>optional</td>
+<td>&#x8868;&#x793A;&#x5373;&#x4F7F;&#x672C;&#x884C;&#x6307;&#x5B9A;&#x7684;&#x6A21;&#x5757;&#x9A8C;&#x8BC1;&#x5931;&#x8D25;&#xFF0C;&#x4E5F;&#x5141;&#x8BB8;&#x7528;&#x6237;&#x63A5;&#x53D7;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x63D0;&#x4F9B;&#x7684;&#x670D;&#x52A1;&#xFF0C;&#x4E00;&#x822C;&#x8FD4;&#x56DE;PAM_IGNORE&#xFF08;&#x5FFD;&#x7565;&#xFF09;</td>
+</tr>
+</tbody>
+</table>
+<h3 id="3-&#x6A21;&#x5757;&#x8DEF;&#x5F84;"><a href="#3-&#x6A21;&#x5757;&#x8DEF;&#x5F84;" class="headerlink" title="3. &#x6A21;&#x5757;&#x8DEF;&#x5F84;"></a>3. &#x6A21;&#x5757;&#x8DEF;&#x5F84;</h3><p>&#x6A21;&#x5757;&#x8DEF;&#x5F84;.&#x5373;&#x8981;&#x8C03;&#x7528;&#x6A21;&#x5757;&#x7684;&#x4F4D;&#x7F6E;. &#x5982;&#x679C;&#x662F;64&#x4F4D;&#x7CFB;&#x7EDF;&#xFF0C;&#x4E00;&#x822C;&#x4FDD;&#x5B58;&#x5728;/lib64/security,&#x5982;: pam_unix.so<br>&#x540C;&#x4E00;&#x4E2A;&#x6A21;&#x5757;,&#x53EF;&#x4EE5;&#x51FA;&#x73B0;&#x5728;&#x4E0D;&#x540C;&#x7684;&#x7C7B;&#x578B;&#x4E2D;.&#x5B83;&#x5728;&#x4E0D;&#x540C;&#x7684;&#x7C7B;&#x578B;&#x4E2D;&#x6240;&#x6267;&#x884C;&#x7684;&#x64CD;&#x4F5C;&#x90FD;&#x4E0D;&#x76F8;&#x540C;.&#x8FD9;&#x662F;&#x7531;&#x4E8E;&#x6BCF;&#x4E2A;&#x6A21;&#x5757;<br>&#x9488;&#x5BF9;&#x4E0D;&#x540C;&#x7684;&#x6A21;&#x5757;&#x7C7B;&#x578B;,&#x7F16;&#x5236;&#x4E86;&#x4E0D;&#x540C;&#x7684;&#x6267;&#x884C;&#x51FD;&#x6570;.</p>
+<h3 id="4-&#x6A21;&#x5757;&#x53C2;&#x6570;"><a href="#4-&#x6A21;&#x5757;&#x53C2;&#x6570;" class="headerlink" title="4. &#x6A21;&#x5757;&#x53C2;&#x6570;"></a>4. &#x6A21;&#x5757;&#x53C2;&#x6570;</h3><p>&#x6A21;&#x5757;&#x53C2;&#x6570;,&#x5373;&#x4F20;&#x9012;&#x7ED9;&#x6A21;&#x5757;&#x7684;&#x53C2;&#x6570;.&#x53C2;&#x6570;&#x53EF;&#x4EE5;&#x6709;&#x591A;&#x4E2A;,&#x4E4B;&#x95F4;&#x7528;&#x7A7A;&#x683C;&#x5206;&#x9694;&#x5F00;,&#x5982;:<br>password   required   pam_unix.so nullok obscure min=4 max=8 md5</p>
+<h3 id="5-&#x5E38;&#x7528;PAM&#x6A21;&#x5757;&#x4ECB;&#x7ECD;"><a href="#5-&#x5E38;&#x7528;PAM&#x6A21;&#x5757;&#x4ECB;&#x7ECD;" class="headerlink" title="5. &#x5E38;&#x7528;PAM&#x6A21;&#x5757;&#x4ECB;&#x7ECD;"></a>5. &#x5E38;&#x7528;PAM&#x6A21;&#x5757;&#x4ECB;&#x7ECD;</h3><table>
+<thead>
+<tr>
+<th>PAM&#x6A21;&#x5757;</th>
+<th>&#x7ED3;&#x5408;&#x7BA1;&#x7406;&#x7C7B;&#x578B;</th>
+<th>&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pam_unix.so</td>
+<td>auth</td>
+<td>&#x63D0;&#x793A;&#x7528;&#x6237;&#x8F93;&#x5165;&#x5BC6;&#x7801;&#xFF0C;&#x5E76;&#x4E0E;/ec/shadow&#x6587;&#x4EF6;&#x76F8;&#x6BD4;&#x5BF9;&#x3002;&#x5339;&#x914D;&#x8FD4;&#x56DE;0</td>
+</tr>
+<tr>
+<td>-</td>
+<td>account</td>
+<td>&#x68C0;&#x67E5;&#x7528;&#x6237;&#x7684;&#x8D26;&#x6237;&#x4FE1;&#x606F;&#xFF08;&#x5305;&#x62EC;&#x662F;&#x5426;&#x8FC7;&#x671F;&#x7B49;&#xFF09;&#x3002;&#x8D26;&#x6237;&#x53EF;&#x7528;&#x65F6;&#xFF0C;&#x8FD4;&#x56DE;0.</td>
+</tr>
+<tr>
+<td>-</td>
+<td>password</td>
+<td>&#x4FEE;&#x6539;&#x7528;&#x6237;&#x7684;&#x5BC6;&#x7801;&#x3002;&#x5C06;&#x7528;&#x6237;&#x8F93;&#x5165;&#x7684;&#x5BC6;&#x7801;&#xFF0C;&#x4F5C;&#x4E3A;&#x7528;&#x6237;&#x7684;&#x65B0;&#x5BC6;&#x7801;&#x66F4;&#x65B0;shadow&#x6587;&#x4EF6;</td>
+</tr>
+<tr>
+<td>pam_shells.so</td>
+<td>auth</td>
+<td>&#x5982;&#x679C;&#x7528;&#x6237;&#x5411;&#x767B;&#x5F55;&#x7CFB;&#x7EDF;&#xFF0C;&#x90A3;&#x4E48;&#x5B83;&#x7684;shell&#x5FC5;&#x987B;&#x662F;&#x5728;/etc/shells&#x6587;&#x4EF6;&#x4E2D;&#x4E4B;&#x4E00;&#x7684;shell</td>
+</tr>
+<tr>
+<td>-</td>
+<td>account</td>
+<td></td>
+</tr>
+<tr>
+<td>pam_deny.so</td>
+<td>account</td>
+<td>&#x8BE5;&#x6A21;&#x5757;&#x7528;&#x7528;&#x4E8E;&#x62D2;&#x7EDD;&#x8BBF;&#x95EE;</td>
+</tr>
+<tr>
+<td>-</td>
+<td>auth</td>
+<td></td>
+</tr>
+<tr>
+<td>-</td>
+<td>password</td>
+<td></td>
+</tr>
+<tr>
+<td>-</td>
+<td>session</td>
+<td></td>
+</tr>
+<tr>
+<td>pam_permit.so</td>
+<td>auth</td>
+<td>&#x8BE5;&#x6A21;&#x5757;&#x4EFB;&#x4F55;&#x65F6;&#x5019;&#x90FD;&#x8FD4;&#x56DE;&#x6210;&#x529F;</td>
+</tr>
+<tr>
+<td>-</td>
+<td>account</td>
+<td></td>
+</tr>
+<tr>
+<td>-</td>
+<td>session</td>
+<td></td>
+</tr>
+<tr>
+<td>pam_securetty.so</td>
+<td>auth</td>
+<td>&#x5982;&#x679C;&#x7528;&#x6237;&#x8981;&#x4EE5;root&#x767B;&#x5F55;&#x65F6;&#xFF0C;&#x5219;&#x767B;&#x5F55;&#x7684;tty&#x5FC5;&#x987B;&#x5728;/etc/securetty&#x4E4B;&#x4E2D;</td>
+</tr>
+<tr>
+<td>pam_listfile.so</td>
+<td>auth</td>
+<td>&#x8BBF;&#x95EE;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x7684;&#x63A7;&#x5236;&#x5F00;&#x5173;</td>
+</tr>
+<tr>
+<td>-</td>
+<td>account</td>
+<td></td>
+</tr>
+<tr>
+<td>-</td>
+<td>password</td>
+<td></td>
+</tr>
+<tr>
+<td>-</td>
+<td>session</td>
+<td></td>
+</tr>
+<tr>
+<td>pam_cracklib.so</td>
+<td>password</td>
+<td>&#x8FD9;&#x4E2A;&#x6A21;&#x5757;&#x53EF;&#x4EE5;&#x63D2;&#x5165;&#x5230;&#x4E00;&#x4E2A;&#x7A0B;&#x5E8F;&#x7684;&#x5BC6;&#x7801;&#x6808;&#x4E2D;&#xFF0C;&#x7528;&#x4E8E;&#x68C0;&#x67E5;&#x5BC6;&#x7801;&#x7684;&#x5F3A;&#x5EA6;&#x3002;</td>
+</tr>
+<tr>
+<td>pam_limits.so</td>
+<td>session</td>
+<td>&#x5B9A;&#x4E49;&#x4F7F;&#x7528;&#x7CFB;&#x7EDF;&#x8D44;&#x6E90;&#x7684;&#x4E0A;&#x9650;&#xFF0C;root&#x7528;&#x6237;&#x4E5F;&#x4F1A;&#x53D7;&#x6B64;&#x9650;&#x5236;&#xFF0C;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;/etc/security/limits.conf&#x6216;/etc/security/limits.d/*.conf&#x6765;&#x8BBE;&#x5B9A;</td>
+</tr>
+</tbody>
+</table>
+<h3 id="4-&#x5B9E;&#x4F8B;"><a href="#4-&#x5B9E;&#x4F8B;" class="headerlink" title="4. &#x5B9E;&#x4F8B;"></a>4. &#x5B9E;&#x4F8B;</h3><p>1&#x3001;pam_securetty.so</p>
+<p>&#x9650;&#x5236;root&#x4ECE;tty1,tty2&#xFF0C;tty5&#x767B;&#x5F55;&#xFF08;&#x65E0;&#x5B9E;&#x9645;&#x610F;&#x4E49;&#xFF0C;&#x53EA;&#x662F;&#x6F14;&#x793A;pam_securetty&#x7684;&#x7528;&#x6CD5;&#xFF09;<br>&#x5728;<code>/etc/pam.d/login</code>&#x4E2D;&#x6DFB;&#x52A0;&#x5982;&#x4E0B;&#x4E00;&#x884C;</p>
+<pre><code>auth    required    pam_securetty.so
+</code></pre><p><img src="https://gitee.com/fnaichu/mypicbed/raw/master/img/202205072145957.png" alt=""></p>
+<p>&#x5728;/etc/securetty&#x4E2D;&#x5C06;tty1&#x3001;tty2&#x3001;tty5&#x6CE8;&#x91CA;&#x5373;&#x53EF;<br></p><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://gitee.com/fnaichu/mypicbed/raw/master/img/202205072145318.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure><p></p>
+<p>&#x4E4B;&#x540E;&#x4F7F;&#x7528;root&#x7528;&#x6237;&#x518D;&#x6B21;&#x767B;&#x5F55;&#xFF0C;&#x5C31;&#x4F1A;&#x51FA;&#x73B0;</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://gitee.com/fnaichu/mypicbed/raw/master/img/202205072145698.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p>&#x8FD9;&#x4E48;&#x505A;&#x5176;&#x5B9E;&#x5E76;&#x4E0D;&#x662F;&#x53EA;&#x9650;&#x5236;root&#x7528;&#x6237;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x5C06;&#x5176;&#x5B83;&#x7528;&#x6237;&#x7528;&#x6B64;&#x65B9;&#x6CD5;&#x6765;&#x9650;&#x5B9A;&#xFF0C;&#x5F53;&#x7CFB;&#x7EDF;&#x5B89;&#x88C5;&#x5B8C;&#x6210;&#x540E;&#xFF0C;&#x4F7F;&#x7528;&#x6B64;&#x65B9;&#x6CD5;&#x6765;&#x589E;&#x5F3A;&#x4E00;&#x4E0B;&#x5B89;&#x5168;&#x6027;&#x3002;</p>
+<hr>
+<p>2&#x3001;pam_listfile.so</p>
+<p>&#x4EC5;jaking1&#x7528;&#x6237;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;ssh&#x8FDC;&#x7A0B;&#x767B;&#x5F55;<br>&#x5728;/etc/pam.d/sshd&#x6587;&#x4EF6;&#x4E2D;&#x6DFB;&#x52A0;&#x4E00;&#x6761;</p>
+<pre><code>auth    required    pam_listfile.so item=user   sense=allow file=/etc/sshdusers onerr=succeed
+</code></pre><p><img src="https://gitee.com/fnaichu/mypicbed/raw/master/img/202205072145551.png" alt=""></p>
+<p>&#x6DFB;&#x52A0;&#x4E24;&#x4E2A;&#x7528;&#x6237;jaking1&#x548C;jaking2&#x5E76;&#x8BBE;&#x7F6E;&#x5BC6;&#x7801;</p>
+<pre><code>useradd jaking1
+useradd jaking2
+echo jaking666 | passwd --stdin jaking1
+echo jaking666 | passwd --stdin jaking2
+</code></pre><p>&#x7F16;&#x8F91;file&#x6307;&#x5B9A;&#x7684;&#x6587;&#x4EF6;&#xFF0C;&#x6DFB;&#x52A0;&#x4E0A;&#x4E00;&#x4E2A;&#x7528;&#x6237;jaking1</p>
+<pre><code>echo &quot;jaking1&quot; &gt; /etc/sshdusers
+cat /etc/sshdusers
+</code></pre><p>&#x4F7F;&#x7528;jaking2&#x7528;&#x6237;&#x767B;&#x5F55;<br>&#x53EF;&#x4EE5;&#x770B;&#x5230;&#x63D0;&#x793A;&#x8F93;&#x5165;&#x5BC6;&#x7801;&#xFF0C;&#x5F53;&#x8F93;&#x5165;&#x6B63;&#x786E;&#x7684;&#x5BC6;&#x7801;&#x540E;&#x4F1A;&#x63D0;&#x793A;<br>&#x5C31;&#x50CF;&#x8F93;&#x5165;&#x4E86;&#x9519;&#x8BEF;&#x7684;&#x5BC6;&#x7801;&#x4E00;&#x6837;&#xFF0C;&#x800C;&#x5728;&#x4F7F;&#x7528;jaking1&#x7528;&#x6237;&#x767B;&#x5F55;&#x5219;&#x4E0D;&#x4F1A;&#x51FA;&#x73B0;&#x62D2;&#x7EDD;&#x767B;&#x5F55;&#x7684;&#x63D0;&#x793A;<br>[root@VM2 ~]# ssh <a href="mailto:jaking2@192.168.10.11" target="_blank" rel="noopener">jaking2@192.168.10.11</a><br><a href="mailto:jaking2@192.168.10.11" target="_blank" rel="noopener">jaking2@192.168.10.11</a>&#x2018;s password:<br>Permission denied, please try again.<br><a href="mailto:jaking2@192.168.10.11" target="_blank" rel="noopener">jaking2@192.168.10.11</a>&#x2018;s password:<br>Permission denied, please try again.<br><a href="mailto:jaking2@192.168.10.11" target="_blank" rel="noopener">jaking2@192.168.10.11</a>&#x2018;s password:<br>Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password).<br>[root@VM2 ~]# ssh <a href="mailto:jaking1@192.168.10.11" target="_blank" rel="noopener">jaking1@192.168.10.11</a><br><a href="mailto:jaking1@192.168.10.11" target="_blank" rel="noopener">jaking1@192.168.10.11</a>&#x2018;s password:<br>Last login: Thu Aug 12 09:59:05 2021 from 192.168.10.12<br>[jaking1@VM1 ~]$<br>&#x6CE8;&#xFF1A;&#x6B64;&#x5904;&#x5982;&#x679C;root&#x4E5F;&#x4F7F;&#x7528;ssh&#x8FDC;&#x7A0B;&#x8FDE;&#x63A5;&#xFF0C;&#x4E5F;&#x4F1A;&#x53D7;&#x5230;pam_listfile.so&#x9650;&#x5236;&#x7684;&#x3002;<br>&#x5176;&#x5B9E;pam&#x6A21;&#x5757;&#x7684;&#x4F7F;&#x7528;&#x65B9;&#x6CD5;&#x5957;&#x8DEF;&#x90FD;&#x5DEE;&#x4E0D;&#x591A;&#xFF0C;&#x5982;&#x60F3;&#x4E86;&#x89E3;&#x66F4;&#x591A;&#x7684;PAM&#x6A21;&#x5757;&#x7684;&#x7528;&#x6CD5;&#x8BF7;man modules</p>
+<p>[root@VM2 ~]# ssh <a href="mailto:root@192.168.10.11" target="_blank" rel="noopener">root@192.168.10.11</a><br><a href="mailto:root@192.168.10.11" target="_blank" rel="noopener">root@192.168.10.11</a>&#x2018;s password:<br>Permission denied, please try again.<br><a href="mailto:root@192.168.10.11" target="_blank" rel="noopener">root@192.168.10.11</a>&#x2018;s password:<br>Permission denied, please try again.<br><a href="mailto:root@192.168.10.11" target="_blank" rel="noopener">root@192.168.10.11</a>&#x2018;s password:<br>Permission denied (publickey,gssapi-keyex,gssapi-with-mic,password).</p>
+<p>&#x6E29;&#x99A8;&#x63D0;&#x793A;&#xFF1A;<br>&#x5982;&#x679C;&#x53D1;&#x751F;&#x9519;&#x8BEF;&#xFF0C;Linux-PAM &#x53EF;&#x80FD;&#x4F1A;&#x6539;&#x53D8;&#x7CFB;&#x7EDF;&#x7684;&#x5B89;&#x5168;&#x6027;&#x3002;&#x8FD9;&#x53D6;&#x51B3;&#x4E8E;&#x4F60;&#x81EA;&#x5DF1;&#x7684;&#x9009;&#x62E9;&#xFF0C;&#x4F60;&#x53EF;&#x4EE5;&#x9009;&#x62E9;&#x4E0D;&#x5B89;&#x5168;(&#x5F00;&#x653E;&#x7CFB;&#x7EDF;)&#x548C;&#x7EDD;&#x5BF9;&#x5B89;&#x5168;(&#x62D2;&#x7EDD;&#x4EFB;&#x4F55;&#x8BBF;&#x95EE;)&#x3002;&#x901A;&#x5E38;&#xFF0C;Linux-PAM &#x5728;&#x53D1;&#x751F;&#x9519;&#x8BEF;&#x65F6;&#xFF0C;&#x503E;&#x5411;&#x4E8E;&#x540E;&#x8005;&#x3002;&#x4EFB;&#x4F55;&#x7684;&#x914D;&#x7F6E;&#x9519;&#x8BEF;&#x90FD;&#x53EF;&#x80FD;&#x5BFC;&#x81F4;&#x7CFB;&#x7EDF;&#x6574;&#x4E2A;&#x6216;&#x8005;&#x90E8;&#x5206;&#x65E0;&#x6CD5;&#x8BBF;&#x95EE;&#x3002;<br>&#x914D;&#x7F6E; Linux-PAM &#x65F6;&#xFF0C;&#x53EF;&#x80FD;&#x9047;&#x5230;&#x6700;&#x5927;&#x7684;&#x95EE;&#x9898;&#x53EF;&#x80FD;&#x5C31;&#x662F; Linux-PAM &#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;/etc/pam.d/*&#x88AB;&#x5220;&#x9664;&#x4E86;&#x3002;&#x5982;&#x679C;&#x53D1;&#x751F;&#x8FD9;&#x79CD;&#x4E8B;&#x60C5;&#xFF0C;&#x4F60;&#x7684;&#x7CFB;&#x7EDF;&#x5C31;&#x4F1A;&#x88AB;&#x9501;&#x4F4F;&#x3002;<br>&#x6709;&#x529E;&#x6CD5;&#x53EF;&#x4EE5;&#x8FDB;&#x884C;&#x6062;&#x590D;&#xFF0C;&#x6700;&#x597D;&#x7684;&#x65B9;&#x6CD5;&#x5C31;&#x662F;&#x7528;&#x4E00;&#x4E2A;&#x5907;&#x4EFD;&#x7684;&#x955C;&#x50CF;&#x6765;&#x6062;&#x590D;&#x7CFB;&#x7EDF;&#xFF0C;&#x6216;&#x8005;&#x767B;&#x5F55;&#x8FDB;&#x5355;&#x7528;&#x6237;&#x6A21;&#x5F0F;&#x7136;&#x540E;&#x8FDB;&#x884C;&#x6B63;&#x786E;&#x7684;&#x914D;&#x7F6E;&#x3002;</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2022-06-07T05:01:53.535Z" itemprop="dateUpdated">2022-06-07 13:01:53</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/ee2f9f35/" target="_blank" rel="external">https://marnm.github.io/posts/ee2f9f35/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='https://marnm.github.io'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/ee2f9f35/&title=《Linux的PAM模块》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/ee2f9f35/&title=《Linux的PAM模块》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/ee2f9f35/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Linux的PAM模块》 — Deops's blog&url=https://marnm.github.io/posts/ee2f9f35/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/ee2f9f35/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/e8c4eb08/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：OpenSSL使用教程
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/57bbf635/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：iptables学习笔记">下一篇：iptables学习笔记</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2022
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="https://marnm.github.io">marnm.github.io</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/ee2f9f35/&title=《Linux的PAM模块》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/ee2f9f35/&title=《Linux的PAM模块》 — Deops's blog&source=Echo" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/ee2f9f35/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Linux的PAM模块》 — Deops's blog&url=https://marnm.github.io/posts/ee2f9f35/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/ee2f9f35/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAAB0ElEQVR42u3aQY7DIAwF0N7/0pkDVKTfdmAq9bGq2jQ8WFhg+/WKx7UY77+uvlm987Vj4OLijrnX7cinf0ckS8oNuLi457n5xPexpUdJDLi4uN/MzQ8u92/GxcX9BW6+pN47cXFxz3PzI8gkwCWXq8fuari4uANunqXc93lLfhcXF7fFvYpj9a/V9PchqTw7Li7uEW71opKHpxWuV5jBxcU9ya0Gl2oxtVo4+RD+cHFxj3DvU5PJ8aVXMqmmRaIsLy4u7gZudYJJ+mOSlsXFxd3N7bVHTP7V2w5cXNyT3KRkUk1njIqj+eUHFxd3G7fX9JAvIFl8kmaNKj+4uLiPcpMJ8ml6CY5oYbi4uMe5vUNJNfzloe1DIMPFxd3GraY2JuXVfDsKm4iLi7uNW22MmLRb9Ro7lj0juLi4B7lJeMqPONVWrQ/BFBcX9yB30rtRfUN+xCnct3BxcR/iXsWR78G88QIXF/e/uL3EaDVS5pecx5o5cHFxx9zq5SRH5JRCgMPFxT3IzUsaSbm0l04tJ0xxcXG/hpsQq8XX8o0NFxf3y7jVQmzvmeXzuLi4B7l5MbXaVNHLxBSKrLi4uBu4k8Jn3qhRTYg8kN/FxcXtcP8Ap1oLCXBT9/UAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>
