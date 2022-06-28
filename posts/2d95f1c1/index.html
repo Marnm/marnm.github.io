@@ -6,7 +6,7 @@
     
     
     
-    <title>ELK覆盖时间轴和全量分析Nginx | Deops&#39;s blog | 运维开发工程师</title>
+    <title>ElasticSearch环境搭建 | Deops&#39;s blog | 运维开发工程师</title>
     <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
     
     <meta name="theme-color" content="#77AAFF">
@@ -42,14 +42,14 @@
     <meta name="description" content="document.querySelectorAll(&apos;.github-emoji&apos;)           .forEach(el =&amp;gt; {             if (!el.dataset.src) { return; }             const img = document.createElement(&apos;img&apos;);             img.style">
 <meta name="keywords" content="Echo">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ELK覆盖时间轴和全量分析Nginx">
-<meta property="og:url" content="https://marnm.github.io/posts/575b5119/index.html">
+<meta property="og:title" content="ElasticSearch环境搭建">
+<meta property="og:url" content="https://marnm.github.io/posts/2d95f1c1/index.html">
 <meta property="og:site_name" content="Deops&#39;s blog">
 <meta property="og:description" content="document.querySelectorAll(&apos;.github-emoji&apos;)           .forEach(el =&amp;gt; {             if (!el.dataset.src) { return; }             const img = document.createElement(&apos;img&apos;);             img.style">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2022-06-07T05:46:04.440Z">
+<meta property="og:updated_time" content="2022-06-28T09:21:19.846Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ELK覆盖时间轴和全量分析Nginx">
+<meta name="twitter:title" content="ElasticSearch环境搭建">
 <meta name="twitter:description" content="document.querySelectorAll(&apos;.github-emoji&apos;)           .forEach(el =&amp;gt; {             if (!el.dataset.src) { return; }             const img = document.createElement(&apos;img&apos;);             img.style">
     
         <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
@@ -152,7 +152,7 @@
         <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
           <i class="icon icon-lg icon-navicon"></i>
         </a>
-        <div class="flex-col header-title ellipsis">ELK覆盖时间轴和全量分析Nginx</div>
+        <div class="flex-col header-title ellipsis">ElasticSearch环境搭建</div>
         
         <div class="search-wrap" id="search-wrap">
             <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
@@ -189,14 +189,14 @@
 
 <div class="container body-wrap">
     
-<article id="post-ELK覆盖时间轴和全量分析Nginx" class="post-article article-type-post fade" itemprop="blogPost">
+<article id="post-ElasticSearch环境搭建" class="post-article article-type-post fade" itemprop="blogPost">
 
     <div class="post-card">
-        <h1 class="post-card-title">ELK覆盖时间轴和全量分析Nginx</h1>
+        <h1 class="post-card-title">ElasticSearch环境搭建</h1>
         <div class="post-meta">
             <i class="icon icon-lg icon-calendar-o"></i>
             发表于
-            <time class="post-time" title="2022-06-07 13:39:16" datetime="2022-06-07T05:39:16.000Z" itemprop="datePublished">2022-06-07</time>
+            <time class="post-time" title="2022-06-15 14:41:28" datetime="2022-06-15T06:41:28.000Z" itemprop="datePublished">2022-06-15</time>
 
             <br id="mybreak">
             
@@ -239,12 +239,12 @@
     <div class="content">
         
 <span class="post-time">
-    最后更新：<time datetime="2022-06-07T05:46:04.440Z" itemprop="dateUpdated">2022-06-07 13:46:04</time>
+    最后更新：<time datetime="2022-06-28T09:21:19.846Z" itemprop="dateUpdated">2022-06-28 17:21:19</time>
 </span>
 
 
         
-        原文链接：<a href="/posts/575b5119/" target="_blank" rel="external">https://marnm.github.io/posts/575b5119/</a>
+        原文链接：<a href="/posts/2d95f1c1/" target="_blank" rel="external">https://marnm.github.io/posts/2d95f1c1/</a>
         
     </div>
     <footer>
@@ -274,7 +274,7 @@
 <div class="page-share" id="pageShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/575b5119/&title=《ELK覆盖时间轴和全量分析Nginx》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/2d95f1c1/&title=《ElasticSearch环境搭建》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -284,22 +284,22 @@
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/575b5119/&title=《ELK覆盖时间轴和全量分析Nginx》 — Deops's blog&source=Echo" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/2d95f1c1/&title=《ElasticSearch环境搭建》 — Deops's blog&source=Echo" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/575b5119/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/2d95f1c1/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《ELK覆盖时间轴和全量分析Nginx》 — Deops's blog&url=https://marnm.github.io/posts/575b5119/&via=https://marnm.github.io" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《ElasticSearch环境搭建》 — Deops's blog&url=https://marnm.github.io/posts/2d95f1c1/&via=https://marnm.github.io" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/575b5119/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/2d95f1c1/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -322,9 +322,9 @@
 <nav class="post-nav flex-row flex-justify-between">
   
     <div class="waves-block waves-effect prev">
-      <a href="/posts/23381a3e/" id="post-prev" class="post-nav-link">
+      <a href="/posts/39c0f6a1/" id="post-prev" class="post-nav-link">
         <h4 class="title">
-          上一篇：Filebeat和Logstash架构
+          上一篇：Prometheus学习笔记
         </h4>
       </a>
     </div>
@@ -332,8 +332,8 @@
 
   
     <div class="waves-block waves-effect next">
-      <a href="/posts/b11339a9/" id="post-next" class="post-nav-link">
-        <h4 class="title" data-hover="下一篇：Logstash去除不需要的字段">下一篇：Logstash去除不需要的字段</h4>
+      <a href="/posts/38843421/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：Ceph分布式存储部署笔记">下一篇：Ceph分布式存储部署笔记</h4>
       </a>
     </div>
   
@@ -420,7 +420,7 @@
 <div class="global-share" id="globalShare">
     <ul class="reset share-icons">
       <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/575b5119/&title=《ELK覆盖时间轴和全量分析Nginx》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/2d95f1c1/&title=《ElasticSearch环境搭建》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
           <i class="icon icon-weibo"></i>
         </a>
       </li>
@@ -430,22 +430,22 @@
         </a>
       </li>
       <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/575b5119/&title=《ELK覆盖时间轴和全量分析Nginx》 — Deops's blog&source=Echo" data-title=" QQ">
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/2d95f1c1/&title=《ElasticSearch环境搭建》 — Deops's blog&source=Echo" data-title=" QQ">
           <i class="icon icon-qq"></i>
         </a>
       </li>
       <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/575b5119/" data-title=" Facebook">
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/2d95f1c1/" data-title=" Facebook">
           <i class="icon icon-facebook"></i>
         </a>
       </li>
       <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《ELK覆盖时间轴和全量分析Nginx》 — Deops's blog&url=https://marnm.github.io/posts/575b5119/&via=https://marnm.github.io" data-title=" Twitter">
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《ElasticSearch环境搭建》 — Deops's blog&url=https://marnm.github.io/posts/2d95f1c1/&via=https://marnm.github.io" data-title=" Twitter">
           <i class="icon icon-twitter"></i>
         </a>
       </li>
       <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/575b5119/" data-title=" Google+">
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/2d95f1c1/" data-title=" Google+">
           <i class="icon icon-google-plus"></i>
         </a>
       </li>
@@ -456,7 +456,7 @@
 <div class="page-modal wx-share" id="wxShare">
     <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
     <p class="wechatshare">扫一扫，分享到微信</p>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAAByUlEQVR42u3aQXKDMAwF0Nz/0nTbTgL5kkHQmecV00L88EJjffN6xWP7Nd7/vnf9fv/esycPXFzcZe52OI7vSV5p77/J73/4NVxc3EHucaHZu07KXL4cUbHDxcV9MLcwQbGo4eLi/ndub7uTFEdcXNwncPMtSN7eJLNc2Kvh4uIucPOU8rrrS/JdXFzcFncrjmossh6a/HkWFxd3hNsLMhJ6Ugp7AQouLu7V3HMPTXutVL40uLi4M9xqxNlrmY7jj+pxLC4u7tXc48fyYpcct1Q3TB+ucXFxB7nJ0Wa1AOUvUNhm4eLi3srNm5Dehxe9CAYXF3eGm0y8EncmjVAesuDi4k5y89Cz+mK9gvhlRlxc3BFudeLq8WoSuDQ3TLi4uJdx8+3FtjzyzdDuEuDi4o5ze/S8KcrnigoZLi7uCLcaiFSfqh667PZquLi4I9xqGFrdyvS2ONEOCBcX91TuWa1LHrnmH17g4uLexT35k4g4Ko3ij5WPOXBxcZe5veakWtTyJfiyNLi4uIPc/EgjKUwrFTQKTHFxcR/Jve0gFhcX9/HcXkfVa59wcXHnub1wM79nhYiLizvP7ZWe/PikF4ickO/i4uJ2uD9RkVLBlTEAewAAAABJRU5ErkJggg==" alt="微信分享二维码">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABw0lEQVR42u3aQXLDIAwF0Nz/0u6646n7JQFJO49VJiHm4YVGSLxe8bhuozfnPv+1Y+Di4o651+N4ptyXTDZzn5kYcHFxz3OfA03v0VcwcgMuLu4nc+eJCy4u7v/j5qnPMx0XF/fzuXkK0ktcqoerBWc1XFzcAbeauOz4vKW+i4uL2+JexTHZUq9o8u2/uLi4R7iTQkbSSqluIFoXFxf3TdxqmyQphubJTbnJiouLu5SbPzQPWEnqUy2LfMvIcHFxN3PzcJY0Oaoz8xeEi4t7ktsLW5PtJSHsx2fi4uIe4U6Wb560Vj0BFxf3IDcPRtVGaX45oxDIcHFxN3B7Fyaq7ZP8RfyyMVxc3A/gVguayfGp2mIpBDJcXNxF3F5qMtlSvmI1hcLFxV3LzVsgSXUiD0x5whTdI8PFxd3Anbc68iZKtUSCi4v7Lm7eUs23NCmtFn7GxcVdyr2KY56m5CESFxf3Xdz5lYjnZapbyosyuLi4u7mT1ki1UJK/gsI9EVxc3G3cvKWRBKZJBF1Q38XFxT3OnbdaR41YXFzcP8VdVsF9no+Li3uQ22u19r6pEnFxcc9ze39OjkaTgsiC+i4uLm6H+wUYKOIxjj+4OgAAAABJRU5ErkJggg==" alt="微信分享二维码">
 </div>
 
 

@@ -39,18 +39,18 @@
 
 
     
-    <meta name="description" content="gpg&amp;#x751F;&amp;#x6210;&amp;#x968F;&amp;#x673A;&amp;#x5B57;&amp;#x7B26;123456# gpg --gen-random --armor 2 12# --gen-random &amp;#x968F;&amp;#x673A;&amp;#x751F;&amp;#x6210;&amp;#x5B57;&amp;#x7B26;# -armor &amp;#x751F;&amp;#x6210;ASCII&amp;#x5B57;&amp;#x7B26;#">
+    <meta name="description" content="gpg&amp;#x751F;&amp;#x6210;&amp;#x968F;&amp;#x673A;&amp;#x5B57;&amp;#x7B26;# gpg --gen-random --armor 2 12# --gen-random &amp;#x968F;&amp;#x673A;&amp;#x751F;&amp;#x6210;&amp;#x5B57;&amp;#x7B26;# -armor &amp;#x751F;&amp;#x6210;ASCII&amp;#x5B57;&amp;#x7B26;# 2 &amp;#x8">
 <meta name="keywords" content="Echo">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux生成随机密码方法">
 <meta property="og:url" content="https://marnm.github.io/posts/b3f64b7d/index.html">
 <meta property="og:site_name" content="Deops&#39;s blog">
-<meta property="og:description" content="gpg&amp;#x751F;&amp;#x6210;&amp;#x968F;&amp;#x673A;&amp;#x5B57;&amp;#x7B26;123456# gpg --gen-random --armor 2 12# --gen-random &amp;#x968F;&amp;#x673A;&amp;#x751F;&amp;#x6210;&amp;#x5B57;&amp;#x7B26;# -armor &amp;#x751F;&amp;#x6210;ASCII&amp;#x5B57;&amp;#x7B26;#">
+<meta property="og:description" content="gpg&amp;#x751F;&amp;#x6210;&amp;#x968F;&amp;#x673A;&amp;#x5B57;&amp;#x7B26;# gpg --gen-random --armor 2 12# --gen-random &amp;#x968F;&amp;#x673A;&amp;#x751F;&amp;#x6210;&amp;#x5B57;&amp;#x7B26;# -armor &amp;#x751F;&amp;#x6210;ASCII&amp;#x5B57;&amp;#x7B26;# 2 &amp;#x8">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2022-06-07T05:23:31.254Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux生成随机密码方法">
-<meta name="twitter:description" content="gpg&amp;#x751F;&amp;#x6210;&amp;#x968F;&amp;#x673A;&amp;#x5B57;&amp;#x7B26;123456# gpg --gen-random --armor 2 12# --gen-random &amp;#x968F;&amp;#x673A;&amp;#x751F;&amp;#x6210;&amp;#x5B57;&amp;#x7B26;# -armor &amp;#x751F;&amp;#x6210;ASCII&amp;#x5B57;&amp;#x7B26;#">
+<meta name="twitter:description" content="gpg&amp;#x751F;&amp;#x6210;&amp;#x968F;&amp;#x673A;&amp;#x5B57;&amp;#x7B26;# gpg --gen-random --armor 2 12# --gen-random &amp;#x968F;&amp;#x673A;&amp;#x751F;&amp;#x6210;&amp;#x5B57;&amp;#x7B26;# -armor &amp;#x751F;&amp;#x6210;ASCII&amp;#x5B57;&amp;#x7B26;# 2 &amp;#x8">
     
         <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
     
@@ -222,15 +222,15 @@
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
             <hr>
-<h3 id="gpg&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;"><a href="#gpg&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;" class="headerlink" title="gpg&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;"></a>gpg&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># </span></span><br><span class="line">gpg --gen-random --armor 2 12</span><br><span class="line"><span class="comment"># --gen-random &#x968F;&#x673A;&#x751F;&#x6210;&#x5B57;&#x7B26;</span></span><br><span class="line"><span class="comment"># -armor &#x751F;&#x6210;ASCII&#x5B57;&#x7B26;</span></span><br><span class="line"><span class="comment"># 2 &#x8D28;&#x91CF;&#x7EA7;&#x522B;&#xFF0C;0&#x3001;1&#x3001;2&#x4E09;&#x4E2A;&#x9009;&#x9879;</span></span><br><span class="line"><span class="comment"># 12    &#x5B57;&#x7B26;&#x957F;&#x5EA6;</span></span><br></pre></td></tr></tbody></table></figure>
-<p><strong>&#x8FC7;&#x6EE4;&#x7279;&#x6B8A;&#x5B57;&#x7B26;</strong><br></p><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gpg --gen-random --armor 2 12 | sed <span class="string">&apos;s/[^a-zA-Z0-9]//g&apos;</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<h3 id="gpg&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;"><a href="#gpg&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;" class="headerlink" title="gpg&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;"></a>gpg&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># </span></span><br><span class="line">gpg --gen-random --armor 2 12</span><br><span class="line"><span class="comment"># --gen-random &#x968F;&#x673A;&#x751F;&#x6210;&#x5B57;&#x7B26;</span></span><br><span class="line"><span class="comment"># -armor &#x751F;&#x6210;ASCII&#x5B57;&#x7B26;</span></span><br><span class="line"><span class="comment"># 2 &#x8D28;&#x91CF;&#x7EA7;&#x522B;&#xFF0C;0&#x3001;1&#x3001;2&#x4E09;&#x4E2A;&#x9009;&#x9879;</span></span><br><span class="line"><span class="comment"># 12    &#x5B57;&#x7B26;&#x957F;&#x5EA6;</span></span><br></pre></td></tr></tbody></table></figure>
+<p><strong>&#x8FC7;&#x6EE4;&#x7279;&#x6B8A;&#x5B57;&#x7B26;</strong><br></p><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">gpg --gen-random --armor 2 12 | sed <span class="string">&apos;s/[^a-zA-Z0-9]//g&apos;</span></span><br></pre></td></tr></tbody></table></figure><p></p>
 <p><strong>&#x68C0;&#x6D4B;&#x5BC6;&#x7801;&#x5F3A;&#x5EA6;</strong></p>
 <blockquote>
 <p>&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x5B89;&#x88C5;<code>cracklib</code>&#x5DE5;&#x5177;&#x6765;&#x68C0;&#x67E5;&#x5BC6;&#x7801;&#x5F3A;&#x5EA6;</p>
 </blockquote>
-<figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">yum install cracklib</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;123545&quot;</span> | cracklib-check</span><br></pre></td></tr></tbody></table></figure>
-<h3 id="openssl&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;"><a href="#openssl&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;" class="headerlink" title="openssl&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;"></a>openssl&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;</h3><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl rand -base64 15</span><br></pre></td></tr></tbody></table></figure>
-<p><strong>&#x8FC7;&#x6EE4;&#x7279;&#x6B8A;&#x5B57;&#x7B26;</strong><br></p><figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">openssl rand -base64 15 | sed <span class="string">&apos;s/[a-zA-Z0-9]//g&apos;</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">yum install cracklib</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;123545&quot;</span> | cracklib-check</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="openssl&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;"><a href="#openssl&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;" class="headerlink" title="openssl&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;"></a>openssl&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">openssl rand -base64 15</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>&#x8FC7;&#x6EE4;&#x7279;&#x6B8A;&#x5B57;&#x7B26;</strong><br></p><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">openssl rand -base64 15 | sed <span class="string">&apos;s/[a-zA-Z0-9]//g&apos;</span></span><br></pre></td></tr></tbody></table></figure><p></p>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {

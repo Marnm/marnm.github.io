@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Prometheus学习笔记 | Deops&#39;s blog | 运维开发工程师</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="二进制安装Download Prometheus Binary Pakcagecurl -O --progress http://192.168.210.200/0221-note/prometheus-2.36.2.linux-amd64.tar.gztar zxvf prometheus-2.36.2.linux-amd64.tar.gz -C /opt/mv prometheus-2.36.">
+<meta name="keywords" content="Echo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Prometheus学习笔记">
+<meta property="og:url" content="https://marnm.github.io/posts/39c0f6a1/index.html">
+<meta property="og:site_name" content="Deops&#39;s blog">
+<meta property="og:description" content="二进制安装Download Prometheus Binary Pakcagecurl -O --progress http://192.168.210.200/0221-note/prometheus-2.36.2.linux-amd64.tar.gztar zxvf prometheus-2.36.2.linux-amd64.tar.gz -C /opt/mv prometheus-2.36.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-06-28T09:21:19.849Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Prometheus学习笔记">
+<meta name="twitter:description" content="二进制安装Download Prometheus Binary Pakcagecurl -O --progress http://192.168.210.200/0221-note/prometheus-2.36.2.linux-amd64.tar.gztar zxvf prometheus-2.36.2.linux-amd64.tar.gz -C /opt/mv prometheus-2.36.">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
+                <i class="icon icon-lg icon-tv tv"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Prometheus学习笔记</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#二进制安装"><span class="post-toc-number">1.</span> <span class="post-toc-text">二进制安装</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#二进制安装node-exporter"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">二进制安装node_exporter</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#rpm安装grafana"><span class="post-toc-number">2.</span> <span class="post-toc-text">rpm安装grafana</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Prometheus基于Consul的服务发现"><span class="post-toc-number">3.</span> <span class="post-toc-text">Prometheus基于Consul的服务发现</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#使用Consul监控MySQL"><span class="post-toc-number">4.</span> <span class="post-toc-text">使用Consul监控MySQL</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#使用Consul监控HAProxy"><span class="post-toc-number">5.</span> <span class="post-toc-text">使用Consul监控HAProxy</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Prometheus监控Nginx"><span class="post-toc-number">6.</span> <span class="post-toc-text">Prometheus监控Nginx</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Prometheus配置AlertManager"><span class="post-toc-number">7.</span> <span class="post-toc-text">Prometheus配置AlertManager</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Prometheus配置pushgateway"><span class="post-toc-number">8.</span> <span class="post-toc-text">Prometheus配置pushgateway</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#扩展知识——Consul的使用"><span class="post-toc-number">9.</span> <span class="post-toc-text">扩展知识——Consul的使用</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">10.</span> <span class="post-toc-text">参考</span></a></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-Prometheus学习笔记" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Prometheus学习笔记</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2022-06-28 17:19:36" datetime="2022-06-28T09:19:36.000Z" itemprop="datePublished">2022-06-28</time>
+
+            <br id="mybreak">
+            
+<script>
+	mybreak.style="display:none";
+</script>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">29</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="&#x4E8C;&#x8FDB;&#x5236;&#x5B89;&#x88C5;"><a href="#&#x4E8C;&#x8FDB;&#x5236;&#x5B89;&#x88C5;" class="headerlink" title="&#x4E8C;&#x8FDB;&#x5236;&#x5B89;&#x88C5;"></a>&#x4E8C;&#x8FDB;&#x5236;&#x5B89;&#x88C5;</h2><p><strong>Download Prometheus Binary Pakcage</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">curl -O --progress http://192.168.210.200/0221-note/prometheus-2.36.2.linux-amd64.tar.gz</span><br><span class="line">tar zxvf prometheus-2.36.2.linux-amd64.tar.gz -C /opt/</span><br><span class="line">mv prometheus-2.36.2.linux-amd64/ prometheus-2.36.2</span><br><span class="line">cd /opt/prometheus-2.36.2/</span><br><span class="line">vim /etc/systemd/system/prometheus.service</span><br></pre></td></tr></tbody></table></figure><p></p>
+<a id="more"></a>
+<p><strong>Create Systemctl start file</strong><br></p><figure class="highlight ini"><table><tbody><tr><td class="code"><pre><span class="line"><span class="section">[Unit]</span></span><br><span class="line"><span class="attr">Description</span>=Prometheus</span><br><span class="line"><span class="attr">Wants</span>=network-<span class="literal">on</span>line.target</span><br><span class="line"><span class="attr">After</span>=network-<span class="literal">on</span>line.target</span><br><span class="line"></span><br><span class="line"><span class="section">[Service]</span></span><br><span class="line"><span class="attr">User</span>=prometheus</span><br><span class="line"><span class="attr">Group</span>=prometheus</span><br><span class="line"><span class="attr">Type</span>=simple</span><br><span class="line"><span class="attr">ExecStart</span>=/opt/prometheus-<span class="number">2.36</span>.<span class="number">2</span>/prometheus \</span><br><span class="line">    --config.file /opt/prometheus-2.36.2/prometheus.yml \</span><br><span class="line">    --storage.tsdb.path /var/lib/prometheus/ \</span><br><span class="line">    --web.console.templates=/opt/prometheus-2.36.2/consoles \</span><br><span class="line">    --web.console.libraries=/opt/prometheus-2.36.2/console_libraries</span><br><span class="line"></span><br><span class="line"><span class="section">[Install]</span></span><br><span class="line"><span class="attr">WantedBy</span>=multi-user.target</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>Configure Prometheus</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">useradd --no-create-home --shell /bin/false prometheus</span><br><span class="line">useradd --no-create-home --shell /bin/false node_exporter</span><br><span class="line">mkdir mkdir /var/lib/prometheus</span><br><span class="line">chown prometheus:prometheus /opt/prometheus-2.36.2/</span><br><span class="line">chown prometheus:prometheus /var/lib/prometheus/</span><br><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl start prometheus</span><br><span class="line">systemctl status prometheus</span><br><span class="line">systemctl enable prometheus</span><br></pre></td></tr></tbody></table></figure><p></p>
+<figure class="highlight xml"><table><tbody><tr><td class="code"><pre><span class="line">[root@server12 opt]# netstat -pantul | grep prometheus</span><br><span class="line">tcp6       0      0 :::9090                 :::*                    LISTEN      4556/prometheus</span><br><span class="line">tcp6       0      0 ::1:9090                ::1:49814               ESTABLISHED 4556/prometheus</span><br><span class="line">tcp6       0      0 ::1:49814               ::1:9090                ESTABLISHED 4556/prometheus</span><br><span class="line">[root@server12 opt]#</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="&#x4E8C;&#x8FDB;&#x5236;&#x5B89;&#x88C5;node-exporter"><a href="#&#x4E8C;&#x8FDB;&#x5236;&#x5B89;&#x88C5;node-exporter" class="headerlink" title="&#x4E8C;&#x8FDB;&#x5236;&#x5B89;&#x88C5;node_exporter"></a>&#x4E8C;&#x8FDB;&#x5236;&#x5B89;&#x88C5;node_exporter</h3><p><strong>Download node-exporter</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">curl -O --progress http://192.168.210.200/0221-note/node_exporter-1.3.1.linux-amd64.tar.gz</span><br><span class="line">tar zxvf node_exporter-1.3.1.linux-amd64.tar.gz -C /opt/</span><br><span class="line">mv node_exporter-1.3.1.linux-amd64/ node_exporter-1.3.1</span><br><span class="line">cd node_exporter-1.3.1/</span><br><span class="line">systemctl stop prometheus</span><br><span class="line">systemctl status prometheus</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p> <strong>Create systemctl start file mangement node-exporter</strong><br> </p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">vim /etc/systemd/system/node_exporter.service</span><br></pre></td></tr></tbody></table></figure><p></p>
+ <figure class="highlight ini"><table><tbody><tr><td class="code"><pre><span class="line"><span class="section"> [Unit]</span></span><br><span class="line"><span class="attr">Description</span>=Prometheus Node Exporter</span><br><span class="line"><span class="attr">After</span>=network.target</span><br><span class="line"></span><br><span class="line"><span class="section">[Service]</span></span><br><span class="line"><span class="attr">ExecStart</span>=/opt/node_exporter-<span class="number">1.3</span>.<span class="number">1</span>/node_exporter</span><br><span class="line"></span><br><span class="line"><span class="section">[Install]</span></span><br><span class="line"><span class="attr">WantedBy</span>=multi-user.target</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl start node_exporter</span><br><span class="line">systemctl status node_exporter</span><br><span class="line">systemctl enable node_exporter</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="rpm&#x5B89;&#x88C5;grafana"><a href="#rpm&#x5B89;&#x88C5;grafana" class="headerlink" title="rpm&#x5B89;&#x88C5;grafana"></a>rpm&#x5B89;&#x88C5;grafana</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">curl -O --progress http://192.168.210.200/0221-note/grafana-enterprise-8.5.6-1.x86_64.rpm</span><br><span class="line">yum install -y fontconfig urw-base35 urw-fonts</span><br><span class="line">rpm -ivh grafana-enterprise-8.5.6-1.x86_64.rpm</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>&#x4FEE;&#x6539;&#x914D;&#x7F6E;&#x6587;&#x4EF6;</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">vim /etc/grafana/grafana.ini</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x53BB;&#x6389;&#x76F8;&#x5173;&#x6CE8;&#x91CA;<br></p><figure class="highlight"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">#################################### Server ####################################</span></span><br><span class="line"><span class="section">[server]</span></span><br><span class="line"><span class="comment"># Protocol (http, https, h2, socket)</span></span><br><span class="line"><span class="attr">protocol</span> = http</span><br><span class="line"></span><br><span class="line"><span class="comment"># The ip address to bind to, empty will bind to all interfaces</span></span><br><span class="line"><span class="attr">http_addr</span> = <span class="number">0.0</span>.<span class="number">0.0</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># The http port  to use</span></span><br><span class="line"><span class="attr">http_port</span> = <span class="number">3000</span></span><br><span class="line">....&#x7701;&#x7565;...</span><br><span class="line">...</span><br><span class="line">...</span><br></pre></td></tr></tbody></table></figure><p></p>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">systemctl start grafana-server</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="Prometheus&#x57FA;&#x4E8E;Consul&#x7684;&#x670D;&#x52A1;&#x53D1;&#x73B0;"><a href="#Prometheus&#x57FA;&#x4E8E;Consul&#x7684;&#x670D;&#x52A1;&#x53D1;&#x73B0;" class="headerlink" title="Prometheus&#x57FA;&#x4E8E;Consul&#x7684;&#x670D;&#x52A1;&#x53D1;&#x73B0;"></a>Prometheus&#x57FA;&#x4E8E;Consul&#x7684;&#x670D;&#x52A1;&#x53D1;&#x73B0;</h2><p><strong>&#x4E0B;&#x8F7D;&#x5B89;&#x88C5;consul</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">curl -O --progress http://192.168.210.200/0221-note/consul_1.12.2_linux_amd64.zip</span><br><span class="line">unzip consul_1.12.2_linux_amd64.zip -d /usr/local/bin/</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x4E0E;Prometheus&#x96C6;&#x6210;</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">mkdir /etc/consul</span><br><span class="line">mkdir /var/lib/consul</span><br><span class="line"><span class="meta">#</span><span class="bash">&#x521B;&#x5EFA;&#x914D;&#x7F6E;&#x6587;&#x4EF6;</span></span><br><span class="line">vim /etc/consul/nodes1.json</span><br></pre></td></tr></tbody></table></figure><p></p>
+<figure class="highlight json"><table><tbody><tr><td class="code"><pre><span class="line">{</span><br><span class="line">  <span class="attr">&quot;services&quot;</span>: [</span><br><span class="line">    {</span><br><span class="line">      <span class="attr">&quot;id&quot;</span>: <span class="string">&quot;node_exporter-node01&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;node01&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;address&quot;</span>: <span class="string">&quot;192.168.73.11&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;port&quot;</span>: <span class="number">9100</span>,</span><br><span class="line">      <span class="attr">&quot;tags&quot;</span>: [<span class="string">&quot;nodes&quot;</span>],</span><br><span class="line">      <span class="attr">&quot;checks&quot;</span>: [{</span><br><span class="line">        <span class="attr">&quot;http&quot;</span>: <span class="string">&quot;http://192.168.73.11:9100/metrics&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;interval&quot;</span>: <span class="string">&quot;5s&quot;</span></span><br><span class="line">      }]</span><br><span class="line">    },</span><br><span class="line">    {</span><br><span class="line">      <span class="attr">&quot;id&quot;</span>: <span class="string">&quot;node_exporter-node02&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;node02&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;address&quot;</span>: <span class="string">&quot;192.168.73.12&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;port&quot;</span>: <span class="number">9100</span>,</span><br><span class="line">      <span class="attr">&quot;tags&quot;</span>: [<span class="string">&quot;prometheus&quot;</span>],</span><br><span class="line">      <span class="attr">&quot;checks&quot;</span>: [{</span><br><span class="line">        <span class="attr">&quot;http&quot;</span>: <span class="string">&quot;http://192.168.73.12:9100/metrics&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;interval&quot;</span>: <span class="string">&quot;5s&quot;</span></span><br><span class="line">      }]</span><br><span class="line">    }</span><br><span class="line">  ]</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>&#x4FEE;&#x6539;Prometheus&#x914D;&#x7F6E;</strong><br></p><figure class="highlight yaml"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># my global config</span></span><br><span class="line"><span class="attr">global:</span></span><br><span class="line"><span class="attr">  scrape_interval:</span> <span class="number">15</span><span class="string">s</span> <span class="comment"># Set the scrape interval to every 15 seconds. Default is every 1 minute.</span></span><br><span class="line"><span class="attr">  evaluation_interval:</span> <span class="number">15</span><span class="string">s</span> <span class="comment"># Evaluate rules every 15 seconds. The default is every 1 minute.</span></span><br><span class="line"></span><br><span class="line"><span class="attr">alerting:</span></span><br><span class="line"><span class="attr">  alertmanagers:</span></span><br><span class="line"><span class="attr">    - static_configs:</span></span><br><span class="line"><span class="attr">        - targets:</span></span><br><span class="line">          <span class="comment"># - alertmanager:9093</span></span><br><span class="line"><span class="attr">rule_files:</span></span><br><span class="line"></span><br><span class="line"><span class="attr">scrape_configs:</span></span><br><span class="line"><span class="attr">  - job_name:</span> <span class="string">&quot;prometheus&quot;</span>  <span class="comment"># /etc/consul/nodes1.json&#x91CC;&#x7684;tags&#x91CC;&#x7684;&#x53C2;&#x6570;&#x6709;&#x624D;&#x884C;</span></span><br><span class="line"><span class="attr">    consul_sd_configs:</span></span><br><span class="line"><span class="attr">    - server:</span> <span class="string">&quot;192.168.73.12:8500&quot;</span>  <span class="comment"># &#x6539;&#x6210;&#x81EA;&#x5DF1;&#x7684;IP</span></span><br><span class="line"><span class="attr">      tags:</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">&quot;prometheus&quot;</span></span><br><span class="line"><span class="attr">      refresh_interval:</span> <span class="number">10</span><span class="string">s</span></span><br><span class="line"></span><br><span class="line"><span class="attr">  - job_name:</span> <span class="string">&apos;nodes&apos;</span></span><br><span class="line"><span class="attr">    consul_sd_configs:</span></span><br><span class="line"><span class="attr">    - server:</span> <span class="string">&quot;192.168.73.12:8500&quot;</span>  <span class="comment"># &#x6539;&#x6210;&#x81EA;&#x5DF1;&#x7684;IP</span></span><br><span class="line"><span class="attr">      tags:</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">&quot;nodes&quot;</span></span><br><span class="line"><span class="attr">      refresh_interval:</span> <span class="number">5</span><span class="string">s</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x68C0;&#x67E5;Prometheus&#x914D;&#x7F6E;&#x662F;&#x5426;&#x6B63;&#x786E;</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">./promtool check config ./prometheus.yml</span><br><span class="line">Checking ./prometheus.yml</span><br><span class="line"> SUCCESS: ./prometheus.yml is valid prometheus config file syntax</span><br><span class="line"></span><br><span class="line">[root@server12 prometheus-2.36.2]#</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x540E;&#x53F0;&#x8FD0;&#x884C;Consul</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">nohup consul agent -server -bootstrap -bind=192.168.73.12 -client=192.168.73.12 -data-dir=/var/lib/consul -config-dir=/etc/consul -ui -node=192.168.73.12 &amp; # &#x56DE;&#x8F66;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x91CD;&#x542F;Prometheus</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">systemctl restart prometheus</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>consul&#x65E5;&#x5FD7;</strong></p>
+<pre><code>consul agent -dev -data-dir=/data/consul -config-dir=/etc/consul -ui
+</code></pre><p><strong>&#x5199;&#x5165;&#x6D4B;&#x8BD5;&#x6570;&#x636E;</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">curl -X PUT -d &apos;{&quot;id&quot;:&quot;node-exporter11&quot;,&quot;name&quot;:&quot;node-exporter11&quot;,&quot;address&quot;:&quot;192.168.73.11&quot;,&quot;port&quot;:9100,&quot;tags&quot;:[&quot;node-exporter&quot;],&quot;checks&quot;:[{&quot;http&quot;:&quot;http://192.168.73.11:9100/&quot;,&quot;interval&quot;: &quot;5s&quot;}]}&apos; http://192.168.73.11:8500/v1/agent/service/register</span><br><span class="line"></span><br><span class="line">curl -X PUT -d &apos;{&quot;id&quot;:&quot;node-exporter12&quot;,&quot;name&quot;:&quot;node-exporter12&quot;,&quot;address&quot;:&quot;192.168.73.12&quot;,&quot;port&quot;:9100,&quot;tags&quot;:[&quot;node-exporter&quot;],&quot;checks&quot;:[{&quot;http&quot;:&quot;http://192.168.73.12:9100/&quot;,&quot;interval&quot;: &quot;5s&quot;}]}&apos; http://192.168.73.12:8500/v1/agent/service/register</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x4E0A;&#x9762;&#x7684;IP&#x5730;&#x5740;&#x6539;&#x6210;&#x81EA;&#x5DF1;&#x7684;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> curl&#x5E38;&#x7528;&#x53C2;&#x6570;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -X/--request  &#x6307;&#x5B9A;&#x4EC0;&#x4E48;&#x6307;&#x4EE4;&#xFF08;&#x8BF7;&#x6C42;&#xFF09;[GET|POST|PUT|DELETE|...] &#x6307;&#x5B9A;HTTP method&#x53D1;&#x51FA;&#x6307;&#x5B9A;&#x7684;request</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -d/--data <span class="string">&quot;XX=XXXX...&quot;</span> &#x8BBE;&#x5B9A;HTTP&#x53C2;&#x6570;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -H/--header <span class="string">&quot;XX:XXX&quot;</span> &#x8BBE;&#x5B9A;request&#x7684;header</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -i/--include &#x663E;&#x793A;response&#x7684;header</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -v/--verbose &#x663E;&#x793A;&#x7EA4;&#x8BE6;&#x7EC6;&#x4FE1;&#x606F;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -u/--user  <span class="string">&quot;XX:XXX&quot;</span> &#x4F7F;&#x7528;&#x8005;&#x8D26;&#x53F7;&#x5BC6;&#x7801;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -b/--cookie cookie&#x6587;&#x4EF6;&#x8DEF;&#x5F84;&#x4F7F;&#x7528;cookie</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<hr>
+<h2 id="&#x4F7F;&#x7528;Consul&#x76D1;&#x63A7;MySQL"><a href="#&#x4F7F;&#x7528;Consul&#x76D1;&#x63A7;MySQL" class="headerlink" title="&#x4F7F;&#x7528;Consul&#x76D1;&#x63A7;MySQL"></a>&#x4F7F;&#x7528;Consul&#x76D1;&#x63A7;MySQL</h2><blockquote>
+<p>MySQL Exporter &#x662F;&#x7528;&#x6765;&#x91C7;&#x96C6; MySQL/MariaDB &#x6570;&#x636E;&#x5E93;&#x76D1;&#x63A7;&#x6307;&#x6807;&#x800C;&#x8BBE;&#x8BA1;&#x5F00;&#x53D1;&#x7684;&#xFF0C;&#x901A;&#x8FC7; Exporter &#x4E0A;&#x62A5;&#x6838;&#x5FC3;&#x7684;&#x6570;&#x636E;&#x5E93;&#x6307;&#x6807;&#xFF0C;&#x7528;&#x4E8E;&#x5F02;&#x5E38;&#x62A5;&#x8B66;&#x548C;&#x76D1;&#x63A7;&#x5927;&#x76D8;&#x5C55;&#x793A;&#xFF0C;&#x4E91;&#x76D1;&#x63A7; Prometheus &#x63D0;&#x4F9B;&#x4E86;&#x4E0E; MySQL Exporter &#x96C6;&#x6210;&#x53CA;&#x5F00;&#x7BB1;&#x5373;&#x7528;&#x7684; Grafana &#x76D1;&#x63A7;&#x5927;&#x76D8;&#x3002;</p>
+</blockquote>
+<p><strong>&#x5B89;&#x88C5;&#x6570;&#x636E;&#x5E93;</strong><br>MySQL/MariaDB&#x90FD;&#x53EF;&#x4EE5;<br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5B89;&#x88C5;</span></span><br><span class="line">yum install -y mariadb-server</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x542F;&#x52A8;</span></span><br><span class="line">systemctl start mariadb</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x521D;&#x59CB;&#x5316;</span></span><br><span class="line">mysql_secure_installation</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x6388;&#x6743;&#x76D1;&#x63A7;&#x8D26;&#x6237;&#x6743;&#x9650;</strong><br></p><figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">&apos;mysql_exporter&apos;</span>@<span class="string">&apos;localhost&apos;</span> <span class="keyword">IDENTIFIED</span> <span class="keyword">BY</span> <span class="string">&apos;imnot007*&apos;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">GRANT</span> PROCESS, <span class="keyword">REPLICATION</span> <span class="keyword">CLIENT</span>, <span class="keyword">SELECT</span> <span class="keyword">ON</span> *.* <span class="keyword">TO</span> <span class="string">&apos;mysql_exporter&apos;</span>@<span class="string">&apos;localhost&apos;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">flush</span> <span class="keyword">privileges</span>;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x5C1D;&#x8BD5;&#x767B;&#x5F55;&#x521B;&#x5EFA;&#x7684;&#x8D26;&#x6237;</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">mysql -umysql_exporter -pimnot007* -hlocalhost</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x4E0B;&#x8F7D;&#x5B89;&#x88C5;mysql_exporter</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">curl -O --progress http://192.168.210.200/0221-note/mysqld_exporter-0.14.0.linux-amd64.tar.gz</span><br><span class="line">tar xf mysqld_exporter-0.14.0.linux-amd64.tar.gz -C /opt/</span><br><span class="line">cd /opt/mysqld_exporter-0.14.0.linux-amd64/</span><br><span class="line">cp mysqld_exporter /usr/local/bin/</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x514D;&#x5BC6;&#x7801;&#x767B;&#x5F55;&#x914D;&#x7F6E;&#xFF1A;</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">vim /etc/my.cnf</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x6DFB;&#x52A0;&#x5982;&#x4E0B;&#x914D;&#x7F6E;&#xFF1A;<br></p><figure class="highlight ini"><table><tbody><tr><td class="code"><pre><span class="line"><span class="section">[client]</span></span><br><span class="line"><span class="attr">user</span>=mysql_exporter</span><br><span class="line"><span class="attr">password</span>=imnot007*</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x521B;&#x5EFA;systemd&#x7BA1;&#x7406;mysql expoter</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">vim /etc/systemd/system/mysqld_exporter.service</span><br></pre></td></tr></tbody></table></figure><p></p>
+<figure class="highlight ini"><table><tbody><tr><td class="code"><pre><span class="line"><span class="section">[Unit]</span></span><br><span class="line"><span class="attr">Description</span>=Prometheus Node Exporter</span><br><span class="line"><span class="attr">After</span>=network.target</span><br><span class="line"><span class="section">[Service]</span></span><br><span class="line"><span class="comment"># &#x4E0B;&#x9762;&#x7684;my.cnf&#x6539;&#x6210;&#x81EA;&#x5DF1;&#x7684;&#x76EE;&#x5F55;</span></span><br><span class="line"><span class="attr">ExecStart</span>=/usr/local/bin/mysqld_exporter --config.my-cnf=/etc/my.cnf</span><br><span class="line"><span class="section">[Install]</span></span><br><span class="line"><span class="attr">WantedBy</span>=multi-user.target</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl start mysqld_exporter</span><br><span class="line">systemctl enable mysqld_exporter</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>&#x68C0;&#x67E5;mysqld expoter&#x662F;&#x5426;&#x542F;&#x52A8;</strong><br></p><figure class="highlight xml"><table><tbody><tr><td class="code"><pre><span class="line">[root@server11 mysqld_exporter-0.14.0.linux-amd64]# netstat -pantul | grep 9104</span><br><span class="line">tcp6       0      0 :::9104                 :::*                    LISTEN      12982/mysqld_export</span><br><span class="line">[root@server11 mysqld_exporter-0.14.0.linux-amd64]#</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x4FEE;&#x6539;Consul&#x914D;&#x7F6E;</strong></p>
+<pre><code>vim /etc/consul/nodes1.json
+</code></pre><figure class="highlight json"><table><tbody><tr><td class="code"><pre><span class="line">{</span><br><span class="line">  <span class="attr">&quot;services&quot;</span>: [</span><br><span class="line">    {</span><br><span class="line">      <span class="attr">&quot;id&quot;</span>: <span class="string">&quot;node_exporter-node01&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;node01&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;address&quot;</span>: <span class="string">&quot;192.168.73.11&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;port&quot;</span>: <span class="number">9100</span>,</span><br><span class="line">      <span class="attr">&quot;tags&quot;</span>: [<span class="string">&quot;nodes&quot;</span>],</span><br><span class="line">      <span class="attr">&quot;checks&quot;</span>: [{</span><br><span class="line">        <span class="attr">&quot;http&quot;</span>: <span class="string">&quot;http://192.168.73.11:9100/metrics&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;interval&quot;</span>: <span class="string">&quot;5s&quot;</span></span><br><span class="line">      }]</span><br><span class="line">    },</span><br><span class="line">    {</span><br><span class="line">      <span class="attr">&quot;id&quot;</span>: <span class="string">&quot;node_exporter-node02&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;node02&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;address&quot;</span>: <span class="string">&quot;192.168.73.12&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;port&quot;</span>: <span class="number">9100</span>,</span><br><span class="line">      <span class="attr">&quot;tags&quot;</span>: [<span class="string">&quot;prometheus&quot;</span>],</span><br><span class="line">      <span class="attr">&quot;checks&quot;</span>: [{</span><br><span class="line">        <span class="attr">&quot;http&quot;</span>: <span class="string">&quot;http://192.168.73.12:9100/metrics&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;interval&quot;</span>: <span class="string">&quot;5s&quot;</span></span><br><span class="line">      }]</span><br><span class="line">    },</span><br><span class="line">    {</span><br><span class="line">      <span class="attr">&quot;id&quot;</span>: <span class="string">&quot;mysql-monitor-172.31.2.182&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;mysql&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;address&quot;</span>: <span class="string">&quot;192.168.73.11&quot;</span>,</span><br><span class="line">      <span class="attr">&quot;port&quot;</span>: <span class="number">9104</span>,</span><br><span class="line">      <span class="attr">&quot;tags&quot;</span>: [<span class="string">&quot;mysql&quot;</span>],</span><br><span class="line">      <span class="attr">&quot;checks&quot;</span>: [{</span><br><span class="line">        <span class="attr">&quot;http&quot;</span>: <span class="string">&quot;http://192.168.73.12:9100/metrics&quot;</span>,</span><br><span class="line">        <span class="attr">&quot;interval&quot;</span>: <span class="string">&quot;5s&quot;</span></span><br><span class="line">      }]</span><br><span class="line">    }</span><br><span class="line">  ]</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x91CD;&#x542F;Consul</p>
+<pre><code>nohup consul agent -server -bootstrap -bind=192.168.73.12 -client=192.168.73.12 -data-dir=/var/lib/consul -config-dir=/etc/consul -ui -node=192.168.73.12 &amp;
+</code></pre><p><strong>&#x4FEE;&#x6539;Prometheus&#x914D;&#x7F6E;</strong><br></p><figure class="highlight yaml"><table><tbody><tr><td class="code"><pre><span class="line"><span class="attr">global:</span></span><br><span class="line"><span class="attr">  scrape_interval:</span> <span class="number">15</span><span class="string">s</span> <span class="comment"># Set the scrape interval to every 15 seconds. Default is every 1 minute.</span></span><br><span class="line"><span class="attr">  evaluation_interval:</span> <span class="number">15</span><span class="string">s</span> <span class="comment"># Evaluate rules every 15 seconds. The default is every 1 minute.</span></span><br><span class="line">  <span class="comment"># scrape_timeout is set to the global default (10s).</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Alertmanager configuration</span></span><br><span class="line"><span class="attr">alerting:</span></span><br><span class="line"><span class="attr">  alertmanagers:</span></span><br><span class="line"><span class="attr">    - static_configs:</span></span><br><span class="line"><span class="attr">        - targets:</span></span><br><span class="line">          <span class="comment"># - alertmanager:9093</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Load rules once and periodically evaluate them according to the global &apos;evaluation_interval&apos;.</span></span><br><span class="line"><span class="attr">rule_files:</span></span><br><span class="line">  <span class="comment"># - &quot;first_rules.yml&quot;</span></span><br><span class="line">  <span class="comment"># - &quot;second_rules.yml&quot;</span></span><br><span class="line"><span class="comment"># Here it&apos;s Prometheus itself.</span></span><br><span class="line"><span class="attr">scrape_configs:</span></span><br><span class="line"><span class="attr">  - job_name:</span> <span class="string">&quot;prometheus&quot;</span></span><br><span class="line"><span class="attr">    consul_sd_configs:</span></span><br><span class="line"><span class="attr">    - server:</span> <span class="string">&quot;192.168.73.12:8500&quot;</span></span><br><span class="line"><span class="attr">      tags:</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">&quot;prometheus&quot;</span></span><br><span class="line"><span class="attr">      refresh_interval:</span> <span class="number">10</span><span class="string">s</span></span><br><span class="line"></span><br><span class="line"><span class="attr">  - job_name:</span> <span class="string">&apos;nodes&apos;</span></span><br><span class="line"><span class="attr">    consul_sd_configs:</span></span><br><span class="line"><span class="attr">    - server:</span> <span class="string">&quot;192.168.73.12:8500&quot;</span></span><br><span class="line"><span class="attr">      tags:</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">&quot;nodes&quot;</span></span><br><span class="line"><span class="attr">      refresh_interval:</span> <span class="number">5</span><span class="string">s</span></span><br><span class="line"><span class="comment"># &#x8FD9;&#x91CC;&#xFF1A;</span></span><br><span class="line"><span class="attr">  - job_name:</span> <span class="string">&apos;mysql&apos;</span></span><br><span class="line"><span class="attr">    consul_sd_configs:</span></span><br><span class="line"><span class="attr">    - server:</span> <span class="string">&quot;192.168.73.12:8500&quot;</span></span><br><span class="line"><span class="attr">      tags:</span></span><br><span class="line"><span class="bullet">      -</span> <span class="string">&quot;mysql&quot;</span></span><br><span class="line"><span class="attr">      refresh_interval:</span> <span class="number">5</span><span class="string">s</span></span><br><span class="line"><span class="string">[root@server12</span> <span class="string">prometheus-2</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x91CD;&#x542F;Prometheus</p>
+<h2 id="&#x4F7F;&#x7528;Consul&#x76D1;&#x63A7;HAProxy"><a href="#&#x4F7F;&#x7528;Consul&#x76D1;&#x63A7;HAProxy" class="headerlink" title="&#x4F7F;&#x7528;Consul&#x76D1;&#x63A7;HAProxy"></a>&#x4F7F;&#x7528;Consul&#x76D1;&#x63A7;HAProxy</h2><p><strong>&#x5B89;&#x88C5;HAProxy&#x548C;web&#x670D;&#x52A1;</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">yum install haproxy</span><br><span class="line">yum install -y nginx</span><br><span class="line">systemctl start nginx</span><br><span class="line">systemctl enable nginx</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x4FEE;&#x6539; socket &#x6587;&#x4EF6;</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">vim /etc/haproxy/haproxy.cfg</span><br></pre></td></tr></tbody></table></figure><p></p>
+<blockquote>
+<p># &#x4FEE;&#x6539;&#x7B2C;36&#x884C;&#xFF1A;<br>stats socket /var/lib/haproxy/haproxy.sock mode 600 level admin</p>
+</blockquote>
+<p><strong>&#x91CD;&#x542F;HAProxy</strong></p>
+<pre><code>systemctl restart haproxy
+systemctl status haproxy
+</code></pre><p><strong>&#x4E0B;&#x8F7D;&#x914D;&#x7F6E;HAProxy Expoter</strong><br>&#x4E0B;&#x8F7D;&#x5730;&#x5740;&#xFF1A;<a href="https://github.com/prometheus/haproxy_exporter/releases/tag/v0.13.0" target="_blank" rel="noopener">https://github.com/prometheus/haproxy_exporter/releases/tag/v0.13.0</a><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">tar zxf haproxy_exporter-0.13.0.linux-amd64.tar.gz -C /opt/</span><br><span class="line">cd /opt/haproxy_exporter-0.13.0.linux-amd64/</span><br><span class="line">cp haproxy_exporter /usr/local/bin/</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x4FEE;&#x6539;HAProxy&#x914D;&#x7F6E;</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">vim /etc/haproxy/haproxy.cfg</span><br></pre></td></tr></tbody></table></figure><p></p>
+<figure class="highlight"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># &#x5728;59&#x884C;&#x4E0B;&#x6DFB;&#x52A0;&#xFF1A;</span></span><br><span class="line">listen stats</span><br><span class="line">    bind 0.0.0.0:8080</span><br><span class="line">    mode http</span><br><span class="line">    maxconn 10</span><br><span class="line">    timeout connect         30s</span><br><span class="line">    timeout client          30s</span><br><span class="line">    timeout server          30s</span><br><span class="line">    stats enable</span><br><span class="line">    stats refresh 30s</span><br><span class="line">    stats uri /stats</span><br><span class="line">    stats realm Haproxy Manager</span><br><span class="line">    stats auth admin:admin</span><br><span class="line">    stats hide-version</span><br><span class="line">    stats admin if TRUE</span><br><span class="line"><span class="comment">#...</span></span><br><span class="line"><span class="comment">#...</span></span><br><span class="line"><span class="comment"># &#x5728;&#x7B2C;95&#x884C;&#x4E0B;&#x4FEE;&#x6539;&#x5982;&#x4E0B;</span></span><br><span class="line">backend app</span><br><span class="line">     balance     roundrobin</span><br><span class="line">     server  nginx12 192.168.73.12:80    cookie  server1 weight  6   inter   2000    rise    2   fall    3</span><br><span class="line">     server  nginx11 192.168.73.12:80    cookie  server2 weight  6   inter   2000    rise    2   fall    3</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x91CD;&#x542F;HAProxy</p>
+<pre><code>systemctl restart haproxy
+</code></pre><p><strong>&#x8FD0;&#x884C;haproxy expoter</strong>  </p>
+<pre><code>haproxy_exporter --haproxy.scrape-uri=unix:/var/lib/haproxy/haproxy.sock
+</code></pre><p><strong>Prometheus&#x76D1;&#x63A7;HAProxy</strong><br></p><figure class="highlight yaml"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># &#x5728;&#x672B;&#x5C3E;&#x6DFB;&#x52A0;&#x5982;&#x4E0B;&#x914D;&#x7F6E;</span></span><br><span class="line"><span class="attr">  - job_name:</span> <span class="string">&apos;haproxy&apos;</span></span><br><span class="line"><span class="attr">    static_configs:</span></span><br><span class="line"><span class="attr">    - targets:</span> <span class="string">[&apos;192.168.73.11:9101&apos;]</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x91CD;&#x542F;Prometheus</p>
+<hr>
+<h2 id="Prometheus&#x76D1;&#x63A7;Nginx"><a href="#Prometheus&#x76D1;&#x63A7;Nginx" class="headerlink" title="Prometheus&#x76D1;&#x63A7;Nginx"></a>Prometheus&#x76D1;&#x63A7;Nginx</h2><p><strong>&#x83B7;&#x53D6;Nginx&#x865A;&#x62DF;&#x4E3B;&#x673A;&#x6D41;&#x91CF;&#x72B6;&#x6001;&#x6A21;&#x5757;nginx-module-vts</strong><br>&#x6A21;&#x5757;&#x9879;&#x76EE;&#x5730;&#x5740;&#xFF1A;<a href="https://github.com/vozlt/nginx-module-vts" target="_blank" rel="noopener">https://github.com/vozlt/nginx-module-vts</a><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">cd /usr/local/src/</span><br><span class="line">git clone git://github.com/vozlt/nginx-module-vts.git</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x6E90;&#x7801;&#x7F16;&#x8BD1;&#x5B89;&#x88C5;Nginx</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">./configure --with-http_v2_module --with-http_ssl_module --with-http_sub_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre --with-http_realip_module --with-pcre --with-file-aio --with-stream --with-stream_ssl_module --with-stream_realip_module --add-module=/usr/local/src/nginx-module-vts</span><br><span class="line"></span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x4FEE;&#x6539;Nginx&#x914D;&#x7F6E;</strong><br></p><figure class="highlight nginx"><table><tbody><tr><td class="code"><pre><span class="line"><span class="section">http</span> {</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line">		vhost_traffic_status_zone;</span><br><span class="line">		<span class="attribute">vhost_traffic_status_filter_by_host</span> <span class="literal">on</span>;</span><br><span class="line">...</span><br><span class="line">...</span><br><span class="line">	<span class="section">server</span> {</span><br><span class="line">		<span class="attribute">location</span> /metrics {</span><br><span class="line">			vhost_traffic_status_display;</span><br><span class="line">			<span class="attribute">vhost_traffic_status_display_format</span> html;</span><br><span class="line">		}</span><br><span class="line">	}</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x521B;&#x5EFA;SystemD&#x7BA1;&#x7406;Nginx</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">vim /etc/systemd/system/nginx.service</span><br></pre></td></tr></tbody></table></figure><p></p>
+<figure class="highlight ini"><table><tbody><tr><td class="code"><pre><span class="line"><span class="section">[Unit]</span></span><br><span class="line"><span class="attr">Description</span>=The nginx HTTP and reverse proxy server</span><br><span class="line"><span class="attr">After</span>=network-<span class="literal">on</span>line.target remote-fs.target nss-lookup.target</span><br><span class="line"><span class="attr">Wants</span>=network-<span class="literal">on</span>line.target</span><br><span class="line"></span><br><span class="line"><span class="section">[Service]</span></span><br><span class="line"><span class="attr">Type</span>=forking</span><br><span class="line"><span class="attr">PIDFile</span>=/usr/local/nginx/logs/nginx.pid</span><br><span class="line"><span class="comment"># Nginx will fail to start if /run/nginx.pid already exists but has the wrong</span></span><br><span class="line"><span class="comment"># SELinux context. This might happen when running `nginx -t` from the cmdline.</span></span><br><span class="line"><span class="comment"># https://bugzilla.redhat.com/show_bug.cgi?id=1268621</span></span><br><span class="line"><span class="attr">ExecStartPre</span>=/usr/bin/rm -f /usr/local/nginx/logs/nginx.pid</span><br><span class="line"><span class="attr">ExecStartPre</span>=/usr/sbin/nginx -t</span><br><span class="line"><span class="attr">ExecStart</span>=/usr/sbin/nginx</span><br><span class="line"><span class="attr">ExecReload</span>=/usr/sbin/nginx -s reload</span><br><span class="line"><span class="attr">KillSignal</span>=SIGQUIT</span><br><span class="line"><span class="attr">TimeoutStopSec</span>=<span class="number">5</span></span><br><span class="line"><span class="attr">KillMode</span>=process</span><br><span class="line"><span class="attr">PrivateTmp</span>=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="section">[Install]</span></span><br><span class="line"><span class="attr">WantedBy</span>=multi-user.target</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl start nginx</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>Nginx Exporter&#x914D;&#x7F6E;</strong><br>Nginx VTS Exporter&#x4E0B;&#x8F7D;&#x5730;&#x5740;&#xFF1A; <a href="https://github.com/hnlq715/nginx-vts-exporter" target="_blank" rel="noopener">https://github.com/hnlq715/nginx-vts-exporter</a><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">tar zxf nginx-vts-exporter-0.10.3.linux-amd64.tar.gz -C /opt/</span><br><span class="line">cd /opt/nginx-vts-exporter-0.10.3.linux-amd64/</span><br><span class="line">nohup ./nginx-vts-exporter -nginx.scrape_uri=http://0.0.0.0/metrics/format/json &amp;</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>Prometheus&#x76D1;&#x63A7;Nginx</strong><br></p><figure class="highlight yaml"><table><tbody><tr><td class="code"><pre><span class="line"><span class="attr">- job_name:</span> <span class="string">nginx</span></span><br><span class="line"><span class="attr">    scrape_interval:</span> <span class="number">15</span><span class="string">s</span></span><br><span class="line"><span class="attr">    static_configs:</span></span><br><span class="line"><span class="attr">    - targets:</span> <span class="string">[&apos;192.168.73.3:9913&apos;]</span></span><br><span class="line"><span class="attr">      labels:</span></span><br><span class="line"><span class="attr">        instance:</span> <span class="string">Nginx_A</span></span><br><span class="line"><span class="attr">    - targets:</span> <span class="string">[&apos;192.168.5.11:9913&apos;]</span></span><br><span class="line"><span class="attr">      labels:</span></span><br><span class="line"><span class="attr">        instance:</span> <span class="string">Nginx_B</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x91CD;&#x542F;Prometheus</p>
+<hr>
+<h2 id="Prometheus&#x914D;&#x7F6E;AlertManager"><a href="#Prometheus&#x914D;&#x7F6E;AlertManager" class="headerlink" title="Prometheus&#x914D;&#x7F6E;AlertManager"></a>Prometheus&#x914D;&#x7F6E;AlertManager</h2><blockquote>
+<p>AlertManager&#x7528;&#x4E8E;&#x76D1;&#x63A7;&#x544A;&#x8B66;<br>&#x670D;&#x52A1;&#x51FA;&#x73B0;&#x6545;&#x969C;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;AlertManager&#x901A;&#x77E5;&#x7EF4;&#x62A4;&#x8005;<br>&#x53EF;&#x4EE5;&#x662F;&#x53D1;&#x9001;&#x90AE;&#x4EF6;&#x901A;&#x77E5;&#x7EF4;&#x62A4;&#x8005;&#x3001;&#x6216;&#x8005;&#x901A;&#x8FC7;&#x4F01;&#x4E1A;&#x5FAE;&#x4FE1;&#x3001;&#x9489;&#x9489;&#x53D1;&#x9001;&#x4FE1;&#x606F;&#x7ED9;&#x7EF4;&#x62A4;&#x8005;  </p>
+</blockquote>
+<p><strong>&#x4E0B;&#x8F7D;&#x5B89;&#x88C5;</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">curl -O --progress http://192.168.210.200/0221-note/alertmanager-0.24.0.linux-amd64.tar.gz</span><br><span class="line">tar -zxf alertmanager-0.24.0.linux-amd64.tar.gz -C /opt/</span><br><span class="line">cd /opt</span><br><span class="line">mv alertmanager-0.24.0.linux-amd64/ alertmanager-0.24.0</span><br><span class="line">mkdir /run/alertmanager</span><br><span class="line">useradd -rs /bin/false alertmanager</span><br><span class="line">chown alertmanager:alertmanager /opt/alertmanager-0.24.0/*</span><br><span class="line">chown -R alertmanager:alertmanager /run/alertmanager</span><br><span class="line">vim /etc/systemd/system/alertmanager.service</span><br></pre></td></tr></tbody></table></figure><p></p>
+<figure class="highlight ini"><table><tbody><tr><td class="code"><pre><span class="line"><span class="section">[Unit]</span></span><br><span class="line"><span class="attr">Description</span>=Alert Manager</span><br><span class="line"><span class="attr">Wants</span>=network-<span class="literal">on</span>line.target</span><br><span class="line"><span class="attr">After</span>=network-<span class="literal">on</span>line.target</span><br><span class="line"></span><br><span class="line"><span class="section">[Service]</span></span><br><span class="line"><span class="attr">Type</span>=simple</span><br><span class="line"><span class="attr">User</span>=alertmanager</span><br><span class="line"><span class="attr">Group</span>=alertmanager</span><br><span class="line"><span class="attr">ExecStart</span>=/opt/alertmanager-<span class="number">0.24</span>.<span class="number">0</span>/alertmanager \</span><br><span class="line">  --config.file=/opt/alertmanager-0.24.0/alertmanager.yml \</span><br><span class="line">  --storage.path=/run/alertmanager</span><br><span class="line"></span><br><span class="line"><span class="attr">Restart</span>=always</span><br><span class="line"></span><br><span class="line"><span class="section">[Install]</span></span><br><span class="line"><span class="attr">WantedBy</span>=multi-user.target</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl restart alertmanager</span><br><span class="line">systemctl status alertmanager</span><br><span class="line">systemctl enable alertmanager</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>&#x4FEE;&#x6539;AlertManager&#x914D;&#x7F6E;</strong><br>&#x5148;&#x53BB;&#x81EA;&#x5DF1;&#x7684;&#x90AE;&#x7BB1;&#x83B7;&#x53D6;&#x4E00;&#x4E2A;&#x6388;&#x6743;&#x5BC6;&#x7801;<br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">vim /opt/alertmanager-0.24.0/alertmanager.yml</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x53C2;&#x8003;&#x914D;&#x7F6E;&#xFF1A;<br></p><figure class="highlight yaml"><table><tbody><tr><td class="code"><pre><span class="line"><span class="attr">global:</span></span><br><span class="line"><span class="attr">  resolve_timeout:</span> <span class="number">1</span><span class="string">m</span></span><br><span class="line"><span class="attr">  smtp_smarthost:</span> <span class="string">&apos;smtp.qq.com:465&apos;</span> <span class="comment"># 163&#x90AE;&#x7BB1;&#x8BF7;&#x4F7F;&#x7528;smtp.163.com</span></span><br><span class="line"><span class="attr">  smtp_from:</span> <span class="string">&apos;fnaichu@qq.com&apos;</span> <span class="comment"># &#x4FEE;&#x6539;&#x4E3A;&#x81EA;&#x5DF1;&#x7684;&#x90AE;&#x7BB1;</span></span><br><span class="line"><span class="attr">  smtp_auth_username:</span> <span class="string">&apos;fnaichu@qq.com&apos;</span> <span class="comment"># &#x4FEE;&#x6539;&#x4E3A;&#x81EA;&#x5DF1;&#x7684;&#x90AE;&#x7BB1;</span></span><br><span class="line"><span class="attr">  smtp_auth_password:</span> <span class="string">&apos;&#x8FD9;&#x91CC;&#x7C98;&#x8D34;&#x83B7;&#x53D6;&#x5230;&#x7684;&#x6388;&#x6743;&#x7801;&apos;</span></span><br><span class="line"><span class="attr">  smtp_hello:</span> <span class="string">&apos;@qq.com&apos;</span> <span class="comment"># 163.com</span></span><br><span class="line"><span class="attr">  smtp_require_tls:</span> <span class="literal">false</span></span><br><span class="line"><span class="attr">route:</span></span><br><span class="line"><span class="attr">  group_by:</span> <span class="string">[&apos;alertname&apos;]</span></span><br><span class="line"><span class="attr">  group_wait:</span> <span class="number">10</span><span class="string">s</span></span><br><span class="line"><span class="attr">  group_interval:</span> <span class="number">2</span><span class="string">m</span></span><br><span class="line"><span class="attr">  repeat_interval:</span> <span class="number">5</span><span class="string">m</span></span><br><span class="line"><span class="attr">  receiver:</span> <span class="string">&apos;web.hook&apos;</span></span><br><span class="line"><span class="attr">receivers:</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">&apos;web.hook&apos;</span></span><br><span class="line"><span class="attr">    email_configs:</span></span><br><span class="line"><span class="attr">    - to:</span> <span class="string">&apos;fnaichu@qq.com&apos;</span> <span class="comment"># &#x4FEE;&#x6539;&#x4E3A;&#x81EA;&#x5DF1;&#x7684;&#x90AE;&#x7BB1;</span></span><br><span class="line"><span class="attr">      send_resolved:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment">#webhook_configs:</span></span><br><span class="line">          <span class="comment">#- url: &apos;http://127.0.0.1:5001/&apos;</span></span><br><span class="line"><span class="attr">inhibit_rules:</span></span><br><span class="line"><span class="attr">  - source_match:</span></span><br><span class="line"><span class="attr">      severity:</span> <span class="string">&apos;critical&apos;</span></span><br><span class="line"><span class="attr">    target_match:</span></span><br><span class="line"><span class="attr">      severity:</span> <span class="string">&apos;warning&apos;</span></span><br><span class="line"><span class="attr">    equal:</span> <span class="string">[&apos;alertname&apos;,</span> <span class="string">&apos;dev&apos;</span><span class="string">,</span> <span class="string">&apos;instance&apos;</span><span class="string">]</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x68C0;&#x67E5;AlertManager&#x914D;&#x7F6E;</strong><br><em>&#x63D0;&#x793A;&#xFF1A;Checking &#x2018;alertmanager.yml&#x2019;  SUCCESS&#x5219;&#x914D;&#x7F6E;&#x6B63;&#x786E;</em><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">./amtool check-config ./alertmanager.yml</span><br><span class="line">Checking &apos;./alertmanager.yml&apos;  SUCCESS</span><br><span class="line">Found:</span><br><span class="line"> - global config</span><br><span class="line"> - route</span><br><span class="line"> - 1 inhibit rules</span><br><span class="line"> - 1 receivers</span><br><span class="line"> - 0 templates</span><br><span class="line">[root@server12 alertmanager-0.24.0]#</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x914D;&#x7F6E;AlertManager&#x89C4;&#x5219;&#xFF1A;</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">mkdir /opt/prometheus-2.36.2/rules</span><br><span class="line">vim /opt/prometheus-2.36.2/rules/server_rules.yaml</span><br></pre></td></tr></tbody></table></figure><p></p>
+<figure class="highlight yaml"><table><tbody><tr><td class="code"><pre><span class="line"><span class="attr">groups:</span></span><br><span class="line"><span class="attr">  - name:</span> <span class="string">alertmanager_pod.rules</span></span><br><span class="line"><span class="attr">    rules:</span></span><br><span class="line"><span class="attr">    - alert:</span> <span class="string">&quot;node &#x5185;&#x5B58;&#x53EF;&#x7528;&#x5927;&#x5C0F;&quot;</span></span><br><span class="line"><span class="attr">      expr:</span> <span class="string">node_memory_MemFree_bytes</span> <span class="string">&gt; 1 #&#x6545;&#x610F;&#x5199;&#x9519;&#x7684;</span></span><br><span class="line"><span class="string"></span><span class="attr">      for:</span> <span class="number">15</span><span class="string">s</span></span><br><span class="line"><span class="attr">      labels:</span></span><br><span class="line"><span class="attr">        severity:</span> <span class="string">critical</span></span><br><span class="line"><span class="attr">      annotations:</span></span><br><span class="line"><span class="attr">        description:</span> <span class="string">&quot;&#x8282;&#x70B9;&#x53EF;&#x7528;&#x5185;&#x5B58;&#x5C0F;&#x4E8E; 100k&quot;</span></span><br></pre></td></tr></tbody></table></figure>
+<p><strong>&#x4FEE;&#x6539;Prometheus&#x914D;&#x7F6E;</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">vim /opt/prometheus-2.36.2/prometheus.yml</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x5728;&#x5DF2;&#x6709;&#x7684;&#x914D;&#x7F6E;&#x4E0A;&#x4FEE;&#x6539;&#xFF1A;</strong><br></p><figure class="highlight yaml"><table><tbody><tr><td class="code"><pre><span class="line"><span class="attr">alerting:</span></span><br><span class="line"><span class="attr">  alertmanagers:</span></span><br><span class="line"><span class="attr">    - static_configs:</span></span><br><span class="line"><span class="attr">        - targets:</span></span><br><span class="line">          <span class="comment"># - alertmanager:9093</span></span><br><span class="line"><span class="bullet">          -</span> <span class="number">192.168</span><span class="number">.73</span><span class="number">.12</span><span class="string">:9093</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Load rules once and periodically evaluate them according to the global &apos;evaluation_interval&apos;.</span></span><br><span class="line"><span class="attr">rule_files:</span></span><br><span class="line">  <span class="comment"># - &quot;first_rules.yml&quot;</span></span><br><span class="line">  <span class="comment"># - &quot;second_rules.yml&quot;</span></span><br><span class="line"><span class="bullet">  -</span> <span class="string">./rules/server_rules.yaml</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<hr>
+<h2 id="Prometheus&#x914D;&#x7F6E;pushgateway"><a href="#Prometheus&#x914D;&#x7F6E;pushgateway" class="headerlink" title="Prometheus&#x914D;&#x7F6E;pushgateway"></a>Prometheus&#x914D;&#x7F6E;pushgateway</h2><blockquote>
+<p>PushGateway &#x4F5C;&#x4E3A; Prometheus &#x751F;&#x6001;&#x4E2D;&#x7684;&#x4E00;&#x4E2A;&#x91CD;&#x8981;&#x4E00;&#x5458;&#xFF0C;&#x5B83;&#x5141;&#x8BB8;&#x4EFB;&#x4F55;&#x5BA2;&#x6237;&#x7AEF;&#x5411;&#x5176; Push &#x7B26;&#x5408;&#x89C4;&#x8303;&#x7684;&#x81EA;&#x5B9A;&#x4E49;&#x76D1;&#x63A7;&#x6307;&#x6807;&#xFF0C;&#x5728;&#x7ED3;&#x5408; Prometheus &#x7EDF;&#x4E00;&#x6536;&#x96C6;&#x76D1;&#x63A7;&#x3002;<br>PushGateway &#x4F7F;&#x7528;&#x573A;&#x666F;&#xFF1A;  </p>
+<ul>
+<li>Prometheus &#x91C7;&#x7528;&#x5B9A;&#x65F6; Pull &#x6A21;&#x5F0F;&#xFF0C;&#x53EF;&#x80FD;&#x7531;&#x4E8E;&#x5B50;&#x7F51;&#x7EDC;&#x6216;&#x8005;&#x9632;&#x706B;&#x5899;&#x7684;&#x539F;&#x56E0;&#xFF0C;&#x4E0D;&#x80FD;&#x76F4;&#x63A5;&#x62C9;&#x53D6;&#x5404;&#x4E2A; Target &#x7684;&#x6307;&#x6807;&#x6570;&#x636E;&#xFF0C;&#x6B64;&#x65F6;&#x53EF;&#x4EE5;&#x91C7;&#x7528;&#x5404;&#x4E2A; Target &#x5F80; PushGateway &#x4E0A; Push &#x6570;&#x636E;&#xFF0C;&#x7136;&#x540E; Prometheus &#x53BB; PushGateway &#x4E0A;&#x5B9A;&#x65F6; pull&#x3002;</li>
+<li>&#x5176;&#x6B21;&#x5728;&#x76D1;&#x63A7;&#x5404;&#x4E2A;&#x4E1A;&#x52A1;&#x6570;&#x636E;&#x65F6;&#xFF0C;&#x9700;&#x8981;&#x5C06;&#x5404;&#x4E2A;&#x4E0D;&#x540C;&#x7684;&#x4E1A;&#x52A1;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x7EDF;&#x4E00;&#x6C47;&#x603B;&#xFF0C;&#x6B64;&#x65F6;&#x4E5F;&#x53EF;&#x4EE5;&#x91C7;&#x7528; PushGateway &#x6765;&#x7EDF;&#x4E00;&#x6536;&#x96C6;&#xFF0C;&#x7136;&#x540E; Prometheus &#x6765;&#x7EDF;&#x4E00;&#x62C9;&#x53D6;&#x3002;</li>
+</ul>
+</blockquote>
+<p><strong>&#x4E0B;&#x8F7D;&#x5B89;&#x88C5;PushGateway</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">curl -O --progress http://192.168.210.200/0221-note/pushgateway-1.4.3.linux-amd64.tar.gz</span><br><span class="line">tar -zxf pushgateway-1.4.3.linux-amd64.tar.gz -C /opt/</span><br><span class="line">cd /opt/pushgateway-1.4.3.linux-amd64/</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x5728;Prometheus&#x914D;&#x7F6E;&#x6DFB;&#x52A0;&#x5982;&#x4E0B;&#xFF1A;</strong><br></p><figure class="highlight yaml"><table><tbody><tr><td class="code"><pre><span class="line"><span class="attr">- job_name:</span> <span class="string">&apos;pushgateway&apos;</span></span><br><span class="line"><span class="attr">  static_configs:</span></span><br><span class="line"><span class="attr">  - targets:</span> <span class="string">[&apos;192.168.73.12:9091&apos;]</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x91CD;&#x542F;Prometheus</p>
+<p><strong>&#x542F;&#x52A8;PushGateway</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">./pushgateway</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#x63A8;&#x9001;&#x6570;&#x636E;&#x6D4B;&#x8BD5;&#xFF1A;</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">echo &quot;mytest_metric 2022&quot; | curl --data-binary @- http://192.168.73.12:9091/metrics/job/mytest_job</span><br><span class="line"></span><br><span class="line">echo &quot;mytest_metric 0628&quot; | curl --data-binary @- http://192.168.73.12:9091/metrics/job/mytest_job</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x63A8;&#x9001;&#x591A;&#x6761;&#x6570;&#x636E;</span></span><br><span class="line">cat &lt;&lt;EOF | curl --data-binary @- http://192.168.73.12:9091/metrics/job/test_job/instance/192.168.73.12</span><br><span class="line"><span class="meta">#</span><span class="bash">TYPE node_memory_usage gauge</span></span><br><span class="line">node_memory_usage 4311744512</span><br><span class="line"><span class="meta">#</span><span class="bash"> TYPE memory_total gauge</span></span><br><span class="line">node_memory_total 103481868288</span><br><span class="line">EOF</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x8BBF;&#x95EE;pushgatway&#x7684;&#x4E3B;&#x673A;&#x67E5;&#x770B;&#x6570;&#x636E;&#x662F;&#x5426;&#x63A8;&#x9001;&#x6210;&#x529F;&#xFF1A;<br><a href="http://192.168.73.12:9091/" target="_blank" rel="noopener">http://192.168.73.12:9091/</a></p>
+<hr>
+<h2 id="&#x6269;&#x5C55;&#x77E5;&#x8BC6;&#x2014;&#x2014;Consul&#x7684;&#x4F7F;&#x7528;"><a href="#&#x6269;&#x5C55;&#x77E5;&#x8BC6;&#x2014;&#x2014;Consul&#x7684;&#x4F7F;&#x7528;" class="headerlink" title="&#x6269;&#x5C55;&#x77E5;&#x8BC6;&#x2014;&#x2014;Consul&#x7684;&#x4F7F;&#x7528;"></a>&#x6269;&#x5C55;&#x77E5;&#x8BC6;&#x2014;&#x2014;Consul&#x7684;&#x4F7F;&#x7528;</h2><blockquote>
+<p>&#x670D;&#x52A1;&#x7AEF;<br>consul agent -server -bootstrap-expect 1 -config-dir /etc/consul.d/ -data-dir /var/opt/consul -bind=125.72.214.83 &gt;&gt; /var/opt/consul/consul.log 2&gt;&amp;1<br>&#x6CE8;&#x518C;&#x670D;&#x52A1;<br>curl -X PUT -d &#x2018;{&#x201C;type&#x201D;:&#x201D;localService&#x201D;,&#x201D;outPort&#x201D;:8085,&#x201D;outPath&#x201D;:&#x201D;/websocket&#x201D;, &#x201C;forwardAddress&#x201D;:&#x201D;125.72.2&#xB7;4.83&#x201D;, &#x201C;forwardPort&#x201D;:&#x201D;8085&#x201D;}&#x2019; <a href="http://localhost:8500/v1/kv/websocket/my" target="_blank" rel="noopener">http://localhost:8500/v1/kv/websocket/my</a><br>webui&#x6DFB;&#x52A0;<br>-client 0.0.0.0 -ui<br>&#x5BA2;&#x6237;&#x7AEF;<br>consul agent -config-dir /etc/consul.d/ -data-dir /var/opt/consul -bind=121.42.204.73 -join=121.42.204.73 &gt;consul.log 2&gt;&amp;1<br>-bootstrap&#xFF1A;&#x542F;&#x52A8;&#x6A21;&#x5F0F;&#xFF0C;&#x6B64;&#x6A21;&#x5F0F;&#x4E0B;&#xFF0C;&#x8282;&#x70B9;&#x53EF;&#x4EE5;&#x9009;&#x4E3E;&#x81EA;&#x5DF1;&#x4E3A;leader&#xFF0C;&#x4E00;&#x4E2A;&#x6570;&#x636E;&#x4E2D;&#x5FC3;&#x53EA;&#x80FD;&#x6709;&#x4E00;&#x4E2A;&#x6B64;&#x6A21;&#x5F0F;&#x542F;&#x52A8;&#x7684;&#x8282;&#x70B9;&#x3002;&#x673A;&#x7FA4;&#x542F;&#x52A8;&#x540E;&#xFF0C;&#x65B0;&#x542F;&#x52A8;&#x7684;&#x8282;&#x70B9;&#x4E0D;&#x5EFA;&#x8BAE;&#x4F7F;&#x7528;&#x8FD9;&#x79CD;&#x6A21;&#x5F0F;&#x3002;<br>-bootstrap-expect&#xFF1A;&#x8BBE;&#x5B9A;&#x4E00;&#x4E2A;&#x6570;&#x636E;&#x4E2D;&#x5FC3;&#x9700;&#x8981;&#x7684;&#x670D;&#x52A1;&#x8282;&#x70B9;&#x6570;&#xFF0C;&#x53EF;&#x4EE5;&#x4E0D;&#x8BBE;&#x7F6E;&#xFF0C;&#x8BBE;&#x7F6E;&#x7684;&#x6570;&#x5B57;&#x5FC5;&#x987B;&#x548C;&#x5B9E;&#x9645;&#x7684;&#x670D;&#x52A1;&#x8282;&#x70B9;&#x6570;&#x5339;&#x914D;&#x3002;consul&#x4F1A;&#x7B49;&#x5F85;&#x76F4;&#x5230;&#x6570;&#x636E;&#x4E2D;&#x5FC3;&#x4E0B;&#x7684;&#x670D;&#x52A1;&#x8282;&#x70B9;&#x6EE1;&#x8DB3;&#x8BBE;&#x5B9A;&#x624D;&#x4F1A;&#x542F;&#x52A8;&#x96C6;&#x7FA4;&#x670D;&#x52A1;&#x3002;&#x521D;&#x59CB;&#x5316;leader&#x9009;&#x4E3E;&#xFF0C;&#x4E0D;&#x80FD;&#x548C;bootstrap&#x6DF7;&#x7528;&#x3002;&#x5FC5;&#x987B;&#x914D;&#x5408;-server&#x914D;&#x7F6E;&#x3002;<br>-bind&#xFF1A;&#x7ED1;&#x5B9A;&#x7684;&#x5185;&#x90E8;&#x901A;&#x8BAF;&#x5730;&#x5740;&#xFF0C;&#x9ED8;&#x8BA4;0.0.0.0&#xFF0C;&#x5373;&#xFF0C;&#x6240;&#x6709;&#x7684;&#x672C;&#x5730;&#x5730;&#x5740;&#xFF0C;&#x4F1A;&#x5C06;&#x7B2C;&#x4E00;&#x4E2A;&#x53EF;&#x7528;&#x7684;ip&#x5730;&#x5740;&#x6563;&#x64AD;&#x5230;&#x96C6;&#x7FA4;&#x4E2D;&#xFF0C;&#x5982;&#x679C;&#x6709;&#x591A;&#x4E2A;&#x53EF;&#x7528;&#x7684;ipv4&#xFF0C;&#x5219;consul&#x542F;&#x52A8;&#x62A5;&#x9519;&#x3002;[::]ipv6&#xFF0C;TCP UDP&#x534F;&#x8BAE;&#xFF0C;&#x76F8;&#x540C;&#x7684;&#x7AEF;&#x53E3;&#x3002;&#x9632;&#x706B;&#x5899;&#x914D;&#x7F6E;&#x3002;<br>-client&#xFF1A;&#x5BA2;&#x6237;&#x7AEF;&#x6A21;&#x5F0F;&#xFF0C;http dns&#xFF0C;&#x9ED8;&#x8BA4;127.0.0.1&#xFF0C;&#x56DE;&#x73AF;&#x4EE4;&#x724C;&#x7F51;&#x5740;<br>-config-file&#xFF1A;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x4F4D;&#x7F6E;<br>-config-dir&#xFF1A;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x6240;&#x5728;&#x6587;&#x4EF6;&#x5939;&#xFF0C;&#x4F1A;&#x52A0;&#x8F7D;&#x5176;&#x4E0B;&#x6240;&#x6709;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF0C;.json&#x6216;&#x8005;.hcl&#x6587;&#x4EF6;&#xFF0C;&#x52A0;&#x8F7D;&#x987A;&#x5E8F;&#x4E3A;&#x5B57;&#x6BCD;&#x8868;&#x987A;&#x5E8F;&#xFF1B;&#x53EF;&#x7528;&#x914D;&#x7F6E;&#x591A;&#x4E2A;&#x6B64;&#x914D;&#x7F6E;&#xFF0C;&#x4ECE;&#x800C;&#x52A0;&#x8F7D;&#x591A;&#x4E2A;&#x6587;&#x4EF6;&#x5939;&#xFF0C;&#x5B50;&#x6587;&#x4EF6;&#x5939;&#x7684;&#x914D;&#x7F6E;&#x4E0D;&#x4F1A;&#x88AB;&#x52A0;&#x8F7D;&#x3002;<br>-config-format&#xFF1A;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x683C;&#x5F0F;&#xFF0C;&#x914D;&#x7F6E;&#x4E86;&#xFF0C;&#x5219;&#x52A0;&#x8F7D;&#x76F8;&#x5E94;&#x4E2A;&#x662F;&#x7684;&#x6587;&#x4EF6;&#x3002;&#x4E0D;&#x914D;&#x7F6E;&#xFF0C;&#x5219;consul&#x81EA;&#x52A8;&#x8BC6;&#x522B;&#x3002;<br>-data-dir&#xFF1A;&#x72B6;&#x6001;&#x6570;&#x636E;&#x5B58;&#x50A8;&#x6587;&#x4EF6;&#x5939;&#xFF0C;&#x6240;&#x6709;&#x7684;&#x8282;&#x70B9;&#x90FD;&#x9700;&#x8981;&#x3002;&#x6587;&#x4EF6;&#x5939;&#x4F4D;&#x7F6E;&#x9700;&#x8981;&#x4E0D;&#x6536;consul&#x8282;&#x70B9;&#x91CD;&#x542F;&#x5F71;&#x54CD;&#xFF0C;&#x5FC5;&#x987B;&#x80FD;&#x591F;&#x4F7F;&#x7528;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x6587;&#x4EF6;&#x9501;&#xFF0C;unix-based&#x7CFB;&#x7EDF;&#x4E0B;&#xFF0C;&#x6587;&#x4EF6;&#x5939;&#x6587;&#x4EF6;&#x6743;&#x9650;&#x4E3A;0600&#xFF0C;&#x6CE8;&#x610F;&#x505A;&#x597D;&#x8D26;&#x6237;&#x6743;&#x9650;&#x63A7;&#x5236;&#xFF0C;<br>-datacenter&#xFF1A;&#x6570;&#x636E;&#x4E2D;&#x5FC3;&#x540D;&#x79F0;&#xFF0C;&#x9ED8;&#x8BA4;dc1&#xFF0C;&#x4E00;&#x4E2A;&#x6570;&#x636E;&#x4E2D;&#x5FC3;&#x7684;&#x6240;&#x6709;&#x8282;&#x70B9;&#x90FD;&#x5FC5;&#x987B;&#x5728;&#x4E00;&#x4E2A;LAN&#x4E2D;&#x3002;<br>-dev&#xFF1A;&#x5F00;&#x53D1;&#x6A21;&#x5F0F;&#xFF0C;&#x53BB;&#x6389;&#x6240;&#x6709;&#x6301;&#x4E45;&#x5316;&#x9009;&#x9879;&#xFF0C;&#x5185;&#x5B58;&#x670D;&#x52A1;&#x5668;&#x6A21;&#x5F0F;&#x3002;<br>-disable-host-node-id&#xFF1A;&#x4E0D;&#x4F7F;&#x7528;host&#x4FE1;&#x606F;&#x751F;&#x6210;node ID&#xFF0C;&#x9002;&#x7528;&#x4E8E;&#x540C;&#x4E00;&#x53F0;&#x670D;&#x52A1;&#x5668;&#x90E8;&#x7F72;&#x591A;&#x4E2A;&#x5B9E;&#x4F8B;&#x7528;&#x4E8E;&#x6D4B;&#x8BD5;&#x7684;&#x60C5;&#x51B5;&#x3002;&#x968F;&#x673A;&#x751F;&#x6210;nodeID<br>-dns-port&#xFF1A;v7.0&#x4EE5;&#x540E;&#xFF0C;&#x81EA;&#x5B9A;&#x4E49;dns &#x7AEF;&#x53E3;&#xFF0C;&#x8986;&#x76D6;&#x9ED8;&#x8BA4;8600<br>-enable-script-checks&#xFF1A;&#x662F;&#x5426;&#x5141;&#x8BB8;&#x4F7F;&#x7528;&#x811A;&#x672C;&#x8FDB;&#x884C;&#x5065;&#x5EB7;&#x68C0;&#x67E5;&#xFF0C;&#x9ED8;&#x8BA4;false&#xFF0C;&#x6700;&#x597D;&#x914D;&#x7F6E;enable acl<br>-encrypt&#xFF1A;consul&#x7F51;&#x7EDC;&#x901A;&#x8BAF;&#x52A0;&#x5BC6;key&#xFF0C;base64&#x52A0;&#x5BC6;&#xFF0C;16&#x6BD4;&#x7279;&#xFF1B;consul keygen&#x4EA7;&#x751F;&#x3002;&#x96C6;&#x7FA4;&#x4E2D;&#x7684;&#x6BCF;&#x4E2A;&#x5B9E;&#x4F8B;&#x5FC5;&#x987B;&#x63D0;&#x4F9B;&#x76F8;&#x540C;&#x7684;&#xFF0C;&#x53EA;&#x9700;&#x63D0;&#x4F9B;&#x4E00;&#x6B21;&#xFF0C;&#x7136;&#x540E;&#x4F1A;&#x4FDD;&#x5B58;&#x5230;&#x6570;&#x636E;&#x6587;&#x4EF6;&#x3002;&#x91CD;&#x542F;&#x81EA;&#x52A8;&#x52A0;&#x8F7D;&#x3002;consul&#x8282;&#x70B9;&#x542F;&#x52A8;&#x540E;&#x63D0;&#x4F9B;&#xFF0C;&#x4F1A;&#x88AB;&#x5FFD;&#x7565;&#x3002;<br>-hcl&#xFF1A;&#x6DFB;&#x52A0;hcl&#x683C;&#x5F0F;&#x914D;&#x7F6E;&#xFF0C;&#x548C;&#x5DF2;&#x6709;&#x7684;&#x914D;&#x7F6E;&#x5408;&#x5E76;&#x3002;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x591A;&#x4E2A;&#x6B64;&#x914D;&#x7F6E;&#x3002;<br>-http-port&#xFF1A;http api&#x7AEF;&#x53E3;&#xFF0C;&#x8986;&#x76D6;&#x9ED8;&#x8BA4;&#x7684;8500&#x3002;&#x9002;&#x7528;&#x4E8E;&#x4E91;&#x73AF;&#x5883;&#x6307;&#x5B9A;&#x3002;<br>-log-file&#xFF1A;&#x65E5;&#x5FD7;&#x8BB0;&#x5F55;&#x6587;&#x4EF6;&#xFF0C;&#x5982;&#x679C;&#x6CA1;&#x6709;&#x63D0;&#x4F9B;&#x6587;&#x4EF6;&#x540D;&#xFF0C;&#x5219;&#x9ED8;&#x8BA4;Consul-&#x65F6;&#x95F4;&#x6233;.log<br>-log-level&#xFF1A;&#x65E5;&#x5FD7;&#x7EA7;&#x522B;&#xFF0C;&#x9ED8;&#x8BA4;info&#xFF0C;&#x5305;&#x542B;&#xFF1A;trace&#xFF0C;debug&#xFF0C;info&#xFF0C;warn&#xFF0C;err&#xFF1B;consul monitor&#x76D1;&#x63A7;<br>-log-rotate-bytes&#xFF1A;&#x65B0;&#x65E5;&#x5FD7;&#x6587;&#x4EF6;&#x751F;&#x6210;&#x5927;&#x5C0F;&#x9608;&#x503C;&#x3002;<br>-log-rotate-rotation&#xFF1A;&#x65B0;&#x65E5;&#x5FD7;&#x751F;&#x6210;&#x65F6;&#x95F4;&#x9608;&#x503C;<br>-join&#xFF1A;&#x9700;&#x8981;&#x52A0;&#x5165;&#x7684;&#x5176;&#x5B83;&#x8282;&#x70B9;&#x5730;&#x5740;&#xFF0C;&#x53EF;&#x4EE5;&#x591A;&#x6B21;&#x4F7F;&#x7528;&#xFF0C;&#x52A0;&#x5165;&#x591A;&#x4E2A;&#x8282;&#x70B9;&#x3002;<br>-retry-join&#xFF1A;&#x4F1A;&#x8FDB;&#x884C;&#x52A0;&#x5165;&#x91CD;&#x8BD5;&#xFF0C;&#x9002;&#x7528;&#x4E8E;&#x8BA4;&#x5B9A;&#x52A0;&#x5165;&#x8282;&#x70B9;&#x6700;&#x7EC8;&#x4F1A;&#x6B63;&#x5E38;&#x7684;&#x60C5;&#x51B5;&#x3002;ipv4&#xFF0C;ipv6&#xFF0C;dns<br>-retry-interval&#xFF1A;&#x4E0A;&#x8FF0;&#xFF0C;&#x91CD;&#x8BD5;&#x95F4;&#x9694;&#xFF0C;&#x9ED8;&#x8BA4;30s<br>-retry-max&#xFF1A;&#x91CD;&#x8BD5;&#x6B21;&#x6570;&#xFF0C;&#x9ED8;&#x8BA4;0&#xFF0C;&#x65E0;&#x9650;&#x6B21;&#x91CD;&#x8BD5;<br>-join-wan&#xFF0C; -retry-join-wan&#xFF0C; -retry-interval-wan&#xFF0C; -retry-max-wan<br>-node&#xFF1A;&#x8282;&#x70B9;&#x540D;&#x79F0;&#xFF0C;&#x9ED8;&#x8BA4;&#x4E3B;&#x673A;&#x540D;<br>-node-id&#xFF1A;&#x8282;&#x70B9;ID&#xFF0C;<br>-pid-file&#xFF1A;consul &#x5B58;&#x50A8; pid &#x7684;&#x6587;&#x4EF6;&#x4F4D;&#x7F6E;&#xFF0C;&#x7528;&#x4E8E;&#x4E3B;&#x52A8;&#x53D1;&#x4FE1;&#x53F7;&#x3002;&#x5982;&#x505C;&#x6B62;&#x8282;&#x70B9;&#xFF0C;&#x91CD;&#x8F7D;&#x914D;&#x7F6E;&#x7B49;&#x3002;<br>-protocol&#xFF1A;&#x4F7F;&#x7528;&#x7684;&#x534F;&#x8BAE;&#xFF0C;&#x5347;&#x7EA7;&#x65F6;&#x4F7F;&#x7528;&#x3002;consul -v&#x67E5;&#x770B;&#x534F;&#x8BAE;&#x7248;&#x672C;<br>-raft-protocol&#xFF1A;&#x4F7F;&#x7528;raft&#x534F;&#x8BAE;&#x7248;&#x672C;&#xFF0C;&#x9ED8;&#x8BA4;3<br>-raft-snapshot-threshold&#xFF1A;raft&#x6267;&#x884C;&#x5FEB;&#x7167;&#xFF0C;&#x63D0;&#x4EA4;&#x6B21;&#x6570;&#x9608;&#x503C;&#x3002;&#x4E00;&#x822C;&#x4E0D;&#x9700;&#x8981;&#x8BBE;&#x7F6E;&#xFF0C;io&#x5BC6;&#x96C6;&#x578B;&#x5E94;&#x7528;&#x53EF;&#x4EE5;&#x8C03;&#x9AD8;&#x3002;&#x907F;&#x514D;&#x6240;&#x6709;&#x7684;&#x8282;&#x70B9;&#x540C;&#x4E00;&#x65F6;&#x95F4;&#x5FEB;&#x7167;&#x3002;&#x6B64;&#x503C;&#x8FC7;&#x5927;&#xFF0C;&#x4F1A;&#x9020;&#x6210;&#x76F8;&#x5E94;&#x65E5;&#x5FD7;&#x6587;&#x4EF6;&#x53D8;&#x5927;&#xFF0C;&#x8282;&#x70B9;&#x91CD;&#x542F;&#x6062;&#x590D;&#x4F1A;&#x8017;&#x8D39;&#x66F4;&#x957F;&#x65F6;&#x95F4;&#x3002;1.1.0&#x540E;&#xFF0C;&#x9ED8;&#x8BA4;16384&#xFF0C;&#x4E4B;&#x524D;8192.<br>-raft-snapshot-interval&#xFF1A;&#x6267;&#x884C;&#x5FEB;&#x7167;&#x95F4;&#x9694;&#xFF0C;&#x5F71;&#x54CD;&#x7C7B;&#x4F3C;&#x4E0A;&#x4E2A;&#x914D;&#x7F6E;&#xFF0C;1.1.0&#x540E;&#x9ED8;&#x8BA4;30s&#xFF0C;&#x4E4B;&#x524D;5s&#x3002;<br>-rejoin&#xFF1A;&#x8282;&#x70B9;&#x4F1A;&#x5C1D;&#x8BD5;&#x91CD;&#x65B0;&#x52A0;&#x5165;&#x96C6;&#x7FA4;&#x3002;<br>-server&#xFF1A;&#x670D;&#x52A1;&#x7AEF;&#x8282;&#x70B9;&#x6A21;&#x5F0F;&#x3002;<br>-server-port&#xFF1A;&#x670D;&#x52A1;&#x7AEF;RPC&#x7AEF;&#x53E3;&#xFF0C;v1.2.2&#x540E;&#x63D0;&#x4F9B;&#x3002;<br>-non-voting-server&#xFF1A;&#x670D;&#x52A1;&#x8282;&#x70B9;&#x4E0D;&#x53C2;&#x4E0E;&#x9009;&#x4E3E;&#xFF0C;&#x63A5;&#x53D7;&#x65E5;&#x5FD7;&#x590D;&#x5236;&#xFF0C;&#x7528;&#x4E8E;&#x6A2A;&#x5411;&#x6269;&#x5C55;&#xFF0C;&#x670D;&#x52A1;&#x67E5;&#x8BE2;&#x8BF7;&#x6C42;&#x3002;&#xFF08;&#x7C7B;&#x6BD4;zookeeper &#x89C2;&#x5BDF;&#x8005;&#x8282;&#x70B9;&#xFF09;<br>-syslog&#xFF1A;linux OSX&#x7CFB;&#x7EDF;&#xFF0C;&#x914D;&#x7F6E;&#x65E5;&#x5FD7;&#x8F93;&#x51FA;&#x5230;&#x7CFB;&#x7EDF;&#x65E5;&#x5FD7;&#x3002;<br>-ui&#xFF1A;&#x5185;&#x7F6E;web ui&#x754C;&#x9762;&#x3002;<br>-ui-dir&#xFF1A;web ui &#x8D44;&#x6E90;&#x6587;&#x4EF6;&#x5939;&#xFF0C;&#x4F7F;&#x7528;&#x6B64;&#x914D;&#x7F6E;&#xFF0C;&#x5219;&#x4E0D;&#x9700;&#x4E5F;&#x4E0D;&#x80FD;&#x4F7F;&#x7528;&#x518D;-ui&#x914D;&#x7F6E;&#x3002;  </p>
+</blockquote>
+<p><strong>&#x9ED8;&#x8BA4;&#x4F7F;&#x7528;&#x7AEF;&#x53E3;&#xFF1A;</strong><br>&#x670D;&#x52A1;&#x7AEF;RPC&#xFF1A;&#x9ED8;&#x8BA4;8300&#xFF0C;TCP&#x3002;<br>Serl LAN&#xFF1A;&#x5904;&#x7406;LAN gossip&#xFF0C;&#x9ED8;&#x8BA4;8301&#xFF0C;TCP UDP&#x3002;<br>Serl WAN&#xFF1A;&#x5904;&#x7406;LAN gossip&#xFF0C;&#x9ED8;&#x8BA4;8302&#xFF0C;TCP UDP&#x3002;<br>HTTP API&#xFF1A;8500&#xFF0C;TCP.<br>DNS&#xFF1A;8600&#xFF0C;TCP,UDP.  </p>
+<p><strong>&#x53EF;&#x91CD;&#x8F7D;&#x914D;&#x7F6E;&#xFF1A;</strong><br>Log level<br>Checks<br>Services<br>Watches<br>HTTP Client Address<br>Node Metadata<br>Metric Prefix Filter<br>Discard Check Output<br>RPC rate limiting  </p>
+<h2 id="&#x53C2;&#x8003;"><a href="#&#x53C2;&#x8003;" class="headerlink" title="&#x53C2;&#x8003;"></a>&#x53C2;&#x8003;</h2><p>Prometheus&#x624B;&#x518C;(&#x4E0E;Consul&#x96C6;&#x6210;&#xFF09;&#xFF1A;<a href="https://yunlzheng.gitbook.io/prometheus-book/part-ii-prometheus-jin-jie/sd/service-discovery-with-consul" target="_blank" rel="noopener">https://yunlzheng.gitbook.io/prometheus-book/part-ii-prometheus-jin-jie/sd/service-discovery-with-consul</a></p>
+<p>Consul&#x547D;&#x4EE4;&#x884C;&#x6700;&#x5168;&#x6587;&#x6863;&#xFF1A;<a href="https://juejin.cn/post/6844903862034235399" target="_blank" rel="noopener">https://juejin.cn/post/6844903862034235399</a></p>
+<p>Consul&#x542F;&#x52A8;&#x547D;&#x4EE4;&#xFF1A;<a href="https://www.cnblogs.com/niejunlei/p/5982911.html" target="_blank" rel="noopener">https://www.cnblogs.com/niejunlei/p/5982911.html</a></p>
+<p>Nginx&#x865A;&#x62DF;&#x4E3B;&#x673A;&#x6D41;&#x91CF;&#x72B6;&#x6001;&#x6A21;&#x5757;&#xFF08;nginx-module-vts&#xFF09;&#x4F7F;&#x7528;&#x8BF4;&#x660E;&#x6587;&#x6863;&#xFF1A;<a href="http://tobrainto.com/%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84/nginx-module-vts-all/" target="_blank" rel="noopener">http://tobrainto.com/%E7%BD%91%E7%AB%99%E6%9E%B6%E6%9E%84/nginx-module-vts-all/</a></p>
+<p>Prometheus&#x76D1;&#x63A7;Nginx <a href="https://www.modb.pro/db/28470" target="_blank" rel="noopener">https://www.modb.pro/db/28470</a></p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2022-06-28T09:21:19.849Z" itemprop="dateUpdated">2022-06-28 17:21:19</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/39c0f6a1/" target="_blank" rel="external">https://marnm.github.io/posts/39c0f6a1/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='https://marnm.github.io'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/39c0f6a1/&title=《Prometheus学习笔记》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/39c0f6a1/&title=《Prometheus学习笔记》 — Deops's blog&source=二进制安装Download Prometheus Binary Pakcagecurl -O --progress http://192.168.210...." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/39c0f6a1/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Prometheus学习笔记》 — Deops's blog&url=https://marnm.github.io/posts/39c0f6a1/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/39c0f6a1/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/2d95f1c1/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：ElasticSearch环境搭建">下一篇：ElasticSearch环境搭建</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2022
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="https://marnm.github.io">marnm.github.io</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/39c0f6a1/&title=《Prometheus学习笔记》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/39c0f6a1/&title=《Prometheus学习笔记》 — Deops's blog&source=二进制安装Download Prometheus Binary Pakcagecurl -O --progress http://192.168.210...." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/39c0f6a1/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Prometheus学习笔记》 — Deops's blog&url=https://marnm.github.io/posts/39c0f6a1/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/39c0f6a1/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABwUlEQVR42u3ay2rDQBAEQP//TzuQk8HI7t5XFCidjIRXtZdhtkePR3w9f6/X36933u+/P/285uILFxd3mvv8eOVLX21p7P7ltnFxcQ9y2+KVbCYpebkBFxf3ntz2X0mXgouL+9+5STlrGxpcXNw7c5PDz1iRygvZ4rMaLi7uBHcsMF37e3u+i4uLu2gqkYenY0OU+u24uLhHuPORR9uazB+HcHFxz3DzY0m7gTFKURZxcXG3cZNX5iOTVcHK5R1cXNzN3PZI0x6HPq9TFzJcXNwj3LwDysvWTIGLSiouLu4RbjLwqJcbCkGKwSouLu42bt6yJAHHqs81cHFx/5a7dk7RHpmSw9LGsQouLu4Ftx1vtMFH29x8ablwcXGPc/M2JQ9PZ55+GaXg4uJu4+ahZ7uNtgEq3oWLi7uZuzYMbSn1cQsXF/cgN/nb2Di25X6R4OLiHuSOlaQkNMkjkjrBxcXF3cZtC0oebeTj1TyQxcXFPcnNi04+Smk/z8LFxb0nd+YLjjYqbQscLi7unbktNIlF2mgGFxf3nty2fRkLSi7fi4uLe5A7ttDY51kzQQwuLu4Z7trAdGwoW5czXFzcXdwfFhIGHJRTjfIAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>

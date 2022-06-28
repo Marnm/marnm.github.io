@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="Content-Language" content="zh-cn">
+    <meta charset="utf-8">
+    
+    
+    
+    <title>LVS和KeepAlived实现高可用集群 | Deops&#39;s blog | 运维开发工程师</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    
+    <meta name="theme-color" content="#77AAFF">
+    
+    
+    <meta name="keywords" content="LVS,KeepAlived">
+    
+    
+
+    
+
+    <!-- Baidu Push -->
+<script>
+	(function(){
+		var bp = document.createElement('script');
+		var curProtocol = window.location.protocol.split(':')[0];
+		if (curProtocol === 'https') {
+			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+		}
+		else {
+			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		}
+		var s = document.getElementsByTagName("script")[0];
+		s.parentNode.insertBefore(bp, s);
+	})();
+
+	var _hmt = _hmt || [];
+</script>
+
+
+
+    
+    <meta name="description" content="keepalived相关keepalive的学习参考网站：https://www.keepalived.org/ 在学习keepalived之前, 我们来思考一个问题：LVS只是负责负载均衡的转发，那如果后台的Real Server的服务挂掉以后，LVS是否能主动把这个摘除掉吗？ 答案是：肯定不行的，就是LVS不具备把后端挂掉的Real Server摘除掉，所以keepalived的应用而生。 k">
+<meta name="keywords" content="LVS,KeepAlived">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LVS和KeepAlived实现高可用集群">
+<meta property="og:url" content="https://marnm.github.io/posts/640aafef/index.html">
+<meta property="og:site_name" content="Deops&#39;s blog">
+<meta property="og:description" content="keepalived相关keepalive的学习参考网站：https://www.keepalived.org/ 在学习keepalived之前, 我们来思考一个问题：LVS只是负责负载均衡的转发，那如果后台的Real Server的服务挂掉以后，LVS是否能主动把这个摘除掉吗？ 答案是：肯定不行的，就是LVS不具备把后端挂掉的Real Server摘除掉，所以keepalived的应用而生。 k">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://192.168.84.188:8081/uploads/1655014550645262515keepalived.png">
+<meta property="og:updated_time" content="2022-06-12T06:36:07.094Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LVS和KeepAlived实现高可用集群">
+<meta name="twitter:description" content="keepalived相关keepalive的学习参考网站：https://www.keepalived.org/ 在学习keepalived之前, 我们来思考一个问题：LVS只是负责负载均衡的转发，那如果后台的Real Server的服务挂掉以后，LVS是否能主动把这个摘除掉吗？ 答案是：肯定不行的，就是LVS不具备把后端挂掉的Real Server摘除掉，所以keepalived的应用而生。 k">
+<meta name="twitter:image" content="http://192.168.84.188:8081/uploads/1655014550645262515keepalived.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/img/favicon.ico">
+    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+            
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+    <aside id="menu" class="hide">
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.gif" alt="avatar">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname" id="name">Echo</h5>
+          
+            <div id="yiyanmotto" class="motto">&nbsp;</div>
+          
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+              <li class="waves-block waves-effect">
+                  <a href="/">
+                    <i class="icon icon-lg icon-home"></i>
+                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/archives">
+                    <i class="icon icon-lg icon-archives"></i>
+                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/categories">
+                    <i class="icon icon-lg icon-th-list"></i>
+                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/tags">
+                    <i class="icon icon-lg icon-tags"></i>
+                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+              <li class="waves-block waves-effect">
+                  <a href="/about">
+                    <i class="icon icon-lg icon-smile-o"></i>
+                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
+                  </a>
+              </li>
+            
+      <div class="nav2">
+          
+              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
+                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
+              </a>
+          
+              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
+                <i class="icon icon-lg icon-github github"></i>
+              </a>
+          
+              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
+                <i class="icon icon-lg icon-tv tv"></i>
+              </a>
+          
+
+            </div>
+        
+      </ul>
+        
+    </div>
+  </div>
+ 
+</aside>
+
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">LVS和KeepAlived实现高可用集群</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
+            <i class="icon icon-lg icon-rss"></i>
+        </a>
+    </div>
+</header>
+<header class="content-header post-header">
+    
+    
+    <div class="container fade-scale">
+        <div id="myheader">
+            <h1 class="title">
+                
+            </h1>
+            <h5 class="subtitle">
+                
+                
+            </h5>
+        </div>
+    </div>
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#keepalived相关"><span class="post-toc-number">1.</span> <span class="post-toc-text">keepalived相关</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Keepalived的工作原理"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">Keepalived的工作原理</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#运行原理"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">运行原理</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#LVS-Keepalived"><span class="post-toc-number">2.</span> <span class="post-toc-text">LVS+Keepalived</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#全局定义"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">全局定义</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#VRRPD配置"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">VRRPD配置</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#配置实践"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">配置实践</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#配置-LVS-NAT"><span class="post-toc-number">2.3.1.</span> <span class="post-toc-text">配置 LVS-NAT</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#配置-LVS-TUN"><span class="post-toc-number">2.3.2.</span> <span class="post-toc-text">配置 LVS-TUN</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#配置-LVS-DR-和-LVS-TUN-混合模式"><span class="post-toc-number">2.3.3.</span> <span class="post-toc-text">配置 LVS/DR 和 LVS/TUN 混合模式</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考链接："><span class="post-toc-number">3.</span> <span class="post-toc-text">参考链接：</span></a></li></ol>
+        </nav>
+    </aside>
+   
+<article id="post-LVS和KeepAlived实现高可用集群" class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">LVS和KeepAlived实现高可用集群</h1>
+        <div class="post-meta">
+            <i class="icon icon-lg icon-calendar-o"></i>
+            发表于
+            <time class="post-time" title="2022-06-10 16:26:16" datetime="2022-06-10T08:26:16.000Z" itemprop="datePublished">2022-06-10</time>
+
+            <br id="mybreak">
+            
+<script>
+	mybreak.style="display:none";
+</script>
+
+
+            <i>·</i>
+            
+
+        </div>
+        <div class="post-count-custom">
+            <i class="icon icon-lg icon-comment-o"></i>
+            阅读本文可能花费您&nbsp;<span class="post-count">40</span>&nbsp;分钟
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="keepalived&#x76F8;&#x5173;"><a href="#keepalived&#x76F8;&#x5173;" class="headerlink" title="keepalived&#x76F8;&#x5173;"></a>keepalived&#x76F8;&#x5173;</h2><p>keepalive&#x7684;&#x5B66;&#x4E60;&#x53C2;&#x8003;&#x7F51;&#x7AD9;&#xFF1A;<a href="https://www.keepalived.org/" target="_blank" rel="noopener">https://www.keepalived.org/</a></p>
+<p>&#x5728;&#x5B66;&#x4E60;keepalived&#x4E4B;&#x524D;, &#x6211;&#x4EEC;&#x6765;&#x601D;&#x8003;&#x4E00;&#x4E2A;&#x95EE;&#x9898;&#xFF1A;<strong>LVS&#x53EA;&#x662F;&#x8D1F;&#x8D23;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x7684;&#x8F6C;&#x53D1;&#xFF0C;&#x90A3;&#x5982;&#x679C;&#x540E;&#x53F0;&#x7684;Real Server&#x7684;&#x670D;&#x52A1;&#x6302;&#x6389;&#x4EE5;&#x540E;&#xFF0C;LVS&#x662F;&#x5426;&#x80FD;&#x4E3B;&#x52A8;&#x628A;&#x8FD9;&#x4E2A;&#x6458;&#x9664;&#x6389;&#x5417;&#xFF1F;</strong> &#x7B54;&#x6848;&#x662F;&#xFF1A;<strong>&#x80AF;&#x5B9A;&#x4E0D;&#x884C;&#x7684;</strong>&#xFF0C;&#x5C31;&#x662F;LVS&#x4E0D;&#x5177;&#x5907;&#x628A;&#x540E;&#x7AEF;&#x6302;&#x6389;&#x7684;Real Server&#x6458;&#x9664;&#x6389;&#xFF0C;&#x6240;&#x4EE5;keepalived&#x7684;&#x5E94;&#x7528;&#x800C;&#x751F;&#x3002;</p>
+<p>keepalived &#x8D77;&#x521D;&#x5C31;&#x662F;&#x4E3A;LVS&#x8BBE;&#x8BA1;&#x7684;&#xFF0C;&#x4E13;&#x95E8;&#x7528;&#x6765;&#x76D1;&#x63A7;&#x96C6;&#x7FA4;&#x7CFB;&#x7EDF;&#x4E2D;&#x5404;&#x4E2A;&#x670D;&#x52A1;&#x8282;&#x70B9;&#x7684;&#x72B6;&#x6001;&#xFF0C;<strong>&#x5B83;&#x6839;&#x636E;tcp/ip&#x53C2;&#x8003;&#x6A21;&#x578B;&#x7684;&#x7B2C;&#x4E09;&#x56DB;&#x548C;&#x7B2C;&#x4E94;&#x5C42;&#x4EA4;&#x6362;&#x673A;&#x5236;&#x68C0;&#x6D4B;&#x6BCF;&#x4E2A;&#x670D;&#x52A1;&#x8282;&#x70B9;&#x7684;&#x72B6;&#x6001;&#xFF0C;&#x6BCF;&#x4E2A;&#x670D;&#x52A1;&#x8282;&#x70B9;&#x5F02;&#x5E38;&#x6216;&#x8005;&#x5DE5;&#x4F5C;&#x969C;&#x788D;&#xFF0C;keepalvied&#x5C06;&#x7ACB;&#x523B;&#x68C0;&#x6D4B;&#x5230;&#xFF0C;&#x5E76;&#x628A;&#x969C;&#x788D;&#x8282;&#x70B9;&#x5254;&#x9664;&#xFF0C;&#x662F;&#x6BEB;&#x79D2;&#x7EA7;&#x7684;</strong>&#xFF0C;&#x5F53;&#x540E;&#x53F0;&#x8282;&#x70B9;&#x6062;&#x590D;&#x6B63;&#x5E38;&#x4EE5;&#x540E;&#xFF0C;keepalived&#x6709;&#x81EA;&#x52A8;&#x5C06;&#x670D;&#x52A1;&#x8282;&#x70B9;&#x91CD;&#x65B0;&#x6DFB;&#x52A0;&#x5728;&#x670D;&#x52A1;&#x5668;&#x96C6;&#x7FA4;&#x4E2D;&#x3002;<br><a id="more"></a><br>keepalvied&#x540E;&#x6765;&#x53C8;&#x52A0;&#x4E86;VRRP&#x529F;&#x80FD;&#xFF0C;VRRP&#xFF08;&#x865A;&#x62DF;&#x8DEF;&#x7531;&#x5668;&#x5197;&#x4F59;&#x534F;&#x8BAE;&#xFF09;&#xFF0C;&#x51FA;&#x73B0;&#x7684;&#x76EE;&#x7684;&#x5C31;&#x662F;&#x89E3;&#x51B3;&#x9759;&#x6001;&#x8DEF;&#x7531;&#x5355;&#x70B9;&#x6545;&#x969C;&#x7684;&#x95EE;&#x9898;&#xFF0C;&#x901A;&#x8FC7;vrrp&#x53EF;&#x4EE5;&#x5B9E;&#x73B0;&#x7F51;&#x7EDC;&#x4E0D;&#x95F4;&#x65AD;&#x7A33;&#x5B9A;&#x8FD0;&#x884C;&#x3002;</p>
+<p>Keepalived&#x662F;&#x7528;C&#x8BED;&#x8A00;&#x7F16;&#x5199;&#x7684;&#x8DEF;&#x7531;&#x8F6F;&#x4EF6;&#x3002;&#x8BE5;&#x9879;&#x76EE;&#x7684;&#x4E3B;&#x8981;&#x76EE;&#x6807;&#x662F;&#x4E3A;Linux&#x7CFB;&#x7EDF;&#x548C;&#x57FA;&#x4E8E;Linux&#x7684;&#x57FA;&#x7840;&#x7ED3;&#x6784;&#x63D0;&#x4F9B;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x548C;&#x9AD8;&#x53EF;&#x7528;&#x6027;&#x7684;&#x7B80;&#x5355;&#x800C;&#x5F3A;&#x5927;&#x7684;&#x529F;&#x80FD;&#x3002;&#x8D1F;&#x8F7D;&#x5E73;&#x8861;&#x6846;&#x67B6;&#x4F9D;&#x8D56;&#x4E8E;&#x63D0;&#x4F9B;&#x7B2C;4&#x5C42;&#x8D1F;&#x8F7D;&#x5E73;&#x8861;&#x7684;&#x8457;&#x540D;&#x4E14;&#x5E7F;&#x6CDB;&#x4F7F;&#x7528;&#x7684;Linux&#x865A;&#x62DF;&#x670D;&#x52A1;&#x5668;&#xFF08;IPVS&#xFF09;&#x5185;&#x6838;&#x6A21;&#x5757;&#x3002;Keepalived&#x5B9E;&#x73B0;&#x4E86;&#x4E00;&#x7EC4;VIP&#x529F;&#x80FD;&#xFF0C;&#x4EE5;&#x6839;&#x636E;&#x5176;&#x8FD0;&#x884C;&#x72B6;&#x51B5;&#x52A8;&#x6001;&#xFF0C;&#x81EA;&#x9002;&#x5E94;&#x5730;&#x7EF4;&#x62A4;&#x548C;&#x7BA1;&#x7406;&#x8D1F;&#x8F7D;&#x5E73;&#x8861;&#x7684;&#x670D;&#x52A1;&#x5668;&#x6C60;&#x3002;<strong>&#x53E6;&#x4E00;&#x65B9;&#x9762;&#xFF0C;VRRP&#x5B9E;&#x73B0;&#x4E86;&#x9AD8;&#x53EF;&#x7528;&#x6027; &#x534F;&#x8BAE;&#x3002;VRRP&#x662F;&#x8DEF;&#x7531;&#x5668;&#x6545;&#x969C;&#x8F6C;&#x79FB;&#x7684;&#x57FA;&#x7840;</strong>&#x3002;</p>
+<p>&#x6B64;&#x5916;&#xFF0C;Keepalived&#x8FD8;&#x5B9E;&#x73B0;&#x4E86;&#x4E00;&#x7EC4;VRRP&#x6709;&#x9650;&#x72B6;&#x6001;&#x673A;&#x7684;&#x6302;&#x94A9;&#xFF0C;&#x4ECE;&#x800C;&#x63D0;&#x4F9B;&#x4E86;&#x4F4E;&#x7EA7;&#x548C;&#x9AD8;&#x901F;&#x534F;&#x8BAE;&#x4EA4;&#x4E92;&#x3002;<strong>&#x4E3A;&#x4E86;&#x63D0;&#x4F9B;&#x6700;&#x5FEB;&#x7684;&#x7F51;&#x7EDC;&#x6545;&#x969C;&#x68C0;&#x6D4B;&#xFF0C;Keepalived&#x5B9E;&#x65BD;BFD&#x534F;&#x8BAE;&#x3002;VRRP&#x72B6;&#x6001;&#x8F6C;&#x6362;&#x53EF;&#x4EE5;&#x8003;&#x8651;BFD&#x63D0;&#x793A;&#x6765;&#x9A71;&#x52A8;&#x5FEB;&#x901F;&#x72B6;&#x6001;&#x8F6C;&#x6362;&#x3002;Keepalived&#x6846;&#x67B6;&#x53EF;&#x4EE5;&#x72EC;&#x7ACB;&#x4F7F;&#x7528;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x4E00;&#x8D77;&#x4F7F;&#x7528;&#x4EE5;&#x63D0;&#x4F9B;&#x5F39;&#x6027;&#x57FA;&#x7840;&#x67B6;&#x6784;&#x3002;</strong></p>
+<p>keepalived&#x652F;&#x6301;&#x591A;&#x7EC4;VIP&#x7684;&#x64CD;&#x4F5C;&#xFF0C;&#x5C31;&#x662F;&#x4E00;&#x53F0;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x53EF;&#x4EE5;&#x90E8;&#x7F72;&#x591A;&#x53F0;VIP&#xFF0C;&#x53EF;&#x4EE5;&#x7406;&#x89E3;&#x4E3A;&#x6BCF;&#x4E2A;VIP&#x662F;&#x4E00;&#x7EC4;&#x64CD;&#x4F5C;&#x3002;</p>
+<p><strong>Keepalived&#x7684;&#x4F7F;&#x7528;&#x573A;&#x666F;</strong><br>&#x53EF;&#x4EE5;&#x8BF4;&#xFF0C;keepalived&#x672C;&#x8EAB;&#x5C31;&#x662F;&#x7ED9;LVS&#x91CF;&#x8EAB;&#x5B9A;&#x505A;&#x7684;&#xFF0C;LVS&#x867D;&#x7136;&#x662F;&#x53EF;&#x4EE5;&#x8FDB;&#x884C;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x7684;&#x8BF7;&#x6C42;&#x7684;&#x8F6C;&#x53D1;&#xFF0C;&#x5982;&#x679C;&#x540E;&#x7AEF;&#x670D;&#x52A1;&#x5668;&#x68C0;&#x67E5;&#x5230;&#x670D;&#x52A1;&#x5668;&#x6545;&#x969C;&#xFF0C;LVS&#x662F;&#x53EF;&#x4EE5;&#x4E3B;&#x52A8;&#x5207;&#x9664;&#x7684;&#xFF0C;&#x8FD9;&#x4E2A;LVS&#x672C;&#x8EAB;&#x5177;&#x5907;&#x7684;&#x529F;&#x80FD;&#xFF0C;&#x800C;&#x4E14;&#x5207;&#x9664;&#x540E;&#x7AEF;Real Server&#x7684;&#x65F6;&#x95F4;&#x90FD;&#x662F;&#x5728;&#x6BEB;&#x79D2;&#x7EA7;&#x522B;&#xFF0C;&#x7279;&#x522B;&#x7684;&#x5FEB;&#x901F;&#xFF0C;&#x6BD5;&#x7ADF;LVS&#x5DF2;&#x7ECF;&#x96C6;&#x6210;&#x5230;Linux&#x7CFB;&#x7EDF;&#x5185;&#x6838;&#x4E86;&#x3002;&#x90A3;&#x5C31;&#x6709;&#x4E00;&#x4E2A;&#x95EE;&#x9898;, &#x5982;&#x679C;LVS&#x670D;&#x52A1;&#x5668;&#x6302;&#x6389;&#x4E86;&#x5462;?&#x6211;&#x4EEC;&#x7684;&#x670D;&#x52A1;&#x662F;&#x4E0D;&#x662F;&#x5C31;&#x4E0D;&#x53EF;&#x7528;&#x4E86;&#x5462;&#xFF1F;&#x90A3;&#x5C31;&#x6765;&#x770B;&#x770B;&#x6211;&#x4EEC;keepalived&#x7684;&#x4F7F;&#x7528;&#x573A;&#x666F;&#x4E86;&#x3002;</p>
+<p>LVS&#x548C;keepalived&#x53EF;&#x4EE5;&#x8BF4;&#x662F;&#x5929;&#x7136;&#x7684;&#x96C6;&#x6210;, &#x6211;&#x4EEC;&#x5728;linux&#x7CFB;&#x7EDF;&#x5B89;&#x88C5;&#x7684;&#x65F6;&#x5019;, &#x53EF;&#x80FD;&#x90FD;&#x4E0D;&#x9700;&#x8981;&#x4EC0;&#x4E48;&#x7279;&#x6B8A;&#x7684;LVS&#x7684;&#x914D;&#x7F6E;, lvs+keepalived&#x7684;&#x96C6;&#x6210;, &#x53EA;&#x9700;&#x8981;&#x5728;keepalived&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x4E2D;&#x589E;&#x52A0;&#x914D;&#x7F6E;&#x5C31;ok</p>
+<p>keepalive&#x63D0;&#x4F9B;&#x4E86;&#x4E3B;&#x4ECE;&#x5207;&#x6362;&#x7684;&#x529F;&#x80FD;, &#x4E3B;&#x4ECE;&#x4E4B;&#x95F4;&#x6709;&#x5FC3;&#x8DF3;&#x68C0;&#x6D4B;, &#x5982;&#x679C;&#x53D1;&#x73B0;&#x4E3B;&#x4ECE;&#x6302;&#x6389;, keepalived&#x4F1A;&#x81EA;&#x52A8;&#x8FDB;&#x884C;&#x4E3B;&#x4ECE;&#x7684;&#x5207;&#x6362;</p>
+<p>&#x5355;&#x4F53;&#x67B6;&#x6784;&#x4E2D;, &#x6211;&#x4EEC;&#x6700;&#x5E38;&#x4F7F;&#x7528;lvs+keepalived&#x7684;&#x529F;&#x80FD;</p>
+<h3 id="Keepalived&#x7684;&#x5DE5;&#x4F5C;&#x539F;&#x7406;"><a href="#Keepalived&#x7684;&#x5DE5;&#x4F5C;&#x539F;&#x7406;" class="headerlink" title="Keepalived&#x7684;&#x5DE5;&#x4F5C;&#x539F;&#x7406;"></a>Keepalived&#x7684;&#x5DE5;&#x4F5C;&#x539F;&#x7406;</h3><ul>
+<li>&#x5206;&#x4E3A;&#x4E24;&#x5927;&#x5C42;&#xFF1A;&#x5185;&#x6838;&#x7A7A;&#x95F4;(Kernel Space)&#x3001;&#x7528;&#x6237;&#x7A7A;&#x95F4;(User Space)</li>
+<li>IPVS(IP Virtual Server): &#x5B9E;&#x73B0;&#x4F20;&#x8F93;&#x5C42;&#x8D1F;&#x8F7D;&#x5E73;&#x8861;&#xFF0C;&#x4E5F;&#x79F0;&#x4E3A;&#x7B2C;4&#x5C42;&#x4EA4;&#x6362;&#xFF1B;</li>
+<li>NETLINK: &#x7528;&#x4E8E;&#x5728;&#x5185;&#x6838;&#x548C;&#x7528;&#x6237;&#x7A7A;&#x95F4;&#x8FDB;&#x7A0B;&#x4E4B;&#x95F4;&#x4F20;&#x8F93;&#x4FE1;&#x606F;&#xFF1B;</li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="http://192.168.84.188:8081/uploads/1655014550645262515keepalived.png" alt="" title="">
+                </div>
+                <div class="image-caption"></div>
+            </figure>
+<p><strong>Keepalived&#x5206;&#x4E3A;3&#x4E2A;&#x5B88;&#x62A4;&#x8FDB;&#x7A0B;</strong>  </p>
+<ul>
+<li>&#x7236;&#x8FDB;&#x7A0B;&#xFF1A;&#x5F88;&#x7B80;&#x5355;&#xFF0C;&#x8D1F;&#x8F7D;fork&#x5B50;&#x8FDB;&#x7A0B;&#xFF0C;&#x5E76;&#x76D1;&#x89C6;&#x5B50;&#x8FDB;&#x7A0B;&#x5065;&#x5EB7;&#x72B6;&#x6001;</li>
+<li>&#x5B50;&#x8FDB;&#x7A0B;A&#xFF1A;&#x8D1F;&#x8D23;VRRP&#x6846;&#x67B6;</li>
+<li>&#x5B50;&#x8FDB;&#x7A0B;B&#xFF1A;&#x8D1F;&#x8D23;&#x5065;&#x5EB7;&#x68C0;&#x67E5;</li>
+</ul>
+<h3 id="&#x8FD0;&#x884C;&#x539F;&#x7406;"><a href="#&#x8FD0;&#x884C;&#x539F;&#x7406;" class="headerlink" title="&#x8FD0;&#x884C;&#x539F;&#x7406;"></a>&#x8FD0;&#x884C;&#x539F;&#x7406;</h3><p>keepalived &#x901A;&#x8FC7;&#x9009;&#x4E3E;&#xFF08;&#x770B;&#x670D;&#x52A1;&#x5668;&#x8BBE;&#x7F6E;&#x7684;&#x6743;&#x91CD;&#xFF09;&#x6311;&#x9009;&#x51FA;&#x4E00;&#x53F0;&#x70ED;&#x5907;&#x670D;&#x52A1;&#x5668;&#x505A; MASTER &#x673A;&#x5668;&#xFF0C;MASTER &#x673A;&#x5668;&#x4F1A;&#x88AB;&#x5206;&#x914D;&#x5230;&#x4E00;&#x4E2A;&#x6307;&#x5B9A;&#x7684;&#x865A;&#x62DF; ip&#xFF0C;&#x5373;VIP, &#x5916;&#x90E8;&#x7A0B;&#x5E8F;&#x53EF;&#x901A;&#x8FC7;&#x8BE5; VIP &#x8BBF;&#x95EE;&#x8FD9;&#x53F0;&#x670D;&#x52A1;&#x5668;&#xFF0C;&#x5982;&#x679C;&#x8FD9;&#x53F0;&#x670D;&#x52A1;&#x5668;&#x51FA;&#x73B0;&#x6545;&#x969C;&#xFF08;&#x65AD;&#x7F51;&#xFF0C;&#x91CD;&#x542F;&#xFF0C;&#x6216;&#x8005;&#x672C;&#x673A;&#x5668;&#x4E0A;&#x7684; keepalived crash &#x7B49;&#xFF09;&#xFF0C;keepalived &#x4F1A;&#x4ECE;&#x5176;&#x4ED6;&#x7684;&#x5907;&#x4EFD;&#x673A;&#x5668;&#x4E0A;&#x91CD;&#x9009;&#xFF08;&#x8FD8;&#x662F;&#x770B;&#x670D;&#x52A1;&#x5668;&#x8BBE;&#x7F6E;&#x7684;&#x6743;&#x91CD;&#xFF09;&#x4E00;&#x53F0;&#x673A;&#x5668;&#x505A; MASTER &#x5E76;&#x5206;&#x914D;&#x540C;&#x6837;&#x7684;&#x865A;&#x62DF; IP&#xFF0C;&#x5145;&#x5F53;&#x524D;&#x4E00;&#x53F0; MASTER &#x7684;&#x89D2;&#x8272;&#x3002;<strong>&#x6743;&#x91CD;&#x8D8A;&#x9AD8;&#xFF0C;&#x5907;&#x7528;&#x673A;&#x5668;&#x88AB;&#x62C9;&#x8D77;&#x6765;&#x7684;&#x5360;&#x6BD4;&#x5C31;&#x8D8A;&#x5927;&#xFF0C;&#x4E00;&#x822C;&#x7684;&#x4E3B;&#x5907;&#x5C31;&#x53EF;&#x4EE5;&#x6EE1;&#x8DB3;&#x6211;&#x4EEC;&#x7684;&#x9700;&#x6C42;&#x3002;</strong></p>
+<h2 id="LVS-Keepalived"><a href="#LVS-Keepalived" class="headerlink" title="LVS+Keepalived"></a>LVS+Keepalived</h2><p>lvs&#x548C;keepalived&#x5E94;&#x8BE5;&#x53EF;&#x4EE5;&#x8BF4;&#x662F;&#x5929;&#x7136;&#x7684;&#x96C6;&#x6210;, &#x5728;&#x56E0;&#x4E3A;LVS&#x5DF2;&#x7ECF;&#x96C6;&#x6210;&#x5230;linux&#x5185;&#x6838;&#x7CFB;&#x7EDF;&#x4E2D;, &#x6211;&#x4EEC;&#x53EA;&#x9700;&#x8981;&#x914D;&#x7F6E;&#x4E00;&#x4E0B;keepalived&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x5C31;&#x53EF;&#x4EE5;&#x4E86;, &#x90A3;&#x6211;&#x4EEC;&#x8FD8;&#x662F;&#x4E3B;&#x8981;&#x6765;&#x7814;&#x7A76;&#x4E00;&#x4E0B;keepalived&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;, &#x5C31;&#x53EF;&#x4EE5;&#x8F7B;&#x677E;&#x7684;&#x4F7F;&#x7528;&#x4E86;</p>
+<figure class="highlight"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">#&#x5168;&#x5C40;&#x914D;&#x7F6E;</span></span><br><span class="line">global_defs {</span><br><span class="line">  notification_email { #&#x8BBE;&#x7F6E;&#x62A5;&#x8B66;&#x90AE;&#x4EF6;&#x5730;&#x5740;&#xFF0C;&#x6BCF;&#x884C;&#x4E00;&#x4E2A;&#xFF0C;&#xFF08;&#x5982;&#x679C;&#x8981;&#x5F00;&#x542F;&#x90AE;&#x4EF6;&#x62A5;&#x8B66;&#xFF0C;&#x9700;&#x8981;&#x5F00;&#x542F;&#x672C;&#x673A;&#x7684;sendmail&#x670D;&#x52A1;&#xFF09;</span><br><span class="line">    2461590502@qq.com  </span><br><span class="line">}</span><br><span class="line">  notification_email_from keepalived_server@qq.com   #&#x8BBE;&#x7F6E;&#x90AE;&#x4EF6;&#x7684;&#x53D1;&#x9001;&#x5730;&#x5740;</span><br><span class="line">  smtp_server smtp.qq.com           #&#x8BBE;&#x7F6E;&#x90AE;&#x4EF6;&#x7684;smtp server&#x5730;&#x5740;</span><br><span class="line">  smtp_connect_timeout 30           #&#x8BBE;&#x7F6E;&#x8FDE;&#x63A5;smtp server&#x7684;&#x8D85;&#x65F6;&#x65F6;&#x95F4;</span><br><span class="line">  router_id LVS_DEVEL             #&#x8868;&#x793A;keepalived&#x670D;&#x52A1;&#x5668;&#x7684;&#x4E00;&#x4E2A;&#x6807;&#x8BC6;&#xFF0C;&#x662F;&#x53D1;&#x90AE;&#x4EF6;&#x65F6;&#x663E;&#x793A;&#x5728;&#x90AE;&#x4EF6;&#x4E3B;&#x9898;&#x4E2D;&#x7684;&#x4FE1;&#x606F;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="comment">#keepalived&#x7684;VRRPD&#x914D;&#x7F6E;&#xFF0C;&#x662F;&#x6240;&#x6709;keepalived&#x914D;&#x7F6E;&#x7684;&#x6838;&#x5FC3;</span></span><br><span class="line"><span class="comment">#VRRP&#x5B9E;&#x4F8B;&#x914D;&#x7F6E;</span></span><br><span class="line">vrrp_instance VIP_142   #&#x662F;VRRP&#x5B9E;&#x4F8B;&#x5F00;&#x59CB;&#x7684;&#x6807;&#x8BC6;&#xFF0C;&#x540E;&#x8DDF;VRRP&#x5B9E;&#x4F8B;&#x540D;&#x79F0;</span><br><span class="line">{</span><br><span class="line">state MASTER       #keepalived&#x7684;&#x89D2;&#x8272;&#xFF0C;MASTER&#x4E3B;&#xFF0C;BACKUP&#x5907;</span><br><span class="line">interface eth0       #&#x7528;&#x4E8E;&#x6307;&#x5B9A;HA&#x76D1;&#x6D4B;&#x7F51;&#x7EDC;&#x7684;&#x63A5;&#x53E3;</span><br><span class="line">virtual_router_id 142     #&#x865A;&#x62DF;&#x8DEF;&#x7531;&#x6807;&#x8BC6;&#xFF0C;&#x8FD9;&#x4E2A;&#x6807;&#x8BC6;&#x662F;&#x4E00;&#x4E2A;&#x6570;&#x5B57;&#xFF0C;&#x540C;&#x4E00;&#x4E2A;VRRP&#x5B9E;&#x4F8B;&#x4F7F;&#x7528;&#x552F;&#x4E00;&#x7684;&#x4E00;&#x4E2A;&#x6807;&#x8BC6;&#xFF0C;&#x5373;&#x5728;&#x540C;&#x4E00;&#x4E2A;vrrp_instance&#x4E0B;&#xFF0C;MASTER&#x548C;BACKUP&#x5FC5;&#x987B;&#x662F;&#x4E00;&#x81F4;&#x7684;&#xFF01;</span><br><span class="line">priority 100         #&#x6743;&#x91CD;&#x4F18;&#x5148;&#x7EA7;</span><br><span class="line">advert_int 2         #&#x7528;&#x4E8E;&#x8BBE;&#x5B9A;master&#x548C;backup&#x4E3B;&#x673A;&#x4E4B;&#x95F4;&#x540C;&#x6B65;&#x68C0;&#x67E5;&#x7684;&#x65F6;&#x95F4;&#x95F4;&#x9694;&#xFF0C;&#x5355;&#x4F4D;&#x662F;&#x79D2;</span><br><span class="line">garp_master_delay 10     #&#x7528;&#x4E8E;&#x5207;&#x6362;&#x5230;master&#x72B6;&#x6001;&#x540E;&#x5EF6;&#x65F6;&#x8FDB;&#x884C;Gratuitous arp&#x8BF7;&#x6C42;&#x7684;&#x65F6;&#x95F4;</span><br><span class="line">smtp_alert         #&#x8868;&#x793A;&#x662F;&#x5426;&#x5F00;&#x542F;&#x90AE;&#x4EF6;&#x901A;&#x77E5;(&#x7528;&#x5168;&#x5C40;&#x533A;&#x57DF;&#x7684;&#x90AE;&#x4EF6;&#x8BBE;&#x7F6E;&#x6765;&#x53D1;&#x901A;&#x77E5;)</span><br><span class="line">authentication       #&#x4E3B;&#x5907;&#x4E4B;&#x95F4;&#x8FDB;&#x884C;&#x901A;&#x4FE1;&#x7684;&#x9A8C;&#x8BC1;&#x7C7B;&#x578B;&#x548C;&#x5BC6;&#x7801;&#xFF1A;&#x9A8C;&#x8BC1;&#x7C7B;&#x578B;&#x4E3B;&#x8981;&#x6709;PASS&#x548C;AH&#x4E24;&#x79CD;&#xFF0C;&#x4E00;&#x4E2A;&#x5728;vrrp_instance&#x4E0B;&#xFF0C;MASTER&#x548C;backup&#x5FC5;&#x987B;&#x4F7F;&#x7528;&#x76F8;&#x540C;&#x7684;&#x5BC6;&#x7801;&#x624D;&#x53EF;&#x4EE5;&#x901A;&#x4FE1;</span><br><span class="line">{</span><br><span class="line">auth_type PASS</span><br><span class="line">auth_pass 123456</span><br><span class="line">}</span><br><span class="line"><span class="comment">#virtual_ipaddress&#x7528;&#x4E8E;&#x8BBE;&#x7F6E;&#x865A;&#x62DF;ip&#x5730;&#x5740;&#xFF0C;&#x53EF;&#x4EE5;&#x8BBE;&#x7F6E;&#x591A;&#x4E2A;vip&#xFF0C;&#x6BCF;&#x884C;&#x4E00;&#x4E2A;&#xFF0C;</span></span><br><span class="line">virtual_ipaddress</span><br><span class="line">{</span><br><span class="line">10.95.0.200/24</span><br><span class="line">}</span><br><span class="line">track_interface     #&#x7528;&#x4E8E;&#x8BBE;&#x7F6E;&#x4E00;&#x4E9B;&#x989D;&#x5916;&#x7684;&#x7F51;&#x7EDC;&#x76D1;&#x63A7;&#x63A5;&#x53E3;&#xFF0C;&#x5176;&#x4E2D;&#x4EFB;&#x4F55;&#x4E00;&#x4E2A;&#x7F51;&#x7EDC;&#x63A5;&#x53E3;&#x51FA;&#x73B0;&#x6545;&#x969C;&#xFF0C;keepalived&#x90FD;&#x4F1A;&#x8FDB;&#x53BB;fault&#x72B6;&#x6001;&#xFF01;</span><br><span class="line">{</span><br><span class="line">ens33</span><br><span class="line">}</span><br><span class="line">nopreempt       #&#x8BBE;&#x7F6E;&#x4E0D;&#x62A2;&#x5360;&#x529F;&#x80FD;&#xFF0C;&#x53EA;&#x80FD;&#x5728;backup&#x4E0A;&#x4F7F;&#x7528;&#xFF0C;&#x77E5;&#x9053;&#x673A;&#x5668;&#x6709;&#x6545;&#x969C;&#x4E86;&#x624D;&#x5207;&#x6362;&#xFF0C;</span><br><span class="line">preemtp_delay 300   #&#x7528;&#x4E8E;&#x8BBE;&#x7F6E;&#x62A2;&#x5360;&#x7684;&#x5EF6;&#x65F6;&#x65F6;&#x95F4;&#xFF0C;&#xFF08;&#x4F8B;&#xFF1A;&#x5F00;&#x542F;&#x542F;&#x52A8;&#x6CA1;&#x5FC5;&#x8981;&#x62A2;&#x5360;&#xFF09;</span><br><span class="line">}</span><br><span class="line"><span class="comment">#&#x4EE5;&#x4E0B;&#x662F;lvs&#x7684;&#x4E3B;&#x8981;&#x4E3B;&#x8981;&#x914D;&#x7F6E;&#x4FE1;&#x606F;&#xFF0C;&#x4E3B;&#x8981;&#x5B9E;&#x73B0;lvs&#x7684;ip&#x5305;&#x8F6C;&#x53D1;&#x529F;&#x80FD;&#xFF01;</span></span><br><span class="line">virtual_server 10.95.0.200 80       #&#x865A;&#x62DF;ip&#x548C;&#x7AEF;&#x53E3;</span><br><span class="line">{</span><br><span class="line">delay_loop 6       #&#x8BBE;&#x7F6E;&#x5065;&#x5EB7;&#x68C0;&#x67E5;&#x7684;&#x65F6;&#x95F4;&#x95F4;&#x9694;</span><br><span class="line">lb_algo wrr         #&#x8BBE;&#x7F6E;&#x8D1F;&#x8F7D;&#x8C03;&#x5EA6;&#x7B97;&#x6CD5;</span><br><span class="line">lb_kind DR         #&#x8BBE;&#x7F6E;lvs&#x7684;&#x6A21;&#x5F0F;</span><br><span class="line">persistence_timeout 60   #&#x4F1A;&#x8BDD;&#x4FDD;&#x6301;&#x65F6;&#x95F4;&#xFF0C;&#x5355;&#x4F4D;&#x79D2;</span><br><span class="line">protocol TCP       #ip&#x5305;&#x8F6C;&#x53D1;&#x534F;&#x8BAE;&#xFF0C;&#x6709;TCP&#x548C;UDP&#x4E24;&#x79CD;</span><br><span class="line">real_server 10.95.0.143 80   #real server &#x7684;ip</span><br><span class="line">{</span><br><span class="line">  weight 3           #&#x6743;&#x91CD;</span><br><span class="line">  TCP_CHECK           #&#x5065;&#x5EB7;&#x68C0;&#x67E5;</span><br><span class="line">  {</span><br><span class="line">    connect_timeout 10       #&#x8868;&#x793A;&#x65E0;&#x54CD;&#x5E94;&#x8D85;&#x65F6;&#x65F6;&#x95F4;</span><br><span class="line">    nb_get_retry 3           #&#x8868;&#x793A;&#x91CD;&#x8FDE;&#x6B21;&#x6570;</span><br><span class="line">    delay_before_retry 3       #&#x8868;&#x793A;&#x91CD;&#x8BD5;&#x95F4;&#x9694;</span><br><span class="line">    connect_port 80           #&#x8868;&#x793A;&#x7AEF;&#x53E3;</span><br><span class="line">  }</span><br><span class="line">}</span><br><span class="line">real_server 10.95.0.144 80</span><br><span class="line">{</span><br><span class="line">  weight 3</span><br><span class="line">  TCP_CHECK</span><br><span class="line">  {</span><br><span class="line">    connect_timeout 10</span><br><span class="line">    nb_get_retry 3</span><br><span class="line">    delay_before_retry 3</span><br><span class="line">    connect_port 80</span><br><span class="line">  }</span><br><span class="line">}</span><br><span class="line">}</span><br><span class="line">2&#x3001;keepalived&#x7684;&#x5FC3;&#x8DF3;&#x68C0;&#x6D4B;</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x5065;&#x5EB7;&#x76D1;&#x6D4B;&#x5E94;&#x8BB8;&#x591A;&#x79CD;&#x68C0;&#x67E5;&#x65B9;&#x5F0F;&#xFF0C;&#x5E38;&#x89C1;&#x7684;&#x6709;&#xFF0C;HTTP_GET&#xFF0C;SSL_GET&#xFF0C;TCP_CHECK&#xFF0C;SMTP_CHECK&#xFF0C;MISC_CHECK.<br></p><figure class="highlight"><table><tbody><tr><td class="code"><pre><span class="line">TCP_CHECK {</span><br><span class="line"> </span><br><span class="line"> conetct_port 80</span><br><span class="line"> </span><br><span class="line"> connect_timeout 3</span><br><span class="line"> </span><br><span class="line"> nb_get_retry 3</span><br><span class="line"> </span><br><span class="line"> delay_before_retry 3</span><br><span class="line"> </span><br><span class="line">}</span><br><span class="line"> </span><br><span class="line">connect_port:&#x5065;&#x5EB7;&#x68C0;&#x67E5;&#x7684;&#x7AEF;&#x53E3;&#xFF0C;&#x5982;&#x679C;&#x4E0D;&#x6307;&#x5B9A;&#xFF0C;&#x9ED8;&#x8BA4;&#x662F;real_server&#x6307;&#x5B9A;&#x7684;&#x7AEF;&#x53E3;</span><br><span class="line"> </span><br><span class="line">connect_timeout:&#x8868;&#x793A;&#x65E0;&#x54CD;&#x5E94;&#x8D85;&#x65F6;&#x65F6;&#x95F4;&#xFF0C;&#x5355;&#x4F4D;&#x662F;&#x79D2;&#xFF0C;&#x8FD9;&#x91CC;&#x662F;3s</span><br><span class="line"> </span><br><span class="line">nb_get_retry&#xFF1A;&#x8868;&#x793A;&#x91CD;&#x8BD5;&#x6B21;&#x6570;&#xFF0C;&#x8FD9;&#x91CC;&#x662F;3ci</span><br><span class="line"> </span><br><span class="line">delay_before_retry&#xFF1A;&#x8868;&#x793A;&#x91CD;&#x8BD5;&#x95F4;&#x9694;&#xFF0C;</span><br><span class="line"> </span><br><span class="line">HTTP_GET |SSL_GET</span><br><span class="line"> </span><br><span class="line">{</span><br><span class="line"> </span><br><span class="line"> url{</span><br><span class="line"> </span><br><span class="line">   path /index.html  #&#x6307;&#x5B9A;url&#x4FE1;&#x606F;</span><br><span class="line"> </span><br><span class="line">   digest e6owjfdsjfalsjdfsalkf30wfdsfjwqe  </span><br><span class="line"> </span><br><span class="line">   <span class="comment">#ssl&#x68C0;&#x67E5;&#x540E;&#x7684;&#x6458;&#x8981;&#x4FE1;&#x606F;&#xFF0C;&#x8FD9;&#x4E9B;&#x6458;&#x8981;&#x4FE1;&#x606F;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;genhash&#x547D;&#x4EE4;&#x5DE5;&#x5177;&#x83B7;&#x53D6;&#xFF0C;</span></span><br><span class="line"> </span><br><span class="line">     <span class="comment">#&#x4F8B;&#xFF1A;genhash -s 192.168.12.80 -p 80 -u /index.html</span></span><br><span class="line"> </span><br><span class="line">   status_code 200  </span><br><span class="line"> </span><br><span class="line">}</span><br><span class="line"> </span><br><span class="line"> connect_port 80</span><br><span class="line"> </span><br><span class="line"> bindto 192.168.31.128    #&#x8868;&#x793A;&#x901A;&#x8FC7;&#x6B64;&#x5730;&#x5740;&#x6765;&#x5BF9;&#x53D1;&#x9001;&#x8BF7;&#x6C42;&#x5BF9;&#x670D;&#x52A1;&#x5668;&#x8FDB;&#x884C;&#x5065;&#x5EB7;&#x68C0;&#x67E5;</span><br><span class="line"> </span><br><span class="line"> nb_get_retry 3</span><br><span class="line"> </span><br><span class="line"> delay_before_retry 2</span><br><span class="line"> </span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>&#xFF01;&#x5728;&#x914D;&#x7F6E;keepalived.conf&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x65F6;&#xFF0C;&#x4E00;&#x5B9A;&#x8981;&#x68C0;&#x67E5;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x7684;&#x6B63;&#x786E;&#x6027;&#xFF0C;&#x56E0;&#x4E3A;keepalived&#x5728;&#x91CD;&#x542F;&#x65F6;&#xFF0C;&#x5E76;&#x4E0D;&#x68C0;&#x67E5;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x7684;&#x6B63;&#x786E;&#x6027;&#xFF0C;&#x5373;&#x4F7F;&#x6CA1;&#x6709;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF0C;keepalived&#x7167;&#x6837;&#x53EF;&#x4EE5;&#x542F;&#x52A8;&#xFF0C;&#x6240;&#x4EE5;&#x4E00;&#x5B9A;&#x8981;&#x68C0;&#x67E5;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x662F;&#x5426;&#x6B63;&#x786E;</strong></p>
+<h3 id="&#x5168;&#x5C40;&#x5B9A;&#x4E49;"><a href="#&#x5168;&#x5C40;&#x5B9A;&#x4E49;" class="headerlink" title="&#x5168;&#x5C40;&#x5B9A;&#x4E49;"></a>&#x5168;&#x5C40;&#x5B9A;&#x4E49;</h3><p>&#x5168;&#x5C40;&#x914D;&#x7F6E;&#x53C8;&#x5305;&#x62EC;&#x4E24;&#x4E2A;&#x5B50;&#x914D;&#x7F6E;</p>
+<ul>
+<li>&#x5168;&#x5C40;&#x5B9A;&#x4E49;(global definition)</li>
+<li>&#x9759;&#x6001;&#x8DEF;&#x7531;&#x914D;&#x7F6E;(static ipaddress/routes)</li>
+</ul>
+<figure class="highlight"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># &#x5168;&#x5C40;&#x5B9A;&#x4E49;</span></span><br><span class="line"><span class="comment"># &#x5168;&#x5C40;&#x5B9A;&#x4E49; (global definition) </span></span><br><span class="line">global_defs {                      </span><br><span class="line">   notification_email {      </span><br><span class="line">   acassen@firewall.loc     </span><br><span class="line">   failover@firewall.loc</span><br><span class="line">   sysadmin@firewall.loc</span><br><span class="line">   }</span><br><span class="line">   notification_email_from Alexandre.Cassen@firewall.loc   </span><br><span class="line">   smtp_server 192.168.200.1                         </span><br><span class="line">   smtp_connect_timeout 30                                  </span><br><span class="line">   router_id LVS_DEVEL     </span><br><span class="line">}</span><br><span class="line">notification_email: &#x8868;&#x793A; keepalived &#x5728;&#x53D1;&#x751F;&#x8BF8;&#x5982;&#x5207;&#x6362;&#x64CD;&#x4F5C;&#x65F6;&#x9700;&#x8981;&#x53D1;&#x9001; email &#x901A;&#x77E5;&#x4EE5;&#x53CA; email &#x53D1;&#x9001;&#x7ED9;&#x54EA;&#x4E9B;&#x90AE;&#x4EF6;&#x5730;&#x5740;&#x90AE;&#x4EF6;&#x5730;&#x5740;&#x53EF;&#x4EE5;&#x591A;&#x4E2A;&#x6BCF;&#x884C;&#x4E00;&#x4E2A;</span><br><span class="line">notification_email_from admin@example.com: &#x8868;&#x793A;&#x53D1;&#x9001;&#x901A;&#x77E5;&#x90AE;&#x4EF6;&#x65F6;&#x90AE;&#x4EF6;&#x6E90;&#x5730;&#x5740;&#x662F;&#x8C01;</span><br><span class="line">smtp_server 127.0.0.1: &#x8868;&#x793A;&#x53D1;&#x9001; email &#x65F6;&#x4F7F;&#x7528;&#x7684; smtp &#x670D;&#x52A1;&#x5668;&#x5730;&#x5740;&#x8FD9;&#x91CC;&#x53EF;&#x4EE5;&#x7528;&#x672C;&#x5730;&#x7684; sendmail &#x6765;&#x5B9E;&#x73B0;</span><br><span class="line">smtp_connect_timeout 30: &#x8FDE;&#x63A5; smtp &#x8FDE;&#x63A5;&#x8D85;&#x65F6;&#x65F6;&#x95F4;</span><br><span class="line">router_id node1: &#x673A;&#x5668;&#x6807;&#x8BC6;&#xFF0C;&#x901A;&#x5E38;&#x914D;&#x7F6E;&#x4E3B;&#x673A;&#x540D;</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x9759;&#x6001;&#x5730;&#x5740;&#x548C;&#x8DEF;&#x7531;&#x914D;&#x7F6E;&#x8303;&#x4F8B;</span></span><br><span class="line">static_ipaddress {</span><br><span class="line">    192.168.1.1/24 brd + dev eth0 scope global</span><br><span class="line">    192.168.1.2/24 brd + dev eth1 scope global</span><br><span class="line">}</span><br><span class="line">static_routes {</span><br><span class="line">    src $SRC_IP to $DST_IP dev $SRC_DEVICE</span><br><span class="line">    src $SRC_IP to $DST_IP via $GW dev $SRC_DEVICE</span><br><span class="line">}</span><br><span class="line"> &#x8FD9;&#x91CC;&#x5B9E;&#x9645;&#x4E0A;&#x548C;&#x7CFB;&#x7EDF;&#x91CC;&#x9762;&#x547D;&#x4EE4;&#x914D;&#x7F6E; IP &#x5730;&#x5740;&#x548C;&#x8DEF;&#x7531;&#x4E00;&#x6837;&#x4F8B;&#x5982; </span><br><span class="line">192.168.1.1/24 brd + dev eth0 scope global &#x76F8;&#x5F53;&#x4E8E;: ip addr add 192.168.1.1/24 brd + dev eth0 scope global</span><br><span class="line"> &#x5C31;&#x662F;&#x7ED9; eth0 &#x914D;&#x7F6E; IP &#x5730;&#x5740;&#x8DEF;&#x7531;&#x540C;&#x7406;, &#x4E00;&#x822C;&#x8FD9;&#x4E2A;&#x533A;&#x57DF;&#x4E0D;&#x9700;&#x8981;&#x914D;&#x7F6E; </span><br><span class="line"> &#x8FD9;&#x91CC;&#x5B9E;&#x9645;&#x4E0A;&#x5C31;&#x662F;&#x7ED9;&#x670D;&#x52A1;&#x5668;&#x914D;&#x7F6E;&#x771F;&#x5B9E;&#x7684; IP &#x5730;&#x5740;&#x548C;&#x8DEF;&#x7531;&#x7684;&#x5728;&#x590D;&#x6742;&#x7684;&#x73AF;&#x5883;&#x4E0B;&#x53EF;&#x80FD;&#x9700;&#x8981;&#x914D;&#x7F6E;&#x4E00;&#x822C;&#x4E0D;&#x4F1A;&#x7528;&#x8FD9;&#x4E2A;&#x6765;&#x914D;&#x7F6E;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x7528; vi /etc/sysconfig/network-script/ifcfg-eth1 &#x6765;&#x914D;&#x7F6E;&#x5207;&#x8BB0;&#x8FD9;&#x91CC;&#x53EF;&#x4E0D;&#x662F; VIP &#x4E0D;&#x8981;&#x641E;&#x6DF7;&#x6DC6;&#x4E86;&#x5207;&#x8BB0;&#x5207;&#x8BB0;</span><br></pre></td></tr></tbody></table></figure>
+<h3 id="VRRPD&#x914D;&#x7F6E;"><a href="#VRRPD&#x914D;&#x7F6E;" class="headerlink" title="VRRPD&#x914D;&#x7F6E;"></a>VRRPD&#x914D;&#x7F6E;</h3><p>&#x5305;&#x62EC;&#x4E09;&#x4E2A;&#x7C7B;&#xFF1A;</p>
+<ol>
+<li>VRRP&#x540C;&#x6B65;&#x7EC4;&#xFF08;synchroization group)</li>
+<li>VRRP&#x5B9E;&#x4F8B;&#xFF08;VRRP Instance)</li>
+<li>VRRP&#x811A;&#x672C;</li>
+</ol>
+<figure class="highlight"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># VRRP &#x540C;&#x6B65;&#x7EC4; (synchroization group) &#x914D;&#x7F6E;&#x8303;&#x4F8B; </span></span><br><span class="line">vrrp_sync_group VG_1 {   // &#x6CE8;&#x610F; vrrp_sync_group  &#x540E;&#x9762;&#x53EF;&#x81EA;&#x5B9A;&#x4E49;&#x540D;&#x79F0;&#x5982; lvs_httpd ,httpd</span><br><span class="line">group {</span><br><span class="line">	http</span><br><span class="line">	mysql</span><br><span class="line">}</span><br><span class="line">notify_master /path/to/to_master.sh</span><br><span class="line">notify_backup /path_to/to_backup.sh</span><br><span class="line">notify_fault &quot;/path/fault.sh VG_1&quot;</span><br><span class="line">notify /path/to/notify.sh</span><br><span class="line">smtp_alert </span><br><span class="line">}</span><br><span class="line"> &#x5176;&#x4E2D; http &#x548C; mysql &#x662F;&#x5B9E;&#x4F8B;&#x540D;&#x548C;&#x4E0B;&#x9762;&#x7684;&#x5B9E;&#x4F8B;&#x540D;&#x4E00;&#x81F4; </span><br><span class="line">notify_master /path/to/to_master.sh // &#x8868;&#x793A;&#x5F53;&#x5207;&#x6362;&#x5230; master &#x72B6;&#x6001;&#x65F6;&#x8981;&#x6267;&#x884C;&#x7684;&#x811A;&#x672C;</span><br><span class="line">notify_backup /path_to/to_backup.sh // &#x8868;&#x793A;&#x5F53;&#x5207;&#x6362;&#x5230; backup &#x72B6;&#x6001;&#x65F6;&#x8981;&#x6267;&#x884C;&#x7684;&#x811A;&#x672C;</span><br><span class="line">notify_fault &quot;/path/fault.sh VG_1&quot;  // keepalived &#x51FA;&#x73B0;&#x6545;&#x969C;&#x65F6;&#x6267;&#x884C;&#x7684;&#x811A;&#x672C;</span><br><span class="line">notify /path/to/notify.sh  </span><br><span class="line">smtp_alert           // &#x8868;&#x793A;&#x5207;&#x6362;&#x65F6;&#x7ED9; global defs &#x4E2D;&#x5B9A;&#x4E49;&#x7684;&#x90AE;&#x4EF6;&#x5730;&#x5740;&#x53D1;&#x9001;&#x90AE;&#x4EF6;&#x901A;&#x77E5;</span><br><span class="line"></span><br><span class="line"><span class="comment"># VRRP &#x5B9E;&#x4F8B;(instance) &#x914D;&#x7F6E;&#x8303;&#x4F8B;</span></span><br><span class="line">vrrp_instance http {  // &#x6CE8;&#x610F; vrrp_instance &#x540E;&#x9762;&#x53EF;&#x81EA;&#x5B9A;&#x4E49;&#x540D;&#x79F0;&#x5982; lvs_httpd ,httpd</span><br><span class="line">state MASTER</span><br><span class="line">interface eth0</span><br><span class="line">dont_track_primary</span><br><span class="line">track_interface {</span><br><span class="line">eth0</span><br><span class="line">eth1</span><br><span class="line">}</span><br><span class="line">mcast_src_ip &lt;IPADDR&gt;</span><br><span class="line">garp_master_delay 10</span><br><span class="line">virtual_router_id 51</span><br><span class="line">priority 100</span><br><span class="line">advert_int 1</span><br><span class="line">authentication {</span><br><span class="line">auth_type PASS</span><br><span class="line">autp_pass 1234</span><br><span class="line">}</span><br><span class="line">virtual_ipaddress {</span><br><span class="line"><span class="comment">#&lt;IPADDR&gt;/&lt;MASK&gt; brd &lt;IPADDR&gt; dev &lt;STRING&gt; scope &lt;SCOPT&gt; label &lt;LABEL&gt;</span></span><br><span class="line">192.168.200.17/24 dev eth1</span><br><span class="line">192.168.200.18/24 dev eth2 label eth2:1</span><br><span class="line">}</span><br><span class="line">virtual_routes {</span><br><span class="line"><span class="comment"># src &lt;IPADDR&gt; [to] &lt;IPADDR&gt;/&lt;MASK&gt; via|gw &lt;IPADDR&gt; dev &lt;STRING&gt; scope &lt;SCOPE&gt; tab</span></span><br><span class="line">src 192.168.100.1 to 192.168.109.0/24 via 192.168.200.254 dev eth1</span><br><span class="line">192.168.110.0/24 via 192.168.200.254 dev eth1</span><br><span class="line">192.168.111.0/24 dev eth2</span><br><span class="line">192.168.112.0/24 via 192.168.100.254</span><br><span class="line">}</span><br><span class="line">nopreempt</span><br><span class="line">preemtp_delay 300</span><br><span class="line">debug</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># VRRP &#x811A;&#x672C; </span></span><br><span class="line"><span class="comment"># &#x5982;&#x4E0B;&#x6240;&#x793A;&#x4E3A;&#x76F8;&#x5173;&#x914D;&#x7F6E;&#x793A;&#x4F8B;</span></span><br><span class="line">vrrp_script check_running {</span><br><span class="line">   script &quot;/usr/local/bin/check_running&quot;</span><br><span class="line">   interval 10</span><br><span class="line">   weight 10</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">vrrp_instance http {</span><br><span class="line">   state BACKUP</span><br><span class="line">   smtp_alert</span><br><span class="line">   interface eth0</span><br><span class="line">   virtual_router_id 101</span><br><span class="line">   priority 90</span><br><span class="line">   advert_int 3</span><br><span class="line">   authentication {</span><br><span class="line">   auth_type PASS</span><br><span class="line">   auth_pass whatever</span><br><span class="line">   }</span><br><span class="line">   virtual_ipaddress {</span><br><span class="line">   1.1.1.1</span><br><span class="line">   }</span><br><span class="line">   track_script {</span><br><span class="line">   check_running </span><br><span class="line">   }</span><br><span class="line">}</span><br><span class="line"><span class="comment"># &#x9996;&#x5148;&#x5728; vrrp_script &#x533A;&#x57DF;&#x5B9A;&#x4E49;&#x811A;&#x672C;&#x540D;&#x5B57;&#x548C;&#x811A;&#x672C;&#x6267;&#x884C;&#x7684;&#x95F4;&#x9694;&#x548C;&#x811A;&#x672C;&#x6267;&#x884C;&#x7684;&#x4F18;&#x5148;&#x7EA7;&#x53D8;&#x66F4;, &#x5982;&#x4E0B;&#x6240;&#x793A;:</span></span><br><span class="line">vrrp_script check_running {</span><br><span class="line">            script &quot;/usr/local/bin/check_running&quot;</span><br><span class="line">            interval 10     # &#x811A;&#x672C;&#x6267;&#x884C;&#x95F4;&#x9694;</span><br><span class="line">            weight 10       # &#x811A;&#x672C;&#x7ED3;&#x679C;&#x5BFC;&#x81F4;&#x7684;&#x4F18;&#x5148;&#x7EA7;&#x53D8;&#x66F4; 10 &#x8868;&#x793A;&#x4F18;&#x5148;&#x7EA7; + 10-10 &#x5219;&#x8868;&#x793A;&#x4F18;&#x5148;&#x7EA7; - 10</span><br><span class="line">            }</span><br><span class="line"><span class="comment"># &#x7136;&#x540E;&#x5728;&#x5B9E;&#x4F8B;(vrrp_instance) &#x91CC;&#x9762;&#x5F15;&#x7528;&#x6709;&#x70B9;&#x7C7B;&#x4F3C;&#x811A;&#x672C;&#x91CC;&#x9762;&#x7684;&#x51FD;&#x6570;&#x5F15;&#x7528;&#x4E00;&#x6837;&#x5148;&#x5B9A;&#x4E49;&#x540E;&#x5F15;&#x7528;&#x51FD;&#x6570;&#x540D;</span></span><br><span class="line">track_script {</span><br><span class="line">      check_running </span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<p>&#x6CE8;&#x610F;:<br>VRRP &#x811A;&#x672C; (vrrp_script) &#x548C; VRRP &#x5B9E;&#x4F8B; (vrrp_instance) &#x5C5E;&#x4E8E;&#x540C;&#x4E00;&#x4E2A;&#x7EA7;&#x522B;<br>keepalived &#x4F1A;&#x5B9A;&#x65F6;&#x6267;&#x884C;&#x811A;&#x672C;&#x5E76;&#x5BF9;&#x811A;&#x672C;&#x6267;&#x884C;&#x7684;&#x7ED3;&#x679C;&#x8FDB;&#x884C;&#x5206;&#x6790;&#xFF0C;&#x52A8;&#x6001;&#x8C03;&#x6574; vrrp_instance &#x7684;&#x4F18;&#x5148;&#x7EA7;&#x3002;&#x4E00;&#x822C;&#x811A;&#x672C;&#x68C0;&#x6D4B;&#x8FD4;&#x56DE;&#x7684;&#x503C;&#x4E3A; 0&#xFF0C;&#x8BF4;&#x660E;&#x811A;&#x672C;&#x68C0;&#x6D4B;&#x6210;&#x529F;&#xFF0C;&#x5982;&#x679C;&#x4E3A;&#x975E; 0 &#x6570;&#x503C;&#xFF0C;&#x5219;&#x8BF4;&#x660E;&#x68C0;&#x6D4B;&#x5931;&#x8D25;<br>&#x5982;&#x679C;&#x811A;&#x672C;&#x6267;&#x884C;&#x7ED3;&#x679C;&#x4E3A; 0&#xFF0C;&#x5E76;&#x4E14; weight &#x914D;&#x7F6E;&#x7684;&#x503C;&#x5927;&#x4E8E; 0&#xFF0C;&#x5219;&#x4F18;&#x5148;&#x7EA7;&#x76F8;&#x5E94;&#x7684;&#x589E;&#x52A0;, &#x5982;&#x679C; weight &#x4E3A;&#x975E; 0&#xFF0C;&#x5219;&#x4F18;&#x5148;&#x7EA7;&#x4E0D;&#x53D8;<br>&#x5982;&#x679C;&#x811A;&#x672C;&#x6267;&#x884C;&#x7ED3;&#x679C;&#x975E; 0&#xFF0C;&#x5E76;&#x4E14; weight &#x914D;&#x7F6E;&#x7684;&#x503C;&#x5C0F;&#x4E8E; 0&#xFF0C;&#x5219;&#x4F18;&#x5148;&#x7EA7;&#x76F8;&#x5E94;&#x7684;&#x51CF;&#x5C11;, &#x5982;&#x679C; weight &#x4E3A; 0&#xFF0C;&#x5219;&#x4F18;&#x5148;&#x7EA7;&#x4E0D;&#x53D8;<br>&#x5176;&#x4ED6;&#x60C5;&#x51B5;&#xFF0C;&#x7EF4;&#x6301;&#x539F;&#x672C;&#x914D;&#x7F6E;&#x7684;&#x4F18;&#x5148;&#x7EA7;&#xFF0C;&#x5373;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x4E2D; priority &#x5BF9;&#x5E94;&#x7684;&#x503C;&#x3002;<br>&#x8FD9;&#x91CC;&#x9700;&#x8981;&#x6CE8;&#x610F;&#x7684;&#x662F;&#xFF1A;<br>1&#xFF09; &#x4F18;&#x5148;&#x7EA7;&#x4E0D;&#x4F1A;&#x4E0D;&#x65AD;&#x7684;&#x63D0;&#x9AD8;&#x6216;&#x8005;&#x964D;&#x4F4E;<br>2&#xFF09; &#x53EF;&#x4EE5;&#x7F16;&#x5199;&#x591A;&#x4E2A;&#x68C0;&#x6D4B;&#x811A;&#x672C;&#x5E76;&#x4E3A;&#x6BCF;&#x4E2A;&#x68C0;&#x6D4B;&#x811A;&#x672C;&#x8BBE;&#x7F6E;&#x4E0D;&#x540C;&#x7684; weight<br>3&#xFF09; &#x4E0D;&#x7BA1;&#x63D0;&#x9AD8;&#x4F18;&#x5148;&#x7EA7;&#x8FD8;&#x662F;&#x964D;&#x4F4E;&#x4F18;&#x5148;&#x7EA7;&#xFF0C;&#x6700;&#x7EC8;&#x4F18;&#x5148;&#x7EA7;&#x7684;&#x8303;&#x56F4;&#x662F;&#x5728;[1,254]&#xFF0C;&#x4E0D;&#x4F1A;&#x51FA;&#x73B0;&#x4F18;&#x5148;&#x7EA7;&#x5C0F;&#x4E8E;&#x7B49;&#x4E8E; 0 &#x6216;&#x8005;&#x4F18;&#x5148;&#x7EA7;&#x5927;&#x4E8E;&#x7B49;&#x4E8E; 255 &#x7684;&#x60C5;&#x51B5;<br>&#x8FD9;&#x6837;&#x53EF;&#x4EE5;&#x505A;&#x5230;&#x5229;&#x7528;&#x811A;&#x672C;&#x68C0;&#x6D4B;&#x4E1A;&#x52A1;&#x8FDB;&#x7A0B;&#x7684;&#x72B6;&#x6001;&#xFF0C;&#x5E76;&#x52A8;&#x6001;&#x8C03;&#x6574;&#x4F18;&#x5148;&#x7EA7;&#x4ECE;&#x800C;&#x5B9E;&#x73B0;&#x4E3B;&#x5907;&#x5207;&#x6362;&#x3002;</p>
+<h3 id="&#x914D;&#x7F6E;&#x5B9E;&#x8DF5;"><a href="#&#x914D;&#x7F6E;&#x5B9E;&#x8DF5;" class="headerlink" title="&#x914D;&#x7F6E;&#x5B9E;&#x8DF5;"></a>&#x914D;&#x7F6E;&#x5B9E;&#x8DF5;</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5173;&#x95ED;&#x9632;&#x706B;&#x5899;</span></span><br><span class="line">systemctl disable firewalld</span><br><span class="line">systemctl stop firewalld</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x7981;&#x7528; selinux</span></span><br><span class="line">setenforce 0</span><br><span class="line">vi /etc/selinux/config</span><br><span class="line"></span><br><span class="line">SELINUX=disabled</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5B89;&#x88C5; keepalived,ipvsadm</span></span><br><span class="line">yum install keepalived ipvsadm -y</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5F00;&#x542F; LVS &#x670D;&#x52A1;&#x5668;&#x7684; IP &#x8DEF;&#x7531;&#x8F6C;&#x53D1;&#x529F;&#x80FD;</span></span><br><span class="line">echo &quot;1&quot; &gt; /proc/sys/net/ipv4/ip_forward</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6DFB;&#x52A0;&#x8DEF;&#x7531;&#x8F6C;&#x53D1;&#x81F3; sysctl.conf</span></span><br><span class="line">vi /etc/sysctl.conf</span><br><span class="line">net.ipv4.ip_forward = 1</span><br><span class="line"></span><br><span class="line">sysctl -p</span><br></pre></td></tr></tbody></table></figure>
+<p><strong>&#x6700;&#x7B80;&#x5355;&#x7684; keepalived &#x505A; HA</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5982;&#x679C;&#x5F00;&#x542F;&#x9632;&#x706B;&#x5899;&#xFF0C;&#x8BF7;&#x6DFB;&#x52A0; VRRP &#x767D;&#x540D;&#x5355;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> For keepalived</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> allow vrrp</span></span><br><span class="line">-A INPUT -p vrrp -j ACCEPT</span><br><span class="line">-A INPUT -p igmp -j ACCEPT</span><br><span class="line"><span class="meta">#</span><span class="bash"> allow multicast</span></span><br><span class="line">-A INPUT -d 224.0.0.18 -j ACCEPT</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x7F16;&#x8F91; keepalived &#x914D;&#x7F6E;&#x6587;&#x4EF6;</span></span><br><span class="line">vi /etc/keepalived/keepalived.conf</span><br><span class="line"></span><br><span class="line">vrrp_sync_group VI_GOP_NC1_HA {</span><br><span class="line">    group {</span><br><span class="line">        VI_GOP_NC1_HA_PRI</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">vrrp_instance VI_GOP_NC1_HA_PRI {</span><br><span class="line">    state BACKUP</span><br><span class="line">    interface bond0</span><br><span class="line">    virtual_router_id 139</span><br><span class="line">    priority 100</span><br><span class="line">    advert_int 1</span><br><span class="line">    nopreempt</span><br><span class="line">    authentication {</span><br><span class="line">        auth_type PASS</span><br><span class="line">        auth_pass 1111</span><br><span class="line">    }</span><br><span class="line">    virtual_ipaddress {</span><br><span class="line">        10.65.33.139/23 dev bond0</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<h4 id="&#x914D;&#x7F6E;-LVS-NAT"><a href="#&#x914D;&#x7F6E;-LVS-NAT" class="headerlink" title="&#x914D;&#x7F6E; LVS-NAT"></a>&#x914D;&#x7F6E; LVS-NAT</h4><p>DS<br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Install keepalived</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Ubuntu</span></span><br><span class="line">apt-get install keepalived ipvsadm</span><br><span class="line"><span class="meta">#</span><span class="bash"> CentOS</span></span><br><span class="line">yum install keepalived ipvsadm</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> update iptables</span></span><br><span class="line">vim /etc/sysconfig/iptables</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> For keepalived:</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> allow vrrp </span></span><br><span class="line">-A INPUT -p vrrp -j ACCEPT</span><br><span class="line">-A INPUT -p igmp -j ACCEPT</span><br><span class="line"><span class="meta">#</span><span class="bash"> allow multicast</span></span><br><span class="line">-A INPUT -d 224.0.0.18 -j ACCEPT</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> reload iptables</span></span><br><span class="line">service iptables reload</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> open ip_forward</span></span><br><span class="line">echo &quot;1&quot; &gt; /proc/sys/net/ipv4/ip_forward</span><br><span class="line"><span class="meta">#</span><span class="bash"> edit sysctl.conf</span></span><br><span class="line">vi /etc/sysctl.conf</span><br><span class="line">net.ipv4.ip_forward = 1</span><br><span class="line"></span><br><span class="line">sysctl -p</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> keepalived <span class="keyword">for</span> lvs-nat</span></span><br><span class="line">vim /etc/keepalived/keepalived.conf</span><br><span class="line"></span><br><span class="line">vrrp_sync_group NC-MAIN-API {</span><br><span class="line">    group {</span><br><span class="line">        NC-MAIN-API-PUB</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">vrrp_instance NC-MAIN-API-PUB {</span><br><span class="line">    state BACKUP</span><br><span class="line">    interface bond1</span><br><span class="line">    virtual_router_id 222</span><br><span class="line">    priority 100</span><br><span class="line">    advert_int 1</span><br><span class="line">    nopreempt</span><br><span class="line">    authentication {</span><br><span class="line">        auth_type PASS</span><br><span class="line">        auth_pass 1111</span><br><span class="line">    }</span><br><span class="line">    virtual_ipaddress {</span><br><span class="line">        xx.xx.xx.xx/25 dev bond1</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">virtual_server xx.xx.xx.xx 15000 {</span><br><span class="line">    delay_loop 6</span><br><span class="line">    lb_algo rr</span><br><span class="line">    lb_kind NAT</span><br><span class="line">    protocol TCP</span><br><span class="line"></span><br><span class="line">    real_server 10.71.12.69 15000 {</span><br><span class="line">        weight 100</span><br><span class="line">        TCP_CHECK {</span><br><span class="line">                connect_timeout 3</span><br><span class="line">                nb_get_retry 3</span><br><span class="line">                delay_before_retry 3</span><br><span class="line">                connect_port 15000</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    real_server 10.71.12.76 15000 {</span><br><span class="line">        weight 100</span><br><span class="line">        TCP_CHECK {</span><br><span class="line">                connect_timeout 3</span><br><span class="line">                nb_get_retry 3</span><br><span class="line">                delay_before_retry 3</span><br><span class="line">                connect_port 15000</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>RS<br>&#x4FEE;&#x6539;&#x9ED8;&#x8BA4;&#x7F51;&#x5173;&#x6307;&#x5411; NAT &#x7684; VIP &#x5730;&#x5740;</p>
+<p><strong>&#x914D;&#x7F6E;LVS-DR</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Install keepalived</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Ubuntu</span></span><br><span class="line">apt-get install keepalived ipvsadm</span><br><span class="line"><span class="meta">#</span><span class="bash"> CentOS</span></span><br><span class="line">yum install keepalived ipvsadm</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> update iptables</span></span><br><span class="line">vim /etc/sysconfig/iptables</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> For keepalived:</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> allow vrrp </span></span><br><span class="line">-A INPUT -p vrrp -j ACCEPT</span><br><span class="line">-A INPUT -p igmp -j ACCEPT</span><br><span class="line"><span class="meta">#</span><span class="bash"> allow multicast</span></span><br><span class="line">-A INPUT -d 224.0.0.18 -j ACCEPT</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> reload iptables</span></span><br><span class="line">service iptables reload</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> open ip_forward</span></span><br><span class="line">echo &quot;1&quot; &gt; /proc/sys/net/ipv4/ip_forward</span><br><span class="line"><span class="meta">#</span><span class="bash"> edit sysctl.conf</span></span><br><span class="line">vi /etc/sysctl.conf</span><br><span class="line">net.ipv4.ip_forward = 1</span><br><span class="line"></span><br><span class="line">sysctl -p</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> keepalived <span class="keyword">for</span> lvs-dr</span></span><br><span class="line">vim /etc/keepalived/keepalived.conf</span><br><span class="line"></span><br><span class="line">vrrp_sync_group GOP {</span><br><span class="line">    group {</span><br><span class="line">        VI_PRI_CONNECT</span><br><span class="line">        VI_PRI_AUTH</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">vrrp_instance VI_PRI_CONNECT {</span><br><span class="line">    state BACKUP</span><br><span class="line">    interface bond0</span><br><span class="line">    virtual_router_id 128</span><br><span class="line">    priority 100</span><br><span class="line">    advert_int 1</span><br><span class="line">    nopreempt</span><br><span class="line">    authentication {</span><br><span class="line">        auth_type PASS</span><br><span class="line">        auth_pass 1111</span><br><span class="line">    }</span><br><span class="line">    virtual_ipaddress {</span><br><span class="line">        10.65.32.28/23 dev bond0</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">virtual_server 10.65.32.28 80 {</span><br><span class="line">    delay_loop 6</span><br><span class="line">    lb_algo rr</span><br><span class="line">    lb_kind DR</span><br><span class="line">    protocol TCP</span><br><span class="line"></span><br><span class="line">    real_server 10.65.32.13 80 {</span><br><span class="line">        weight 100</span><br><span class="line">        TCP_CHECK {</span><br><span class="line">                connect_timeout 3</span><br><span class="line">                nb_get_retry 3</span><br><span class="line">                delay_before_retry 3</span><br><span class="line">                connect_port 80</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    real_server 10.65.32.14 80 {</span><br><span class="line">        weight 100</span><br><span class="line">        TCP_CHECK {</span><br><span class="line">                connect_timeout 3</span><br><span class="line">                nb_get_retry 3</span><br><span class="line">                delay_before_retry 3</span><br><span class="line">                connect_port 80</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">virtual_server 10.65.32.28 443 {</span><br><span class="line">    delay_loop 6</span><br><span class="line">    lb_algo rr</span><br><span class="line">    lb_kind DR</span><br><span class="line">    protocol TCP</span><br><span class="line"></span><br><span class="line">    real_server 10.65.32.13 443 {</span><br><span class="line">        weight 100</span><br><span class="line">        TCP_CHECK {</span><br><span class="line">                connect_timeout 3</span><br><span class="line">                nb_get_retry 3</span><br><span class="line">                delay_before_retry 3</span><br><span class="line">                connect_port 443</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    real_server 10.65.32.14 80 {</span><br><span class="line">        weight 100</span><br><span class="line">        TCP_CHECK {</span><br><span class="line">                connect_timeout 3</span><br><span class="line">                nb_get_retry 3</span><br><span class="line">                delay_before_retry 3</span><br><span class="line">                connect_port 443</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">vrrp_instance VI_PRI_AUTH {</span><br><span class="line">    state BACKUP</span><br><span class="line">    interface bond0</span><br><span class="line">    virtual_router_id 129</span><br><span class="line">    priority 100</span><br><span class="line">    advert_int 1</span><br><span class="line">    nopreempt</span><br><span class="line">    authentication {</span><br><span class="line">        auth_type PASS</span><br><span class="line">        auth_pass 1111</span><br><span class="line">    }</span><br><span class="line">    virtual_ipaddress {</span><br><span class="line">        10.65.32.29/23 dev bond0</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">virtual_server 10.65.32.29 80 {</span><br><span class="line">    delay_loop 6</span><br><span class="line">    lb_algo rr</span><br><span class="line">    lb_kind DR</span><br><span class="line">    protocol TCP</span><br><span class="line"></span><br><span class="line">    real_server 10.65.32.22 80 {</span><br><span class="line">        weight 100</span><br><span class="line">        TCP_CHECK {</span><br><span class="line">                connect_timeout 3</span><br><span class="line">                nb_get_retry 3</span><br><span class="line">                delay_before_retry 3</span><br><span class="line">                connect_port 80</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    real_server 110.65.32.23 80 {</span><br><span class="line">        weight 100</span><br><span class="line">        TCP_CHECK {</span><br><span class="line">                connect_timeout 3</span><br><span class="line">                nb_get_retry 3</span><br><span class="line">                delay_before_retry 3</span><br><span class="line">                connect_port 80</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">virtual_server 10.65.32.29 443 {</span><br><span class="line">    delay_loop 6</span><br><span class="line">    lb_algo rr</span><br><span class="line">    lb_kind DR</span><br><span class="line">    protocol TCP</span><br><span class="line"></span><br><span class="line">    real_server 10.65.32.22 443 {</span><br><span class="line">        weight 100</span><br><span class="line">        TCP_CHECK {</span><br><span class="line">                connect_timeout 3</span><br><span class="line">                nb_get_retry 3</span><br><span class="line">                delay_before_retry 3</span><br><span class="line">                connect_port 443</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    real_server 110.65.32.23 443 {</span><br><span class="line">        weight 100</span><br><span class="line">        TCP_CHECK {</span><br><span class="line">                connect_timeout 3</span><br><span class="line">                nb_get_retry 3</span><br><span class="line">                delay_before_retry 3</span><br><span class="line">                connect_port 443</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">enable</span> and start keepalived</span></span><br><span class="line">systemctl start keepalived</span><br><span class="line">systemctl enable keepalived</span><br><span class="line">watch ipvsadm -L -n --stats</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>RS</strong>  </p>
+<ol>
+<li>Edit &#x201C;/etc/sysconfig/network-scripts/ifcfg-lo&#x201D; to patch bug in Centos 7 (if using Centos 7). Add TYPE=Loopback to the file.</li>
+<li>Add loopback for each Virtual IP on each worker. E.g. first virtual IP create file &#x201C;/etc/sysconfig/network-scripts/ifcfg-lo:0&#x201D;.</li>
+<li>Start adapters if not yet started</li>
+</ol>
+<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> add TYPE=Loopback</span></span><br><span class="line">echo &quot;TYPE=Loopback&quot; &gt;&gt; /etc/sysconfig/network-scripts/ifcfg-lo</span><br><span class="line"><span class="meta">#</span><span class="bash"> add ifcfg-lo:0</span></span><br><span class="line">cat &gt; /etc/sysconfig/network-scripts/ifcfg-lo:0 &lt;&lt; EOF</span><br><span class="line">DEVICE=lo:0</span><br><span class="line">IPADDR=10.65.32.28</span><br><span class="line">NETMASK=255.255.255.255</span><br><span class="line">ONBOOT=yes</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> ifup lo:0</span></span><br><span class="line">ifup lo:0</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> add real_start</span></span><br><span class="line">cat &gt; /root/real_start.sh &lt;&lt; EOF</span><br><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">echo &quot;1&quot; &gt;/proc/sys/net/ipv4/conf/lo/arp_ignore</span><br><span class="line">echo &quot;2&quot; &gt;/proc/sys/net/ipv4/conf/lo/arp_announce</span><br><span class="line">echo &quot;1&quot; &gt;/proc/sys/net/ipv4/conf/all/arp_ignore</span><br><span class="line">echo &quot;2&quot; &gt;/proc/sys/net/ipv4/conf/all/arp_announce</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> chmod 755</span></span><br><span class="line">chmod 755 /root/real_start.sh</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> add real.service</span></span><br><span class="line">cat &gt; /usr/lib/systemd/system/real.service &lt;&lt; EOF</span><br><span class="line">[Unit]</span><br><span class="line">Description=autostart lvs real</span><br><span class="line">After=network.target remote-fs.target nss-lookup.target</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=forking</span><br><span class="line">ExecStart=/root/real_start.sh</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">enable</span> service</span></span><br><span class="line">systemctl enable real.service</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> lvs real server example</span></span><br><span class="line">vim /root/lvs_real.sh</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">## BEGIN INIT INFO</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Provides:</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Default-Start:     2 3 4 5</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Default-Stop:      0 1 6</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Short-Description: Start realserver</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Description:       Start realserver</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">## END INIT INFO</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> change the VIP to proper value</span></span><br><span class="line">VIP=10.65.32.28</span><br><span class="line"></span><br><span class="line">case &quot;$1&quot; in</span><br><span class="line">    start)</span><br><span class="line"></span><br><span class="line">    echo &quot;Start REAL Server&quot;</span><br><span class="line">    /sbin/ifconfig lo:0 $VIP broadcast $VIP netmask 255.255.255.255 up</span><br><span class="line">    echo &quot;1&quot; &gt;/proc/sys/net/ipv4/conf/lo/arp_ignore</span><br><span class="line">    echo &quot;2&quot; &gt;/proc/sys/net/ipv4/conf/lo/arp_announce</span><br><span class="line">    echo &quot;1&quot; &gt;/proc/sys/net/ipv4/conf/all/arp_ignore</span><br><span class="line">    echo &quot;2&quot; &gt;/proc/sys/net/ipv4/conf/all/arp_announce</span><br><span class="line"></span><br><span class="line">    ;;</span><br><span class="line"></span><br><span class="line">    stop)</span><br><span class="line"></span><br><span class="line">    /sbin/ifconfig lo:0 down</span><br><span class="line">    echo &quot;Stop REAL Server&quot;</span><br><span class="line">    echo &quot;0&quot; &gt;/proc/sys/net/ipv4/conf/lo/arp_ignore</span><br><span class="line">    echo &quot;0&quot; &gt;/proc/sys/net/ipv4/conf/lo/arp_announce</span><br><span class="line">    echo &quot;0&quot; &gt;/proc/sys/net/ipv4/conf/all/arp_ignore</span><br><span class="line">    echo &quot;0&quot; &gt;/proc/sys/net/ipv4/conf/all/arp_announce</span><br><span class="line"></span><br><span class="line">    ;;</span><br><span class="line"></span><br><span class="line">    restart)</span><br><span class="line"></span><br><span class="line">    $0 stop</span><br><span class="line">    $0 start</span><br><span class="line"></span><br><span class="line">    ;;</span><br><span class="line"></span><br><span class="line">    *)</span><br><span class="line"></span><br><span class="line">    echo &quot;Usage: $0 {start|stop}&quot;</span><br><span class="line">    exit 1</span><br><span class="line"></span><br><span class="line">    ;;</span><br><span class="line">esac</span><br><span class="line"></span><br><span class="line">exit 0</span><br></pre></td></tr></tbody></table></figure>
+<h4 id="&#x914D;&#x7F6E;-LVS-TUN"><a href="#&#x914D;&#x7F6E;-LVS-TUN" class="headerlink" title="&#x914D;&#x7F6E; LVS-TUN"></a>&#x914D;&#x7F6E; LVS-TUN</h4><p><strong>DS</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> Install keepalived</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Ubuntu</span></span><br><span class="line">apt-get install keepalived ipvsadm</span><br><span class="line"><span class="meta">#</span><span class="bash"> CentOS</span></span><br><span class="line">yum install keepalived ipvsadm</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> update iptables</span></span><br><span class="line">vim /etc/sysconfig/iptables</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> For keepalived:</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> allow vrrp </span></span><br><span class="line">-A INPUT -p vrrp -j ACCEPT</span><br><span class="line">-A INPUT -p igmp -j ACCEPT</span><br><span class="line"><span class="meta">#</span><span class="bash"> allow multicast</span></span><br><span class="line">-A INPUT -d 224.0.0.18 -j ACCEPT</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> reload iptables</span></span><br><span class="line">service iptables reload</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> open ip_forward</span></span><br><span class="line">echo &quot;1&quot; &gt; /proc/sys/net/ipv4/ip_forward</span><br><span class="line"><span class="meta">#</span><span class="bash"> edit sysctl.conf</span></span><br><span class="line">vi /etc/sysctl.conf</span><br><span class="line">net.ipv4.ip_forward = 1</span><br><span class="line"></span><br><span class="line">sysctl -p</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> keepalived <span class="keyword">for</span> lvs-tun</span></span><br><span class="line">vim /etc/keepalived/keepalived.conf</span><br><span class="line"></span><br><span class="line">vrrp_sync_group GOP {</span><br><span class="line">    group {</span><br><span class="line">        VI_PRI_AUTH</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">vrrp_instance VI_PRI_AUTH {</span><br><span class="line">    state BACKUP</span><br><span class="line">    interface em1</span><br><span class="line">    virtual_router_id 11</span><br><span class="line">    priority 100</span><br><span class="line">    advert_int 1</span><br><span class="line">    nopreempt</span><br><span class="line">    authentication {</span><br><span class="line">        auth_type PASS</span><br><span class="line">        auth_pass 1111</span><br><span class="line">    }</span><br><span class="line">    virtual_ipaddress {</span><br><span class="line">        10.10.36.11/23 dev em1</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">virtual_server 10.10.36.11 80 {</span><br><span class="line">    delay_loop 6</span><br><span class="line">    lb_algo rr</span><br><span class="line">    lb_kind TUN</span><br><span class="line">    protocol TCP</span><br><span class="line"></span><br><span class="line">    real_server 10.10.36.4 80 {</span><br><span class="line">        weight 100</span><br><span class="line">        TCP_CHECK {</span><br><span class="line">                connect_timeout 3</span><br><span class="line">                nb_get_retry 3</span><br><span class="line">                delay_before_retry 3</span><br><span class="line">                connect_port 80</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">    real_server 10.10.36.7 80 {</span><br><span class="line">        weight 100</span><br><span class="line">        TCP_CHECK {</span><br><span class="line">                connect_timeout 3</span><br><span class="line">                nb_get_retry 3</span><br><span class="line">                delay_before_retry 3</span><br><span class="line">                connect_port 80</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">enable</span> and start keepalived</span></span><br><span class="line">systemctl start keepalived</span><br><span class="line">systemctl enable keepalived</span><br><span class="line">watch ipvsadm -L -n --stats</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x7F16;&#x5199; DS &#x811A;&#x672C;&#xFF0C;&#x63A8;&#x8350;&#x7528; keepalived &#x914D;&#x7F6E;&#x6587;&#x4EF6;</span></span><br><span class="line"><span class="meta">#</span><span class="bash">!/bin/sh</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Startup script handle the initialisation of LVS</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> chkconfig: - 28 72</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> description: Initialise the Linux Virtual Server <span class="keyword">for</span> TUN</span></span><br><span class="line"><span class="meta">#</span><span class="bash"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">## BEGIN INIT INFO</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Provides: ipvsadm</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Required-Start: <span class="variable">$local_fs</span> <span class="variable">$network</span> <span class="variable">$named</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Required-Stop: <span class="variable">$local_fs</span> <span class="variable">$remote_fs</span> <span class="variable">$network</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Short-Description: Initialise the Linux Virtual Server</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Description: The Linux Virtual Server is a highly scalable and highly</span></span><br><span class="line"><span class="meta">#</span><span class="bash">   available server built on a cluster of real servers, with the load</span></span><br><span class="line"><span class="meta">#</span><span class="bash">   balancer running on Linux.</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> description: start LVS of TUN</span></span><br><span class="line">LOCK=/var/lock/lvs-tun.lock</span><br><span class="line">VIP=10.10.36.11</span><br><span class="line">RIP1=10.10.36.4</span><br><span class="line">RIP2=10.10.36.7</span><br><span class="line">. /etc/rc.d/init.d/functions</span><br><span class="line"></span><br><span class="line">start()    {</span><br><span class="line">     PID=`ipvsadm -Ln | grep ${VIP} | wc -l`</span><br><span class="line">     if    [ $PID -gt 0 ];</span><br><span class="line"></span><br><span class="line">     then</span><br><span class="line">           echo &quot;The LVS-TUN Server is already running !&quot;</span><br><span class="line">     else</span><br><span class="line">           #Load the tun mod</span><br><span class="line">           /sbin/modprobe tun</span><br><span class="line">           /sbin/modprobe ipip</span><br><span class="line">           #Set the tun Virtual IP Address</span><br><span class="line">           /sbin/ifconfig tunl0 $VIP broadcast $VIP netmask 255.255.255.255 up</span><br><span class="line">           /sbin/route add -host $VIP dev tunl0</span><br><span class="line">           #Clear IPVS Table</span><br><span class="line">           /sbin/ipvsadm -C</span><br><span class="line">           #The icmp recruit setting</span><br><span class="line">           echo &quot;0&quot; &gt;/proc/sys/net/ipv4/ip_forward</span><br><span class="line">           echo &quot;0&quot; &gt;/proc/sys/net/ipv4/conf/all/send_redirects</span><br><span class="line">           echo &quot;0&quot; &gt;/proc/sys/net/ipv4/conf/default/send_redirects</span><br><span class="line">           #Set Lvs</span><br><span class="line">           /sbin/ipvsadm -At $VIP:80 -s rr</span><br><span class="line">           /sbin/ipvsadm -at $VIP:80 -r $RIP1:80 -i  -w 1</span><br><span class="line">           /sbin/ipvsadm -at $VIP:80 -r $RIP2:80 -i  -w 1</span><br><span class="line">           /bin/touch $LOCK</span><br><span class="line">           #Run Lvs</span><br><span class="line">           echo &quot;starting LVS-TUN-DIR Server is ok !&quot;</span><br><span class="line">     fi</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">stop()    {</span><br><span class="line">           #stop  Lvs server</span><br><span class="line">           /sbin/ipvsadm -C</span><br><span class="line">           /sbin/ifconfig tunl0 down &gt;/dev/null</span><br><span class="line">           #Remove the tun mod</span><br><span class="line">           /sbin/modprobe -r tun</span><br><span class="line">           /sbin/modprobe -r ipip</span><br><span class="line">           rm -rf $LOCK</span><br><span class="line">           echo &quot;stopping LVS-TUN-DIR server is ok !&quot;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">status()  {</span><br><span class="line">     if [ -e $LOCK ];</span><br><span class="line">     then</span><br><span class="line">         echo &quot;The LVS-TUN Server is already running !&quot;</span><br><span class="line">     else</span><br><span class="line">         echo &quot;The LVS-TUN Server is not running !&quot;</span><br><span class="line">     fi</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">case &quot;$1&quot; in</span><br><span class="line">  start)</span><br><span class="line">        start</span><br><span class="line">        ;;</span><br><span class="line">  stop)</span><br><span class="line">        stop</span><br><span class="line">        ;;</span><br><span class="line">  restart)</span><br><span class="line">        stop</span><br><span class="line">        sleep 1</span><br><span class="line">        start</span><br><span class="line">        ;;</span><br><span class="line">  status)</span><br><span class="line">        status</span><br><span class="line">        ;;</span><br><span class="line">  *)</span><br><span class="line">        echo &quot;Usage: $1 {start|stop|restart|status}&quot;</span><br><span class="line">        exit 1</span><br><span class="line">esac</span><br><span class="line">exit 0</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>RS</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5728;&#x52A0;&#x8F7D;&#x597D; ipip &#x6A21;&#x5757;&#x540E;&#x5C31;&#x4F1A;&#x6709;&#x9ED8;&#x8BA4;&#x7684; tunl0 &#x96A7;&#x9053;</span></span><br><span class="line">modprobe ipip</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6DFB;&#x52A0; VIP</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> ifconfig tunl0 down</span></span><br><span class="line">ifconfig tunl0 10.10.36.11 broadcast 10.10.36.11 netmask 255.255.255.255 up</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6DFB;&#x52A0;&#x8DEF;&#x7531;</span></span><br><span class="line">route add -host 10.10.36.11 tunl0</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x624B;&#x52A8;&#x5173;&#x95ED; ARP &#x8F6C;&#x53D1;</span></span><br><span class="line">echo &apos;1&apos; &gt; /proc/sys/net/ipv4/conf/tunl0/arp_ignore </span><br><span class="line">echo &apos;2&apos; &gt; /proc/sys/net/ipv4/conf/tunl0/arp_announce</span><br><span class="line">echo &apos;1&apos; &gt; /proc/sys/net/ipv4/conf/all/arp_ignore</span><br><span class="line">echo &apos;2&apos; &gt; /proc/sys/net/ipv4/conf/all/arp_announce </span><br><span class="line">echo &apos;0&apos; &gt; /proc/sys/net/ipv4/conf/tunl0/rp_filter</span><br><span class="line">echo &apos;0&apos; &gt; /proc/sys/net/ipv4/conf/all/rp_filter </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> iptables &#x5141;&#x8BB8; ipip &#x534F;&#x8BAE;</span></span><br><span class="line">iptables -I INPUT 1 -p 4 -j ACCEPT</span><br><span class="line">vim /etc/sysconfig/iptables</span><br><span class="line">-A INPUT -p ipv4 -j ACCEPT</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x7F16;&#x5199; RS &#x542F;&#x505C;&#x811A;&#x672C;</span></span><br><span class="line">vim /etc/init.d/lvs-tun</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">!/bin/sh</span></span><br><span class="line"><span class="meta">#</span><span class="bash"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Startup script handle the initialisation of LVS</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> chkconfig: - 28 72</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> description: Initialise the Linux Virtual Server <span class="keyword">for</span> TUN</span></span><br><span class="line"><span class="meta">#</span><span class="bash"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">## BEGIN INIT INFO</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Provides: ipvsadm</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Required-Start: <span class="variable">$local_fs</span> <span class="variable">$network</span> <span class="variable">$named</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Required-Stop: <span class="variable">$local_fs</span> <span class="variable">$remote_fs</span> <span class="variable">$network</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Short-Description: Initialise the Linux Virtual Server</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Description: The Linux Virtual Server is a highly scalable and highly</span></span><br><span class="line"><span class="meta">#</span><span class="bash">   available server built on a cluster of real servers, with the load</span></span><br><span class="line"><span class="meta">#</span><span class="bash">   balancer running on Linux.</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> description: start LVS of TUN-RIP</span></span><br><span class="line">LOCK=/var/lock/ipvsadm.lock</span><br><span class="line">VIP=10.10.36.11</span><br><span class="line">. /etc/rc.d/init.d/functions</span><br><span class="line">start() {</span><br><span class="line">     PID=`ifconfig | grep tunl0 | wc -l`</span><br><span class="line">     if [ $PID -ne 0 ];</span><br><span class="line">     then</span><br><span class="line">         echo &quot;The LVS-TUN-RIP Server is already running !&quot;</span><br><span class="line">     else</span><br><span class="line">         #Load the tun mod</span><br><span class="line">         /sbin/modprobe tun</span><br><span class="line">         /sbin/modprobe ipip</span><br><span class="line">         #Set the tun Virtual IP Address</span><br><span class="line">         /sbin/ifconfig tunl0 $VIP netmask 255.255.255.255 broadcast $VIP up</span><br><span class="line">         /sbin/route add -host $VIP dev tunl0</span><br><span class="line">         echo &quot;1&quot; &gt;/proc/sys/net/ipv4/conf/tunl0/arp_ignore</span><br><span class="line">         echo &quot;2&quot; &gt;/proc/sys/net/ipv4/conf/tunl0/arp_announce</span><br><span class="line">         echo &quot;1&quot; &gt;/proc/sys/net/ipv4/conf/all/arp_ignore</span><br><span class="line">         echo &quot;2&quot; &gt;/proc/sys/net/ipv4/conf/all/arp_announce</span><br><span class="line">         echo &quot;0&quot; &gt; /proc/sys/net/ipv4/conf/tunl0/rp_filter</span><br><span class="line">         echo &quot;0&quot; &gt; /proc/sys/net/ipv4/conf/all/rp_filter</span><br><span class="line">         /bin/touch $LOCK</span><br><span class="line">         echo &quot;starting LVS-TUN-RIP server is ok !&quot;</span><br><span class="line">     fi</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">stop() {</span><br><span class="line">         /sbin/ifconfig tunl0 down</span><br><span class="line">         echo &quot;0&quot; &gt;/proc/sys/net/ipv4/conf/tunl0/arp_ignore</span><br><span class="line">         echo &quot;0&quot; &gt;/proc/sys/net/ipv4/conf/tunl0/arp_announce</span><br><span class="line">         echo &quot;0&quot; &gt;/proc/sys/net/ipv4/conf/all/arp_ignore</span><br><span class="line">         echo &quot;0&quot; &gt;/proc/sys/net/ipv4/conf/all/arp_announce</span><br><span class="line">         #Remove the tun mod</span><br><span class="line">         /sbin/modprobe -r tun</span><br><span class="line">         /sbin/modprobe -r ipip</span><br><span class="line">         rm -rf $LOCK</span><br><span class="line">         echo &quot;stopping LVS-TUN-RIP server is ok !&quot;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">status() {</span><br><span class="line">     if [ -e $LOCK ];</span><br><span class="line">     then</span><br><span class="line">        echo &quot;The LVS-TUN-RIP Server is already running !&quot;</span><br><span class="line">     else</span><br><span class="line">        echo &quot;The LVS-TUN-RIP Server is not running !&quot;</span><br><span class="line">     fi</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">case &quot;$1&quot; in</span><br><span class="line">  start)</span><br><span class="line">        start</span><br><span class="line">        ;;</span><br><span class="line">  stop)</span><br><span class="line">        stop</span><br><span class="line">        ;;</span><br><span class="line">  restart)</span><br><span class="line">        stop</span><br><span class="line">        start</span><br><span class="line">        ;;</span><br><span class="line">  status)</span><br><span class="line">        status</span><br><span class="line">        ;;</span><br><span class="line">  *)</span><br><span class="line">        echo &quot;Usage: $1 {start|stop|restart|status}&quot;</span><br><span class="line">        exit 1</span><br><span class="line">esac</span><br><span class="line">exit 0</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> start lvs-tun</span></span><br><span class="line">chmod 755 /etc/init.d/lvs-tun</span><br><span class="line">service lvs-tun start</span><br><span class="line">chkconfig lvs-tun on</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Nginx <span class="built_in">test</span></span></span><br><span class="line">echo &quot;rs1&quot; &gt; /usr/share/nginx/html/index.html</span><br><span class="line">echo &quot;rs2&quot; &gt; /usr/share/nginx/html/index.html</span><br><span class="line"></span><br><span class="line">for i in {1..100}; do curl 10.10.36.11; sleep 0.5; done</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p>&#x8FD9;&#x4E00;&#x6B65;&#x7684;&#x4E3B;&#x8981;&#x76EE;&#x7684;&#x662F;&#x8BA9; RS &#x7981;&#x8A00;&#xFF0C;&#x5728;&#x76F8;&#x5BF9;&#x8F83;&#x65B0;&#x7684;&#x7248;&#x672C;&#x4E2D;&#x65B0;&#x589E;&#x4E86;&#x4E24;&#x4E2A;&#x5185;&#x6838;&#x53C2;&#x6570; (kernel parameter)</p>
+<ul>
+<li>&#x7B2C;&#x4E00;&#x4E2A;&#x662F; arp_ignore &#x5B9A;&#x4E49;&#x63A5;&#x53D7;&#x5230; ARP &#x8BF7;&#x6C42;&#x65F6;&#x7684;&#x76F8;&#x5E94;&#x7EA7;&#x522B;</li>
+<li>&#x7B2C;&#x4E8C;&#x4E2A;&#x662F; arp_announce &#x5B9A;&#x4E49;&#x5C06;&#x81EA;&#x5DF1;&#x5730;&#x5740;&#x5411;&#x5916;&#x901A;&#x544A;&#x662F;&#x7684;&#x901A;&#x544A;&#x7EA7;&#x522B;</li>
+<li>&#x7B2C;&#x4E09;&#x4E2A;&#x662F; rp_filter &#x5B9A;&#x4E49;&#x7CFB;&#x7EDF;&#x662F;&#x5426;&#x5F00;&#x542F;&#x5BF9;&#x6570;&#x636E;&#x5305;&#x6E90;&#x5730;&#x5740;&#x7684;&#x6821;&#x9A8C;  </li>
+</ul>
+<p>&#x603B;&#x7ED3;: LVS/TUN &#x662F;&#x6240;&#x6709;&#x6A21;&#x5F0F;&#x4E2D;&#x6700;&#x6700;&#x9002;&#x7528;&#x4E8E;&#x8DE8;&#x7F51;&#x7EDC;&#x8DE8;&#x5730;&#x57DF;&#x5730;&#x7406;&#x4F4D;&#x7F6E;&#x7684;&#x4E00;&#x79CD;&#x6A21;&#x5F0F;&#xFF0C;&#x9700;&#x8981;&#x6CE8;&#x610F;&#x7684;&#x662F;:  </p>
+<ul>
+<li>&#x82E5; DIR &#x548C; RIP &#x5728;&#x4E0D;&#x540C; lan &#x7F51;&#x7EDC;&#x4E2D;&#xFF0C;&#x6BD4;&#x5982;&#x4E0D;&#x540C;&#x7684;&#x7F51;&#x6BB5;&#xFF0C;&#x4E0D;&#x540C;&#x7684; IDC &#x673A;&#x623F;&#xFF0C;&#x5C31;&#x4E0D;&#x9700;&#x8981;&#x8BBE;&#x7F6E; arp &#x4EF0;&#x5236;&#xFF0C;&#x4E0D;&#x540C;&#x7F51;&#x6BB5;&#x4E2D;&#xFF0C;arp &#x4F1A;&#x88AB;&#x5C4F;&#x853D;&#x6389;&#xFF0C;&#x6240;&#x4EE5;&#x53EA;&#x9700;&#x8BBE;&#x7F6E; ip tunne &#x4EE5;&#x53CA;&#x62A5;&#x6587;&#x53CD;&#x5411;&#x9A8C;&#x8BC1;&#x5373;&#x53EF;&#xFF1B;</li>
+<li>&#x82E5; DIR &#x548C; RIP &#x5728;&#x540C;&#x4E00;&#x5E7F;&#x64AD;&#x57DF;&#x4E2D;&#xFF0C;&#x9700;&#x8981;&#x548C; LVS/DR &#x6A21;&#x5F0F;&#x4E00;&#x6837;&#x5728;&#x6240;&#x6709;&#x7684; RIP &#x4E0A;&#x4EF0;&#x5236; arp&#xFF0C;&#x9632;&#x6B62; arp &#x54CD;&#x5E94;&#x5BFC;&#x81F4; arp &#x8868;&#x6DF7;&#x4E71;&#xFF0C;&#x8FD9;&#x6837; lvs &#x5C31;&#x4E0D;&#x80FD;&#x6B63;&#x5E38;&#x5DE5;&#x4F5C;&#xFF01;</li>
+</ul>
+<p>&#x914D;&#x7F6E;&#x65F6;&#x9664;&#x4E86;&#x914D;&#x7F6E; DIR&#xFF0C;&#x8FD8;&#x9700;&#x8981;&#x9700;&#x8981;&#x914D;&#x7F6E;&#x540E;&#x7AEF; RS server&#xFF0C;&#x5373;&#x5728; tunl &#x4E0A;&#x53E3;&#x914D;&#x7F6E; vip &#x5730;&#x5740;&#xFF08;&#x9700;&#x8981;&#x7CFB;&#x7EDF;&#x652F;&#x6301; tunl &#x624D;&#x884C;&#xFF09;&#xFF0C;&#x5E7F;&#x64AD;&#x4E3A;&#x81EA;&#x5DF1;&#xFF0C;&#x6B64;&#x6A21;&#x5F0F;&#x4E0B;&#x65E0;&#x9700;&#x5F00;&#x542F;&#x8DEF;&#x7531;&#x8F6C;&#x53D1;&#x529F;&#x80FD;&#xFF01;</p>
+<h4 id="&#x914D;&#x7F6E;-LVS-DR-&#x548C;-LVS-TUN-&#x6DF7;&#x5408;&#x6A21;&#x5F0F;"><a href="#&#x914D;&#x7F6E;-LVS-DR-&#x548C;-LVS-TUN-&#x6DF7;&#x5408;&#x6A21;&#x5F0F;" class="headerlink" title="&#x914D;&#x7F6E; LVS/DR &#x548C; LVS/TUN &#x6DF7;&#x5408;&#x6A21;&#x5F0F;"></a>&#x914D;&#x7F6E; LVS/DR &#x548C; LVS/TUN &#x6DF7;&#x5408;&#x6A21;&#x5F0F;</h4><p><strong>DS</strong><br></p><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line"># &#x5173;&#x4E8E; 3 &#x4E2D;&#x6A21;&#x5F0F;&#x7684;&#x53C2;&#x6570;</span><br><span class="line">[packet-forwarding-method]</span><br><span class="line">       -g, --gatewaying  Use gatewaying (direct routing). This is the default.</span><br><span class="line">       -i, --ipip  Use ipip encapsulation (tunneling).</span><br><span class="line">       -m, --masquerading  Use masquerading (network access translation, or NAT).</span><br><span class="line">       Note:  Regardless of the packet-forwarding mechanism specified, real servers for addresses for which there are interfaces on the local node will  be  use  the</span><br><span class="line">       local  forwarding  method, then packets for the servers will be passed to upper layer on the local node. This cannot be specified by ipvsadm, rather it set by</span><br><span class="line">       the kernel as real servers are added or modified.</span><br><span class="line"></span><br><span class="line"># ipvsadm &#x547D;&#x4EE4;&#x884C;&#x6DF7;&#x914D;</span><br><span class="line">/sbin/ifconfig tunl0 10.10.36.11 broadcast 10.10.36.11 netmask 255.255.255.255 up</span><br><span class="line">/sbin/route add -host 10.10.36.11 dev tunl0</span><br><span class="line">/sbin/ipvsadm -At 10.10.36.11:80 -s rr</span><br><span class="line">/sbin/ipvsadm -at 10.10.36.11:80 -r 10.10.36.4:80 -g -w 1</span><br><span class="line">/sbin/ipvsadm -at 10.10.36.11:80 -r 10.10.36.7:80 -i -w 1</span><br><span class="line"></span><br><span class="line"># keepalived &#x6DF7;&#x914D;</span><br><span class="line">vrrp_sync_group GOP {</span><br><span class="line">    group {</span><br><span class="line">        VI_PRI_AUTH</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">vrrp_instance VI_PRI_AUTH {</span><br><span class="line">    state BACKUP</span><br><span class="line">    interface em1</span><br><span class="line">    virtual_router_id 11</span><br><span class="line">    priority 100</span><br><span class="line">    advert_int 1</span><br><span class="line">    nopreempt</span><br><span class="line">    authentication {</span><br><span class="line">        auth_type PASS</span><br><span class="line">        auth_pass 1111</span><br><span class="line">    }</span><br><span class="line">    virtual_ipaddress {</span><br><span class="line">        10.10.36.11/23 dev em1</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">virtual_server 10.10.36.11 80 {</span><br><span class="line">    delay_loop 6</span><br><span class="line">    lb_algo rr</span><br><span class="line">    lb_kind DR</span><br><span class="line">    protocol TCP</span><br><span class="line"></span><br><span class="line">    real_server 10.10.36.4 80 {</span><br><span class="line">        weight 100</span><br><span class="line">        TCP_CHECK {</span><br><span class="line">                connect_timeout 3</span><br><span class="line">                nb_get_retry 3</span><br><span class="line">                delay_before_retry 3</span><br><span class="line">                connect_port 80</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">virtual_server 10.10.36.11 80 {</span><br><span class="line">    delay_loop 6</span><br><span class="line">    lb_algo rr</span><br><span class="line">    lb_kind TUN</span><br><span class="line">    protocol TCP</span><br><span class="line"></span><br><span class="line">    real_server 10.10.36.7 80 {</span><br><span class="line">        weight 100</span><br><span class="line">        TCP_CHECK {</span><br><span class="line">                connect_timeout 3</span><br><span class="line">                nb_get_retry 3</span><br><span class="line">                delay_before_retry 3</span><br><span class="line">                connect_port 80</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"># &#x68C0;&#x67E5;&#x7ED3;&#x679C;&#x53EF;&#x7528;</span><br><span class="line">[root@d126027 wangao]# for i in {1..100}; do curl 10.10.36.11; sleep 0.5; done</span><br><span class="line">rs2</span><br><span class="line">rs1</span><br><span class="line">rs2</span><br><span class="line">rs1</span><br><span class="line">rs2</span><br><span class="line"></span><br><span class="line">[root@d126009 keepalived]# ipvsadm -Ln --stats</span><br><span class="line">IP Virtual Server version 1.2.1 (size=4096)</span><br><span class="line">Prot LocalAddress:Port               Conns   InPkts  OutPkts  InBytes OutBytes</span><br><span class="line">  -&gt; RemoteAddress:Port</span><br><span class="line">TCP  10.10.36.11:80                    100      700        0    36700        0</span><br><span class="line">  -&gt; 10.10.36.4:80                      50      350        0    18350        0</span><br><span class="line">  -&gt; 10.10.36.7:80                      50      350        0    18350        0</span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>RS</strong></p>
+<blockquote>
+<p>DR &#x548C; TUN &#x7684;&#x6A21;&#x5F0F;&#x57FA;&#x672C;&#x4E0D;&#x7528;&#x505A;&#x6539;&#x52A8;</p>
+</blockquote>
+<h2 id="&#x53C2;&#x8003;&#x94FE;&#x63A5;&#xFF1A;"><a href="#&#x53C2;&#x8003;&#x94FE;&#x63A5;&#xFF1A;" class="headerlink" title="&#x53C2;&#x8003;&#x94FE;&#x63A5;&#xFF1A;"></a>&#x53C2;&#x8003;&#x94FE;&#x63A5;&#xFF1A;</h2><p>LVS+KeepAlived&#x5B9E;&#x73B0;&#x9AD8;&#x53EF;&#x7528;&#x8D1F;&#x8F7D;&#x5747;&#x8861; <a href="https://www.cnblogs.com/Sinte-Beuve/p/13392747.html" target="_blank" rel="noopener">https://www.cnblogs.com/Sinte-Beuve/p/13392747.html</a></p>
+<p>LVS&#x548C;KeepAlived&#x7684;&#x539F;&#x7406;&#x4ECB;&#x7ECD;&#x548C;&#x914D;&#x7F6E;&#x5B9E;&#x8DF5; <a href="https://wsgzao.github.io/post/lvs-keepalived/&#x6CE8;&#x610F;" target="_blank" rel="noopener">https://wsgzao.github.io/post/lvs-keepalived/&#x6CE8;&#x610F;</a>:</p>
+<script>
+        document.querySelectorAll('.github-emoji')
+          .forEach(el => {
+            if (!el.dataset.src) { return; }
+            const img = document.createElement('img');
+            img.style = 'display:none !important;';
+            img.src = el.dataset.src;
+            img.addEventListener('error', () => {
+              img.remove();
+              el.style.color = 'inherit';
+              el.style.backgroundImage = 'none';
+              el.style.background = 'none';
+            });
+            img.addEventListener('load', () => {
+              img.remove();
+            });
+            document.body.appendChild(img);
+          });
+      </script>
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新：<time datetime="2022-06-12T06:36:07.094Z" itemprop="dateUpdated">2022-06-12 14:36:07</time>
+</span>
+
+
+        
+        原文链接：<a href="/posts/640aafef/" target="_blank" rel="external">https://marnm.github.io/posts/640aafef/</a>
+        
+    </div>
+    <footer>
+        <div onclick="location.href='https://marnm.github.io'">
+            <img src="/img/avatar.gif" alt="Echo">
+            <a>Echo</a>
+        </div>
+    </footer>
+</blockquote>
+
+        
+    <div class="page-reward">
+        <nav class="myreward">
+            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
+        </nav>
+    </div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/KeepAlived/">KeepAlived</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LVS/">LVS</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/640aafef/&title=《LVS和KeepAlived实现高可用集群》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/640aafef/&title=《LVS和KeepAlived实现高可用集群》 — Deops's blog&source=keepalived相关keepalive的学习参考网站：https://www.keepalived.org/
+在学习keepalived之前, 我们来..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/640aafef/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《LVS和KeepAlived实现高可用集群》 — Deops's blog&url=https://marnm.github.io/posts/640aafef/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/640aafef/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/posts/38843421/" id="post-prev" class="post-nav-link">
+        <h4 class="title">
+          上一篇：Ceph分布式存储部署笔记
+        </h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/posts/da58b03e/" id="post-next" class="post-nav-link">
+        <h4 class="title" data-hover="下一篇：使用HAProxy实现七层负载均衡">下一篇：使用HAProxy实现七层负载均衡</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+    
+
+    
+
+    
+
+
+</article>
+
+</div>
+
+        <footer class="footer">
+    <div class="footer-content">
+        <span class="power">
+            <i class="icon icon-lg icon-copyright"></i>
+            2022
+            <i class="icon icon-lg icon-heart"></i>
+            <a href="https://marnm.github.io">marnm.github.io</a>
+            <br>
+            Power by
+            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
+            Theme
+            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
+        </span>
+
+        <br>
+
+        <span id="RunTime" style="color:#a7a7a2;"></span>
+        <br>
+
+        <span>
+            
+
+        </span>
+        <br>
+
+        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+    </div>
+</footer>
+
+    </main>
+    
+        
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        <span>感谢您的鼓励支持！</span>
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
+                <span class="reward-toggle-item alipayPay">支付宝</span>
+            </div>
+        </label>
+        
+        <i class="icon icon-caret-up"></i>
+    </div>
+</div>
+
+
+    
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/640aafef/&title=《LVS和KeepAlived实现高可用集群》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/640aafef/&title=《LVS和KeepAlived实现高可用集群》 — Deops's blog&source=keepalived相关keepalive的学习参考网站：https://www.keepalived.org/
+在学习keepalived之前, 我们来..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/640aafef/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《LVS和KeepAlived实现高可用集群》 — Deops's blog&url=https://marnm.github.io/posts/640aafef/&via=https://marnm.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/640aafef/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p class="wechatshare">扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABxElEQVR42u3aQW7DMAwEQP//0+61QGt3SVqKUYxORqJYoxwIkdRxxOP8Nq4+/zmSdx4rBi4u7pibLHmPuN/M1Zyrb//YNi4u7kbufaBJoBNKYsDFxX0zNz/K5IEPFxf3f3DzoJZsBhcX953c/AiSJ0XJKgtzNVxc3AE3r1Kue15S38XFxW1xz+K4P3wk4Wm0Oi4u7hZuHlCSVkr1ubkuLi7uh7i9FCgJZ8kfVG6y4uLiLuPmr+j9NvkjCkccXFzcjdxJyTLfzCRQ4uLiruYmYaVXyJiEsMsN4+LibuHOXzQpeTyQ/ODi4i7g3pcq8pSmmvbkm/wl7uLi4i7mVq9M5fOTmb2N4eLi7uT2ChmTkmvSYokOOri4uAu490eWpDlaLZf0rofi4uLu5CaHlSouv9iRFFwKBVNcXNxHub0rVnko7KVMUfKDi4u7mDtplvQ2U56Ji4u7mHsWR950yd9TSI1wcXG3cCdXIvIGSfUCR7UUi4uLu4LbC17NFun4QhguLu5O7iT56TVZe5vHxcV9JzdBT0azaoKLi/tR7nzJau71WNzFxcUtcnvFzfx5QsTFxd3P7TU+k1brpCDyQH0XFxe3w/0C6lVI5+q0AnAAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <!-- waves按钮特效 -->
+<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+
+<!-- 主题配置脚本 -->
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+</script>
+
+<!-- jquery -->
+<script src="/js/jquery.min.js?v=3.0"></script>
+
+<!-- 搜索 -->
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item waves-block waves-effect" onclick="location.href='{path}'">
+    <div class="title ellipsis" title="{title}">{title}</div>
+</li>
+</template>
+
+
+<!-- main博客脚本 -->
+<script src="/js/main.min.js?v=3.0"></script>
+
+<!-- 动画&配置 -->
+<script src="/js/script.min.js?v=3.0"></script>
+
+<!-- 脚本管理 -->
+<script>
+
+if(window.innerWidth > 800){
+	/* 3D标题 */
+	$(".content-header").on("mousemove", threedee);
+
+	/* 底部追随鼠标 */
+	$(".footer").hover(2);
+
+	/* gotop键的涟漪 */
+	$("#gotop").hover(1);
+
+	/* 赞赏的粒子雨 */
+	$("#reward").hover(3);
+
+	/* 微信公众号的底部渲染 */
+	$("#wechat").hover(4);
+
+    /* 标题跳动 */
+    $(".archivestitle").bumpyText();
+
+	/* 图片点击放大 */
+	const postimg = jQuery(".post-content img:not(.github-emoji)");
+	postimg.on("click",function(){
+
+		mask.classList.add("in");
+		main.classList.add("Mask");
+		menu.classList.add("Mask");
+		var myimg = this.cloneNode(true);
+		myimg.classList.add("imgShow");
+
+		setTimeout(function(){
+			jQuery(myimg).animate({
+				opacity:"1"
+			},1000);
+		},0);
+
+		document.body.appendChild(myimg);
+
+		myimg.onclick=function(){
+			document.body.removeChild(myimg);
+			mask.classList.remove("in");
+			main.classList.remove("Mask");
+			menu.classList.remove("Mask");
+		};
+
+	});
+
+}
+
+/* 名字跳动 */
+$("#name").bumpyText();
+
+
+/* 网站运行时间 */
+setInterval(function () {
+	setTime("2019/01/01");
+}, 1000);
+
+/* 文章块的淡出 */
+postshow();
+
+/* 座右铭 */
+
+   getHitokoto();
+
+
+
+/* 粘贴提示 */
+G($(".post-content"), location.href, "Echo");
+
+
+/* 控制台 */
+if (window.console && window.console.log) {
+	setTimeout(function () {
+		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
+	}, 0);
+}
+
+</script>
+
+
+
+
+<!-- 公式渲染 -->
+
+
+
+<!-- 不蒜子 -->
+
+
+</body>
+</html>
