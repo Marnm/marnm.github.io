@@ -1,230 +1,1873 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head><meta name="generator" content="Hexo 3.8.0">
-    <meta http-equiv="Content-Language" content="zh-cn">
-    <meta charset="utf-8">
-    
-    
-    
-    <title>Linux学习笔记 - 关于开源 | Deops&#39;s blog | 运维开发工程师</title>
-    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    
-    <meta name="theme-color" content="#77AAFF">
-    
-    
-    <meta name="keywords" content="Linux,开源">
-    
-    
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+	
+	<!-- title -->
+	
+	<title>
+	
+		Linux学习笔记 - 关于开源 | 
+	 
+	Deops&#39;s blog
+	</title>
+	
+	<!-- keywords,description -->
+	
+		<meta name="keywords" content="Echo">
+	 
+		<meta name="description" content="Echo">
+	
 
-    
+	<!-- favicon -->
+	
+	<link rel="shortcut icon" href="/favicon.ico">
+	
 
-    <!-- Baidu Push -->
-<script>
-	(function(){
-		var bp = document.createElement('script');
-		var curProtocol = window.location.protocol.split(':')[0];
-		if (curProtocol === 'https') {
-			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+
+	<!-- search -->
+	<script>
+		var searchEngine = "https://www.google.com/search?q=";
+		if(typeof searchEngine == "undefined" || searchEngine == null || searchEngine == ""){
+			searchEngine = "https://www.google.com/search?q=";
 		}
-		else {
-			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		var homeHost = "https://marnm.github.io/";
+		if(typeof homeHost == "undefined" || homeHost == null || homeHost == ""){
+			homeHost = window.location.host;
 		}
-		var s = document.getElementsByTagName("script")[0];
-		s.parentNode.insertBefore(bp, s);
-	})();
-
-	var _hmt = _hmt || [];
-</script>
+	</script>
 
 
-
+	<link rel="stylesheet" href="/css/main.css">
+	<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/lib/highlight/styles/base16/solarized-dark.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
     
-    <meta name="description" content="1. 开源共享精神低风险：使用闭源软件无疑把命运交付给他人，一旦封闭的源代码没有人来维护，你将进退维谷；而且相较于商业软件公司，开源社区很少存在倒闭的问题。 高品质：相较于闭源软件产品，开源项目通常是由开源社区来研发及维护的，参与编写、维护、测试的用户量众多，一般的bug还没有等爆发就已经被修补。 低成本：开源工作者都是在幕后默默且无偿地付出劳动成果，为美好的世界贡献一份力量，因此使用开源社区推动">
-<meta name="keywords" content="Linux,开源">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Linux学习笔记 - 关于开源">
-<meta property="og:url" content="https://marnm.github.io/posts/67ee4dec/index.html">
-<meta property="og:site_name" content="Deops&#39;s blog">
-<meta property="og:description" content="1. 开源共享精神低风险：使用闭源软件无疑把命运交付给他人，一旦封闭的源代码没有人来维护，你将进退维谷；而且相较于商业软件公司，开源社区很少存在倒闭的问题。 高品质：相较于闭源软件产品，开源项目通常是由开源社区来研发及维护的，参与编写、维护、测试的用户量众多，一般的bug还没有等爆发就已经被修补。 低成本：开源工作者都是在幕后默默且无偿地付出劳动成果，为美好的世界贡献一份力量，因此使用开源社区推动">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://docs.blender.org/manual/zh-hans/dev/_images/getting-started_about_license_gnu-logo.png">
-<meta property="og:image" content="https://qph.fs.quoracdn.net/main-thumb-t-14907-200-seTLViB8UWkDHk3At9asR1xYPu5k6spg.jpeg">
-<meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Apache_Software_Foundation_Logo_%282016%29.svg/1200px-Apache_Software_Foundation_Logo_%282016%29.svg.png">
-<meta property="og:updated_time" content="2020-04-09T11:50:11.075Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Linux学习笔记 - 关于开源">
-<meta name="twitter:description" content="1. 开源共享精神低风险：使用闭源软件无疑把命运交付给他人，一旦封闭的源代码没有人来维护，你将进退维谷；而且相较于商业软件公司，开源社区很少存在倒闭的问题。 高品质：相较于闭源软件产品，开源项目通常是由开源社区来研发及维护的，参与编写、维护、测试的用户量众多，一般的bug还没有等爆发就已经被修补。 低成本：开源工作者都是在幕后默默且无偿地付出劳动成果，为美好的世界贡献一份力量，因此使用开源社区推动">
-<meta name="twitter:image" content="https://docs.blender.org/manual/zh-hans/dev/_images/getting-started_about_license_gnu-logo.png">
-    
-        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
-    
-    <link rel="shortcut icon" href="/img/favicon.ico">
-    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
-    <script>window.lazyScripts=[]</script>
+    <!-- 引入代码高亮的 js -->
+    <script src="/lib/highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 
-    <!-- custom head -->
-    
-            
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/jquery-pjax@2.0.1/jquery.pjax.min.js"></script>
+	<script src="/js/main.js"></script>
+	
+		<script src="https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/valine@v1.4.14/dist/Valine.min.js"></script>
+	
+	
 </head>
 
 <body>
-    <div id="loading" class="active"></div>
-    <aside id="menu" class="hide">
-  <div class="inner flex-row-vertical">
-    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
-        <i class="icon icon-lg icon-close"></i>
-    </a>
-    <div class="brand-wrap">
-      <div class="brand">
-        <a href="/" class="avatar waves-effect waves-circle waves-light">
-          <img src="/img/avatar.gif" alt="avatar">
-        </a>
-        <hgroup class="introduce">
-          <h5 class="nickname" id="name">Echo</h5>
-          
-            <div id="yiyanmotto" class="motto">&nbsp;</div>
-          
-        </hgroup>
-      </div>
-    </div>
-    <div class="scroll-wrap flex-col">
-      <ul class="nav">
-        
-              <li class="waves-block waves-effect">
-                  <a href="/">
-                    <i class="icon icon-lg icon-home"></i>
-                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/archives">
-                    <i class="icon icon-lg icon-archives"></i>
-                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/categories">
-                    <i class="icon icon-lg icon-th-list"></i>
-                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/tags">
-                    <i class="icon icon-lg icon-tags"></i>
-                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/about">
-                    <i class="icon icon-lg icon-smile-o"></i>
-                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-      <div class="nav2">
-          
-              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
-                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
-              </a>
-          
-              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
-                <i class="icon icon-lg icon-github github"></i>
-              </a>
-          
-              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
-                <i class="icon icon-lg icon-tv tv"></i>
-              </a>
-          
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3efe99c287df5a1d6f0d02d187e403c1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
 
-            </div>
-        
-      </ul>
-        
-    </div>
-  </div>
- 
-</aside>
+<header id="header">
+    <a id="title" href="/" class="logo">Deops's blog</a>
 
+	<ul id="menu">
+		<li class="menu-item">
+			<a href="/about" class="menu-item-link">ABOUT</a>
+		</li>
+	
+		<li class="menu-item">
+			<a href="/tags" class="menu-item-link">标签</a>
+		</li>
+	
 
-    <main id="main">
-        <header class="top-header" id="header">
-    <div class="flex-row">
-        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
-          <i class="icon icon-lg icon-navicon"></i>
-        </a>
-        <div class="flex-col header-title ellipsis">Linux学习笔记 - 关于开源</div>
-        
-        <div class="search-wrap" id="search-wrap">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
-                <i class="icon icon-lg icon-chevron-left"></i>
-            </a>
-            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
-                <i class="icon icon-lg icon-search"></i>
-            </a>
-        </div>
-        
-        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
-            <i class="icon icon-lg icon-rss"></i>
-        </a>
-    </div>
-</header>
-<header class="content-header post-header">
-    
-    
-    <div class="container fade-scale">
-        <div id="myheader">
-            <h1 class="title">
-                
-            </h1>
-            <h5 class="subtitle">
-                
-                
-            </h5>
-        </div>
-    </div>
+	
+		<li class="menu-item">
+			<a href="/categories" class="menu-item-link">分类</a>
+		</li>
+	
 
+		<li class="menu-item">
+			<a href="https://github.com/Marnm" class="menu-item-link" target="_blank">
+				<i class="fa fa-github fa-2x"></i>
+			</a>
+		</li>
+	</ul>
 </header>
 
+	
+<div id="sidebar">
+	<button id="sidebar-toggle" class="toggle"><i class="fa fa-arrow-right " aria-hidden="true"></i></button>
+	
+	<div id="site-toc">
+		<input id="search-input" class="search-input" type="search" placeholder="按回车全站搜索">
+		<div id="tree">
+			
 
-<div class="container body-wrap">
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Ansible自动化运维
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/b45e213f/">
+                     
+										    Ansible自动化管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/28c30eb2/">
+                     
+										    CTF线下赛AWD套路小结
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Ceph对象存储
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/e9abc941/">
+                     
+										    Ceph分布式存储
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/38843421/">
+                     
+										    Ceph分布式存储部署笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9964b559/">
+                     
+										    DHCP Server的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4782a8c2/">
+                     
+										    DNS Server的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5e357037/">
+                     
+										    Django教程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Docker
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/4a3d459a/">
+                     
+										    Docker学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										ELK Stack
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/2d95f1c1/">
+                     
+										    ElasticSearch环境搭建
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/573fc171/">
+                     
+										    Logstash二进制安装与启动
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b11339a9/">
+                     
+										    Logstash去除不需要的字段
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d05b44e0/">
+                     
+										    Logstash读取日志发送到ES
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9d56e705/">
+                     
+										    FTP/TFTP的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ca9298d7/">
+                     
+										    Git版本控制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/51acad32/">
+                     
+										    诺尔·巴尔扎克（Honoréde Balzac）的名言
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4def9c28/">
+                     
+										    In Your 20's These Things Matter More Than You Think
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/295162d9/">
+                     
+										    Java8 环境变量配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										KVM虚拟化
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/dba5727f/">
+                     
+										    KVM图形化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/204af86b/">
+                     
+										    KVM虚拟机克隆和快照
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d69c6e72/">
+                     
+										    KVM虚拟机添加磁盘
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/16305c66/">
+                     
+										    KVM虚拟机迁移
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7733d98/">
+                     
+										    LDAP的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5922577d/">
+                     
+										    LNMP手动部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/195423a2/">
+                     
+										    LNMP高可用架构配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/38cc96c8/">
+                     
+										    LVM磁盘管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/be48d001/">
+                     
+										    LVS-DR集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/df68056c/">
+                     
+										    LVS-IPTUN集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dcf8e277/">
+                     
+										    LVS-NAT集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/640aafef/">
+                     
+										    LVS和KeepAlived实现高可用集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/82734d8/">
+                     
+										    Linux命令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file active">
+									<a href="/posts/67ee4dec/">
+                     
+										    Linux学习笔记 - 关于开源
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d53cba09/">
+                     
+										    Linux常用性能分析工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/15c0e66c/">
+                     
+										    Linux常见日志文件
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/480c215d/">
+                     
+										    Linux性能管理工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a9bb0c1a/">
+                     
+										    Linux文件的特殊权限
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/cc999d74/">
+                     
+										    Linux文件的隐藏属性
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b7f1c6/">
+                     
+										    Linux文本四剑客
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/aabbd398/">
+                     
+										    Linux无法挂载sysroot并自动进入紧急模式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b3f64b7d/">
+                     
+										    Linux生成随机密码方法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e025952a/">
+                     
+										    Linux登录退出提示信息欢迎信息
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ee2f9f35/">
+                     
+										    Linux的PAM模块
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1e844aa4/">
+                     
+										    Linux的归档与解压缩
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c4bbfe69/">
+                     
+										    Linux的日志切割
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/be846aea/">
+                     
+										    Linux禁止和开启ping的方法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f20e14fd/">
+                     
+										    Linux网卡聚合及bond模式的原理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2fe5fc07/">
+                     
+										    Linux计划任务实现
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/365d0867/">
+                     
+										    Linux路由配置——route
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fbf617b4/">
+                     
+										    MariaDB
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bff83912/">
+                     
+										    Markdown 简明语法手册
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5125c787/">
+                     
+										    Markdown语法说明（快速入门）
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										MongoDB
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/8b1c1f4b/">
+                     
+										    MongoDB介绍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a36562d7/">
+                     
+										    MongoDB学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/55c06d78/">
+                     
+										    MongoDB安装部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										MySQL学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/16fc5dc4/">
+                     
+										    MySQL5.6
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/61fb6d52/">
+                     
+										    MySQL5.7
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bce68613/">
+                     
+										    MySQL基础
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f6e2d114/">
+                     
+										    使用RPM包安装MySQL5.7数据库
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/269a56e8/">
+                     
+										    MySQL备份与恢复（删库不跑路）
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/607e4760/">
+                     
+										    MySQL传统主从同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d77fafec/">
+                     
+										    MySQL的GTID主从同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/db0340bd/">
+                     
+										    MySQL高可用集群架构-MHA架构
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/62ec7971/">
+                     
+										    Atlas实现MySQL读写分离
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/490925f2/">
+                     
+										    MySQL数据库高级应用之读写分离
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/176dc5f3/">
+                     
+										    MyCat垂直分表操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8f74b0e7/">
+                     
+										    MyCat教程全国省份分片枚举操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/208cd020/">
+                     
+										    MySQL调优
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1876d05d/">
+                     
+										    NetworkManager管理工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/60444925/">
+                     
+										    NexT主题优化+美化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Nginx学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/f4d30967/">
+                     
+										    Nginx动静分离部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1db2b3f1/">
+                     
+										    Nginx平滑升级
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2793eb31/">
+                     
+										    Nginx日志管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2793eb31/">
+                     
+										    Nginx日志管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e0989926/">
+                     
+										    Nginx添加第三方模块
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/da411b72/">
+                     
+										    Nginx虚拟主机
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d4e5e907/">
+                     
+										    Nginx访问控制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d2802762/">
+                     
+										    Nginx高可用架构配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/36ba38f9/">
+                     
+										    NoSQL知识
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e8c4eb08/">
+                     
+										    OpenSSL使用教程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/97717e94/">
+                     
+										    PXE自动化部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Prometheus学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/39c0f6a1/">
+                     
+										    Prometheus学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1f351894/">
+                     
+										    Python-VirtualEnv
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/297a89d9/">
+                     
+										    Python学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fa8e89f7/">
+                     
+										    RAID磁盘阵列技术介绍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/afdfa673/">
+                     
+										    RHEL 7配置Yum软件仓库
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/32546aed/">
+                     
+										    RedHat Linux重置root管理员密码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/eb7dbe25/">
+                     
+										    RedHat_7 配置网卡信息
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Redis学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/5188e636/">
+                     
+										    Redis与其他应用的集成
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/49fbbc1/">
+                     
+										    Redis基本操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e8376589/">
+                     
+										    Redis安装部署——Cluster集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e78aaf59/">
+                     
+										    Redis安装部署——Sentinel模式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2acd829b/">
+                     
+										    Redis安装部署——主从复制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/119ed1dc/">
+                     
+										    Redis持久化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/18d7d749/">
+                     
+										    Redis概述
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e3fb0a3e/">
+                     
+										    Redis的数据备份与恢复
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3e3d973e/">
+                     
+										    Redis配合MySQL使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f03da4e7/">
+                     
+										    Redis配置文件详解
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/41f893fd/">
+                     
+										    Redis编译安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dbd9d26a/">
+                     
+										    SHELL编程类面试题
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f42b90f9/">
+                     
+										    SHELL脚本工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a8ba1e/">
+                     
+										    SHELL脚本练习
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c45f2736/">
+                     
+										    SQL Server 2008安装配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/aa142b64/">
+                     
+										    SQLite安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e228b71f/">
+                     
+										    SSH原理与应用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1fdc29d2/">
+                     
+										    Shell的基本运算符
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6309c3f8/">
+                     
+										    Shell编程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e76ba468/">
+                     
+										    Ubuntu Desktop优化与配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/129acd64/">
+                     
+										    Ubuntu修改配置及美化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b382711f/">
+                     
+										    VIM的使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e9c6771b/">
+                     
+										    Win10环境下Python2、3和pip2、3版本共存
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6ed6984b/">
+                     
+										    Windows进程管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/59089347/">
+                     
+										    Zabbix3.4邮件报警配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7034657d/">
+                     
+										    Zabbix4.0
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c7b4ec91/">
+                     
+										    firewalld学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1ebd4a76/">
+                     
+										    iproute2工具包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/57bbf635/">
+                     
+										    iptables学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3e189d0c/">
+                     
+										    mysqlclient无法安装的问题
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1939d3e2/">
+                     
+										    net-tools工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bae5d4f0/">
+                     
+										    rhel修改网卡命名规则
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3c7a2415/">
+                     
+										    rsync数据同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/37ca92de/">
+                     
+										    swap交换分区
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6efb91e0/">
+                     
+										    tcpdump与Wireshark的使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d185f6ae/">
+                     
+										    web性能压测学习
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bb750036/">
+                     
+										    你要懂得及时止损，别太在乎沉没成本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/da58b03e/">
+                     
+										    使用HAProxy实现七层负载均衡
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b161a250/">
+                     
+										    使用服务搭建Hexo个人博客
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										其它
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/9bf5b5/">
+                     
+										    我学练英语所使用的方法、工具与资料
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4c41c7ef/">
+                     
+										    十二句经典的爱情名言
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e364486e/">
+                     
+										    基于Docker搭建Prometheus
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/69c239dd/">
+                     
+										    基于LNMP架构搭建企业级开源监控系统Zabbix
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f801d3c5/">
+                     
+										    增加一台Filebeat收集httpd日志
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f5d6f6a9/">
+                     
+										    实战-GitLab更新代码后自动触发Jenkins进行部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fa35a60d/">
+                     
+										    性能测试指标详解
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a3c5d26/">
+                     
+										    搭建Jenkins实现持续集成-配置Jenkins自动拉取GitLab中的代码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4f96852/">
+                     
+										    搭建JumpServer管理王者荣耀数万台游戏服务器
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f0a65eeb/">
+                     
+										    根分区扩容
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2f57a694/">
+                     
+										    正则表达式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9e3f6743/">
+                     
+										    自由的灵魂必将远航
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/217dc297/">
+                     
+										    计算机概述
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8d4b7ae1/">
+                     
+										    计算机组成原理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dded0e80/">
+                     
+										    运维发展史
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/undefined/">
+                     
+										    邮件报警配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5095a46f/">
+                     
+										    配置Docker静态IP
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2b923a54/">
+                     
+										    配置GitLab邮件服务
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/76011417/">
+                     
+										    配置Zabbix3.4监控Apache服务
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+		</div>
+	</div>
+</div>
+
+	<!-- 引入正文 -->
+	<div id="content">
+		<h1 id="article-title">
+	Linux学习笔记 - 关于开源
+</h1>
+<div class="article-meta">
+	
+	<span>Echo</span>
+	<span>2018-07-10 20:55:02</span>
+		<div id="article-categories">
     
-    <aside class="post-widget">
-        <nav class="post-toc-wrap" id="post-toc">
-            <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-开源共享精神"><span class="post-toc-number">1.</span> <span class="post-toc-text">1. 开源共享精神</span></a></li></ol>
-        </nav>
-    </aside>
-   
-<article id="post-Linux学习笔记 - 关于开源" class="post-article article-type-post fade" itemprop="blogPost">
-
-    <div class="post-card">
-        <h1 class="post-card-title">Linux学习笔记 - 关于开源</h1>
-        <div class="post-meta">
-            <i class="icon icon-lg icon-calendar-o"></i>
-            发表于
-            <time class="post-time" title="2018-07-10 20:55:02" datetime="2018-07-10T12:55:02.000Z" itemprop="datePublished">2018-07-10</time>
-
-            <br id="mybreak">
+		<span>Categories：</span>
             
-	<i class="icon icon-lg icon-folder-o"></i>
-	分类：<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Linux/">Linux</a></li></ul>
-
-
-            <i>·</i>
+                
+                    <span>
+                        <i class="fa fa-folder" aria-hidden="true">
+                        <a href="/categories/Linux/">Linux</a>
+                        </i>
+                      
+                    </span>
+                
             
+    
 
-        </div>
-        <div class="post-count-custom">
-            <i class="icon icon-lg icon-comment-o"></i>
-            阅读本文可能花费您&nbsp;<span class="post-count">7</span>&nbsp;分钟
-        </div>
-        <div class="post-content" id="post-content" itemprop="postContent">
-            <h3 id="1-&#x5F00;&#x6E90;&#x5171;&#x4EAB;&#x7CBE;&#x795E;"><a href="#1-&#x5F00;&#x6E90;&#x5171;&#x4EAB;&#x7CBE;&#x795E;" class="headerlink" title="1. &#x5F00;&#x6E90;&#x5171;&#x4EAB;&#x7CBE;&#x795E;"></a>1. &#x5F00;&#x6E90;&#x5171;&#x4EAB;&#x7CBE;&#x795E;</h3><p><strong>&#x4F4E;&#x98CE;&#x9669;&#xFF1A;</strong>&#x4F7F;&#x7528;&#x95ED;&#x6E90;&#x8F6F;&#x4EF6;&#x65E0;&#x7591;&#x628A;&#x547D;&#x8FD0;&#x4EA4;&#x4ED8;&#x7ED9;&#x4ED6;&#x4EBA;&#xFF0C;&#x4E00;&#x65E6;&#x5C01;&#x95ED;&#x7684;&#x6E90;&#x4EE3;&#x7801;&#x6CA1;&#x6709;&#x4EBA;&#x6765;&#x7EF4;&#x62A4;&#xFF0C;&#x4F60;&#x5C06;&#x8FDB;&#x9000;&#x7EF4;&#x8C37;&#xFF1B;&#x800C;&#x4E14;&#x76F8;&#x8F83;&#x4E8E;&#x5546;&#x4E1A;&#x8F6F;&#x4EF6;&#x516C;&#x53F8;&#xFF0C;&#x5F00;&#x6E90;&#x793E;&#x533A;&#x5F88;&#x5C11;&#x5B58;&#x5728;&#x5012;&#x95ED;&#x7684;&#x95EE;&#x9898;&#x3002;</p>
+    
+		<span>Tags：</span>
+            
+                
+                    <span>
+                        <i class="fa fa-tag" aria-hidden="true">
+                        <a href="/tags/Linux/">Linux</a>
+                        </i>
+                    </span>
+                
+            
+                
+                    <span>
+                        <i class="fa fa-tag" aria-hidden="true">
+                        <a href="/tags/开源/">开源</a>
+                        </i>
+                    </span>
+                
+            
+    
+		</div>
+
+</div>
+
+<div id="article-content">
+	<h3 id="1-&#x5F00;&#x6E90;&#x5171;&#x4EAB;&#x7CBE;&#x795E;"><a href="#1-&#x5F00;&#x6E90;&#x5171;&#x4EAB;&#x7CBE;&#x795E;" class="headerlink" title="1. &#x5F00;&#x6E90;&#x5171;&#x4EAB;&#x7CBE;&#x795E;"></a>1. &#x5F00;&#x6E90;&#x5171;&#x4EAB;&#x7CBE;&#x795E;</h3><p><strong>&#x4F4E;&#x98CE;&#x9669;&#xFF1A;</strong>&#x4F7F;&#x7528;&#x95ED;&#x6E90;&#x8F6F;&#x4EF6;&#x65E0;&#x7591;&#x628A;&#x547D;&#x8FD0;&#x4EA4;&#x4ED8;&#x7ED9;&#x4ED6;&#x4EBA;&#xFF0C;&#x4E00;&#x65E6;&#x5C01;&#x95ED;&#x7684;&#x6E90;&#x4EE3;&#x7801;&#x6CA1;&#x6709;&#x4EBA;&#x6765;&#x7EF4;&#x62A4;&#xFF0C;&#x4F60;&#x5C06;&#x8FDB;&#x9000;&#x7EF4;&#x8C37;&#xFF1B;&#x800C;&#x4E14;&#x76F8;&#x8F83;&#x4E8E;&#x5546;&#x4E1A;&#x8F6F;&#x4EF6;&#x516C;&#x53F8;&#xFF0C;&#x5F00;&#x6E90;&#x793E;&#x533A;&#x5F88;&#x5C11;&#x5B58;&#x5728;&#x5012;&#x95ED;&#x7684;&#x95EE;&#x9898;&#x3002;</p>
 <p><strong>&#x9AD8;&#x54C1;&#x8D28;&#xFF1A;</strong>&#x76F8;&#x8F83;&#x4E8E;&#x95ED;&#x6E90;&#x8F6F;&#x4EF6;&#x4EA7;&#x54C1;&#xFF0C;&#x5F00;&#x6E90;&#x9879;&#x76EE;&#x901A;&#x5E38;&#x662F;&#x7531;&#x5F00;&#x6E90;&#x793E;&#x533A;&#x6765;&#x7814;&#x53D1;&#x53CA;&#x7EF4;&#x62A4;&#x7684;&#xFF0C;&#x53C2;&#x4E0E;&#x7F16;&#x5199;&#x3001;&#x7EF4;&#x62A4;&#x3001;&#x6D4B;&#x8BD5;&#x7684;&#x7528;&#x6237;&#x91CF;&#x4F17;&#x591A;&#xFF0C;&#x4E00;&#x822C;&#x7684;bug&#x8FD8;&#x6CA1;&#x6709;&#x7B49;&#x7206;&#x53D1;&#x5C31;&#x5DF2;&#x7ECF;&#x88AB;&#x4FEE;&#x8865;&#x3002;</p>
 <p><strong>&#x4F4E;&#x6210;&#x672C;&#xFF1A;</strong>&#x5F00;&#x6E90;&#x5DE5;&#x4F5C;&#x8005;&#x90FD;&#x662F;&#x5728;&#x5E55;&#x540E;&#x9ED8;&#x9ED8;&#x4E14;&#x65E0;&#x507F;&#x5730;&#x4ED8;&#x51FA;&#x52B3;&#x52A8;&#x6210;&#x679C;&#xFF0C;&#x4E3A;&#x7F8E;&#x597D;&#x7684;&#x4E16;&#x754C;&#x8D21;&#x732E;&#x4E00;&#x4EFD;&#x529B;&#x91CF;&#xFF0C;&#x56E0;&#x6B64;&#x4F7F;&#x7528;&#x5F00;&#x6E90;&#x793E;&#x533A;&#x63A8;&#x52A8;&#x7684;&#x8F6F;&#x4EF6;&#x9879;&#x76EE;&#x53EF;&#x4EE5;&#x8282;&#x7701;&#x5927;&#x91CF;&#x7684;&#x4EBA;&#x529B;&#x3001;&#x7269;&#x529B;&#x548C;&#x8D22;&#x529B;&#x3002;</p>
 <p><strong>&#x66F4;&#x900F;&#x660E;&#xFF1A;</strong>&#x6CA1;&#x6709;&#x54EA;&#x4E2A;&#x7B28;&#x86CB;&#x4F1A;&#x628A;&#x6728;&#x9A6C;&#x3001;&#x540E;&#x95E8;&#x7B49;&#x653E;&#x5230;&#x5F00;&#x6E90;&#x4EE3;&#x7801;&#x4E2D;&#xFF0C;&#x8FD9;&#x6837;&#x65E0;&#x7591;&#x662F;&#x628A;&#x81EA;&#x5DF1;&#x7684;&#x7F6A;&#x884C;&#x66B4;&#x9732;&#x5728;&#x9633;&#x5149;&#x4E4B;&#x4E0B;&#x3002;</p>
@@ -232,13 +1875,7 @@
 <a id="more"></a>
 <hr>
 <p><strong>GNU GPL (GNU General Public License , GNU&#x901A;&#x7528;&#x516C;&#x5171;&#x8BB8;&#x53EF;&#x8BC1;)&#xFF1A;</strong>&#x53EA;&#x8981;&#x54E6;&#x8F6F;&#x4EF6;&#x4E2D;&#x5305;&#x542B;&#x4E86;&#x9075;&#x5FAA;GPL&#x534F;&#x8BAE;&#x7684;&#x4EA7;&#x54C1;&#x6216;&#x4EE3;&#x7801;&#xFF0C;&#x8BE5;&#x8F6F;&#x4EF6;&#x5C31;&#x5FC5;&#x987B;&#x9075;&#x5FAA;GPL&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#x4E14;&#x5F00;&#x6E90;&#x3001;&#x514D;&#x8D39;&#xFF0C;&#x56E0;&#x6B64;&#x8FD9;&#x4E2A;&#x534F;&#x8BAE;&#x5E76;&#x4E0D;&#x9002;&#x5408;&#x5546;&#x7528;&#x8F6F;&#x4EF6;&#x3002;&#x9075;&#x5FAA;&#x8BE5;&#x534F;&#x8BAE;&#x7684;&#x5F00;&#x6E90;&#x8F6F;&#x4EF6;&#x6570;&#x91CF;&#x53CA;&#x5176;&#x5E9E;&#x5927;&#xFF0C;&#x5305;&#x62EC;Linux&#x7CFB;&#x7EDF;&#x5728;&#x5185;&#x7684;&#x5927;&#x591A;&#x6570;&#x7684;&#x5F00;&#x6E90;&#x8F6F;&#x4EF6;&#x90FD;&#x662F;&#x57FA;&#x4E8E;&#x8FD9;&#x4E2A;&#x534F;&#x8BAE;&#x7684;&#x3002;</p>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://docs.blender.org/manual/zh-hans/dev/_images/getting-started_about_license_gnu-logo.png" alt="GNU" title="">
-                </div>
-                <div class="image-caption">GNU</div>
-            </figure>
+<p><img src="https://docs.blender.org/manual/zh-hans/dev/_images/getting-started_about_license_gnu-logo.png" alt="GNU"></p>
 <ul>
 <li><strong>&#x590D;&#x5236;&#x81EA;&#x7531;&#xFF1A;</strong>&#x5141;&#x8BB8;&#x5427;&#x8F6F;&#x4EF6;&#x590D;&#x5236;&#x5230;&#x4EFB;&#x4F55;&#x4EBA;&#x7684;&#x7535;&#x8111;&#x4E2D;&#xFF0C;&#x5E76;&#x4E14;&#x4E0D;&#x9650;&#x590D;&#x5236;&#x7684;&#x6570;&#x91CF;</li>
 <li><strong>&#x4F20;&#x64AD;&#x81EA;&#x7531;&#xFF1A;</strong>&#x5141;&#x8BB8;&#x8F6F;&#x4EF6;&#x4EE5;&#x5404;&#x79CD;&#x5F62;&#x5F0F;&#x4F20;&#x64AD;</li>
@@ -248,23 +1885,11 @@
 <hr>
 <p><strong>BSD(Berkeley Software Distribution&#xFF0C;&#x4F2F;&#x514B;&#x5229;&#x8F6F;&#x4EF6;&#x53D1;&#x5E03;&#x7248;)&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#xFF1A;</strong></p>
 <p>&#x7528;&#x6237;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x3001;&#x4FEE;&#x6539;&#x548C;&#x91CD;&#x65B0;&#x53D1;&#x5E03;&#x9075;&#x5FAA;&#x8BE5;&#x8BB8;&#x53EF;&#x7684;&#x8F6F;&#x4EF6;&#xFF0C;&#x5E76;&#x4E14;&#x53EF;&#x4EE5;&#x5C06;&#x8F6F;&#x4EF6;&#x4F5C;&#x4E3A;&#x5546;&#x4E1A;&#x8F6F;&#x4EF6;&#x53D1;&#x5E03;&#x548C;&#x9500;&#x552E;&#xFF0C;&#x524D;&#x63D0;&#x662F;&#x9700;&#x8981;&#x6EE1;&#x8DB3;&#x4E0B;&#x9762;3&#x4E2A;&#x6761;&#x4EF6;&#x3002;</p>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://qph.fs.quoracdn.net/main-thumb-t-14907-200-seTLViB8UWkDHk3At9asR1xYPu5k6spg.jpeg" alt="BSD&#xFF0C;&#x4F2F;&#x514B;&#x5229;&#x8F6F;&#x4EF6;&#x53D1;&#x5E03;&#x7248;" title="">
-                </div>
-                <div class="image-caption">BSD&#xFF0C;&#x4F2F;&#x514B;&#x5229;&#x8F6F;&#x4EF6;&#x53D1;&#x5E03;&#x7248;</div>
-            </figure>
+<p><img src="https://qph.fs.quoracdn.net/main-thumb-t-14907-200-seTLViB8UWkDHk3At9asR1xYPu5k6spg.jpeg" alt="BSD&#xFF0C;&#x4F2F;&#x514B;&#x5229;&#x8F6F;&#x4EF6;&#x53D1;&#x5E03;&#x7248;"></p>
 <p>&#x5982;&#x679C;&#x518D;&#x53D1;&#x5E03;&#x7684;&#x8F6F;&#x4EF6;&#x4E2D;&#x5305;&#x542B;&#x6E90;&#x4EE3;&#x7801;&#xFF0C;&#x5219;&#x6E90;&#x4EE3;&#x7801;&#x5FC5;&#x987B;&#x7EE7;&#x7EED;&#x9075;&#x5FAA;BSD&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#x3002;<br>&#x5982;&#x679C;&#x518D;&#x53D1;&#x5E03;&#x7684;&#x8F6F;&#x4EF6;&#x4E2D;&#x53EA;&#x6709;&#x4E8C;&#x8FDB;&#x5236;&#x7A0B;&#x5E8F;&#xFF0C;&#x5219;&#x9700;&#x8981;&#x5728;&#x76F8;&#x5173;&#x6587;&#x6863;&#x6216;&#x7248;&#x6743;&#x6587;&#x4EF6;&#x4E2D;&#x58F0;&#x660E;&#x539F;&#x59CB;&#x4EE3;&#x7801;&#x9075;&#x5FAA;&#x4E86;BSD&#x534F;&#x8BAE;&#x3002;<br>&#x4E0D;&#x5141;&#x8BB8;&#x7528;&#x539F;&#x59CB;&#x8F6F;&#x4EF6;&#x7684;&#x540D;&#x5B57;&#x3001;&#x4F5C;&#x8005;&#x540D;&#x5B57;&#x6216;&#x673A;&#x6784;&#x540D;&#x79F0;&#x8FDB;&#x884C;&#x5E02;&#x573A;&#x63A8;&#x5E7F;&#x3002;</p>
 <hr>
 <p><strong>Apache &#x8BB8;&#x53EF;&#x8BC1;&#x7248;&#x672C;&#xFF08;Apache License Version&#xFF09;&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#xFF1A;</strong><br>&#x5728;&#x4E3A;&#x5F00;&#x53D1;&#x4EBA;&#x5458;&#x63D0;&#x4F9B;&#x7248;&#x6743;&#x53CA;&#x4E13;&#x5229;&#x8BB8;&#x53EF;&#x7684;&#x540C;&#x65F6;&#xFF0C;&#x5141;&#x8BB8;&#x7528;&#x6237;&#x62E5;&#x6709;&#x4FEE;&#x6539;&#x4EE3;&#x7801;&#x53CA;&#x518D;&#x53D1;&#x5E03;&#x7684;&#x81EA;&#x7531;&#x3002;&#x8BE5;&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#x9002;&#x7528;&#x4E8E;&#x5546;&#x4E1A;&#x8F6F;&#x4EF6;&#xFF0C;&#x73B0;&#x5728;&#x70ED;&#x95E8;&#x7684;Hadoop&#x3001;Apache HTTP Server&#x3001;MongoDB&#x7B49;&#x9879;&#x76EE;&#x90FD;&#x662F;&#x57FA;&#x4E8E;&#x8BE5;&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#x7814;&#x53D1;&#x7684;&#xFF0C;&#x7A0B;&#x5E8F;&#x5F00;&#x53D1;&#x4EBA;&#x5458;&#x5728;&#x5F00;&#x53D1;&#x9075;&#x5FAA;&#x8BE5;&#x534F;&#x8BAE;&#x7684;&#x8F6F;&#x4EF6;&#x65F6;&#xFF0C;&#x8981;&#x4E25;&#x683C;&#x9075;&#x5B88;&#x4E0B;&#x9762;&#x7684;4&#x4E2A;&#x6761;&#x4EF6;&#x3002;</p>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Apache_Software_Foundation_Logo_%282016%29.svg/1200px-Apache_Software_Foundation_Logo_%282016%29.svg.png" alt="Apache License" title="">
-                </div>
-                <div class="image-caption">Apache License</div>
-            </figure>
+<p><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Apache_Software_Foundation_Logo_%282016%29.svg/1200px-Apache_Software_Foundation_Logo_%282016%29.svg.png" alt="Apache License"></p>
 <p>&#x8BE5;&#x8F6F;&#x4EF6;&#x53CA;&#x5176;&#x884D;&#x751F;&#x54C1;&#x5FC5;&#x987B;&#x7EE7;&#x7EED;&#x4F7F;&#x7528;Apache&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#x3002;<br>&#x5982;&#x679C;&#x4FEE;&#x6539;&#x4E86;&#x7A0B;&#x5E8F;&#x6E90;&#x4EE3;&#x7801;&#xFF0C;&#x9700;&#x8981;&#x5728;&#x6587;&#x6863;&#x4E2D;&#x8FDB;&#x884C;&#x58F0;&#x660E;&#x3002;<br>&#x82E5;&#x8F6F;&#x4EF6;&#x662F;&#x57FA;&#x4E8E;&#x4ED6;&#x4EBA;&#x7684;&#x6E90;&#x4EE3;&#x7801;&#x7F16;&#x5199;&#x800C;&#x6210;&#x7684;&#xFF0C;&#x5219;&#x9700;&#x8981;&#x4FDD;&#x7559;&#x539F;&#x59CB;&#x4EE3;&#x7801;&#x7684;&#x534F;&#x8BAE;&#x3001;&#x5546;&#x6807;&#x3001;&#x4E13;&#x5229;&#x58F0;&#x660E;&#x53CA;&#x5176;&#x4ED6;&#x539F;&#x4F5C;&#x8005;&#x58F0;&#x660E;&#x7684;&#x5185;&#x5BB9;&#x4FE1;&#x606F;&#x3002;<br>&#x5982;&#x679C;&#x518D;&#x53D1;&#x5E03;&#x7684;&#x8F6F;&#x4EF6;&#x4E2D;&#x6709;&#x58F0;&#x660E;&#x6587;&#x4EF6;&#xFF0C;&#x5219;&#x9700;&#x5728;&#x6B64;&#x6587;&#x4EF6;&#x4E2D;&#x6807;&#x6CE8;Apache&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#x53CA;&#x5176;&#x4ED6;&#x8BB8;&#x53EF;&#x534F;&#x8BAE;&#x3002;</p>
 <hr>
 <p><strong>MPL(Mozilla Public License&#xFF0C; Mozilla&#x516C;&#x5171;&#x8BB8;&#x53EF;)&#xFF1A;</strong></p>
@@ -291,357 +1916,51 @@
             document.body.appendChild(img);
           });
       </script>
-        </div>
-
-        <blockquote class="post-copyright">
-    <div class="content">
-        
-<span class="post-time">
-    最后更新：<time datetime="2020-04-09T11:50:11.075Z" itemprop="dateUpdated">2020-04-09 19:50:11</time>
-</span>
+</div>
 
 
-        
-        原文链接：<a href="/posts/67ee4dec/" target="_blank" rel="external">https://marnm.github.io/posts/67ee4dec/</a>
-        
-    </div>
-    <footer>
-        <div onclick="location.href='https://marnm.github.io'">
-            <img src="/img/avatar.gif" alt="Echo">
-            <a>Echo</a>
-        </div>
-    </footer>
-</blockquote>
-
-        
-    <div class="page-reward">
-        <nav class="myreward">
-            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
-        </nav>
-    </div>
-
-
-
-        <div class="post-footer">
+    <div class="post-guide">
+        <div class="item left">
             
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/开源/">开源</a></li></ul>
-
-
+              <a href="/posts/60444925/">
+                  <i class="fa fa-angle-left" aria-hidden="true"></i>
+                  NexT主题优化+美化
+              </a>
             
-<div class="page-share-wrap">
-    
-
-<div class="page-share" id="pageShare">
-    <ul class="reset share-icons">
-      <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/67ee4dec/&title=《Linux学习笔记 - 关于开源》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
-          <i class="icon icon-weibo"></i>
-        </a>
-      </li>
-      <li>
-        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
-          <i class="icon icon-weixin"></i>
-        </a>
-      </li>
-      <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/67ee4dec/&title=《Linux学习笔记 - 关于开源》 — Deops's blog&source=1. 开源共享精神低风险：使用闭源软件无疑把命运交付给他人，一旦封闭的源代码没有人来维护，你将进退维谷；而且相较于商业软件公司，开源社区很少存在倒闭的问题..." data-title=" QQ">
-          <i class="icon icon-qq"></i>
-        </a>
-      </li>
-      <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/67ee4dec/" data-title=" Facebook">
-          <i class="icon icon-facebook"></i>
-        </a>
-      </li>
-      <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Linux学习笔记 - 关于开源》 — Deops's blog&url=https://marnm.github.io/posts/67ee4dec/&via=https://marnm.github.io" data-title=" Twitter">
-          <i class="icon icon-twitter"></i>
-        </a>
-      </li>
-      <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/67ee4dec/" data-title=" Google+">
-          <i class="icon icon-google-plus"></i>
-        </a>
-      </li>
-    </ul>
- </div>
-
-
-
-    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
-        <i class="icon icon-share-alt icon-lg"></i>
-    </a>
-</div>
-
-
-
+        </div>
+        <div class="item right">
+            
+              <a href="/posts/bff83912/">
+                Markdown 简明语法手册
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+              </a>
+            
         </div>
     </div>
 
-    
-<nav class="post-nav flex-row flex-justify-between">
-  
-    <div class="waves-block waves-effect prev">
-      <a href="/posts/60444925/" id="post-prev" class="post-nav-link">
-        <h4 class="title">
-          上一篇：NexT主题优化+美化
-        </h4>
-      </a>
-    </div>
-  
-
-  
-    <div class="waves-block waves-effect next">
-      <a href="/posts/bff83912/" id="post-next" class="post-nav-link">
-        <h4 class="title" data-hover="下一篇：Markdown 简明语法手册">下一篇：Markdown 简明语法手册</h4>
-      </a>
-    </div>
-  
-</nav>
 
 
 
-    
-    
-
-    
-
-    
-
-
-</article>
-
-</div>
-
-        <footer class="footer">
-    <div class="footer-content">
-        <span class="power">
-            <i class="icon icon-lg icon-copyright"></i>
-            2022
-            <i class="icon icon-lg icon-heart"></i>
-            <a href="https://marnm.github.io">marnm.github.io</a>
-            <br>
-            Power by
-            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
-            Theme
-            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
-        </span>
-
-        <br>
-
-        <span id="RunTime" style="color:#a7a7a2;"></span>
-        <br>
-
-        <span>
-            
-
-        </span>
-        <br>
-
-        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
-    </div>
-</footer>
-
-    </main>
-    
-        
-<div id="reward" class="page-modal reward-lay">
-    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <h3 class="reward-title">
-        <i class="icon icon-quote-left"></i>
-        <span>感谢您的鼓励支持！</span>
-        <i class="icon icon-quote-right"></i>
-    </h3>
-    <div class="reward-content">
-        
-        <div class="reward-code">
-            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
-        </div>
-        
-        <label class="reward-toggle">
-            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
-            <div class="reward-toggle-ctrol">
-                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
-                <span class="reward-toggle-item alipayPay">支付宝</span>
-            </div>
-        </label>
-        
-        <i class="icon icon-caret-up"></i>
-    </div>
-</div>
-
-
-    
-    <div class="mask" id="mask"></div>
-<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
-
-
-
-<div class="global-share" id="globalShare">
-    <ul class="reset share-icons">
-      <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/67ee4dec/&title=《Linux学习笔记 - 关于开源》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
-          <i class="icon icon-weibo"></i>
-        </a>
-      </li>
-      <li>
-        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
-          <i class="icon icon-weixin"></i>
-        </a>
-      </li>
-      <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/67ee4dec/&title=《Linux学习笔记 - 关于开源》 — Deops's blog&source=1. 开源共享精神低风险：使用闭源软件无疑把命运交付给他人，一旦封闭的源代码没有人来维护，你将进退维谷；而且相较于商业软件公司，开源社区很少存在倒闭的问题..." data-title=" QQ">
-          <i class="icon icon-qq"></i>
-        </a>
-      </li>
-      <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/67ee4dec/" data-title=" Facebook">
-          <i class="icon icon-facebook"></i>
-        </a>
-      </li>
-      <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Linux学习笔记 - 关于开源》 — Deops's blog&url=https://marnm.github.io/posts/67ee4dec/&via=https://marnm.github.io" data-title=" Twitter">
-          <i class="icon icon-twitter"></i>
-        </a>
-      </li>
-      <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/67ee4dec/" data-title=" Google+">
-          <i class="icon icon-google-plus"></i>
-        </a>
-      </li>
-    </ul>
- </div>
-
-
-<div class="page-modal wx-share" id="wxShare">
-    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p class="wechatshare">扫一扫，分享到微信</p>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABvklEQVR42u3aQY6DMAwF0N7/0ow0q9kMfNskUOllVaEWHl1Y8Y8/n3gdvyv5/Hfl97x54eLijrnH6TonJndIXin5LS4u7n5uUryi2wVF7fzvuLDh4uK+jFvdoCQvg4uL++3cpLTlOFxc3Pdz86Ylb4GSZGNhr4aLizvg3huY9j4/lu/i4uIWTyWq4WmvkBWejouLu4VbjTyqxyT5Nihvh3BxcfdwV0w75N+vHsPg4uKu5uaHJUl5+q8knV8vFFZcXNzt3MmIVa+9GRUyXFzcZdzJIWveDuVtT1T+cHFxF3PzIGMSXuQhyEWZw8XF3cKtNifJhqbX6pSjUlxc3MXc3vbl3oGtQrnExcXdwu1tMqqRSrXk4eLiPsWdNCTVKGTSSuHi4u7k5sFob7hqRRCDi4u7mnu0VnU4IwlWog0QLi7uRm4hVW21QDn34gVwcXE3cqslLElZqhFJ+bQHFxd3GXdesO7a7pTzXVxc3MXcaqvTa116gSwuLu6z3Hwk4ryETQa/yvkuLi7uC7iTB+dXLp6Ci4v7JdzqlerYFi4u7lPcaqNSHdXqHaKMejVcXNwBt/fjSctUGLnAxcXdzf0BsgW0extyaOQAAAAASUVORK5CYII=" alt="微信分享二维码">
-</div>
-
-
-
-
-    <!-- waves按钮特效 -->
-<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
-
-<!-- 主题配置脚本 -->
 <script>
-var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+	
+	
 </script>
-
-<!-- jquery -->
-<script src="/js/jquery.min.js?v=3.0"></script>
-
-<!-- 搜索 -->
-
-<div class="search-panel" id="search-panel">
-    <ul class="search-result" id="search-result"></ul>
+	</div>
+	<div id="footer">
+	<p>
+	©2019-<span id="footerYear"></span> 
+	<a href="/">Echo</a> 
+	
+	
+	<br>
+	Theme <a href="//github.com/wujun234/hexo-theme-tree" target="_blank">Tree</a>
+	by <a href="//github.com/wujun234" target="_blank">WuJun</a>
+	Powered by <a href="//hexo.io" target="_blank">Hexo</a>
+	</p>
 </div>
-<template id="search-tpl">
-<li class="item waves-block waves-effect" onclick="location.href='{path}'">
-    <div class="title ellipsis" title="{title}">{title}</div>
-</li>
-</template>
-
-
-<!-- main博客脚本 -->
-<script src="/js/main.min.js?v=3.0"></script>
-
-<!-- 动画&配置 -->
-<script src="/js/script.min.js?v=3.0"></script>
-
-<!-- 脚本管理 -->
-<script>
-
-if(window.innerWidth > 800){
-	/* 3D标题 */
-	$(".content-header").on("mousemove", threedee);
-
-	/* 底部追随鼠标 */
-	$(".footer").hover(2);
-
-	/* gotop键的涟漪 */
-	$("#gotop").hover(1);
-
-	/* 赞赏的粒子雨 */
-	$("#reward").hover(3);
-
-	/* 微信公众号的底部渲染 */
-	$("#wechat").hover(4);
-
-    /* 标题跳动 */
-    $(".archivestitle").bumpyText();
-
-	/* 图片点击放大 */
-	const postimg = jQuery(".post-content img:not(.github-emoji)");
-	postimg.on("click",function(){
-
-		mask.classList.add("in");
-		main.classList.add("Mask");
-		menu.classList.add("Mask");
-		var myimg = this.cloneNode(true);
-		myimg.classList.add("imgShow");
-
-		setTimeout(function(){
-			jQuery(myimg).animate({
-				opacity:"1"
-			},1000);
-		},0);
-
-		document.body.appendChild(myimg);
-
-		myimg.onclick=function(){
-			document.body.removeChild(myimg);
-			mask.classList.remove("in");
-			main.classList.remove("Mask");
-			menu.classList.remove("Mask");
-		};
-
-	});
-
-}
-
-/* 名字跳动 */
-$("#name").bumpyText();
-
-
-/* 网站运行时间 */
-setInterval(function () {
-	setTime("2019/01/01");
-}, 1000);
-
-/* 文章块的淡出 */
-postshow();
-
-/* 座右铭 */
-
-   getHitokoto();
-
-
-
-/* 粘贴提示 */
-G($(".post-content"), location.href, "Echo");
-
-
-/* 控制台 */
-if (window.console && window.console.log) {
-	setTimeout(function () {
-		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
-	}, 0);
-}
-
+<script type="text/javascript"> 
+	document.getElementById('footerYear').innerHTML = new Date().getFullYear() + '';
 </script>
-
-
-
-
-<!-- 公式渲染 -->
-
-
-
-<!-- 不蒜子 -->
-
-
+	<button id="totop-toggle" class="toggle"><i class="fa fa-angle-double-up" aria-hidden="true"></i></button>
 </body>
 </html>

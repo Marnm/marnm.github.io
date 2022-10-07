@@ -1,227 +1,1848 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head><meta name="generator" content="Hexo 3.8.0">
-    <meta http-equiv="Content-Language" content="zh-cn">
-    <meta charset="utf-8">
-    
-    
-    
-    <title>MySQL的GTID主从同步 | Deops&#39;s blog | 运维开发工程师</title>
-    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    
-    <meta name="theme-color" content="#77AAFF">
-    
-    
-    <meta name="keywords" content="">
-    
-    
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+	
+	<!-- title -->
+	
+	<title>
+	
+		MySQL的GTID主从同步 | 
+	 
+	Deops&#39;s blog
+	</title>
+	
+	<!-- keywords,description -->
+	
+		<meta name="keywords" content="Echo">
+	 
+		<meta name="description" content="Echo">
+	
 
-    
+	<!-- favicon -->
+	
+	<link rel="shortcut icon" href="/favicon.ico">
+	
 
-    <!-- Baidu Push -->
-<script>
-	(function(){
-		var bp = document.createElement('script');
-		var curProtocol = window.location.protocol.split(':')[0];
-		if (curProtocol === 'https') {
-			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+
+	<!-- search -->
+	<script>
+		var searchEngine = "https://www.google.com/search?q=";
+		if(typeof searchEngine == "undefined" || searchEngine == null || searchEngine == ""){
+			searchEngine = "https://www.google.com/search?q=";
 		}
-		else {
-			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		var homeHost = "https://marnm.github.io/";
+		if(typeof homeHost == "undefined" || homeHost == null || homeHost == ""){
+			homeHost = window.location.host;
 		}
-		var s = document.getElementsByTagName("script")[0];
-		s.parentNode.insertBefore(bp, s);
-	})();
-
-	var _hmt = _hmt || [];
-</script>
+	</script>
 
 
-
+	<link rel="stylesheet" href="/css/main.css">
+	<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/lib/highlight/styles/base16/solarized-dark.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
     
-    <meta name="description" content="MySQL GTID &amp;#x4E3B;&amp;#x4ECE;&amp;#x540C;&amp;#x6B65;&amp;#x6982;&amp;#x5FF5; &amp;#x4ECE; MySQL 5.6.5 &amp;#x5F00;&amp;#x59CB;&amp;#x65B0;&amp;#x589E;&amp;#x4E86;&amp;#x4E00;&amp;#x79CD;&amp;#x57FA;&amp;#x4E8E; GTID &amp;#x7684;&amp;#x590D;&amp;#x5236;&amp;#x65B9;&amp;#x5F0F;&amp;">
-<meta name="keywords" content="Echo">
-<meta property="og:type" content="article">
-<meta property="og:title" content="MySQL的GTID主从同步">
-<meta property="og:url" content="https://marnm.github.io/posts/d77fafec/index.html">
-<meta property="og:site_name" content="Deops&#39;s blog">
-<meta property="og:description" content="MySQL GTID &amp;#x4E3B;&amp;#x4ECE;&amp;#x540C;&amp;#x6B65;&amp;#x6982;&amp;#x5FF5; &amp;#x4ECE; MySQL 5.6.5 &amp;#x5F00;&amp;#x59CB;&amp;#x65B0;&amp;#x589E;&amp;#x4E86;&amp;#x4E00;&amp;#x79CD;&amp;#x57FA;&amp;#x4E8E; GTID &amp;#x7684;&amp;#x590D;&amp;#x5236;&amp;#x65B9;&amp;#x5F0F;&amp;">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2022-06-07T05:12:36.577Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="MySQL的GTID主从同步">
-<meta name="twitter:description" content="MySQL GTID &amp;#x4E3B;&amp;#x4ECE;&amp;#x540C;&amp;#x6B65;&amp;#x6982;&amp;#x5FF5; &amp;#x4ECE; MySQL 5.6.5 &amp;#x5F00;&amp;#x59CB;&amp;#x65B0;&amp;#x589E;&amp;#x4E86;&amp;#x4E00;&amp;#x79CD;&amp;#x57FA;&amp;#x4E8E; GTID &amp;#x7684;&amp;#x590D;&amp;#x5236;&amp;#x65B9;&amp;#x5F0F;&amp;">
-    
-        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
-    
-    <link rel="shortcut icon" href="/img/favicon.ico">
-    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
-    <script>window.lazyScripts=[]</script>
+    <!-- 引入代码高亮的 js -->
+    <script src="/lib/highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 
-    <!-- custom head -->
-    
-            
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/jquery-pjax@2.0.1/jquery.pjax.min.js"></script>
+	<script src="/js/main.js"></script>
+	
+		<script src="https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/valine@v1.4.14/dist/Valine.min.js"></script>
+	
+	
 </head>
 
 <body>
-    <div id="loading" class="active"></div>
-    <aside id="menu" class="hide">
-  <div class="inner flex-row-vertical">
-    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
-        <i class="icon icon-lg icon-close"></i>
-    </a>
-    <div class="brand-wrap">
-      <div class="brand">
-        <a href="/" class="avatar waves-effect waves-circle waves-light">
-          <img src="/img/avatar.gif" alt="avatar">
-        </a>
-        <hgroup class="introduce">
-          <h5 class="nickname" id="name">Echo</h5>
-          
-            <div id="yiyanmotto" class="motto">&nbsp;</div>
-          
-        </hgroup>
-      </div>
-    </div>
-    <div class="scroll-wrap flex-col">
-      <ul class="nav">
-        
-              <li class="waves-block waves-effect">
-                  <a href="/">
-                    <i class="icon icon-lg icon-home"></i>
-                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/archives">
-                    <i class="icon icon-lg icon-archives"></i>
-                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/categories">
-                    <i class="icon icon-lg icon-th-list"></i>
-                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/tags">
-                    <i class="icon icon-lg icon-tags"></i>
-                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/about">
-                    <i class="icon icon-lg icon-smile-o"></i>
-                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-      <div class="nav2">
-          
-              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
-                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
-              </a>
-          
-              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
-                <i class="icon icon-lg icon-github github"></i>
-              </a>
-          
-              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
-                <i class="icon icon-lg icon-tv tv"></i>
-              </a>
-          
-
-            </div>
-        
-      </ul>
-        
-    </div>
-  </div>
- 
-</aside>
-
-
-    <main id="main">
-        <header class="top-header" id="header">
-    <div class="flex-row">
-        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
-          <i class="icon icon-lg icon-navicon"></i>
-        </a>
-        <div class="flex-col header-title ellipsis">MySQL的GTID主从同步</div>
-        
-        <div class="search-wrap" id="search-wrap">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
-                <i class="icon icon-lg icon-chevron-left"></i>
-            </a>
-            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
-                <i class="icon icon-lg icon-search"></i>
-            </a>
-        </div>
-        
-        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
-            <i class="icon icon-lg icon-rss"></i>
-        </a>
-    </div>
-</header>
-<header class="content-header post-header">
-    
-    
-    <div class="container fade-scale">
-        <div id="myheader">
-            <h1 class="title">
-                
-            </h1>
-            <h5 class="subtitle">
-                
-                
-            </h5>
-        </div>
-    </div>
-
-</header>
-
-
-<div class="container body-wrap">
-    
-    <aside class="post-widget">
-        <nav class="post-toc-wrap" id="post-toc">
-            <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#MySQL-GTID-主从同步"><span class="post-toc-number">1.</span> <span class="post-toc-text">MySQL GTID 主从同步</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#什么是GTID？"><span class="post-toc-number">2.</span> <span class="post-toc-text">什么是GTID？</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#GTID的作用"><span class="post-toc-number">3.</span> <span class="post-toc-text">GTID的作用</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#GTID的工作原理"><span class="post-toc-number">4.</span> <span class="post-toc-text">GTID的工作原理</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#GTID比传统复制的优势"><span class="post-toc-number">5.</span> <span class="post-toc-text">GTID比传统复制的优势</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#配置一主一从GTID"><span class="post-toc-number">6.</span> <span class="post-toc-text">配置一主一从GTID</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#测试主从同步"><span class="post-toc-number">7.</span> <span class="post-toc-text">测试主从同步</span></a></li></ol>
-        </nav>
-    </aside>
-   
-<article id="post-MySQL的GTID主从同步" class="post-article article-type-post fade" itemprop="blogPost">
-
-    <div class="post-card">
-        <h1 class="post-card-title">MySQL的GTID主从同步</h1>
-        <div class="post-meta">
-            <i class="icon icon-lg icon-calendar-o"></i>
-            发表于
-            <time class="post-time" title="2022-06-07 12:45:07" datetime="2022-06-07T04:45:07.000Z" itemprop="datePublished">2022-06-07</time>
-
-            <br id="mybreak">
-            
-<script>
-	mybreak.style="display:none";
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3efe99c287df5a1d6f0d02d187e403c1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
 </script>
 
+<header id="header">
+    <a id="title" href="/" class="logo">Deops's blog</a>
 
-            <i>·</i>
+	<ul id="menu">
+		<li class="menu-item">
+			<a href="/about" class="menu-item-link">ABOUT</a>
+		</li>
+	
+		<li class="menu-item">
+			<a href="/tags" class="menu-item-link">标签</a>
+		</li>
+	
+
+	
+		<li class="menu-item">
+			<a href="/categories" class="menu-item-link">分类</a>
+		</li>
+	
+
+		<li class="menu-item">
+			<a href="https://github.com/Marnm" class="menu-item-link" target="_blank">
+				<i class="fa fa-github fa-2x"></i>
+			</a>
+		</li>
+	</ul>
+</header>
+
+	
+<div id="sidebar">
+	<button id="sidebar-toggle" class="toggle"><i class="fa fa-arrow-right " aria-hidden="true"></i></button>
+	
+	<div id="site-toc">
+		<input id="search-input" class="search-input" type="search" placeholder="按回车全站搜索">
+		<div id="tree">
+			
+
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Ansible自动化运维
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/b45e213f/">
+                     
+										    Ansible自动化管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/28c30eb2/">
+                     
+										    CTF线下赛AWD套路小结
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Ceph对象存储
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/e9abc941/">
+                     
+										    Ceph分布式存储
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/38843421/">
+                     
+										    Ceph分布式存储部署笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9964b559/">
+                     
+										    DHCP Server的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4782a8c2/">
+                     
+										    DNS Server的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5e357037/">
+                     
+										    Django教程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Docker
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/4a3d459a/">
+                     
+										    Docker学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										ELK Stack
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/2d95f1c1/">
+                     
+										    ElasticSearch环境搭建
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/573fc171/">
+                     
+										    Logstash二进制安装与启动
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b11339a9/">
+                     
+										    Logstash去除不需要的字段
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d05b44e0/">
+                     
+										    Logstash读取日志发送到ES
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9d56e705/">
+                     
+										    FTP/TFTP的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ca9298d7/">
+                     
+										    Git版本控制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/51acad32/">
+                     
+										    诺尔·巴尔扎克（Honoréde Balzac）的名言
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4def9c28/">
+                     
+										    In Your 20's These Things Matter More Than You Think
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/295162d9/">
+                     
+										    Java8 环境变量配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										KVM虚拟化
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/dba5727f/">
+                     
+										    KVM图形化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/204af86b/">
+                     
+										    KVM虚拟机克隆和快照
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d69c6e72/">
+                     
+										    KVM虚拟机添加磁盘
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/16305c66/">
+                     
+										    KVM虚拟机迁移
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7733d98/">
+                     
+										    LDAP的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5922577d/">
+                     
+										    LNMP手动部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/195423a2/">
+                     
+										    LNMP高可用架构配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/38cc96c8/">
+                     
+										    LVM磁盘管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/be48d001/">
+                     
+										    LVS-DR集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/df68056c/">
+                     
+										    LVS-IPTUN集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dcf8e277/">
+                     
+										    LVS-NAT集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/640aafef/">
+                     
+										    LVS和KeepAlived实现高可用集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/82734d8/">
+                     
+										    Linux命令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/67ee4dec/">
+                     
+										    Linux学习笔记 - 关于开源
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d53cba09/">
+                     
+										    Linux常用性能分析工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/15c0e66c/">
+                     
+										    Linux常见日志文件
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/480c215d/">
+                     
+										    Linux性能管理工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a9bb0c1a/">
+                     
+										    Linux文件的特殊权限
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/cc999d74/">
+                     
+										    Linux文件的隐藏属性
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b7f1c6/">
+                     
+										    Linux文本四剑客
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/aabbd398/">
+                     
+										    Linux无法挂载sysroot并自动进入紧急模式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b3f64b7d/">
+                     
+										    Linux生成随机密码方法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e025952a/">
+                     
+										    Linux登录退出提示信息欢迎信息
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ee2f9f35/">
+                     
+										    Linux的PAM模块
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1e844aa4/">
+                     
+										    Linux的归档与解压缩
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c4bbfe69/">
+                     
+										    Linux的日志切割
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/be846aea/">
+                     
+										    Linux禁止和开启ping的方法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f20e14fd/">
+                     
+										    Linux网卡聚合及bond模式的原理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2fe5fc07/">
+                     
+										    Linux计划任务实现
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/365d0867/">
+                     
+										    Linux路由配置——route
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fbf617b4/">
+                     
+										    MariaDB
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bff83912/">
+                     
+										    Markdown 简明语法手册
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5125c787/">
+                     
+										    Markdown语法说明（快速入门）
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										MongoDB
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/8b1c1f4b/">
+                     
+										    MongoDB介绍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a36562d7/">
+                     
+										    MongoDB学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/55c06d78/">
+                     
+										    MongoDB安装部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										MySQL学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/16fc5dc4/">
+                     
+										    MySQL5.6
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/61fb6d52/">
+                     
+										    MySQL5.7
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bce68613/">
+                     
+										    MySQL基础
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f6e2d114/">
+                     
+										    使用RPM包安装MySQL5.7数据库
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/269a56e8/">
+                     
+										    MySQL备份与恢复（删库不跑路）
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/607e4760/">
+                     
+										    MySQL传统主从同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file active">
+									<a href="/posts/d77fafec/">
+                     
+										    MySQL的GTID主从同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/db0340bd/">
+                     
+										    MySQL高可用集群架构-MHA架构
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/62ec7971/">
+                     
+										    Atlas实现MySQL读写分离
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/490925f2/">
+                     
+										    MySQL数据库高级应用之读写分离
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/176dc5f3/">
+                     
+										    MyCat垂直分表操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8f74b0e7/">
+                     
+										    MyCat教程全国省份分片枚举操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/208cd020/">
+                     
+										    MySQL调优
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1876d05d/">
+                     
+										    NetworkManager管理工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/60444925/">
+                     
+										    NexT主题优化+美化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Nginx学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/f4d30967/">
+                     
+										    Nginx动静分离部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1db2b3f1/">
+                     
+										    Nginx平滑升级
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2793eb31/">
+                     
+										    Nginx日志管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2793eb31/">
+                     
+										    Nginx日志管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e0989926/">
+                     
+										    Nginx添加第三方模块
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/da411b72/">
+                     
+										    Nginx虚拟主机
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d4e5e907/">
+                     
+										    Nginx访问控制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d2802762/">
+                     
+										    Nginx高可用架构配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/36ba38f9/">
+                     
+										    NoSQL知识
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e8c4eb08/">
+                     
+										    OpenSSL使用教程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/97717e94/">
+                     
+										    PXE自动化部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Prometheus学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/39c0f6a1/">
+                     
+										    Prometheus学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1f351894/">
+                     
+										    Python-VirtualEnv
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/297a89d9/">
+                     
+										    Python学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fa8e89f7/">
+                     
+										    RAID磁盘阵列技术介绍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/afdfa673/">
+                     
+										    RHEL 7配置Yum软件仓库
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/32546aed/">
+                     
+										    RedHat Linux重置root管理员密码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/eb7dbe25/">
+                     
+										    RedHat_7 配置网卡信息
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Redis学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/5188e636/">
+                     
+										    Redis与其他应用的集成
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/49fbbc1/">
+                     
+										    Redis基本操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e8376589/">
+                     
+										    Redis安装部署——Cluster集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e78aaf59/">
+                     
+										    Redis安装部署——Sentinel模式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2acd829b/">
+                     
+										    Redis安装部署——主从复制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/119ed1dc/">
+                     
+										    Redis持久化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/18d7d749/">
+                     
+										    Redis概述
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e3fb0a3e/">
+                     
+										    Redis的数据备份与恢复
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3e3d973e/">
+                     
+										    Redis配合MySQL使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f03da4e7/">
+                     
+										    Redis配置文件详解
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/41f893fd/">
+                     
+										    Redis编译安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dbd9d26a/">
+                     
+										    SHELL编程类面试题
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f42b90f9/">
+                     
+										    SHELL脚本工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a8ba1e/">
+                     
+										    SHELL脚本练习
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c45f2736/">
+                     
+										    SQL Server 2008安装配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/aa142b64/">
+                     
+										    SQLite安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e228b71f/">
+                     
+										    SSH原理与应用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1fdc29d2/">
+                     
+										    Shell的基本运算符
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6309c3f8/">
+                     
+										    Shell编程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e76ba468/">
+                     
+										    Ubuntu Desktop优化与配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/129acd64/">
+                     
+										    Ubuntu修改配置及美化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b382711f/">
+                     
+										    VIM的使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e9c6771b/">
+                     
+										    Win10环境下Python2、3和pip2、3版本共存
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6ed6984b/">
+                     
+										    Windows进程管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/59089347/">
+                     
+										    Zabbix3.4邮件报警配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7034657d/">
+                     
+										    Zabbix4.0
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c7b4ec91/">
+                     
+										    firewalld学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1ebd4a76/">
+                     
+										    iproute2工具包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/57bbf635/">
+                     
+										    iptables学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3e189d0c/">
+                     
+										    mysqlclient无法安装的问题
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1939d3e2/">
+                     
+										    net-tools工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bae5d4f0/">
+                     
+										    rhel修改网卡命名规则
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3c7a2415/">
+                     
+										    rsync数据同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/37ca92de/">
+                     
+										    swap交换分区
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6efb91e0/">
+                     
+										    tcpdump与Wireshark的使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d185f6ae/">
+                     
+										    web性能压测学习
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bb750036/">
+                     
+										    你要懂得及时止损，别太在乎沉没成本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/da58b03e/">
+                     
+										    使用HAProxy实现七层负载均衡
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b161a250/">
+                     
+										    使用服务搭建Hexo个人博客
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										其它
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/9bf5b5/">
+                     
+										    我学练英语所使用的方法、工具与资料
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4c41c7ef/">
+                     
+										    十二句经典的爱情名言
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e364486e/">
+                     
+										    基于Docker搭建Prometheus
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/69c239dd/">
+                     
+										    基于LNMP架构搭建企业级开源监控系统Zabbix
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f801d3c5/">
+                     
+										    增加一台Filebeat收集httpd日志
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f5d6f6a9/">
+                     
+										    实战-GitLab更新代码后自动触发Jenkins进行部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fa35a60d/">
+                     
+										    性能测试指标详解
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a3c5d26/">
+                     
+										    搭建Jenkins实现持续集成-配置Jenkins自动拉取GitLab中的代码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4f96852/">
+                     
+										    搭建JumpServer管理王者荣耀数万台游戏服务器
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f0a65eeb/">
+                     
+										    根分区扩容
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2f57a694/">
+                     
+										    正则表达式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9e3f6743/">
+                     
+										    自由的灵魂必将远航
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/217dc297/">
+                     
+										    计算机概述
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8d4b7ae1/">
+                     
+										    计算机组成原理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dded0e80/">
+                     
+										    运维发展史
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/undefined/">
+                     
+										    邮件报警配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5095a46f/">
+                     
+										    配置Docker静态IP
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2b923a54/">
+                     
+										    配置GitLab邮件服务
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/76011417/">
+                     
+										    配置Zabbix3.4监控Apache服务
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+		</div>
+	</div>
+</div>
+
+	<!-- 引入正文 -->
+	<div id="content">
+		<h1 id="article-title">
+	MySQL的GTID主从同步
+</h1>
+<div class="article-meta">
+	
+	<span>Echo</span>
+	<span>2022-06-07 12:45:07</span>
+		<div id="article-categories">
+    
+		<span>Categories：</span>
             
+    
 
-        </div>
-        <div class="post-count-custom">
-            <i class="icon icon-lg icon-comment-o"></i>
-            阅读本文可能花费您&nbsp;<span class="post-count">26</span>&nbsp;分钟
-        </div>
-        <div class="post-content" id="post-content" itemprop="postContent">
-            <h2 id="MySQL-GTID-&#x4E3B;&#x4ECE;&#x540C;&#x6B65;"><a href="#MySQL-GTID-&#x4E3B;&#x4ECE;&#x540C;&#x6B65;" class="headerlink" title="MySQL GTID &#x4E3B;&#x4ECE;&#x540C;&#x6B65;"></a>MySQL GTID &#x4E3B;&#x4ECE;&#x540C;&#x6B65;</h2><p><strong>&#x6982;&#x5FF5;</strong></p>
+    
+		<span>Tags：</span>
+            
+    
+		</div>
+
+</div>
+
+<div id="article-content">
+	<h2 id="MySQL-GTID-&#x4E3B;&#x4ECE;&#x540C;&#x6B65;"><a href="#MySQL-GTID-&#x4E3B;&#x4ECE;&#x540C;&#x6B65;" class="headerlink" title="MySQL GTID &#x4E3B;&#x4ECE;&#x540C;&#x6B65;"></a>MySQL GTID &#x4E3B;&#x4ECE;&#x540C;&#x6B65;</h2><p><strong>&#x6982;&#x5FF5;</strong></p>
 <p>&#x4ECE; MySQL 5.6.5 &#x5F00;&#x59CB;&#x65B0;&#x589E;&#x4E86;&#x4E00;&#x79CD;&#x57FA;&#x4E8E; GTID &#x7684;&#x590D;&#x5236;&#x65B9;&#x5F0F;&#x3002;&#x901A;&#x8FC7; GTID&#x4FDD;&#x8BC1;&#x4E86;&#x6BCF;&#x4E2A;&#x5728;&#x4E3B;&#x5E93;&#x4E0A;&#x63D0;&#x4EA4;&#x7684;&#x4E8B;&#x52A1;&#x5728;&#x96C6;&#x7FA4;&#x4E2D;&#x6709;&#x4E00;&#x4E2A;&#x552F;&#x4E00;&#x7684;ID&#x3002;<br>&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x5F3A;&#x5316;&#x4E86;&#x6570;&#x636E;&#x5E93;&#x7684;&#x4E3B;&#x5907;&#x4E00;&#x81F4;&#x6027;&#xFF0C;&#x6545;&#x969C;&#x6062;&#x590D;&#x4EE5;&#x53CA;&#x5BB9;&#x9519;&#x80FD;&#x529B;&#x3002;<br>&#x5728;&#x539F;&#x6765;&#x57FA;&#x4E8E;&#x4E8C;&#x8FDB;&#x5236;&#x65E5;&#x5FD7;&#x7684;&#x590D;&#x5236;&#xFF0C;&#x4ECE;&#x5E93;&#x9700;&#x8981;&#x544A;&#x77E5;&#x4E3B;&#x5E93;&#x8981;&#x4ECE;&#x54EA;&#x4E2A;&#x504F;&#x79FB;&#x91CF;&#x8FDB;&#x884C;&#x589E;&#x91CF;&#x540C;&#x6B65;&#xFF0C;&#x5982;&#x679C;&#x6307;&#x5B9A;&#x9519;&#x8BEF;&#x4F1A;&#x9020;&#x6210;&#x6570;&#x636E;&#x7684;&#x9057;&#x6F0F;&#xFF0C;&#x4ECE;&#x800C;&#x9020;&#x6210;&#x6570;&#x636E;&#x7684;&#x4E0D;&#x4E00;&#x81F4;&#x3002;<br>&#x501F;&#x52A9;GTID&#xFF0C;&#x5728;&#x53D1;&#x751F;&#x4E3B;&#x5907;&#x5207;&#x6362;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;MySQL&#x7684;&#x5176;&#x5B83;&#x4ECE;&#x5E93;&#x53EF;&#x4EE5;&#x81EA;&#x52A8;&#x5728;&#x65B0;&#x4E3B;&#x5E93;&#x4E0A;&#x627E;&#x5230;&#x6B63;&#x786E;&#x7684;&#x590D;&#x5236;&#x4F4D;&#x7F6E;&#xFF0C;&#x8FD9;&#x5927;&#x5927;&#x7B80;&#x5316;&#x4E86;&#x590D;&#x6742;&#x590D;&#x5236;&#x62D3;&#x6251;&#x4E0B;&#x96C6;&#x7FA4;&#x7684;&#x7EF4;&#x62A4;&#xFF0C;<br>&#x4E5F;&#x51CF;&#x5C11;&#x4E86;&#x4EBA;&#x4E3A;&#x8BBE;&#x7F6E;&#x590D;&#x5236;&#x4F4D;&#x7F6E;&#x53D1;&#x751F;&#x8BEF;&#x64CD;&#x4F5C;&#x7684;&#x98CE;&#x9669;&#x3002;&#x53E6;&#x5916;&#xFF0C;&#x57FA;&#x4E8E;GTID&#x7684;&#x590D;&#x5236;&#x53EF;&#x4EE5;&#x5FFD;&#x7565;&#x5DF2;&#x7ECF;&#x6267;&#x884C;&#x8FC7;&#x7684;&#x4E8B;&#x52A1;&#xFF0C;&#x51CF;&#x5C11;&#x4E86;&#x6570;&#x636E;&#x53D1;&#x751F;&#x4E0D;&#x4E00;&#x81F4;&#x7684;&#x98CE;&#x9669;&#x3002;</p>
 <h2 id="&#x4EC0;&#x4E48;&#x662F;GTID&#xFF1F;"><a href="#&#x4EC0;&#x4E48;&#x662F;GTID&#xFF1F;" class="headerlink" title="&#x4EC0;&#x4E48;&#x662F;GTID&#xFF1F;"></a>&#x4EC0;&#x4E48;&#x662F;GTID&#xFF1F;</h2><p>GTID (Global Transaction ID) &#x662F;&#x5BF9;&#x4E8E;&#x4E00;&#x4E2A;&#x5DF2;&#x63D0;&#x4EA4;&#x4E8B;&#x52A1;&#x7684;&#x7F16;&#x53F7;&#xFF0C;&#x5E76;&#x4E14;&#x662F;&#x4E00;&#x4E2A;&#x5168;&#x5C40;&#x552F;&#x4E00;&#x7684;&#x7F16;&#x53F7;&#x3002; GTID &#x5B9E;&#x9645;&#x4E0A; &#x662F;&#x7531;UUID+TID &#x7EC4;&#x6210;&#x7684;&#x3002;<br>&#x5176;&#x4E2D; UUID &#x662F;&#x4E00;&#x4E2A; MySQL &#x5B9E;&#x4F8B;&#x7684;&#x552F;&#x4E00;&#x6807;&#x8BC6;&#x3002;TID&#x4EE3;&#x8868;&#x4E86;&#x8BE5;&#x5B9E;&#x4F8B;&#x4E0A;&#x5DF2;&#x7ECF;&#x63D0;&#x4EA4;&#x7684;&#x4E8B;&#x52A1;&#x6570;&#x91CF;&#xFF0C;&#x5E76;&#x4E14;&#x968F;&#x7740;&#x4E8B;&#x52A1;&#x63D0;&#x4EA4;&#x5355;&#x8C03;&#x9012;&#x589E;&#x3002;</p>
 <p>&#x4E0B;&#x9762;&#x662F;&#x4E00;&#x4E2A;GTID&#x7684;&#x5177;&#x4F53;&#x5F62;&#x5F0F;&#xFF1A;03a1eb63-c21a-11ec-b07f-000c2987bea6:1-25&#xFF0C;&#x5192;&#x53F7;&#x5206;&#x5272;&#x524D;&#x8FB9;&#x4E3A;UUID&#xFF0C;&#x540E;&#x8FB9;&#x4E3A;TID&#x3002;  </p>
@@ -235,44 +1856,624 @@
 <li>&#x6BD4;&#x4F20;&#x7EDF;&#x590D;&#x5236;&#x66F4;&#x52A0;&#x5B89;&#x5168;</li>
 <li>GTID&#x662F;&#x8FDE;&#x7EED;&#x6CA1;&#x6709;&#x7A7A;&#x6D1E;&#x7684;&#xFF0C;&#x56E0;&#x6B64;&#x4E3B;&#x4ECE;&#x5E93;&#x51FA;&#x73B0;&#x6570;&#x636E;&#x51B2;&#x7A81;&#x65F6;&#xFF0C;&#x53EF;&#x4EE5;&#x7528;&#x6DFB;&#x52A0;&#x7A7A;&#x4E8B;&#x7269;&#x7684;&#x65B9;&#x5F0F;&#x8FDB;&#x884C;&#x8DF3;&#x8FC7;</li>
 </ul>
-<h2 id="&#x914D;&#x7F6E;&#x4E00;&#x4E3B;&#x4E00;&#x4ECE;GTID"><a href="#&#x914D;&#x7F6E;&#x4E00;&#x4E3B;&#x4E00;&#x4ECE;GTID" class="headerlink" title="&#x914D;&#x7F6E;&#x4E00;&#x4E3B;&#x4E00;&#x4ECE;GTID"></a>&#x914D;&#x7F6E;&#x4E00;&#x4E3B;&#x4E00;&#x4ECE;GTID</h2><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">&#x6570;&#x636E;&#x5E93;&#x89D2;&#x8272;           IP         &#x7CFB;&#x7EDF;&#x4E0E;MySQL&#x7248;&#x672C;         &#x6709;&#x65E0;&#x6570;&#x636E;</span><br><span class="line">&#x4E3B;&#x6570;&#x636E;&#x5E93;	    192.168.10.11    RHEL7 MySQL5.7        &#x65E0;&#x6570;&#x636E;</span><br><span class="line">&#x4ECE;&#x6570;&#x636E;&#x5E93;	    192.168.10.12    RHEL7 MySQL5.7        &#x65E0;&#x6570;&#x636E;</span><br></pre></td></tr></tbody></table></figure>
-<p>&#x5728;&#x4E3B;&#x6570;&#x636E;&#x5E93;&#x91CC;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x540C;&#x6B65;&#x8D26;&#x6237;&#x6388;&#x6743;&#x7ED9;&#x4ECE;&#x6570;&#x636E;&#x5E93;&#x4F7F;&#x7528;</p>
-<figure class="highlight xml"><table><tbody><tr><td class="code"><pre><span class="line">[root@server11 ~]# mysql -uroot -pJaking@vip.163.com</span><br><span class="line">mysql: [Warning] Using a password on the command line interface can be insecure.</span><br><span class="line">Welcome to the MySQL monitor.  Commands end with ; or \g.</span><br><span class="line">Your MySQL connection id is 5</span><br><span class="line">Server version: 5.7.24 MySQL Community Server (GPL)</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.</span><br><span class="line"></span><br><span class="line">Oracle is a registered trademark of Oracle Corporation and/or its</span><br><span class="line">affiliates. Other names may be trademarks of their respective</span><br><span class="line">owners.</span><br><span class="line"></span><br><span class="line">Type &apos;help;&apos; or &apos;\h&apos; for help. Type &apos;\c&apos; to clear the current input statement.</span><br><span class="line"></span><br><span class="line">mysql&gt; grant replication slave on *.* to &apos;Jaking&apos;@&apos;192.168.10.%&apos; identified by &apos;Jaking@vip.163.com&apos;;</span><br><span class="line">Query OK, 0 rows affected, 1 warning (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; flush privileges;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; exit</span><br><span class="line">Bye</span><br></pre></td></tr></tbody></table></figure>
+<h2 id="&#x914D;&#x7F6E;&#x4E00;&#x4E3B;&#x4E00;&#x4ECE;GTID"><a href="#&#x914D;&#x7F6E;&#x4E00;&#x4E3B;&#x4E00;&#x4ECE;GTID" class="headerlink" title="&#x914D;&#x7F6E;&#x4E00;&#x4E3B;&#x4E00;&#x4ECE;GTID"></a>&#x914D;&#x7F6E;&#x4E00;&#x4E3B;&#x4E00;&#x4ECE;GTID</h2><pre><code>&#x6570;&#x636E;&#x5E93;&#x89D2;&#x8272;           IP         &#x7CFB;&#x7EDF;&#x4E0E;MySQL&#x7248;&#x672C;         &#x6709;&#x65E0;&#x6570;&#x636E;
+&#x4E3B;&#x6570;&#x636E;&#x5E93;        192.168.10.11    RHEL7 MySQL5.7        &#x65E0;&#x6570;&#x636E;
+&#x4ECE;&#x6570;&#x636E;&#x5E93;        192.168.10.12    RHEL7 MySQL5.7        &#x65E0;&#x6570;&#x636E;
+</code></pre><p>&#x5728;&#x4E3B;&#x6570;&#x636E;&#x5E93;&#x91CC;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x540C;&#x6B65;&#x8D26;&#x6237;&#x6388;&#x6743;&#x7ED9;&#x4ECE;&#x6570;&#x636E;&#x5E93;&#x4F7F;&#x7528;</p>
+<pre><code class="xml">[root@server11 ~]# mysql -uroot -pJaking@vip.163.com
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 5
+Server version: 5.7.24 MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type &apos;help;&apos; or &apos;\h&apos; for help. Type &apos;\c&apos; to clear the current input statement.
+
+mysql&gt; grant replication slave on *.* to &apos;Jaking&apos;@&apos;192.168.10.%&apos; identified by &apos;Jaking@vip.163.com&apos;;
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+mysql&gt; flush privileges;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql&gt; exit
+Bye
+</code></pre>
 <p><strong>&#x914D;&#x7F6E;&#x4E3B;&#x5E93;&#x6587;&#x4EF6;</strong></p>
-<figure class="highlight xml"><table><tbody><tr><td class="code"><pre><span class="line">[root@server11 ~]# vim /etc/my.cnf</span><br><span class="line">[mysqld]</span><br><span class="line">port=3306</span><br><span class="line">datadir=/var/lib/mysql</span><br><span class="line">socket=/var/lib/mysql/mysql.sock</span><br><span class="line">skip-name-resolve</span><br><span class="line">symbolic-links=0</span><br><span class="line"></span><br><span class="line">log-error=/var/log/mysqld.log</span><br><span class="line">pid-file=/var/run/mysqld/mysqld.pid</span><br><span class="line">skip-name-resolve</span><br><span class="line"></span><br><span class="line">log-bin=mysql-bin                        // &#x5F00;&#x542F;&#x4E8C;&#x8FDB;&#x5236;&#x65E5;&#x5FD7;</span><br><span class="line">server-id=11                             // &#x670D;&#x52A1;&#x5668;ID&#xFF0C;&#x5FC5;&#x987B;&#x552F;&#x4E00;</span><br><span class="line">gtid-mode=on                             #&#x5F00;&#x542F;gtid&#x6A21;&#x5F0F;</span><br><span class="line">enforce-gtid-consistency=on       //&#x5F3A;&#x5236;gtid&#x4E00;&#x81F4;&#x6027;&#xFF0C;&#x5F00;&#x542F;&#x540E;&#x5BF9;&#x7279;&#x5B9A;&#x7684;create table&#x4E0D;&#x652F;&#x6301;</span><br><span class="line">binlog-format=row                       //&#x9ED8;&#x8BA4;&#x4E3A;mixed&#x6DF7;&#x5408;&#x6A21;&#x5F0F;&#xFF0C;&#x66F4;&#x6539;&#x6210;row&#x590D;&#x5236;&#xFF0C;&#x4E3A;&#x4E86;&#x6570;&#x636E;&#x4E00;&#x81F4;&#x6027;</span><br><span class="line">log-slave-updates=1                    //&#x4ECE;&#x5E93;binlog&#x8BB0;&#x5F55;&#x4E3B;&#x5E93;&#x540C;&#x6B65;&#x7684;&#x64CD;&#x4F5C;&#x65E5;&#x5FD7;</span><br><span class="line">skip-slave-start=1                         //&#x8DF3;&#x8FC7;slave&#x590D;&#x5236;&#x7EBF;&#x7A0B;</span><br></pre></td></tr></tbody></table></figure>
-<figure class="highlight xml"><table><tbody><tr><td class="code"><pre><span class="line">[root@server11 ~]# systemctl restart mysqld</span><br><span class="line">[root@server11 ~]# systemctl status mysqld </span><br><span class="line">&#x25CF; mysqld.service - MySQL Server</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/mysqld.service; enabled; vendor preset: disabled)</span><br><span class="line">   Active: active (running) since Fri 2022-04-22 05:28:12 EDT; 6s ago</span><br><span class="line">     Docs: man:mysqld(8)</span><br><span class="line">           http://dev.mysql.com/doc/refman/en/using-systemd.html</span><br><span class="line">  Process: 11752 ExecStart=/usr/sbin/mysqld --daemonize --pid-file=/var/run/mysqld/mysqld.pid $MYSQLD_OPTS (code=exited, status=0/SUCCESS)</span><br><span class="line">  Process: 11730 ExecStartPre=/usr/bin/mysqld_pre_systemd (code=exited, status=0/SUCCESS)</span><br><span class="line"> Main PID: 11755 (mysqld)</span><br><span class="line">    Tasks: 27</span><br><span class="line">   CGroup: /system.slice/mysqld.service</span><br><span class="line">           &#x2514;&#x2500;11755 /usr/sbin/mysqld --daemonize --pid-file=/var/run/mysqld...</span><br><span class="line"></span><br><span class="line">Apr 22 05:28:11 server11 systemd[1]: Stopped MySQL Server.</span><br><span class="line">Apr 22 05:28:11 server11 systemd[1]: Starting MySQL Server...</span><br><span class="line">Apr 22 05:28:12 server11 systemd[1]: Started MySQL Server.</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="xml">[root@server11 ~]# vim /etc/my.cnf
+[mysqld]
+port=3306
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+skip-name-resolve
+symbolic-links=0
+
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
+skip-name-resolve
+
+log-bin=mysql-bin                        // &#x5F00;&#x542F;&#x4E8C;&#x8FDB;&#x5236;&#x65E5;&#x5FD7;
+server-id=11                             // &#x670D;&#x52A1;&#x5668;ID&#xFF0C;&#x5FC5;&#x987B;&#x552F;&#x4E00;
+gtid-mode=on                             #&#x5F00;&#x542F;gtid&#x6A21;&#x5F0F;
+enforce-gtid-consistency=on       //&#x5F3A;&#x5236;gtid&#x4E00;&#x81F4;&#x6027;&#xFF0C;&#x5F00;&#x542F;&#x540E;&#x5BF9;&#x7279;&#x5B9A;&#x7684;create table&#x4E0D;&#x652F;&#x6301;
+binlog-format=row                       //&#x9ED8;&#x8BA4;&#x4E3A;mixed&#x6DF7;&#x5408;&#x6A21;&#x5F0F;&#xFF0C;&#x66F4;&#x6539;&#x6210;row&#x590D;&#x5236;&#xFF0C;&#x4E3A;&#x4E86;&#x6570;&#x636E;&#x4E00;&#x81F4;&#x6027;
+log-slave-updates=1                    //&#x4ECE;&#x5E93;binlog&#x8BB0;&#x5F55;&#x4E3B;&#x5E93;&#x540C;&#x6B65;&#x7684;&#x64CD;&#x4F5C;&#x65E5;&#x5FD7;
+skip-slave-start=1                         //&#x8DF3;&#x8FC7;slave&#x590D;&#x5236;&#x7EBF;&#x7A0B;
+</code></pre>
+<pre><code class="xml">[root@server11 ~]# systemctl restart mysqld
+[root@server11 ~]# systemctl status mysqld 
+&#x25CF; mysqld.service - MySQL Server
+   Loaded: loaded (/usr/lib/systemd/system/mysqld.service; enabled; vendor preset: disabled)
+   Active: active (running) since Fri 2022-04-22 05:28:12 EDT; 6s ago
+     Docs: man:mysqld(8)
+           http://dev.mysql.com/doc/refman/en/using-systemd.html
+  Process: 11752 ExecStart=/usr/sbin/mysqld --daemonize --pid-file=/var/run/mysqld/mysqld.pid $MYSQLD_OPTS (code=exited, status=0/SUCCESS)
+  Process: 11730 ExecStartPre=/usr/bin/mysqld_pre_systemd (code=exited, status=0/SUCCESS)
+ Main PID: 11755 (mysqld)
+    Tasks: 27
+   CGroup: /system.slice/mysqld.service
+           &#x2514;&#x2500;11755 /usr/sbin/mysqld --daemonize --pid-file=/var/run/mysqld...
+
+Apr 22 05:28:11 server11 systemd[1]: Stopped MySQL Server.
+Apr 22 05:28:11 server11 systemd[1]: Starting MySQL Server...
+Apr 22 05:28:12 server11 systemd[1]: Started MySQL Server.
+</code></pre>
 <p><strong>&#x67E5;&#x770B;GTID&#x6A21;&#x5F0F;&#x72B6;&#x6001;</strong></p>
-<figure class="highlight xml"><table><tbody><tr><td class="code"><pre><span class="line">[root@server11 ~]# mysql -uroot -pJaking@vip.163.com -e &apos;show variables like &quot;%GTID%&quot;;&apos;</span><br><span class="line">mysql: [Warning] Using a password on the command line interface can be insecure.</span><br><span class="line">+----------------------------------+-----------+</span><br><span class="line">| Variable_name                    | Value     |</span><br><span class="line">+----------------------------------+-----------+</span><br><span class="line">| binlog_gtid_simple_recovery      | ON        |</span><br><span class="line">| enforce_gtid_consistency         | ON        |</span><br><span class="line">| gtid_executed_compression_period | 1000      |</span><br><span class="line">| gtid_mode                        | ON        |</span><br><span class="line">| gtid_next                        | AUTOMATIC |</span><br><span class="line">| gtid_owned                       |           |</span><br><span class="line">| gtid_purged                      |           |</span><br><span class="line">| session_track_gtids              | OFF       |</span><br><span class="line">+----------------------------------+-----------+</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="xml">[root@server11 ~]# mysql -uroot -pJaking@vip.163.com -e &apos;show variables like &quot;%GTID%&quot;;&apos;
+mysql: [Warning] Using a password on the command line interface can be insecure.
++----------------------------------+-----------+
+| Variable_name                    | Value     |
++----------------------------------+-----------+
+| binlog_gtid_simple_recovery      | ON        |
+| enforce_gtid_consistency         | ON        |
+| gtid_executed_compression_period | 1000      |
+| gtid_mode                        | ON        |
+| gtid_next                        | AUTOMATIC |
+| gtid_owned                       |           |
+| gtid_purged                      |           |
+| session_track_gtids              | OFF       |
++----------------------------------+-----------+
+</code></pre>
 <p><strong>&#x914D;&#x7F6E;&#x4ECE;&#x5E93;&#x6587;&#x4EF6;</strong></p>
-<figure class="highlight xml"><table><tbody><tr><td class="code"><pre><span class="line">[root@server12 ~]# vim /etc/my.cnf</span><br><span class="line">[mysqld]</span><br><span class="line">port=3306</span><br><span class="line">datadir=/var/lib/mysql</span><br><span class="line">socket=/var/lib/mysql/mysql.sock</span><br><span class="line">symbolic-links=0</span><br><span class="line"></span><br><span class="line">log-error=/var/log/mysqld.log</span><br><span class="line">pid-file=/var/run/mysqld/mysqld.pid</span><br><span class="line">skip-name-resolve</span><br><span class="line"></span><br><span class="line">log-bin=mysql-bin</span><br><span class="line">server-id=12</span><br><span class="line">gtid-mode=on  </span><br><span class="line">enforce-gtid-consistency=on          </span><br><span class="line">binlog-format=row</span><br><span class="line">log-slave-updates=1</span><br><span class="line">skip-slave-start=1</span><br><span class="line">[root@server12 ~]# systemctl restart mysqld</span><br><span class="line">[root@server12 ~]# systemctl status mysqld </span><br><span class="line">&#x25CF; mysqld.service - MySQL Server</span><br><span class="line">   Loaded: loaded (/usr/lib/systemd/system/mysqld.service; enabled; vendor preset: disabled)</span><br><span class="line">   Active: active (running) since Fri 2022-04-22 18:08:39 CST; 8s ago</span><br><span class="line">     Docs: man:mysqld(8)</span><br><span class="line">           http://dev.mysql.com/doc/refman/en/using-systemd.html</span><br><span class="line">  Process: 2749 ExecStart=/usr/sbin/mysqld --daemonize --pid-file=/var/run/mysqld/mysqld.pid $MYSQLD_OPTS (code=exited, status=0/SUCCESS)</span><br><span class="line">  Process: 2731 ExecStartPre=/usr/bin/mysqld_pre_systemd (code=exited, status=0/SUCCESS)</span><br><span class="line"> Main PID: 2753 (mysqld)</span><br><span class="line">   CGroup: /system.slice/mysqld.service</span><br><span class="line">           &#x2514;&#x2500;2753 /usr/sbin/mysqld --daemonize --pid-file=/var/run/mysqld/...</span><br><span class="line"></span><br><span class="line">Apr 22 18:08:38 server12 systemd[1]: Starting MySQL Server...</span><br><span class="line">Apr 22 18:08:39 server12 systemd[1]: Started MySQL Server.</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="xml">[root@server12 ~]# vim /etc/my.cnf
+[mysqld]
+port=3306
+datadir=/var/lib/mysql
+socket=/var/lib/mysql/mysql.sock
+symbolic-links=0
+
+log-error=/var/log/mysqld.log
+pid-file=/var/run/mysqld/mysqld.pid
+skip-name-resolve
+
+log-bin=mysql-bin
+server-id=12
+gtid-mode=on  
+enforce-gtid-consistency=on          
+binlog-format=row
+log-slave-updates=1
+skip-slave-start=1
+[root@server12 ~]# systemctl restart mysqld
+[root@server12 ~]# systemctl status mysqld 
+&#x25CF; mysqld.service - MySQL Server
+   Loaded: loaded (/usr/lib/systemd/system/mysqld.service; enabled; vendor preset: disabled)
+   Active: active (running) since Fri 2022-04-22 18:08:39 CST; 8s ago
+     Docs: man:mysqld(8)
+           http://dev.mysql.com/doc/refman/en/using-systemd.html
+  Process: 2749 ExecStart=/usr/sbin/mysqld --daemonize --pid-file=/var/run/mysqld/mysqld.pid $MYSQLD_OPTS (code=exited, status=0/SUCCESS)
+  Process: 2731 ExecStartPre=/usr/bin/mysqld_pre_systemd (code=exited, status=0/SUCCESS)
+ Main PID: 2753 (mysqld)
+   CGroup: /system.slice/mysqld.service
+           &#x2514;&#x2500;2753 /usr/sbin/mysqld --daemonize --pid-file=/var/run/mysqld/...
+
+Apr 22 18:08:38 server12 systemd[1]: Starting MySQL Server...
+Apr 22 18:08:39 server12 systemd[1]: Started MySQL Server.
+</code></pre>
 <p><strong>&#x67E5;&#x770B;GTID&#x6A21;&#x5F0F;&#x72B6;&#x6001;</strong></p>
-<figure class="highlight xml"><table><tbody><tr><td class="code"><pre><span class="line">[root@server12 ~]# mysql -uroot -pJaking@vip.163.com -e &apos;show variables like &quot;%GTID%&quot;;&apos;</span><br><span class="line">mysql: [Warning] Using a password on the command line interface can be insecure.</span><br><span class="line">+----------------------------------+-----------+</span><br><span class="line">| Variable_name                    | Value     |</span><br><span class="line">+----------------------------------+-----------+</span><br><span class="line">| binlog_gtid_simple_recovery      | ON        |</span><br><span class="line">| enforce_gtid_consistency         | ON        |</span><br><span class="line">| gtid_executed_compression_period | 1000      |</span><br><span class="line">| gtid_mode                        | ON        |</span><br><span class="line">| gtid_next                        | AUTOMATIC |</span><br><span class="line">| gtid_owned                       |           |</span><br><span class="line">| gtid_purged                      |           |</span><br><span class="line">| session_track_gtids              | OFF       |</span><br><span class="line">+----------------------------------+-----------+</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="xml">[root@server12 ~]# mysql -uroot -pJaking@vip.163.com -e &apos;show variables like &quot;%GTID%&quot;;&apos;
+mysql: [Warning] Using a password on the command line interface can be insecure.
++----------------------------------+-----------+
+| Variable_name                    | Value     |
++----------------------------------+-----------+
+| binlog_gtid_simple_recovery      | ON        |
+| enforce_gtid_consistency         | ON        |
+| gtid_executed_compression_period | 1000      |
+| gtid_mode                        | ON        |
+| gtid_next                        | AUTOMATIC |
+| gtid_owned                       |           |
+| gtid_purged                      |           |
+| session_track_gtids              | OFF       |
++----------------------------------+-----------+
+</code></pre>
 <p><strong>&#x5F00;&#x542F;&#x4E3B;&#x4ECE;&#x540C;&#x6B65;</strong></p>
-<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">[root@server12 ~]<span class="comment"># mysql -uroot -pJaking@vip.163.com</span></span><br><span class="line">mysql: [Warning] Using a password on the command line interface can be insecure.</span><br><span class="line">Welcome to the MySQL monitor.  Commands <span class="keyword">end</span> <span class="keyword">with</span> ; or \g.</span><br><span class="line">Your MySQL connection id is 3</span><br><span class="line">Server version: 5.7.24-log MySQL Community Server (GPL)</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.</span><br><span class="line"></span><br><span class="line">Oracle is a registered trademark of Oracle Corporation and/or its</span><br><span class="line">affiliates. Other names may be trademarks of their respective</span><br><span class="line">owners.</span><br><span class="line"></span><br><span class="line">Type &apos;<span class="keyword">help</span>;&apos; or &apos;\h&apos; for help. <span class="keyword">Type</span> <span class="string">&apos;\c&apos;</span> <span class="keyword">to</span> <span class="keyword">clear</span> the <span class="keyword">current</span> <span class="keyword">input</span> statement.</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">change</span> <span class="keyword">master</span> <span class="keyword">to</span></span><br><span class="line">     master_host=<span class="string">&apos;192.168.10.11&apos;</span>,</span><br><span class="line">     master_user=<span class="string">&apos;Jaking&apos;</span>,</span><br><span class="line">     master_password=<span class="string">&apos;Jaking@vip.163.com&apos;</span>,</span><br><span class="line">     master_auto_position=<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">Query OK, 0 rows affected, 2 warnings (0.01 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; start slave;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; show slave status\G</span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">               Slave_IO_State: Waiting for master to send event</span><br><span class="line">                  Master_Host: 192.168.10.11</span><br><span class="line">                  Master_User: Jaking</span><br><span class="line">                  Master_Port: 3306</span><br><span class="line">                Connect_Retry: 60</span><br><span class="line">              Master_Log_File: mysql-bin.000002</span><br><span class="line">          Read_Master_Log_Pos: 154</span><br><span class="line">               Relay_Log_File: server12-relay-bin.000002</span><br><span class="line">                Relay_Log_Pos: 367</span><br><span class="line">        Relay_Master_Log_File: mysql-bin.000002</span><br><span class="line">             Slave_IO_Running: Yes</span><br><span class="line">            Slave_SQL_Running: Yes</span><br><span class="line">              Replicate_Do_DB: </span><br><span class="line">          Replicate_Ignore_DB: </span><br><span class="line">           Replicate_Do_Table: </span><br><span class="line">       Replicate_Ignore_Table: </span><br><span class="line">      Replicate_Wild_Do_Table: </span><br><span class="line">  Replicate_Wild_Ignore_Table: </span><br><span class="line">                   Last_Errno: 0</span><br><span class="line">                   Last_Error: </span><br><span class="line">                 Skip_Counter: 0</span><br><span class="line">          Exec_Master_Log_Pos: 154</span><br><span class="line">              Relay_Log_Space: 577</span><br><span class="line">              Until_Condition: None</span><br><span class="line">               Until_Log_File: </span><br><span class="line">                Until_Log_Pos: 0</span><br><span class="line">           Master_SSL_Allowed: No</span><br><span class="line">           Master_SSL_CA_File: </span><br><span class="line">           Master_SSL_CA_Path: </span><br><span class="line">              Master_SSL_Cert: </span><br><span class="line">            Master_SSL_Cipher: </span><br><span class="line">               Master_SSL_Key: </span><br><span class="line">        Seconds_Behind_Master: 0</span><br><span class="line">Master_SSL_Verify_Server_Cert: No</span><br><span class="line">                Last_IO_Errno: 0</span><br><span class="line">                Last_IO_Error: </span><br><span class="line">               Last_SQL_Errno: 0</span><br><span class="line">               Last_SQL_Error: </span><br><span class="line">  Replicate_Ignore_Server_Ids: </span><br><span class="line">             Master_Server_Id: 11</span><br><span class="line">                  Master_UUID: 03a1eb63-c21a-11ec-b07f-000c2987bea6</span><br><span class="line">             Master_Info_File: /var/lib/mysql/master.info</span><br><span class="line">                    SQL_Delay: 0</span><br><span class="line">          SQL_Remaining_Delay: NULL</span><br><span class="line">      Slave_SQL_Running_State: Slave has read all relay log; waiting for more updates</span><br><span class="line">           Master_Retry_Count: 86400</span><br><span class="line">                  Master_Bind: </span><br><span class="line">      Last_IO_Error_Timestamp: </span><br><span class="line">     Last_SQL_Error_Timestamp: </span><br><span class="line">               Master_SSL_Crl: </span><br><span class="line">           Master_SSL_Crlpath: </span><br><span class="line">           Retrieved_Gtid_Set: </span><br><span class="line">            Executed_Gtid_Set: </span><br><span class="line">                Auto_Position: 1</span><br><span class="line">         Replicate_Rewrite_DB: </span><br><span class="line">                 Channel_Name: </span><br><span class="line">           Master_TLS_Version: </span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="sql">[root@server12 ~]# mysql -uroot -pJaking@vip.163.com
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 3
+Server version: 5.7.24-log MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type &apos;help;&apos; or &apos;\h&apos; for help. Type &apos;\c&apos; to clear the current input statement.
+
+mysql&gt; change master to
+     master_host=&apos;192.168.10.11&apos;,
+     master_user=&apos;Jaking&apos;,
+     master_password=&apos;Jaking@vip.163.com&apos;,
+     master_auto_position=1;
+
+Query OK, 0 rows affected, 2 warnings (0.01 sec)
+
+mysql&gt; start slave;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql&gt; show slave status\G
+*************************** 1. row ***************************
+               Slave_IO_State: Waiting for master to send event
+                  Master_Host: 192.168.10.11
+                  Master_User: Jaking
+                  Master_Port: 3306
+                Connect_Retry: 60
+              Master_Log_File: mysql-bin.000002
+          Read_Master_Log_Pos: 154
+               Relay_Log_File: server12-relay-bin.000002
+                Relay_Log_Pos: 367
+        Relay_Master_Log_File: mysql-bin.000002
+             Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes
+              Replicate_Do_DB: 
+          Replicate_Ignore_DB: 
+           Replicate_Do_Table: 
+       Replicate_Ignore_Table: 
+      Replicate_Wild_Do_Table: 
+  Replicate_Wild_Ignore_Table: 
+                   Last_Errno: 0
+                   Last_Error: 
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 154
+              Relay_Log_Space: 577
+              Until_Condition: None
+               Until_Log_File: 
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File: 
+           Master_SSL_CA_Path: 
+              Master_SSL_Cert: 
+            Master_SSL_Cipher: 
+               Master_SSL_Key: 
+        Seconds_Behind_Master: 0
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 0
+                Last_IO_Error: 
+               Last_SQL_Errno: 0
+               Last_SQL_Error: 
+  Replicate_Ignore_Server_Ids: 
+             Master_Server_Id: 11
+                  Master_UUID: 03a1eb63-c21a-11ec-b07f-000c2987bea6
+             Master_Info_File: /var/lib/mysql/master.info
+                    SQL_Delay: 0
+          SQL_Remaining_Delay: NULL
+      Slave_SQL_Running_State: Slave has read all relay log; waiting for more updates
+           Master_Retry_Count: 86400
+                  Master_Bind: 
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+               Master_SSL_Crl: 
+           Master_SSL_Crlpath: 
+           Retrieved_Gtid_Set: 
+            Executed_Gtid_Set: 
+                Auto_Position: 1
+         Replicate_Rewrite_DB: 
+                 Channel_Name: 
+           Master_TLS_Version: 
+1 row in set (0.00 sec)
+</code></pre>
 <p>&#x67E5;&#x770B;&#x4E3B;&#x4ECE;&#x5E93;&#x7684;&#x4FE1;&#x606F;&#x662F;&#x5426;&#x540C;&#x6B65;</p>
 <p>&#x67E5;&#x770B;&#x4E3B;&#x5E93;</p>
-<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">[root@server11 ~]<span class="comment"># mysql -uroot -pJaking@vip.163.com</span></span><br><span class="line">mysql: [Warning] Using a password on the command line interface can be insecure.</span><br><span class="line">Welcome to the MySQL monitor.  Commands <span class="keyword">end</span> <span class="keyword">with</span> ; or \g.</span><br><span class="line">Your MySQL connection id is 5</span><br><span class="line">Server version: 5.7.24-log MySQL Community Server (GPL)</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.</span><br><span class="line"></span><br><span class="line">Oracle is a registered trademark of Oracle Corporation and/or its</span><br><span class="line">affiliates. Other names may be trademarks of their respective</span><br><span class="line">owners.</span><br><span class="line"></span><br><span class="line">Type &apos;<span class="keyword">help</span>;&apos; or &apos;\h&apos; for help. <span class="keyword">Type</span> <span class="string">&apos;\c&apos;</span> <span class="keyword">to</span> <span class="keyword">clear</span> the <span class="keyword">current</span> <span class="keyword">input</span> statement.</span><br><span class="line">mysql&gt; <span class="keyword">show</span> <span class="keyword">databases</span>;</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line">| Database           |</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line">| information_schema |</span><br><span class="line">| mysql              |</span><br><span class="line">| performance_schema |</span><br><span class="line">| sys                |</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line">4 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="sql">[root@server11 ~]# mysql -uroot -pJaking@vip.163.com
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 5
+Server version: 5.7.24-log MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type &apos;help;&apos; or &apos;\h&apos; for help. Type &apos;\c&apos; to clear the current input statement.
+mysql&gt; show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+4 rows in set (0.00 sec)
+</code></pre>
 <p>&#x67E5;&#x770B;&#x4ECE;&#x5E93;</p>
-<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">[root@server12 ~]<span class="comment"># mysql -uroot -pJaking@vip.163.com</span></span><br><span class="line">mysql: [Warning] Using a password on the command line interface can be insecure.</span><br><span class="line">Welcome to the MySQL monitor.  Commands <span class="keyword">end</span> <span class="keyword">with</span> ; or \g.</span><br><span class="line">Your MySQL connection id is 6</span><br><span class="line">Server version: 5.7.24-log MySQL Community Server (GPL)</span><br><span class="line"></span><br><span class="line">Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.</span><br><span class="line"></span><br><span class="line">Oracle is a registered trademark of Oracle Corporation and/or its</span><br><span class="line">affiliates. Other names may be trademarks of their respective</span><br><span class="line">owners.</span><br><span class="line"></span><br><span class="line">Type &apos;<span class="keyword">help</span>;&apos; or &apos;\h&apos; for help. <span class="keyword">Type</span> <span class="string">&apos;\c&apos;</span> <span class="keyword">to</span> <span class="keyword">clear</span> the <span class="keyword">current</span> <span class="keyword">input</span> statement.</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">show</span> <span class="keyword">databases</span>;</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line">| Database           |</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line">| information_schema |</span><br><span class="line">| mysql              |</span><br><span class="line">| performance_schema |</span><br><span class="line">| sys                |</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line">4 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="sql">[root@server12 ~]# mysql -uroot -pJaking@vip.163.com
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 6
+Server version: 5.7.24-log MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type &apos;help;&apos; or &apos;\h&apos; for help. Type &apos;\c&apos; to clear the current input statement.
+
+mysql&gt; show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+4 rows in set (0.00 sec)
+</code></pre>
 <h2 id="&#x6D4B;&#x8BD5;&#x4E3B;&#x4ECE;&#x540C;&#x6B65;"><a href="#&#x6D4B;&#x8BD5;&#x4E3B;&#x4ECE;&#x540C;&#x6B65;" class="headerlink" title="&#x6D4B;&#x8BD5;&#x4E3B;&#x4ECE;&#x540C;&#x6B65;"></a>&#x6D4B;&#x8BD5;&#x4E3B;&#x4ECE;&#x540C;&#x6B65;</h2><p>&#x5728;&#x4E3B;&#x5E93;&#x6267;&#x884C;&#x4EE5;&#x4E0B;SQL&#x8BED;&#x53E5;</p>
-<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">DATABASE</span> BOOK;</span><br><span class="line"><span class="keyword">USE</span> BOOK;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> book (<span class="keyword">name</span> <span class="built_in">char</span>(<span class="number">66</span>),price <span class="built_in">int</span>,pages <span class="built_in">int</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="keyword">name</span>,price,pages) <span class="keyword">VALUES</span>(<span class="string">&apos;Linux&apos;</span>,<span class="string">&apos;30&apos;</span>,<span class="string">&apos;666&apos;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="keyword">name</span>,price,pages) <span class="keyword">VALUES</span>(<span class="string">&apos;Cloud Computing&apos;</span>,<span class="string">&apos;60&apos;</span>,<span class="string">&apos;666&apos;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="keyword">name</span>,price,pages) <span class="keyword">VALUES</span>(<span class="string">&apos;Operation System&apos;</span>,<span class="string">&apos;80&apos;</span>,<span class="string">&apos;666&apos;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book(<span class="keyword">name</span>,price,pages) <span class="keyword">VALUES</span>(<span class="string">&apos;Artificial Intelligence&apos;</span>,<span class="string">&apos;166&apos;</span>,<span class="string">&apos;666&apos;</span>);</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> book;</span><br><span class="line"><span class="comment">------------------------------------------------------------------------------------</span></span><br><span class="line">mysql&gt; show databases;</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line">| Database           |</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line">| information_schema |</span><br><span class="line">| BOOK               |</span><br><span class="line">| mysql              |</span><br><span class="line">| performance_schema |</span><br><span class="line">| sys                |</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line">5 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> BOOK.book;</span><br><span class="line">+<span class="comment">-------------------------+-------+-------+</span></span><br><span class="line">| name                    | price | pages |</span><br><span class="line">+<span class="comment">-------------------------+-------+-------+</span></span><br><span class="line">| Linux                   |    30 |   666 |</span><br><span class="line">| Cloud Computing         |    60 |   666 |</span><br><span class="line">| Operation System        |    80 |   666 |</span><br><span class="line">| Artificial Intelligence |   166 |   666 |</span><br><span class="line">+<span class="comment">-------------------------+-------+-------+</span></span><br><span class="line">4 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="sql">CREATE DATABASE BOOK;
+USE BOOK;
+CREATE TABLE book (name char(66),price int,pages int);
+INSERT INTO book(name,price,pages) VALUES(&apos;Linux&apos;,&apos;30&apos;,&apos;666&apos;);
+INSERT INTO book(name,price,pages) VALUES(&apos;Cloud Computing&apos;,&apos;60&apos;,&apos;666&apos;);
+INSERT INTO book(name,price,pages) VALUES(&apos;Operation System&apos;,&apos;80&apos;,&apos;666&apos;);
+INSERT INTO book(name,price,pages) VALUES(&apos;Artificial Intelligence&apos;,&apos;166&apos;,&apos;666&apos;);
+select * from book;
+------------------------------------------------------------------------------------
+mysql&gt; show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| BOOK               |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql&gt; select * from BOOK.book;
++-------------------------+-------+-------+
+| name                    | price | pages |
++-------------------------+-------+-------+
+| Linux                   |    30 |   666 |
+| Cloud Computing         |    60 |   666 |
+| Operation System        |    80 |   666 |
+| Artificial Intelligence |   166 |   666 |
++-------------------------+-------+-------+
+4 rows in set (0.00 sec)
+</code></pre>
 <p>&#x5728;&#x4ECE;&#x5E93;&#x67E5;&#x770B;&#x6570;&#x636E;&#x662F;&#x5426;&#x540C;&#x6B65;&#x8FC7;&#x6765;</p>
-<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql&gt; show databases;</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line">| Database           |</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line">| information_schema |</span><br><span class="line">| BOOK               |</span><br><span class="line">| mysql              |</span><br><span class="line">| performance_schema |</span><br><span class="line">| sys                |</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line">5 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> BOOK.book;</span><br><span class="line">+<span class="comment">-------------------------+-------+-------+</span></span><br><span class="line">| name                    | price | pages |</span><br><span class="line">+<span class="comment">-------------------------+-------+-------+</span></span><br><span class="line">| Linux                   |    30 |   666 |</span><br><span class="line">| Cloud Computing         |    60 |   666 |</span><br><span class="line">| Operation System        |    80 |   666 |</span><br><span class="line">| Artificial Intelligence |   166 |   666 |</span><br><span class="line">+<span class="comment">-------------------------+-------+-------+</span></span><br><span class="line">4 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="sql">mysql&gt; show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| BOOK               |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.00 sec)
+
+mysql&gt; select * from BOOK.book;
++-------------------------+-------+-------+
+| name                    | price | pages |
++-------------------------+-------+-------+
+| Linux                   |    30 |   666 |
+| Cloud Computing         |    60 |   666 |
+| Operation System        |    80 |   666 |
+| Artificial Intelligence |   166 |   666 |
++-------------------------+-------+-------+
+4 rows in set (0.00 sec)
+</code></pre>
 <p>&#x67E5;&#x770B;&#x4E3B;&#x5E93;&#x72B6;&#x6001;</p>
-<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql&gt; show master status;</span><br><span class="line">+<span class="comment">------------------+----------+--------------+------------------+------------------------------------------+</span></span><br><span class="line">| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set                        |</span><br><span class="line">+<span class="comment">------------------+----------+--------------+------------------+------------------------------------------+</span></span><br><span class="line">| mysql-bin.000002 |     1620 |              |                  | 03a1eb63-c21a-11ec-b07f-000c2987bea6:1-6 |</span><br><span class="line">+<span class="comment">------------------+----------+--------------+------------------+------------------------------------------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="sql">mysql&gt; show master status;
++------------------+----------+--------------+------------------+------------------------------------------+
+| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set                        |
++------------------+----------+--------------+------------------+------------------------------------------+
+| mysql-bin.000002 |     1620 |              |                  | 03a1eb63-c21a-11ec-b07f-000c2987bea6:1-6 |
++------------------+----------+--------------+------------------+------------------------------------------+
+1 row in set (0.00 sec)
+</code></pre>
 <p>&#x67E5;&#x770B;&#x4ECE;&#x5E93;&#x72B6;&#x6001;</p>
-<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql&gt; show master status;</span><br><span class="line">+<span class="comment">------------------+----------+--------------+------------------+------------------------------------------+</span></span><br><span class="line">| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set                        |</span><br><span class="line">+<span class="comment">------------------+----------+--------------+------------------+------------------------------------------+</span></span><br><span class="line">| mysql-bin.000002 |     1584 |              |                  | 03a1eb63-c21a-11ec-b07f-000c2987bea6:1-6 |</span><br><span class="line">+<span class="comment">------------------+----------+--------------+------------------+------------------------------------------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="sql">mysql&gt; show master status;
++------------------+----------+--------------+------------------+------------------------------------------+
+| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set                        |
++------------------+----------+--------------+------------------+------------------------------------------+
+| mysql-bin.000002 |     1584 |              |                  | 03a1eb63-c21a-11ec-b07f-000c2987bea6:1-6 |
++------------------+----------+--------------+------------------+------------------------------------------+
+1 row in set (0.00 sec)
+</code></pre>
 <p>&#x4ECE;&#x5E93;&#x505C;&#x6389;&#x4E3B;&#x4ECE;&#x540C;&#x6B65;</p>
-<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql&gt; stop slave;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; show slave status\G</span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">               Slave_IO_State: </span><br><span class="line">                  Master_Host: 192.168.10.11</span><br><span class="line">                  Master_User: Jaking</span><br><span class="line">                  Master_Port: 3306</span><br><span class="line">                Connect_Retry: 60</span><br><span class="line">              Master_Log_File: mysql-bin.000002</span><br><span class="line">          Read_Master_Log_Pos: 1620</span><br><span class="line">               Relay_Log_File: server12-relay-bin.000002</span><br><span class="line">                Relay_Log_Pos: 1833</span><br><span class="line">        Relay_Master_Log_File: mysql-bin.000002</span><br><span class="line">             Slave_IO_Running: No</span><br><span class="line">            Slave_SQL_Running: No</span><br><span class="line">              Replicate_Do_DB: </span><br><span class="line">          Replicate_Ignore_DB: </span><br><span class="line">           Replicate_Do_Table: </span><br><span class="line">       Replicate_Ignore_Table: </span><br><span class="line">      Replicate_Wild_Do_Table: </span><br><span class="line">  Replicate_Wild_Ignore_Table: </span><br><span class="line">                   Last_Errno: 0</span><br><span class="line">                   Last_Error: </span><br><span class="line">                 Skip_Counter: 0</span><br><span class="line">          Exec_Master_Log_Pos: 1620</span><br><span class="line">              Relay_Log_Space: 2043</span><br><span class="line">              Until_Condition: None</span><br><span class="line">               Until_Log_File: </span><br><span class="line">                Until_Log_Pos: 0</span><br><span class="line">           Master_SSL_Allowed: No</span><br><span class="line">           Master_SSL_CA_File: </span><br><span class="line">           Master_SSL_CA_Path: </span><br><span class="line">              Master_SSL_Cert: </span><br><span class="line">            Master_SSL_Cipher: </span><br><span class="line">               Master_SSL_Key: </span><br><span class="line">        Seconds_Behind_Master: NULL</span><br><span class="line">Master_SSL_Verify_Server_Cert: No</span><br><span class="line">                Last_IO_Errno: 0</span><br><span class="line">                Last_IO_Error: </span><br><span class="line">               Last_SQL_Errno: 0</span><br><span class="line">               Last_SQL_Error: </span><br><span class="line">  Replicate_Ignore_Server_Ids: </span><br><span class="line">             Master_Server_Id: 11</span><br><span class="line">                  Master_UUID: 03a1eb63-c21a-11ec-b07f-000c2987bea6</span><br><span class="line">             Master_Info_File: /var/lib/mysql/master.info</span><br><span class="line">                    SQL_Delay: 0</span><br><span class="line">          SQL_Remaining_Delay: NULL</span><br><span class="line">      Slave_SQL_Running_State: </span><br><span class="line">           Master_Retry_Count: 86400</span><br><span class="line">                  Master_Bind: </span><br><span class="line">      Last_IO_Error_Timestamp: </span><br><span class="line">     Last_SQL_Error_Timestamp: </span><br><span class="line">               Master_SSL_Crl: </span><br><span class="line">           Master_SSL_Crlpath: </span><br><span class="line">           Retrieved_Gtid_Set: 03a1eb63-c21a-11ec-b07f-000c2987bea6:1-6</span><br><span class="line">            Executed_Gtid_Set: 03a1eb63-c21a-11ec-b07f-000c2987bea6:1-6</span><br><span class="line">                Auto_Position: 1</span><br><span class="line">         Replicate_Rewrite_DB: </span><br><span class="line">                 Channel_Name: </span><br><span class="line">           Master_TLS_Version: </span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="sql">mysql&gt; stop slave;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql&gt; show slave status\G
+*************************** 1. row ***************************
+               Slave_IO_State: 
+                  Master_Host: 192.168.10.11
+                  Master_User: Jaking
+                  Master_Port: 3306
+                Connect_Retry: 60
+              Master_Log_File: mysql-bin.000002
+          Read_Master_Log_Pos: 1620
+               Relay_Log_File: server12-relay-bin.000002
+                Relay_Log_Pos: 1833
+        Relay_Master_Log_File: mysql-bin.000002
+             Slave_IO_Running: No
+            Slave_SQL_Running: No
+              Replicate_Do_DB: 
+          Replicate_Ignore_DB: 
+           Replicate_Do_Table: 
+       Replicate_Ignore_Table: 
+      Replicate_Wild_Do_Table: 
+  Replicate_Wild_Ignore_Table: 
+                   Last_Errno: 0
+                   Last_Error: 
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 1620
+              Relay_Log_Space: 2043
+              Until_Condition: None
+               Until_Log_File: 
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File: 
+           Master_SSL_CA_Path: 
+              Master_SSL_Cert: 
+            Master_SSL_Cipher: 
+               Master_SSL_Key: 
+        Seconds_Behind_Master: NULL
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 0
+                Last_IO_Error: 
+               Last_SQL_Errno: 0
+               Last_SQL_Error: 
+  Replicate_Ignore_Server_Ids: 
+             Master_Server_Id: 11
+                  Master_UUID: 03a1eb63-c21a-11ec-b07f-000c2987bea6
+             Master_Info_File: /var/lib/mysql/master.info
+                    SQL_Delay: 0
+          SQL_Remaining_Delay: NULL
+      Slave_SQL_Running_State: 
+           Master_Retry_Count: 86400
+                  Master_Bind: 
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+               Master_SSL_Crl: 
+           Master_SSL_Crlpath: 
+           Retrieved_Gtid_Set: 03a1eb63-c21a-11ec-b07f-000c2987bea6:1-6
+            Executed_Gtid_Set: 03a1eb63-c21a-11ec-b07f-000c2987bea6:1-6
+                Auto_Position: 1
+         Replicate_Rewrite_DB: 
+                 Channel_Name: 
+           Master_TLS_Version: 
+1 row in set (0.00 sec)
+</code></pre>
 <p>&#x5728;&#x4E3B;&#x5E93;&#x521B;&#x5EFA;&#x6570;&#x636E;&#x540E;&#x4ECE;&#x5E93;&#x5F00;&#x542F;&#x4E3B;&#x4ECE;&#x540C;&#x6B65;&#x67E5;&#x770B;&#x662F;&#x5426;&#x540C;&#x6B65;</p>
-<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">DATABASE</span> <span class="string">`testbookdb`</span> <span class="keyword">DEFAULT</span> <span class="built_in">CHARACTER</span> <span class="keyword">SET</span> utf8 <span class="keyword">COLLATE</span> utf8_general_ci;</span><br><span class="line"><span class="keyword">show</span> <span class="keyword">databases</span>;</span><br><span class="line"><span class="keyword">use</span> testbookdb;</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> book1 (bTypeId <span class="built_in">int</span>,bName <span class="built_in">char</span>(<span class="number">16</span>),price <span class="built_in">int</span>,publishing <span class="built_in">char</span>(<span class="number">16</span>));</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book1(bTypeId,bName,price,publishing) <span class="keyword">VALUES</span>(<span class="string">&apos;1&apos;</span>,<span class="string">&apos;&#x300A;Linux&#x4ECE;&#x5165;&#x95E8;&#x5230;&#x7CBE;&#x901A;&#x300B;&apos;</span>,<span class="string">&apos;66&apos;</span>,<span class="string">&apos;&#x7535;&#x5B50;&#x5DE5;&#x4E1A;&#x51FA;&#x7248;&#x793E;&apos;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book1(bTypeId,bName,price,publishing) <span class="keyword">VALUES</span>(<span class="string">&apos;2&apos;</span>,<span class="string">&apos;&#x300A;&#x4E91;&#x8BA1;&#x7B97;&#x8D8B;&#x52BF;&#x300B;&apos;</span>,<span class="string">&apos;68&apos;</span>,<span class="string">&apos;&#x4EBA;&#x6C11;&#x90AE;&#x7535;&#x51FA;&#x7248;&#x793E;&apos;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book1(bTypeId,bName,price,publishing) <span class="keyword">VALUES</span>(<span class="string">&apos;3&apos;</span>,<span class="string">&apos;&#x300A;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x8BBE;&#x8BA1;&#x4E0E;&#x5B9E;&#x73B0;&#x300B;&apos;</span>,<span class="string">&apos;90&apos;</span>,<span class="string">&apos;&#x673A;&#x68B0;&#x5DE5;&#x4E1A;&#x51FA;&#x7248;&#x793E;&apos;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book1(bTypeId,bName,price,publishing) <span class="keyword">VALUES</span>(<span class="string">&apos;4&apos;</span>,<span class="string">&apos;&#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL&#x300B;&apos;</span>,<span class="string">&apos;71&apos;</span>,<span class="string">&apos;&#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;&apos;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book1(bTypeId,bName,price,publishing) <span class="keyword">VALUES</span>(<span class="string">&apos;5&apos;</span>,<span class="string">&apos;&#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL2&#x300B;&apos;</span>,<span class="string">&apos;72&apos;</span>,<span class="string">&apos;&#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;&apos;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book1(bTypeId,bName,price,publishing) <span class="keyword">VALUES</span>(<span class="string">&apos;6&apos;</span>,<span class="string">&apos;&#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL3&#x300B;&apos;</span>,<span class="string">&apos;73&apos;</span>,<span class="string">&apos;&#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;&apos;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book1(bTypeId,bName,price,publishing) <span class="keyword">VALUES</span>(<span class="string">&apos;7&apos;</span>,<span class="string">&apos;&#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL4&#x300B;&apos;</span>,<span class="string">&apos;74&apos;</span>,<span class="string">&apos;&#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;&apos;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book1(bTypeId,bName,price,publishing) <span class="keyword">VALUES</span>(<span class="string">&apos;8&apos;</span>,<span class="string">&apos;&#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL5&#x300B;&apos;</span>,<span class="string">&apos;75&apos;</span>,<span class="string">&apos;&#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;&apos;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book1(bTypeId,bName,price,publishing) <span class="keyword">VALUES</span>(<span class="string">&apos;9&apos;</span>,<span class="string">&apos;&#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL6&#x300B;&apos;</span>,<span class="string">&apos;76&apos;</span>,<span class="string">&apos;&#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;&apos;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book1(bTypeId,bName,price,publishing) <span class="keyword">VALUES</span>(<span class="string">&apos;10&apos;</span>,<span class="string">&apos;&#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL7&#x300B;&apos;</span>,<span class="string">&apos;77&apos;</span>,<span class="string">&apos;&#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;&apos;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book1(bTypeId,bName,price,publishing) <span class="keyword">VALUES</span>(<span class="string">&apos;11&apos;</span>,<span class="string">&apos;&#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL8&#x300B;&apos;</span>,<span class="string">&apos;78&apos;</span>,<span class="string">&apos;&#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;&apos;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book1(bTypeId,bName,price,publishing) <span class="keyword">VALUES</span>(<span class="string">&apos;12&apos;</span>,<span class="string">&apos;&#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL9&#x300B;&apos;</span>,<span class="string">&apos;79&apos;</span>,<span class="string">&apos;&#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;&apos;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> book2 (<span class="keyword">name</span> <span class="built_in">char</span>(<span class="number">16</span>),price <span class="built_in">int</span>,pages <span class="built_in">int</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book2(<span class="keyword">name</span>,price,pages) <span class="keyword">VALUES</span>(<span class="string">&apos;&#x300A;Linux&#x4ECE;&#x5165;&#x95E8;&#x5230;&#x7CBE;&#x901A;&#x300B;&apos;</span>,<span class="string">&apos;30&apos;</span>,<span class="string">&apos;666&apos;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book2(<span class="keyword">name</span>,price,pages) <span class="keyword">VALUES</span>(<span class="string">&apos;&#x300A;&#x4E91;&#x8BA1;&#x7B97;&#x8D8B;&#x52BF;&#x300B;&apos;</span>,<span class="string">&apos;60&apos;</span>,<span class="string">&apos;666&apos;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book2(<span class="keyword">name</span>,price,pages) <span class="keyword">VALUES</span>(<span class="string">&apos;&#x300A;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x8BBE;&#x8BA1;&#x4E0E;&#x5B9E;&#x73B0;&#x300B;&apos;</span>,<span class="string">&apos;80&apos;</span>,<span class="string">&apos;666&apos;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> book2(<span class="keyword">name</span>,price,pages) <span class="keyword">VALUES</span>(<span class="string">&apos;&#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL&#x300B;&apos;</span>,<span class="string">&apos;166&apos;</span>,<span class="string">&apos;666&apos;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">show</span> <span class="keyword">tables</span>;</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> book1;</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> book2;</span><br></pre></td></tr></tbody></table></figure>
-<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql&gt; select * from book1;</span><br><span class="line">+<span class="comment">---------+-----------------------------------+-------+-----------------------+</span></span><br><span class="line">| bTypeId | bName                             | price | publishing            |</span><br><span class="line">+<span class="comment">---------+-----------------------------------+-------+-----------------------+</span></span><br><span class="line">|       1 | &#x300A;Linux&#x4ECE;&#x5165;&#x95E8;&#x5230;&#x7CBE;&#x901A;&#x300B;             |    66 | &#x7535;&#x5B50;&#x5DE5;&#x4E1A;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">|       2 | &#x300A;&#x4E91;&#x8BA1;&#x7B97;&#x8D8B;&#x52BF;&#x300B;                    |    68 | &#x4EBA;&#x6C11;&#x90AE;&#x7535;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">|       3 | &#x300A;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x8BBE;&#x8BA1;&#x4E0E;&#x5B9E;&#x73B0;&#x300B;            |    90 | &#x673A;&#x68B0;&#x5DE5;&#x4E1A;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">|       4 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL&#x300B;                   |    71 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">|       5 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL2&#x300B;                  |    72 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">|       6 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL3&#x300B;                  |    73 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">|       7 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL4&#x300B;                  |    74 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">|       8 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL5&#x300B;                  |    75 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">|       9 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL6&#x300B;                  |    76 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">|      10 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL7&#x300B;                  |    77 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">|      11 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL8&#x300B;                  |    78 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">|      12 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL9&#x300B;                  |    79 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">+<span class="comment">---------+-----------------------------------+-------+-----------------------+</span></span><br><span class="line">12 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> book2;</span><br><span class="line">+<span class="comment">-----------------------------------+-------+-------+</span></span><br><span class="line">| name                              | price | pages |</span><br><span class="line">+<span class="comment">-----------------------------------+-------+-------+</span></span><br><span class="line">| &#x300A;Linux&#x4ECE;&#x5165;&#x95E8;&#x5230;&#x7CBE;&#x901A;&#x300B;             |    30 |   666 |</span><br><span class="line">| &#x300A;&#x4E91;&#x8BA1;&#x7B97;&#x8D8B;&#x52BF;&#x300B;                    |    60 |   666 |</span><br><span class="line">| &#x300A;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x8BBE;&#x8BA1;&#x4E0E;&#x5B9E;&#x73B0;&#x300B;            |    80 |   666 |</span><br><span class="line">| &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL&#x300B;                   |   166 |   666 |</span><br><span class="line">+<span class="comment">-----------------------------------+-------+-------+</span></span><br><span class="line">4 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="sql">CREATE DATABASE `testbookdb` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+show databases;
+use testbookdb;
+CREATE TABLE book1 (bTypeId int,bName char(16),price int,publishing char(16));
+INSERT INTO book1(bTypeId,bName,price,publishing) VALUES(&apos;1&apos;,&apos;&#x300A;Linux&#x4ECE;&#x5165;&#x95E8;&#x5230;&#x7CBE;&#x901A;&#x300B;&apos;,&apos;66&apos;,&apos;&#x7535;&#x5B50;&#x5DE5;&#x4E1A;&#x51FA;&#x7248;&#x793E;&apos;);
+INSERT INTO book1(bTypeId,bName,price,publishing) VALUES(&apos;2&apos;,&apos;&#x300A;&#x4E91;&#x8BA1;&#x7B97;&#x8D8B;&#x52BF;&#x300B;&apos;,&apos;68&apos;,&apos;&#x4EBA;&#x6C11;&#x90AE;&#x7535;&#x51FA;&#x7248;&#x793E;&apos;);
+INSERT INTO book1(bTypeId,bName,price,publishing) VALUES(&apos;3&apos;,&apos;&#x300A;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x8BBE;&#x8BA1;&#x4E0E;&#x5B9E;&#x73B0;&#x300B;&apos;,&apos;90&apos;,&apos;&#x673A;&#x68B0;&#x5DE5;&#x4E1A;&#x51FA;&#x7248;&#x793E;&apos;);
+INSERT INTO book1(bTypeId,bName,price,publishing) VALUES(&apos;4&apos;,&apos;&#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL&#x300B;&apos;,&apos;71&apos;,&apos;&#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;&apos;);
+INSERT INTO book1(bTypeId,bName,price,publishing) VALUES(&apos;5&apos;,&apos;&#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL2&#x300B;&apos;,&apos;72&apos;,&apos;&#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;&apos;);
+INSERT INTO book1(bTypeId,bName,price,publishing) VALUES(&apos;6&apos;,&apos;&#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL3&#x300B;&apos;,&apos;73&apos;,&apos;&#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;&apos;);
+INSERT INTO book1(bTypeId,bName,price,publishing) VALUES(&apos;7&apos;,&apos;&#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL4&#x300B;&apos;,&apos;74&apos;,&apos;&#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;&apos;);
+INSERT INTO book1(bTypeId,bName,price,publishing) VALUES(&apos;8&apos;,&apos;&#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL5&#x300B;&apos;,&apos;75&apos;,&apos;&#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;&apos;);
+INSERT INTO book1(bTypeId,bName,price,publishing) VALUES(&apos;9&apos;,&apos;&#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL6&#x300B;&apos;,&apos;76&apos;,&apos;&#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;&apos;);
+INSERT INTO book1(bTypeId,bName,price,publishing) VALUES(&apos;10&apos;,&apos;&#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL7&#x300B;&apos;,&apos;77&apos;,&apos;&#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;&apos;);
+INSERT INTO book1(bTypeId,bName,price,publishing) VALUES(&apos;11&apos;,&apos;&#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL8&#x300B;&apos;,&apos;78&apos;,&apos;&#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;&apos;);
+INSERT INTO book1(bTypeId,bName,price,publishing) VALUES(&apos;12&apos;,&apos;&#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL9&#x300B;&apos;,&apos;79&apos;,&apos;&#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;&apos;);
+
+CREATE TABLE book2 (name char(16),price int,pages int);
+INSERT INTO book2(name,price,pages) VALUES(&apos;&#x300A;Linux&#x4ECE;&#x5165;&#x95E8;&#x5230;&#x7CBE;&#x901A;&#x300B;&apos;,&apos;30&apos;,&apos;666&apos;);
+INSERT INTO book2(name,price,pages) VALUES(&apos;&#x300A;&#x4E91;&#x8BA1;&#x7B97;&#x8D8B;&#x52BF;&#x300B;&apos;,&apos;60&apos;,&apos;666&apos;);
+INSERT INTO book2(name,price,pages) VALUES(&apos;&#x300A;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x8BBE;&#x8BA1;&#x4E0E;&#x5B9E;&#x73B0;&#x300B;&apos;,&apos;80&apos;,&apos;666&apos;);
+INSERT INTO book2(name,price,pages) VALUES(&apos;&#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL&#x300B;&apos;,&apos;166&apos;,&apos;666&apos;);
+
+show tables;
+select * from book1;
+select * from book2;
+</code></pre>
+<pre><code class="sql">mysql&gt; select * from book1;
++---------+-----------------------------------+-------+-----------------------+
+| bTypeId | bName                             | price | publishing            |
++---------+-----------------------------------+-------+-----------------------+
+|       1 | &#x300A;Linux&#x4ECE;&#x5165;&#x95E8;&#x5230;&#x7CBE;&#x901A;&#x300B;             |    66 | &#x7535;&#x5B50;&#x5DE5;&#x4E1A;&#x51FA;&#x7248;&#x793E;        |
+|       2 | &#x300A;&#x4E91;&#x8BA1;&#x7B97;&#x8D8B;&#x52BF;&#x300B;                    |    68 | &#x4EBA;&#x6C11;&#x90AE;&#x7535;&#x51FA;&#x7248;&#x793E;        |
+|       3 | &#x300A;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x8BBE;&#x8BA1;&#x4E0E;&#x5B9E;&#x73B0;&#x300B;            |    90 | &#x673A;&#x68B0;&#x5DE5;&#x4E1A;&#x51FA;&#x7248;&#x793E;        |
+|       4 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL&#x300B;                   |    71 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |
+|       5 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL2&#x300B;                  |    72 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |
+|       6 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL3&#x300B;                  |    73 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |
+|       7 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL4&#x300B;                  |    74 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |
+|       8 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL5&#x300B;                  |    75 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |
+|       9 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL6&#x300B;                  |    76 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |
+|      10 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL7&#x300B;                  |    77 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |
+|      11 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL8&#x300B;                  |    78 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |
+|      12 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL9&#x300B;                  |    79 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |
++---------+-----------------------------------+-------+-----------------------+
+12 rows in set (0.00 sec)
+
+mysql&gt; select * from book2;
++-----------------------------------+-------+-------+
+| name                              | price | pages |
++-----------------------------------+-------+-------+
+| &#x300A;Linux&#x4ECE;&#x5165;&#x95E8;&#x5230;&#x7CBE;&#x901A;&#x300B;             |    30 |   666 |
+| &#x300A;&#x4E91;&#x8BA1;&#x7B97;&#x8D8B;&#x52BF;&#x300B;                    |    60 |   666 |
+| &#x300A;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x8BBE;&#x8BA1;&#x4E0E;&#x5B9E;&#x73B0;&#x300B;            |    80 |   666 |
+| &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL&#x300B;                   |   166 |   666 |
++-----------------------------------+-------+-------+
+4 rows in set (0.00 sec)
+</code></pre>
 <p>&#x67E5;&#x770B;&#x4E3B;&#x5E93;&#x72B6;&#x6001;</p>
-<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql&gt; show master status;</span><br><span class="line">+<span class="comment">------------------+----------+--------------+------------------+-------------------------------------------+</span></span><br><span class="line">| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set                         |</span><br><span class="line">+<span class="comment">------------------+----------+--------------+------------------+-------------------------------------------+</span></span><br><span class="line">| mysql-bin.000002 |     7389 |              |                  | 03a1eb63-c21a-11ec-b07f-000c2987bea6:1-25 |</span><br><span class="line">+<span class="comment">------------------+----------+--------------+------------------+-------------------------------------------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="sql">mysql&gt; show master status;
++------------------+----------+--------------+------------------+-------------------------------------------+
+| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set                         |
++------------------+----------+--------------+------------------+-------------------------------------------+
+| mysql-bin.000002 |     7389 |              |                  | 03a1eb63-c21a-11ec-b07f-000c2987bea6:1-25 |
++------------------+----------+--------------+------------------+-------------------------------------------+
+1 row in set (0.00 sec)
+</code></pre>
 <p>&#x67E5;&#x770B;&#x4ECE;&#x5E93;&#x72B6;&#x6001;</p>
-<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql&gt; show master status;</span><br><span class="line">+<span class="comment">------------------+----------+--------------+------------------+------------------------------------------+</span></span><br><span class="line">| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set                        |</span><br><span class="line">+<span class="comment">------------------+----------+--------------+------------------+------------------------------------------+</span></span><br><span class="line">| mysql-bin.000002 |     1584 |              |                  | 03a1eb63-c21a-11ec-b07f-000c2987bea6:1-6 |</span><br><span class="line">+<span class="comment">------------------+----------+--------------+------------------+------------------------------------------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="sql">mysql&gt; show master status;
++------------------+----------+--------------+------------------+------------------------------------------+
+| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set                        |
++------------------+----------+--------------+------------------+------------------------------------------+
+| mysql-bin.000002 |     1584 |              |                  | 03a1eb63-c21a-11ec-b07f-000c2987bea6:1-6 |
++------------------+----------+--------------+------------------+------------------------------------------+
+1 row in set (0.00 sec)
+</code></pre>
 <p>&#x4ECE;&#x5E93;&#x5F00;&#x542F;&#x4E3B;&#x4ECE;&#x540C;&#x6B65;&#x67E5;&#x770B;&#x662F;&#x5426;&#x540C;&#x6B65;</p>
-<figure class="highlight sql"><table><tbody><tr><td class="code"><pre><span class="line">mysql&gt; start slave;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; show slave status\G</span><br><span class="line">*************************** 1. row ***************************</span><br><span class="line">               Slave_IO_State: Waiting for master to send event</span><br><span class="line">                  Master_Host: 192.168.10.11</span><br><span class="line">                  Master_User: Jaking</span><br><span class="line">                  Master_Port: 3306</span><br><span class="line">                Connect_Retry: 60</span><br><span class="line">              Master_Log_File: mysql-bin.000002</span><br><span class="line">          Read_Master_Log_Pos: 7389</span><br><span class="line">               Relay_Log_File: server12-relay-bin.000003</span><br><span class="line">                Relay_Log_Pos: 6223</span><br><span class="line">        Relay_Master_Log_File: mysql-bin.000002</span><br><span class="line">             Slave_IO_Running: Yes</span><br><span class="line">            Slave_SQL_Running: Yes</span><br><span class="line">              Replicate_Do_DB: </span><br><span class="line">          Replicate_Ignore_DB: </span><br><span class="line">           Replicate_Do_Table: </span><br><span class="line">       Replicate_Ignore_Table: </span><br><span class="line">      Replicate_Wild_Do_Table: </span><br><span class="line">  Replicate_Wild_Ignore_Table: </span><br><span class="line">                   Last_Errno: 0</span><br><span class="line">                   Last_Error: </span><br><span class="line">                 Skip_Counter: 0</span><br><span class="line">          Exec_Master_Log_Pos: 7389</span><br><span class="line">              Relay_Log_Space: 8112</span><br><span class="line">              Until_Condition: None</span><br><span class="line">               Until_Log_File: </span><br><span class="line">                Until_Log_Pos: 0</span><br><span class="line">           Master_SSL_Allowed: No</span><br><span class="line">           Master_SSL_CA_File: </span><br><span class="line">           Master_SSL_CA_Path: </span><br><span class="line">              Master_SSL_Cert: </span><br><span class="line">            Master_SSL_Cipher: </span><br><span class="line">               Master_SSL_Key: </span><br><span class="line">        Seconds_Behind_Master: 0</span><br><span class="line">Master_SSL_Verify_Server_Cert: No</span><br><span class="line">                Last_IO_Errno: 0</span><br><span class="line">                Last_IO_Error: </span><br><span class="line">               Last_SQL_Errno: 0</span><br><span class="line">               Last_SQL_Error: </span><br><span class="line">  Replicate_Ignore_Server_Ids: </span><br><span class="line">             Master_Server_Id: 11</span><br><span class="line">                  Master_UUID: 03a1eb63-c21a-11ec-b07f-000c2987bea6</span><br><span class="line">             Master_Info_File: /var/lib/mysql/master.info</span><br><span class="line">                    SQL_Delay: 0</span><br><span class="line">          SQL_Remaining_Delay: NULL</span><br><span class="line">      Slave_SQL_Running_State: Slave has read all relay log; waiting for more updates</span><br><span class="line">           Master_Retry_Count: 86400</span><br><span class="line">                  Master_Bind: </span><br><span class="line">      Last_IO_Error_Timestamp: </span><br><span class="line">     Last_SQL_Error_Timestamp: </span><br><span class="line">               Master_SSL_Crl: </span><br><span class="line">           Master_SSL_Crlpath: </span><br><span class="line">           Retrieved_Gtid_Set: 03a1eb63-c21a-11ec-b07f-000c2987bea6:1-25</span><br><span class="line">            Executed_Gtid_Set: 03a1eb63-c21a-11ec-b07f-000c2987bea6:1-25</span><br><span class="line">                Auto_Position: 1</span><br><span class="line">         Replicate_Rewrite_DB: </span><br><span class="line">                 Channel_Name: </span><br><span class="line">           Master_TLS_Version: </span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">show</span> <span class="keyword">databases</span>;</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line">| Database           |</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line">| information_schema |</span><br><span class="line">| BOOK               |</span><br><span class="line">| mysql              |</span><br><span class="line">| performance_schema |</span><br><span class="line">| sys                |</span><br><span class="line">| testbookdb         |</span><br><span class="line">+<span class="comment">--------------------+</span></span><br><span class="line">6 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">use</span> testbookdb;</span><br><span class="line">Reading table information for completion of table and column names</span><br><span class="line">You can turn off this feature to get a quicker startup <span class="keyword">with</span> -A</span><br><span class="line"></span><br><span class="line"><span class="keyword">Database</span> <span class="keyword">changed</span></span><br><span class="line">mysql&gt; <span class="keyword">show</span> <span class="keyword">tables</span>;</span><br><span class="line">+<span class="comment">----------------------+</span></span><br><span class="line">| Tables_in_testbookdb |</span><br><span class="line">+<span class="comment">----------------------+</span></span><br><span class="line">| book1                |</span><br><span class="line">| book2                |</span><br><span class="line">+<span class="comment">----------------------+</span></span><br><span class="line">2 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> book1;</span><br><span class="line">+<span class="comment">---------+-----------------------------------+-------+-----------------------+</span></span><br><span class="line">| bTypeId | bName                             | price | publishing            |</span><br><span class="line">+<span class="comment">---------+-----------------------------------+-------+-----------------------+</span></span><br><span class="line">|       1 | &#x300A;Linux&#x4ECE;&#x5165;&#x95E8;&#x5230;&#x7CBE;&#x901A;&#x300B;             |    66 | &#x7535;&#x5B50;&#x5DE5;&#x4E1A;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">|       2 | &#x300A;&#x4E91;&#x8BA1;&#x7B97;&#x8D8B;&#x52BF;&#x300B;                    |    68 | &#x4EBA;&#x6C11;&#x90AE;&#x7535;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">|       3 | &#x300A;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x8BBE;&#x8BA1;&#x4E0E;&#x5B9E;&#x73B0;&#x300B;            |    90 | &#x673A;&#x68B0;&#x5DE5;&#x4E1A;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">|       4 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL&#x300B;                   |    71 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">|       5 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL2&#x300B;                  |    72 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">|       6 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL3&#x300B;                  |    73 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">|       7 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL4&#x300B;                  |    74 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">|       8 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL5&#x300B;                  |    75 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">|       9 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL6&#x300B;                  |    76 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">|      10 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL7&#x300B;                  |    77 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">|      11 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL8&#x300B;                  |    78 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">|      12 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL9&#x300B;                  |    79 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |</span><br><span class="line">+<span class="comment">---------+-----------------------------------+-------+-----------------------+</span></span><br><span class="line">12 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">select</span> * <span class="keyword">from</span> book2;</span><br><span class="line">+<span class="comment">-----------------------------------+-------+-------+</span></span><br><span class="line">| name                              | price | pages |</span><br><span class="line">+<span class="comment">-----------------------------------+-------+-------+</span></span><br><span class="line">| &#x300A;Linux&#x4ECE;&#x5165;&#x95E8;&#x5230;&#x7CBE;&#x901A;&#x300B;             |    30 |   666 |</span><br><span class="line">| &#x300A;&#x4E91;&#x8BA1;&#x7B97;&#x8D8B;&#x52BF;&#x300B;                    |    60 |   666 |</span><br><span class="line">| &#x300A;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x8BBE;&#x8BA1;&#x4E0E;&#x5B9E;&#x73B0;&#x300B;            |    80 |   666 |</span><br><span class="line">| &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL&#x300B;                   |   166 |   666 |</span><br><span class="line">+<span class="comment">-----------------------------------+-------+-------+</span></span><br><span class="line">4 rows in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; <span class="keyword">show</span> <span class="keyword">master</span> <span class="keyword">status</span>;</span><br><span class="line">+<span class="comment">------------------+----------+--------------+------------------+-------------------------------------------+</span></span><br><span class="line">| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set                         |</span><br><span class="line">+<span class="comment">------------------+----------+--------------+------------------+-------------------------------------------+</span></span><br><span class="line">| mysql-bin.000002 |     7113 |              |                  | 03a1eb63-c21a-11ec-b07f-000c2987bea6:1-25 |</span><br><span class="line">+<span class="comment">------------------+----------+--------------+------------------+-------------------------------------------+</span></span><br><span class="line">1 row in <span class="keyword">set</span> (<span class="number">0.00</span> sec)</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="sql">mysql&gt; start slave;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql&gt; show slave status\G
+*************************** 1. row ***************************
+               Slave_IO_State: Waiting for master to send event
+                  Master_Host: 192.168.10.11
+                  Master_User: Jaking
+                  Master_Port: 3306
+                Connect_Retry: 60
+              Master_Log_File: mysql-bin.000002
+          Read_Master_Log_Pos: 7389
+               Relay_Log_File: server12-relay-bin.000003
+                Relay_Log_Pos: 6223
+        Relay_Master_Log_File: mysql-bin.000002
+             Slave_IO_Running: Yes
+            Slave_SQL_Running: Yes
+              Replicate_Do_DB: 
+          Replicate_Ignore_DB: 
+           Replicate_Do_Table: 
+       Replicate_Ignore_Table: 
+      Replicate_Wild_Do_Table: 
+  Replicate_Wild_Ignore_Table: 
+                   Last_Errno: 0
+                   Last_Error: 
+                 Skip_Counter: 0
+          Exec_Master_Log_Pos: 7389
+              Relay_Log_Space: 8112
+              Until_Condition: None
+               Until_Log_File: 
+                Until_Log_Pos: 0
+           Master_SSL_Allowed: No
+           Master_SSL_CA_File: 
+           Master_SSL_CA_Path: 
+              Master_SSL_Cert: 
+            Master_SSL_Cipher: 
+               Master_SSL_Key: 
+        Seconds_Behind_Master: 0
+Master_SSL_Verify_Server_Cert: No
+                Last_IO_Errno: 0
+                Last_IO_Error: 
+               Last_SQL_Errno: 0
+               Last_SQL_Error: 
+  Replicate_Ignore_Server_Ids: 
+             Master_Server_Id: 11
+                  Master_UUID: 03a1eb63-c21a-11ec-b07f-000c2987bea6
+             Master_Info_File: /var/lib/mysql/master.info
+                    SQL_Delay: 0
+          SQL_Remaining_Delay: NULL
+      Slave_SQL_Running_State: Slave has read all relay log; waiting for more updates
+           Master_Retry_Count: 86400
+                  Master_Bind: 
+      Last_IO_Error_Timestamp: 
+     Last_SQL_Error_Timestamp: 
+               Master_SSL_Crl: 
+           Master_SSL_Crlpath: 
+           Retrieved_Gtid_Set: 03a1eb63-c21a-11ec-b07f-000c2987bea6:1-25
+            Executed_Gtid_Set: 03a1eb63-c21a-11ec-b07f-000c2987bea6:1-25
+                Auto_Position: 1
+         Replicate_Rewrite_DB: 
+                 Channel_Name: 
+           Master_TLS_Version: 
+1 row in set (0.00 sec)
+
+mysql&gt; show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| BOOK               |
+| mysql              |
+| performance_schema |
+| sys                |
+| testbookdb         |
++--------------------+
+6 rows in set (0.00 sec)
+
+mysql&gt; use testbookdb;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql&gt; show tables;
++----------------------+
+| Tables_in_testbookdb |
++----------------------+
+| book1                |
+| book2                |
++----------------------+
+2 rows in set (0.00 sec)
+
+mysql&gt; select * from book1;
++---------+-----------------------------------+-------+-----------------------+
+| bTypeId | bName                             | price | publishing            |
++---------+-----------------------------------+-------+-----------------------+
+|       1 | &#x300A;Linux&#x4ECE;&#x5165;&#x95E8;&#x5230;&#x7CBE;&#x901A;&#x300B;             |    66 | &#x7535;&#x5B50;&#x5DE5;&#x4E1A;&#x51FA;&#x7248;&#x793E;        |
+|       2 | &#x300A;&#x4E91;&#x8BA1;&#x7B97;&#x8D8B;&#x52BF;&#x300B;                    |    68 | &#x4EBA;&#x6C11;&#x90AE;&#x7535;&#x51FA;&#x7248;&#x793E;        |
+|       3 | &#x300A;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x8BBE;&#x8BA1;&#x4E0E;&#x5B9E;&#x73B0;&#x300B;            |    90 | &#x673A;&#x68B0;&#x5DE5;&#x4E1A;&#x51FA;&#x7248;&#x793E;        |
+|       4 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL&#x300B;                   |    71 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |
+|       5 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL2&#x300B;                  |    72 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |
+|       6 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL3&#x300B;                  |    73 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |
+|       7 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL4&#x300B;                  |    74 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |
+|       8 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL5&#x300B;                  |    75 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |
+|       9 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL6&#x300B;                  |    76 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |
+|      10 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL7&#x300B;                  |    77 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |
+|      11 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL8&#x300B;                  |    78 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |
+|      12 | &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL9&#x300B;                  |    79 | &#x6E05;&#x534E;&#x5927;&#x5B66;&#x51FA;&#x7248;&#x793E;        |
++---------+-----------------------------------+-------+-----------------------+
+12 rows in set (0.00 sec)
+
+mysql&gt; select * from book2;
++-----------------------------------+-------+-------+
+| name                              | price | pages |
++-----------------------------------+-------+-------+
+| &#x300A;Linux&#x4ECE;&#x5165;&#x95E8;&#x5230;&#x7CBE;&#x901A;&#x300B;             |    30 |   666 |
+| &#x300A;&#x4E91;&#x8BA1;&#x7B97;&#x8D8B;&#x52BF;&#x300B;                    |    60 |   666 |
+| &#x300A;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x8BBE;&#x8BA1;&#x4E0E;&#x5B9E;&#x73B0;&#x300B;            |    80 |   666 |
+| &#x300A;&#x9AD8;&#x6027;&#x80FD;MySQL&#x300B;                   |   166 |   666 |
++-----------------------------------+-------+-------+
+4 rows in set (0.00 sec)
+
+mysql&gt; show master status;
++------------------+----------+--------------+------------------+-------------------------------------------+
+| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set                         |
++------------------+----------+--------------+------------------+-------------------------------------------+
+| mysql-bin.000002 |     7113 |              |                  | 03a1eb63-c21a-11ec-b07f-000c2987bea6:1-25 |
++------------------+----------+--------------+------------------+-------------------------------------------+
+1 row in set (0.00 sec)
+</code></pre>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
@@ -292,355 +2493,51 @@
             document.body.appendChild(img);
           });
       </script>
-        </div>
-
-        <blockquote class="post-copyright">
-    <div class="content">
-        
-<span class="post-time">
-    最后更新：<time datetime="2022-06-07T05:12:36.577Z" itemprop="dateUpdated">2022-06-07 13:12:36</time>
-</span>
+</div>
 
 
-        
-        原文链接：<a href="/posts/d77fafec/" target="_blank" rel="external">https://marnm.github.io/posts/d77fafec/</a>
-        
-    </div>
-    <footer>
-        <div onclick="location.href='https://marnm.github.io'">
-            <img src="/img/avatar.gif" alt="Echo">
-            <a>Echo</a>
-        </div>
-    </footer>
-</blockquote>
-
-        
-    <div class="page-reward">
-        <nav class="myreward">
-            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
-        </nav>
-    </div>
-
-
-
-        <div class="post-footer">
+    <div class="post-guide">
+        <div class="item left">
             
-
+              <a href="/posts/db0340bd/">
+                  <i class="fa fa-angle-left" aria-hidden="true"></i>
+                  MySQL高可用集群架构-MHA架构
+              </a>
             
-<div class="page-share-wrap">
-    
-
-<div class="page-share" id="pageShare">
-    <ul class="reset share-icons">
-      <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/d77fafec/&title=《MySQL的GTID主从同步》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
-          <i class="icon icon-weibo"></i>
-        </a>
-      </li>
-      <li>
-        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
-          <i class="icon icon-weixin"></i>
-        </a>
-      </li>
-      <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/d77fafec/&title=《MySQL的GTID主从同步》 — Deops's blog&source=Echo" data-title=" QQ">
-          <i class="icon icon-qq"></i>
-        </a>
-      </li>
-      <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/d77fafec/" data-title=" Facebook">
-          <i class="icon icon-facebook"></i>
-        </a>
-      </li>
-      <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《MySQL的GTID主从同步》 — Deops's blog&url=https://marnm.github.io/posts/d77fafec/&via=https://marnm.github.io" data-title=" Twitter">
-          <i class="icon icon-twitter"></i>
-        </a>
-      </li>
-      <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/d77fafec/" data-title=" Google+">
-          <i class="icon icon-google-plus"></i>
-        </a>
-      </li>
-    </ul>
- </div>
-
-
-
-    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
-        <i class="icon icon-share-alt icon-lg"></i>
-    </a>
-</div>
-
-
-
+        </div>
+        <div class="item right">
+            
+              <a href="/posts/607e4760/">
+                MySQL传统主从同步
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+              </a>
+            
         </div>
     </div>
 
-    
-<nav class="post-nav flex-row flex-justify-between">
-  
-    <div class="waves-block waves-effect prev">
-      <a href="/posts/db0340bd/" id="post-prev" class="post-nav-link">
-        <h4 class="title">
-          上一篇：MySQL高可用集群架构-MHA架构
-        </h4>
-      </a>
-    </div>
-  
-
-  
-    <div class="waves-block waves-effect next">
-      <a href="/posts/607e4760/" id="post-next" class="post-nav-link">
-        <h4 class="title" data-hover="下一篇：MySQL传统主从同步">下一篇：MySQL传统主从同步</h4>
-      </a>
-    </div>
-  
-</nav>
 
 
 
-    
-    
-
-    
-
-    
-
-
-</article>
-
-</div>
-
-        <footer class="footer">
-    <div class="footer-content">
-        <span class="power">
-            <i class="icon icon-lg icon-copyright"></i>
-            2022
-            <i class="icon icon-lg icon-heart"></i>
-            <a href="https://marnm.github.io">marnm.github.io</a>
-            <br>
-            Power by
-            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
-            Theme
-            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
-        </span>
-
-        <br>
-
-        <span id="RunTime" style="color:#a7a7a2;"></span>
-        <br>
-
-        <span>
-            
-
-        </span>
-        <br>
-
-        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
-    </div>
-</footer>
-
-    </main>
-    
-        
-<div id="reward" class="page-modal reward-lay">
-    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <h3 class="reward-title">
-        <i class="icon icon-quote-left"></i>
-        <span>感谢您的鼓励支持！</span>
-        <i class="icon icon-quote-right"></i>
-    </h3>
-    <div class="reward-content">
-        
-        <div class="reward-code">
-            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
-        </div>
-        
-        <label class="reward-toggle">
-            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
-            <div class="reward-toggle-ctrol">
-                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
-                <span class="reward-toggle-item alipayPay">支付宝</span>
-            </div>
-        </label>
-        
-        <i class="icon icon-caret-up"></i>
-    </div>
-</div>
-
-
-    
-    <div class="mask" id="mask"></div>
-<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
-
-
-
-<div class="global-share" id="globalShare">
-    <ul class="reset share-icons">
-      <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/d77fafec/&title=《MySQL的GTID主从同步》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
-          <i class="icon icon-weibo"></i>
-        </a>
-      </li>
-      <li>
-        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
-          <i class="icon icon-weixin"></i>
-        </a>
-      </li>
-      <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/d77fafec/&title=《MySQL的GTID主从同步》 — Deops's blog&source=Echo" data-title=" QQ">
-          <i class="icon icon-qq"></i>
-        </a>
-      </li>
-      <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/d77fafec/" data-title=" Facebook">
-          <i class="icon icon-facebook"></i>
-        </a>
-      </li>
-      <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《MySQL的GTID主从同步》 — Deops's blog&url=https://marnm.github.io/posts/d77fafec/&via=https://marnm.github.io" data-title=" Twitter">
-          <i class="icon icon-twitter"></i>
-        </a>
-      </li>
-      <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/d77fafec/" data-title=" Google+">
-          <i class="icon icon-google-plus"></i>
-        </a>
-      </li>
-    </ul>
- </div>
-
-
-<div class="page-modal wx-share" id="wxShare">
-    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p class="wechatshare">扫一扫，分享到微信</p>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABy0lEQVR42u3awW7CMBAEUP7/p9MrEm2YWScurZ5PKKD4mcPKnvXjEY/jaTw/ef329Zfn73zcMXBxcZe5x+lIuMmT2YK/WRIuLu5G7nmhOX91+/tk8T8+x8XF/VPcfBODi4v7/7jJJqY9/ODi4n4mN9+CrGxWksPVZWc1XFzcBW6eUt73+ZZ8FxcXd8Q9ytFOf16S6tlxcXG3cPOCkmxK2hI2mxcXF/dubjt9W7zaePRN+cPFxd3CXWmBJC9ty98wHMHFxb2Z216laqOT9e0RLi7uHm6yTcknnl3nSqITXFzcPdxkv5Mj2shjeFbDxcXdzs2PMetJbbLIN4UMFxf3Bm7ddRktIA9QZgErLi7utdw2mLiqQZK/oai7uLi4F3HzaWbN0bpdmsyIi4u7nZvEmm3Mmges0aEIFxd3I7dtgeQFKCltxV+Di4u7nTtrruQxSrvFGdZCXFzcBe5RjjYAXX8PLi7ufu7sSsQKug1chovBxcVd5s4OJ21cki/mzR+Bi4u7kTtrouTQ9gpX3WTFxcX9Ve7sWkZ7xKpTE1xc3A/g5tcyVsLTH1spuLi4W7htuNk2XFeIuLi4+7nrpSfZ6LSByAX5Li4u7oT7BSwz4jHOCLVtAAAAAElFTkSuQmCC" alt="微信分享二维码">
-</div>
-
-
-
-
-    <!-- waves按钮特效 -->
-<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
-
-<!-- 主题配置脚本 -->
 <script>
-var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+	
+	
 </script>
-
-<!-- jquery -->
-<script src="/js/jquery.min.js?v=3.0"></script>
-
-<!-- 搜索 -->
-
-<div class="search-panel" id="search-panel">
-    <ul class="search-result" id="search-result"></ul>
+	</div>
+	<div id="footer">
+	<p>
+	©2019-<span id="footerYear"></span> 
+	<a href="/">Echo</a> 
+	
+	
+	<br>
+	Theme <a href="//github.com/wujun234/hexo-theme-tree" target="_blank">Tree</a>
+	by <a href="//github.com/wujun234" target="_blank">WuJun</a>
+	Powered by <a href="//hexo.io" target="_blank">Hexo</a>
+	</p>
 </div>
-<template id="search-tpl">
-<li class="item waves-block waves-effect" onclick="location.href='{path}'">
-    <div class="title ellipsis" title="{title}">{title}</div>
-</li>
-</template>
-
-
-<!-- main博客脚本 -->
-<script src="/js/main.min.js?v=3.0"></script>
-
-<!-- 动画&配置 -->
-<script src="/js/script.min.js?v=3.0"></script>
-
-<!-- 脚本管理 -->
-<script>
-
-if(window.innerWidth > 800){
-	/* 3D标题 */
-	$(".content-header").on("mousemove", threedee);
-
-	/* 底部追随鼠标 */
-	$(".footer").hover(2);
-
-	/* gotop键的涟漪 */
-	$("#gotop").hover(1);
-
-	/* 赞赏的粒子雨 */
-	$("#reward").hover(3);
-
-	/* 微信公众号的底部渲染 */
-	$("#wechat").hover(4);
-
-    /* 标题跳动 */
-    $(".archivestitle").bumpyText();
-
-	/* 图片点击放大 */
-	const postimg = jQuery(".post-content img:not(.github-emoji)");
-	postimg.on("click",function(){
-
-		mask.classList.add("in");
-		main.classList.add("Mask");
-		menu.classList.add("Mask");
-		var myimg = this.cloneNode(true);
-		myimg.classList.add("imgShow");
-
-		setTimeout(function(){
-			jQuery(myimg).animate({
-				opacity:"1"
-			},1000);
-		},0);
-
-		document.body.appendChild(myimg);
-
-		myimg.onclick=function(){
-			document.body.removeChild(myimg);
-			mask.classList.remove("in");
-			main.classList.remove("Mask");
-			menu.classList.remove("Mask");
-		};
-
-	});
-
-}
-
-/* 名字跳动 */
-$("#name").bumpyText();
-
-
-/* 网站运行时间 */
-setInterval(function () {
-	setTime("2019/01/01");
-}, 1000);
-
-/* 文章块的淡出 */
-postshow();
-
-/* 座右铭 */
-
-   getHitokoto();
-
-
-
-/* 粘贴提示 */
-G($(".post-content"), location.href, "Echo");
-
-
-/* 控制台 */
-if (window.console && window.console.log) {
-	setTimeout(function () {
-		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
-	}, 0);
-}
-
+<script type="text/javascript"> 
+	document.getElementById('footerYear').innerHTML = new Date().getFullYear() + '';
 </script>
-
-
-
-
-<!-- 公式渲染 -->
-
-
-
-<!-- 不蒜子 -->
-
-
+	<button id="totop-toggle" class="toggle"><i class="fa fa-angle-double-up" aria-hidden="true"></i></button>
 </body>
 </html>

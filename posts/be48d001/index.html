@@ -1,243 +1,1852 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head><meta name="generator" content="Hexo 3.8.0">
-    <meta http-equiv="Content-Language" content="zh-cn">
-    <meta charset="utf-8">
-    
-    
-    
-    <title>LVS-DR集群 | Deops&#39;s blog | 运维开发工程师</title>
-    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    
-    <meta name="theme-color" content="#77AAFF">
-    
-    
-    <meta name="keywords" content="">
-    
-    
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+	
+	<!-- title -->
+	
+	<title>
+	
+		LVS-DR集群 | 
+	 
+	Deops&#39;s blog
+	</title>
+	
+	<!-- keywords,description -->
+	
+		<meta name="keywords" content="Echo">
+	 
+		<meta name="description" content="Echo">
+	
 
-    
+	<!-- favicon -->
+	
+	<link rel="shortcut icon" href="/favicon.ico">
+	
 
-    <!-- Baidu Push -->
-<script>
-	(function(){
-		var bp = document.createElement('script');
-		var curProtocol = window.location.protocol.split(':')[0];
-		if (curProtocol === 'https') {
-			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+
+	<!-- search -->
+	<script>
+		var searchEngine = "https://www.google.com/search?q=";
+		if(typeof searchEngine == "undefined" || searchEngine == null || searchEngine == ""){
+			searchEngine = "https://www.google.com/search?q=";
 		}
-		else {
-			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		var homeHost = "https://marnm.github.io/";
+		if(typeof homeHost == "undefined" || homeHost == null || homeHost == ""){
+			homeHost = window.location.host;
 		}
-		var s = document.getElementsByTagName("script")[0];
-		s.parentNode.insertBefore(bp, s);
-	})();
-
-	var _hmt = _hmt || [];
-</script>
+	</script>
 
 
-
+	<link rel="stylesheet" href="/css/main.css">
+	<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/lib/highlight/styles/base16/solarized-dark.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
     
-    <meta name="description" content="LVS&amp;#x76F8;&amp;#x5173;DirectRouting&amp;#x76F4;&amp;#x63A5;&amp;#x8DEF;&amp;#x7531;director&amp;#x5206;&amp;#x914D;&amp;#x8BF7;&amp;#x6C42;&amp;#x5230;&amp;#x4E0D;&amp;#x540C;&amp;#x7684;real server&amp;#x3002;real server&amp;#x5904;&amp;#x7406;&amp;#x8BF7;&amp;#x6C42;&amp;#">
-<meta name="keywords" content="Echo">
-<meta property="og:type" content="article">
-<meta property="og:title" content="LVS-DR集群">
-<meta property="og:url" content="https://marnm.github.io/posts/be48d001/index.html">
-<meta property="og:site_name" content="Deops&#39;s blog">
-<meta property="og:description" content="LVS&amp;#x76F8;&amp;#x5173;DirectRouting&amp;#x76F4;&amp;#x63A5;&amp;#x8DEF;&amp;#x7531;director&amp;#x5206;&amp;#x914D;&amp;#x8BF7;&amp;#x6C42;&amp;#x5230;&amp;#x4E0D;&amp;#x540C;&amp;#x7684;real server&amp;#x3002;real server&amp;#x5904;&amp;#x7406;&amp;#x8BF7;&amp;#x6C42;&amp;#">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://192.168.84.188:8081/uploads/1654859040400253202lvsdr.png">
-<meta property="og:image" content="http://192.168.84.188:8081/uploads/165486100071106267lvsdrclientrequest.png">
-<meta property="og:image" content="http://192.168.84.188:8081/uploads/1654862936516783744lvsdrdirector.png">
-<meta property="og:image" content="http://192.168.84.188:8081/uploads/1654863015392407578lvsdrrsreply.png">
-<meta property="og:image" content="http://192.168.84.188:8081/uploads/1654863105680397002lvsdrstrct.png">
-<meta property="og:updated_time" content="2022-06-11T09:49:44.144Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="LVS-DR集群">
-<meta name="twitter:description" content="LVS&amp;#x76F8;&amp;#x5173;DirectRouting&amp;#x76F4;&amp;#x63A5;&amp;#x8DEF;&amp;#x7531;director&amp;#x5206;&amp;#x914D;&amp;#x8BF7;&amp;#x6C42;&amp;#x5230;&amp;#x4E0D;&amp;#x540C;&amp;#x7684;real server&amp;#x3002;real server&amp;#x5904;&amp;#x7406;&amp;#x8BF7;&amp;#x6C42;&amp;#">
-<meta name="twitter:image" content="http://192.168.84.188:8081/uploads/1654859040400253202lvsdr.png">
-    
-        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
-    
-    <link rel="shortcut icon" href="/img/favicon.ico">
-    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
-    <script>window.lazyScripts=[]</script>
+    <!-- 引入代码高亮的 js -->
+    <script src="/lib/highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 
-    <!-- custom head -->
-    
-            
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/jquery-pjax@2.0.1/jquery.pjax.min.js"></script>
+	<script src="/js/main.js"></script>
+	
+		<script src="https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/valine@v1.4.14/dist/Valine.min.js"></script>
+	
+	
 </head>
 
 <body>
-    <div id="loading" class="active"></div>
-    <aside id="menu" class="hide">
-  <div class="inner flex-row-vertical">
-    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
-        <i class="icon icon-lg icon-close"></i>
-    </a>
-    <div class="brand-wrap">
-      <div class="brand">
-        <a href="/" class="avatar waves-effect waves-circle waves-light">
-          <img src="/img/avatar.gif" alt="avatar">
-        </a>
-        <hgroup class="introduce">
-          <h5 class="nickname" id="name">Echo</h5>
-          
-            <div id="yiyanmotto" class="motto">&nbsp;</div>
-          
-        </hgroup>
-      </div>
-    </div>
-    <div class="scroll-wrap flex-col">
-      <ul class="nav">
-        
-              <li class="waves-block waves-effect">
-                  <a href="/">
-                    <i class="icon icon-lg icon-home"></i>
-                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/archives">
-                    <i class="icon icon-lg icon-archives"></i>
-                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/categories">
-                    <i class="icon icon-lg icon-th-list"></i>
-                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/tags">
-                    <i class="icon icon-lg icon-tags"></i>
-                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/about">
-                    <i class="icon icon-lg icon-smile-o"></i>
-                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-      <div class="nav2">
-          
-              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
-                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
-              </a>
-          
-              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
-                <i class="icon icon-lg icon-github github"></i>
-              </a>
-          
-              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
-                <i class="icon icon-lg icon-tv tv"></i>
-              </a>
-          
-
-            </div>
-        
-      </ul>
-        
-    </div>
-  </div>
- 
-</aside>
-
-
-    <main id="main">
-        <header class="top-header" id="header">
-    <div class="flex-row">
-        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
-          <i class="icon icon-lg icon-navicon"></i>
-        </a>
-        <div class="flex-col header-title ellipsis">LVS-DR集群</div>
-        
-        <div class="search-wrap" id="search-wrap">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
-                <i class="icon icon-lg icon-chevron-left"></i>
-            </a>
-            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
-                <i class="icon icon-lg icon-search"></i>
-            </a>
-        </div>
-        
-        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
-            <i class="icon icon-lg icon-rss"></i>
-        </a>
-    </div>
-</header>
-<header class="content-header post-header">
-    
-    
-    <div class="container fade-scale">
-        <div id="myheader">
-            <h1 class="title">
-                
-            </h1>
-            <h5 class="subtitle">
-                
-                
-            </h5>
-        </div>
-    </div>
-
-</header>
-
-
-<div class="container body-wrap">
-    
-    <aside class="post-widget">
-        <nav class="post-toc-wrap" id="post-toc">
-            <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#LVS相关"><span class="post-toc-number">1.</span> <span class="post-toc-text">LVS相关</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#使用LVS-DR搭建集群"><span class="post-toc-number">2.</span> <span class="post-toc-text">使用LVS-DR搭建集群</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#扩展：Shell脚本"><span class="post-toc-number">3.</span> <span class="post-toc-text">扩展：Shell脚本</span></a></li></ol>
-        </nav>
-    </aside>
-   
-<article id="post-LVS-DR集群" class="post-article article-type-post fade" itemprop="blogPost">
-
-    <div class="post-card">
-        <h1 class="post-card-title">LVS-DR集群</h1>
-        <div class="post-meta">
-            <i class="icon icon-lg icon-calendar-o"></i>
-            发表于
-            <time class="post-time" title="2022-06-07 13:34:54" datetime="2022-06-07T05:34:54.000Z" itemprop="datePublished">2022-06-07</time>
-
-            <br id="mybreak">
-            
-<script>
-	mybreak.style="display:none";
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3efe99c287df5a1d6f0d02d187e403c1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
 </script>
 
+<header id="header">
+    <a id="title" href="/" class="logo">Deops's blog</a>
 
-            <i>·</i>
+	<ul id="menu">
+		<li class="menu-item">
+			<a href="/about" class="menu-item-link">ABOUT</a>
+		</li>
+	
+		<li class="menu-item">
+			<a href="/tags" class="menu-item-link">标签</a>
+		</li>
+	
+
+	
+		<li class="menu-item">
+			<a href="/categories" class="menu-item-link">分类</a>
+		</li>
+	
+
+		<li class="menu-item">
+			<a href="https://github.com/Marnm" class="menu-item-link" target="_blank">
+				<i class="fa fa-github fa-2x"></i>
+			</a>
+		</li>
+	</ul>
+</header>
+
+	
+<div id="sidebar">
+	<button id="sidebar-toggle" class="toggle"><i class="fa fa-arrow-right " aria-hidden="true"></i></button>
+	
+	<div id="site-toc">
+		<input id="search-input" class="search-input" type="search" placeholder="按回车全站搜索">
+		<div id="tree">
+			
+
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Ansible自动化运维
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/b45e213f/">
+                     
+										    Ansible自动化管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/28c30eb2/">
+                     
+										    CTF线下赛AWD套路小结
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Ceph对象存储
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/e9abc941/">
+                     
+										    Ceph分布式存储
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/38843421/">
+                     
+										    Ceph分布式存储部署笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9964b559/">
+                     
+										    DHCP Server的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4782a8c2/">
+                     
+										    DNS Server的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5e357037/">
+                     
+										    Django教程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Docker
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/4a3d459a/">
+                     
+										    Docker学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										ELK Stack
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/2d95f1c1/">
+                     
+										    ElasticSearch环境搭建
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/573fc171/">
+                     
+										    Logstash二进制安装与启动
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b11339a9/">
+                     
+										    Logstash去除不需要的字段
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d05b44e0/">
+                     
+										    Logstash读取日志发送到ES
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9d56e705/">
+                     
+										    FTP/TFTP的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ca9298d7/">
+                     
+										    Git版本控制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/51acad32/">
+                     
+										    诺尔·巴尔扎克（Honoréde Balzac）的名言
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4def9c28/">
+                     
+										    In Your 20's These Things Matter More Than You Think
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/295162d9/">
+                     
+										    Java8 环境变量配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										KVM虚拟化
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/dba5727f/">
+                     
+										    KVM图形化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/204af86b/">
+                     
+										    KVM虚拟机克隆和快照
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d69c6e72/">
+                     
+										    KVM虚拟机添加磁盘
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/16305c66/">
+                     
+										    KVM虚拟机迁移
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7733d98/">
+                     
+										    LDAP的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5922577d/">
+                     
+										    LNMP手动部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/195423a2/">
+                     
+										    LNMP高可用架构配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/38cc96c8/">
+                     
+										    LVM磁盘管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file active">
+									<a href="/posts/be48d001/">
+                     
+										    LVS-DR集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/df68056c/">
+                     
+										    LVS-IPTUN集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dcf8e277/">
+                     
+										    LVS-NAT集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/640aafef/">
+                     
+										    LVS和KeepAlived实现高可用集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/82734d8/">
+                     
+										    Linux命令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/67ee4dec/">
+                     
+										    Linux学习笔记 - 关于开源
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d53cba09/">
+                     
+										    Linux常用性能分析工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/15c0e66c/">
+                     
+										    Linux常见日志文件
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/480c215d/">
+                     
+										    Linux性能管理工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a9bb0c1a/">
+                     
+										    Linux文件的特殊权限
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/cc999d74/">
+                     
+										    Linux文件的隐藏属性
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b7f1c6/">
+                     
+										    Linux文本四剑客
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/aabbd398/">
+                     
+										    Linux无法挂载sysroot并自动进入紧急模式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b3f64b7d/">
+                     
+										    Linux生成随机密码方法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e025952a/">
+                     
+										    Linux登录退出提示信息欢迎信息
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ee2f9f35/">
+                     
+										    Linux的PAM模块
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1e844aa4/">
+                     
+										    Linux的归档与解压缩
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c4bbfe69/">
+                     
+										    Linux的日志切割
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/be846aea/">
+                     
+										    Linux禁止和开启ping的方法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f20e14fd/">
+                     
+										    Linux网卡聚合及bond模式的原理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2fe5fc07/">
+                     
+										    Linux计划任务实现
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/365d0867/">
+                     
+										    Linux路由配置——route
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fbf617b4/">
+                     
+										    MariaDB
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bff83912/">
+                     
+										    Markdown 简明语法手册
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5125c787/">
+                     
+										    Markdown语法说明（快速入门）
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										MongoDB
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/8b1c1f4b/">
+                     
+										    MongoDB介绍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a36562d7/">
+                     
+										    MongoDB学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/55c06d78/">
+                     
+										    MongoDB安装部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										MySQL学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/16fc5dc4/">
+                     
+										    MySQL5.6
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/61fb6d52/">
+                     
+										    MySQL5.7
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bce68613/">
+                     
+										    MySQL基础
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f6e2d114/">
+                     
+										    使用RPM包安装MySQL5.7数据库
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/269a56e8/">
+                     
+										    MySQL备份与恢复（删库不跑路）
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/607e4760/">
+                     
+										    MySQL传统主从同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d77fafec/">
+                     
+										    MySQL的GTID主从同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/db0340bd/">
+                     
+										    MySQL高可用集群架构-MHA架构
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/62ec7971/">
+                     
+										    Atlas实现MySQL读写分离
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/490925f2/">
+                     
+										    MySQL数据库高级应用之读写分离
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/176dc5f3/">
+                     
+										    MyCat垂直分表操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8f74b0e7/">
+                     
+										    MyCat教程全国省份分片枚举操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/208cd020/">
+                     
+										    MySQL调优
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1876d05d/">
+                     
+										    NetworkManager管理工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/60444925/">
+                     
+										    NexT主题优化+美化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Nginx学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/f4d30967/">
+                     
+										    Nginx动静分离部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1db2b3f1/">
+                     
+										    Nginx平滑升级
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2793eb31/">
+                     
+										    Nginx日志管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2793eb31/">
+                     
+										    Nginx日志管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e0989926/">
+                     
+										    Nginx添加第三方模块
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/da411b72/">
+                     
+										    Nginx虚拟主机
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d4e5e907/">
+                     
+										    Nginx访问控制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d2802762/">
+                     
+										    Nginx高可用架构配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/36ba38f9/">
+                     
+										    NoSQL知识
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e8c4eb08/">
+                     
+										    OpenSSL使用教程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/97717e94/">
+                     
+										    PXE自动化部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Prometheus学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/39c0f6a1/">
+                     
+										    Prometheus学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1f351894/">
+                     
+										    Python-VirtualEnv
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/297a89d9/">
+                     
+										    Python学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fa8e89f7/">
+                     
+										    RAID磁盘阵列技术介绍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/afdfa673/">
+                     
+										    RHEL 7配置Yum软件仓库
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/32546aed/">
+                     
+										    RedHat Linux重置root管理员密码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/eb7dbe25/">
+                     
+										    RedHat_7 配置网卡信息
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Redis学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/5188e636/">
+                     
+										    Redis与其他应用的集成
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/49fbbc1/">
+                     
+										    Redis基本操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e8376589/">
+                     
+										    Redis安装部署——Cluster集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e78aaf59/">
+                     
+										    Redis安装部署——Sentinel模式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2acd829b/">
+                     
+										    Redis安装部署——主从复制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/119ed1dc/">
+                     
+										    Redis持久化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/18d7d749/">
+                     
+										    Redis概述
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e3fb0a3e/">
+                     
+										    Redis的数据备份与恢复
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3e3d973e/">
+                     
+										    Redis配合MySQL使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f03da4e7/">
+                     
+										    Redis配置文件详解
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/41f893fd/">
+                     
+										    Redis编译安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dbd9d26a/">
+                     
+										    SHELL编程类面试题
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f42b90f9/">
+                     
+										    SHELL脚本工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a8ba1e/">
+                     
+										    SHELL脚本练习
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c45f2736/">
+                     
+										    SQL Server 2008安装配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/aa142b64/">
+                     
+										    SQLite安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e228b71f/">
+                     
+										    SSH原理与应用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1fdc29d2/">
+                     
+										    Shell的基本运算符
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6309c3f8/">
+                     
+										    Shell编程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e76ba468/">
+                     
+										    Ubuntu Desktop优化与配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/129acd64/">
+                     
+										    Ubuntu修改配置及美化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b382711f/">
+                     
+										    VIM的使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e9c6771b/">
+                     
+										    Win10环境下Python2、3和pip2、3版本共存
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6ed6984b/">
+                     
+										    Windows进程管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/59089347/">
+                     
+										    Zabbix3.4邮件报警配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7034657d/">
+                     
+										    Zabbix4.0
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c7b4ec91/">
+                     
+										    firewalld学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1ebd4a76/">
+                     
+										    iproute2工具包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/57bbf635/">
+                     
+										    iptables学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3e189d0c/">
+                     
+										    mysqlclient无法安装的问题
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1939d3e2/">
+                     
+										    net-tools工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bae5d4f0/">
+                     
+										    rhel修改网卡命名规则
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3c7a2415/">
+                     
+										    rsync数据同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/37ca92de/">
+                     
+										    swap交换分区
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6efb91e0/">
+                     
+										    tcpdump与Wireshark的使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d185f6ae/">
+                     
+										    web性能压测学习
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bb750036/">
+                     
+										    你要懂得及时止损，别太在乎沉没成本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/da58b03e/">
+                     
+										    使用HAProxy实现七层负载均衡
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b161a250/">
+                     
+										    使用服务搭建Hexo个人博客
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										其它
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/9bf5b5/">
+                     
+										    我学练英语所使用的方法、工具与资料
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4c41c7ef/">
+                     
+										    十二句经典的爱情名言
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e364486e/">
+                     
+										    基于Docker搭建Prometheus
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/69c239dd/">
+                     
+										    基于LNMP架构搭建企业级开源监控系统Zabbix
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f801d3c5/">
+                     
+										    增加一台Filebeat收集httpd日志
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f5d6f6a9/">
+                     
+										    实战-GitLab更新代码后自动触发Jenkins进行部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fa35a60d/">
+                     
+										    性能测试指标详解
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a3c5d26/">
+                     
+										    搭建Jenkins实现持续集成-配置Jenkins自动拉取GitLab中的代码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4f96852/">
+                     
+										    搭建JumpServer管理王者荣耀数万台游戏服务器
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f0a65eeb/">
+                     
+										    根分区扩容
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2f57a694/">
+                     
+										    正则表达式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9e3f6743/">
+                     
+										    自由的灵魂必将远航
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/217dc297/">
+                     
+										    计算机概述
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8d4b7ae1/">
+                     
+										    计算机组成原理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dded0e80/">
+                     
+										    运维发展史
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/undefined/">
+                     
+										    邮件报警配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5095a46f/">
+                     
+										    配置Docker静态IP
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2b923a54/">
+                     
+										    配置GitLab邮件服务
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/76011417/">
+                     
+										    配置Zabbix3.4监控Apache服务
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+		</div>
+	</div>
+</div>
+
+	<!-- 引入正文 -->
+	<div id="content">
+		<h1 id="article-title">
+	LVS-DR集群
+</h1>
+<div class="article-meta">
+	
+	<span>Echo</span>
+	<span>2022-06-07 13:34:54</span>
+		<div id="article-categories">
+    
+		<span>Categories：</span>
             
+    
 
-        </div>
-        <div class="post-count-custom">
-            <i class="icon icon-lg icon-comment-o"></i>
-            阅读本文可能花费您&nbsp;<span class="post-count">15</span>&nbsp;分钟
-        </div>
-        <div class="post-content" id="post-content" itemprop="postContent">
-            <h2 id="LVS&#x76F8;&#x5173;"><a href="#LVS&#x76F8;&#x5173;" class="headerlink" title="LVS&#x76F8;&#x5173;"></a>LVS&#x76F8;&#x5173;</h2><p><strong>DirectRouting&#x76F4;&#x63A5;&#x8DEF;&#x7531;</strong><br>director&#x5206;&#x914D;&#x8BF7;&#x6C42;&#x5230;&#x4E0D;&#x540C;&#x7684;real server&#x3002;real server&#x5904;&#x7406;&#x8BF7;&#x6C42;&#x540E;&#x76F4;&#x63A5;&#x56DE;&#x5E94;&#x7ED9;&#x7528;&#x6237;&#xFF0C;&#x8FD9;&#x6837;director&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x5668;&#x4EC5;&#x5904;&#x7406;&#x5BA2;&#x6237;&#x673A;&#x4E0E;&#x670D;&#x52A1;&#x5668;&#x7684;&#x4E00;&#x534A;&#x8FDE;&#x63A5;&#x3002;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x5668;&#x4EC5;&#x5904;&#x7406;&#x4E00;&#x534A;&#x7684;&#x8FDE;&#x63A5;&#xFF0C;&#x907F;&#x514D;&#x4E86;&#x65B0;&#x7684;&#x6027;&#x80FD;&#x74F6;&#x9888;&#xFF0C;&#x540C;&#x6837;&#x589E;&#x52A0;&#x4E86;&#x7CFB;&#x7EDF;&#x7684;&#x53EF;&#x4F38;&#x7F29;&#x6027;&#x3002;Direct Routing&#x7531;&#x4E8E;&#x91C7;&#x7528;&#x7269;&#x7406;&#x5C42;&#xFF08;&#x4FEE;&#x6539;MAC&#x5730;&#x5740;&#xFF09;&#x6280;&#x672F;&#xFF0C;&#x56E0;&#x6B64;&#x6240;&#x6709;&#x670D;&#x52A1;&#x5668;&#x90FD;&#x5FC5;&#x987B;&#x5728;&#x4E00;&#x4E2A;&#x7F51;&#x6BB5;&#x4E2D;&#x3002;</p>
+    
+		<span>Tags：</span>
+            
+    
+		</div>
+
+</div>
+
+<div id="article-content">
+	<h2 id="LVS&#x76F8;&#x5173;"><a href="#LVS&#x76F8;&#x5173;" class="headerlink" title="LVS&#x76F8;&#x5173;"></a>LVS&#x76F8;&#x5173;</h2><p><strong>DirectRouting&#x76F4;&#x63A5;&#x8DEF;&#x7531;</strong><br>director&#x5206;&#x914D;&#x8BF7;&#x6C42;&#x5230;&#x4E0D;&#x540C;&#x7684;real server&#x3002;real server&#x5904;&#x7406;&#x8BF7;&#x6C42;&#x540E;&#x76F4;&#x63A5;&#x56DE;&#x5E94;&#x7ED9;&#x7528;&#x6237;&#xFF0C;&#x8FD9;&#x6837;director&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x5668;&#x4EC5;&#x5904;&#x7406;&#x5BA2;&#x6237;&#x673A;&#x4E0E;&#x670D;&#x52A1;&#x5668;&#x7684;&#x4E00;&#x534A;&#x8FDE;&#x63A5;&#x3002;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x5668;&#x4EC5;&#x5904;&#x7406;&#x4E00;&#x534A;&#x7684;&#x8FDE;&#x63A5;&#xFF0C;&#x907F;&#x514D;&#x4E86;&#x65B0;&#x7684;&#x6027;&#x80FD;&#x74F6;&#x9888;&#xFF0C;&#x540C;&#x6837;&#x589E;&#x52A0;&#x4E86;&#x7CFB;&#x7EDF;&#x7684;&#x53EF;&#x4F38;&#x7F29;&#x6027;&#x3002;Direct Routing&#x7531;&#x4E8E;&#x91C7;&#x7528;&#x7269;&#x7406;&#x5C42;&#xFF08;&#x4FEE;&#x6539;MAC&#x5730;&#x5740;&#xFF09;&#x6280;&#x672F;&#xFF0C;&#x56E0;&#x6B64;&#x6240;&#x6709;&#x670D;&#x52A1;&#x5668;&#x90FD;&#x5FC5;&#x987B;&#x5728;&#x4E00;&#x4E2A;&#x7F51;&#x6BB5;&#x4E2D;&#x3002;</p>
 <p><strong>IP Tunneling (IP&#x96A7;&#x9053;)</strong><br>IP Tunneling&#x6280;&#x672F;&#x6781;&#x5927;&#x5730;&#x63D0;&#x9AD8;&#x4E86;director&#x7684;&#x8C03;&#x5EA6;&#x5904;&#x7406;&#x80FD;&#x529B;&#xFF0C;&#x540C;&#x65F6;&#x4E5F;&#x6781;&#x5927;&#x5730;&#x63D0;&#x9AD8;&#x4E86;&#x7CFB;&#x7EDF;&#x80FD;&#x5BB9;&#x7EB3;&#x7684;&#x6700;&#x5927;&#x8282;&#x70B9;&#x6570;&#xFF0C;&#x53EF;&#x4EE5;&#x8D85;&#x8FC7;100&#x4E2A;&#x8282;&#x70B9;&#x3002;real server&#x53EF;&#x4EE5;&#x5728;&#x4EFB;&#x4F55;LAN&#x6216;WAN&#x4E0A;&#x8FD0;&#x884C;&#xFF0C;&#x8FD9;&#x610F;&#x5473;&#x7740;&#x5141;&#x8BB8;&#x5730;&#x7406;&#x4E0A;&#x7684;&#x5206;&#x5E03;&#xFF0C;&#x8FD9;&#x5728;&#x707E;&#x96BE;&#x6062;&#x590D;&#x4E2D;&#x6709;&#x91CD;&#x8981;&#x610F;&#x4E49;&#x3002;&#x670D;&#x52A1;&#x5668;&#x5FC5;&#x987B;&#x62E5;&#x6709;&#x6B63;&#x5F0F;&#x7684;&#x516C;&#x7F51;IP&#x5730;&#x5740;&#x7528;&#x4E8E;&#x4E0E;&#x5BA2;&#x6237;&#x673A;&#x76F4;&#x63A5;&#x901A;&#x4FE1;&#xFF0C;&#x5E76;&#x4E14;&#x6240;&#x6709;&#x670D;&#x52A1;&#x5668;&#x5FC5;&#x987B;&#x652F;&#x6301;IP&#x96A7;&#x9053;&#x534F;&#x8BAE;&#x3002;</p>
 <p><strong>Direct Routing &#x548C;IP Tunneling &#x533A;&#x522B;&#xFF1A;</strong><br>Direct Routing&#x4E0E;IP Tunneling&#x76F8;&#x6BD4;&#xFF0C;&#x6CA1;&#x6709;IP&#x5C01;&#x88C5;&#x7684;&#x5F00;&#x9500;&#xFF0C;&#x4F46;&#x7531;&#x4E8E;&#x91C7;&#x7528;&#x6570;&#x636E;&#x94FE;&#x8DEF;&#x5C42;&#xFF08;&#x4FEE;&#x6539;MAC&#x5730;&#x5740;&#xFF09;&#x6280;&#x672F;&#xFF0C;&#x6240;&#x6709;&#x670D;&#x52A1;&#x5668;&#x90FD;&#x5FC5;&#x987B;&#x5728;&#x4E00;&#x4E2A;&#x7269;&#x7406;&#x7F51;&#x6BB5;&#x3002;  </p>
 <p><strong>DR&#x6A21;&#x5F0F;&#x5B9E;&#x9645;&#x62D3;&#x6251;&#x56FE;&#x53CA;DR&#x5DE5;&#x4F5C;&#x65B9;&#x5F0F;&#x6D41;&#x7A0B;&#x56FE;&#xFF1A;</strong><br><strong>LVS-DR&#x7684;&#x5DE5;&#x4F5C;&#x539F;&#x7406;&#xFF1A;</strong> Deiector&#x6536;&#x5230;&#x8BF7;&#x6C42;&#xFF0C;&#x5C06;&#x8BF7;&#x6C42;&#x8F6C;&#x53D1;&#x7ED9;&#x4E86;&#x6211;&#x4EEC;&#x7684;real server&#xFF0C;&#x4F46;&#x662F;&#x63A5;&#x4E0B;&#x6765;&#x7684;&#x5DE5;&#x4F5C;&#x5C31;&#x662F;&#x6211;&#x4EEC;&#x7684;realserver&#x548C;&#x6211;&#x4EEC;&#x7684;&#x5BA2;&#x6237;&#x7AEF;&#x8FDB;&#x884C;&#x901A;&#x8BAF;&#x4E86;&#xFF0C;&#x6240;&#x4EE5;&#x6E90;&#x7406;&#x56FE;&#x5982;&#x4E0B;</p>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://192.168.84.188:8081/uploads/1654859040400253202lvsdr.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure>
+<p><img src="http://192.168.84.188:8081/uploads/1654859040400253202lvsdr.png" alt=""></p>
 <p><strong>LVS/DR&#x6A21;&#x5F0F;&#x5DE5;&#x4F5C;&#x539F;&#x7406;</strong><br>MAC&#x8F6C;&#x6362;&#x8FC7;&#x7A0B;<br>&#x5B9E;&#x4F8B;&#x573A;&#x666F;&#x8BBE;&#x5907;&#x6E05;&#x5355;&#xFF1A;director&#x5206;&#x53D1;&#x5668;&#xFF0C;IP&#xFF1A;192.168.1.70&#xFF0C;VIP&#xFF1A;192.168.1.63</p>
 <table>
 <thead>
@@ -263,35 +1872,11 @@
 </tr>
 </tbody>
 </table>
-<p>&#x2460; client&#x57FA;&#x672C;&#x4FE1;&#x606F;&#xFF1A;IP&#xFF1A;192.168.1.101 &#x5411;&#x76EE;&#x6807;VIP&#x53D1;&#x51FA;&#x8BF7;&#x6C42;&#xFF0C;Director&#x63A5;&#x6536;&#xFF0C;&#x6B64;&#x65F6;IP&#x5305;&#x5934;&#x53CA;&#x6570;&#x636E;&#x5E27;&#x5934;&#x4FE1;&#x606F;&#x5982;&#x4E0B;&#xFF1A;<br></p><figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://192.168.84.188:8081/uploads/165486100071106267lvsdrclientrequest.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure><p></p>
-<p>&#x2461; Director&#x5206;&#x53D1;&#x5668;&#x6839;&#x636E;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x7B97;&#x6CD5;&#x9009;&#x62E9;&#x4E00;&#x53F0;active&#x7684;real server&#xFF08;&#x5047;&#x8BBE;&#x662F;192.168.1.62&#xFF09;&#xFF0C;&#x5C06;&#x6B64;RIP&#x6240;&#x5728;&#x7684;&#x7F51;&#x5361;&#x7684;MAC&#x5730;&#x5740;&#x4F5C;&#x4E3A;&#x76EE;&#x6807;MAC&#x5730;&#x5740;&#xFF0C;&#x53D1;&#x9001;&#x5230;&#x5C40;&#x57DF;&#x7F51;&#x91CC;&#xFF0C;&#x6B64;&#x65F6;IP&#x5305;&#x5934;&#x53CA;&#x6570;&#x636E;&#x5E27;&#x5934;&#x4FE1;&#x606F;&#x5982;&#x4E0B;&#xFF1A;<br></p><figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://192.168.84.188:8081/uploads/1654862936516783744lvsdrdirector.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure><p></p>
-<p>&#x2462; realserver(192.168.1.62)&#x5728;&#x5C40;&#x57DF;&#x7F51;&#x4E2D;&#x6536;&#x5230;&#x8FD9;&#x4E2A;&#x5E27;&#xFF0C;&#x62C6;&#x5F00;&#x540E;&#x53D1;&#x73B0;&#x76EE;&#x6807;IP(VIP)&#x4E0E;&#x672C;&#x5730;&#x5339;&#x914D;&#xFF0C;&#x4E8E;&#x662F;&#x5904;&#x7406;&#x8FD9;&#x4E2A;&#x62A5;&#x6587;&#x3002;&#x968F;&#x540E;&#x91CD;&#x65B0;&#x5C01;&#x88C5;&#x62A5;&#x6587;&#xFF0C;&#x53D1;&#x9001;&#x5230;&#x5C40;&#x57DF;&#x7F51;&#xFF0C;&#x6B64;&#x65F6;IP&#x5305;&#x5934;&#x53CA;&#x6570;&#x636E;&#x5E27;&#x5934;&#x4FE1;&#x606F;&#x5982;&#x4E0B;&#xFF1A;<br></p><figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://192.168.84.188:8081/uploads/1654863015392407578lvsdrrsreply.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure><p></p>
+<p>&#x2460; client&#x57FA;&#x672C;&#x4FE1;&#x606F;&#xFF1A;IP&#xFF1A;192.168.1.101 &#x5411;&#x76EE;&#x6807;VIP&#x53D1;&#x51FA;&#x8BF7;&#x6C42;&#xFF0C;Director&#x63A5;&#x6536;&#xFF0C;&#x6B64;&#x65F6;IP&#x5305;&#x5934;&#x53CA;&#x6570;&#x636E;&#x5E27;&#x5934;&#x4FE1;&#x606F;&#x5982;&#x4E0B;&#xFF1A;<br><img src="http://192.168.84.188:8081/uploads/165486100071106267lvsdrclientrequest.png" alt=""></p>
+<p>&#x2461; Director&#x5206;&#x53D1;&#x5668;&#x6839;&#x636E;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x7B97;&#x6CD5;&#x9009;&#x62E9;&#x4E00;&#x53F0;active&#x7684;real server&#xFF08;&#x5047;&#x8BBE;&#x662F;192.168.1.62&#xFF09;&#xFF0C;&#x5C06;&#x6B64;RIP&#x6240;&#x5728;&#x7684;&#x7F51;&#x5361;&#x7684;MAC&#x5730;&#x5740;&#x4F5C;&#x4E3A;&#x76EE;&#x6807;MAC&#x5730;&#x5740;&#xFF0C;&#x53D1;&#x9001;&#x5230;&#x5C40;&#x57DF;&#x7F51;&#x91CC;&#xFF0C;&#x6B64;&#x65F6;IP&#x5305;&#x5934;&#x53CA;&#x6570;&#x636E;&#x5E27;&#x5934;&#x4FE1;&#x606F;&#x5982;&#x4E0B;&#xFF1A;<br><img src="http://192.168.84.188:8081/uploads/1654862936516783744lvsdrdirector.png" alt=""></p>
+<p>&#x2462; realserver(192.168.1.62)&#x5728;&#x5C40;&#x57DF;&#x7F51;&#x4E2D;&#x6536;&#x5230;&#x8FD9;&#x4E2A;&#x5E27;&#xFF0C;&#x62C6;&#x5F00;&#x540E;&#x53D1;&#x73B0;&#x76EE;&#x6807;IP(VIP)&#x4E0E;&#x672C;&#x5730;&#x5339;&#x914D;&#xFF0C;&#x4E8E;&#x662F;&#x5904;&#x7406;&#x8FD9;&#x4E2A;&#x62A5;&#x6587;&#x3002;&#x968F;&#x540E;&#x91CD;&#x65B0;&#x5C01;&#x88C5;&#x62A5;&#x6587;&#xFF0C;&#x53D1;&#x9001;&#x5230;&#x5C40;&#x57DF;&#x7F51;&#xFF0C;&#x6B64;&#x65F6;IP&#x5305;&#x5934;&#x53CA;&#x6570;&#x636E;&#x5E27;&#x5934;&#x4FE1;&#x606F;&#x5982;&#x4E0B;&#xFF1A;<br><img src="http://192.168.84.188:8081/uploads/1654863015392407578lvsdrrsreply.png" alt=""></p>
 <p>&#x2463; &#x5982;&#x679C;client&#x4E0E;VS&#x540C;&#x4E00;&#x7F51;&#x6BB5;&#xFF0C;&#x90A3;&#x4E48;client(192.168.1.101)&#x5C06;&#x6536;&#x5230;&#x8FD9;&#x4E2A;&#x56DE;&#x590D;&#x62A5;&#x6587;&#xFF1B;&#x5982;&#x679C;&#x8DE8;&#x4E86;&#x7F51;&#x6BB5;&#xFF0C;&#x90A3;&#x4E48;&#x62A5;&#x6587;&#x901A;&#x8FC7;gateway/&#x8DEF;&#x7531;&#x5668;&#x7ECF;&#x7531;Internet&#x8FD4;&#x56DE;&#x7ED9;&#x7528;&#x6237;<br>&#x5F52;&#x7EB3;&#x4E00;&#x4E0B;&#xFF1A;<br>1&#xFF09;&#x63A5;&#x6536;client&#x7684;&#x8BF7;&#x6C42;&#xFF0C;&#x6839;&#x636E;&#x4F60;&#x8BBE;&#x5B9A;&#x7684;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x7B97;&#x6CD5;&#x9009;&#x53D6;&#x4E00;&#x53F0;realserver&#x7684;IP<br>2&#xFF09;&#x4EE5;&#x9009;&#x53D6;&#x7684;&#x8FD9;&#x4E2A;IP&#x5BF9;&#x5E94;&#x7684;mac&#x5730;&#x5740;&#x4F5C;&#x4E3A;&#x76EE;&#x6807;mac&#xFF0C;&#x7136;&#x540E;&#x91CD;&#x65B0;&#x5C06;IP&#x5305;&#x5C01;&#x88C5;&#x6210;&#x5E27;&#x8F6C;&#x53D1;&#x7ED9;&#x8FD9;&#x53F0;RS<br>3&#xFF09;&#x5728;hash table&#x4E2D;&#x8BB0;&#x5F55;&#x8FDE;&#x63A5;&#x4FE1;&#x606F;<br>&#x6570;&#x636E;&#x5305;&#x3001;&#x6570;&#x636E;&#x5E27;&#x7684;&#x5927;&#x81F4;&#x6D41;&#x5411;&#x662F;&#x8FD9;&#x6837;&#x7684;&#xFF1A;client &#x2013;&gt; VS &#x2013;&gt; RS &#x2013;&gt; client<br>&#x4EE5;&#x4E0A;&#x5C31;&#x662F;&#x5BF9;LVS/DR&#x6A21;&#x5F0F;&#x7684;&#x6E90;&#x7406;&#x4ECB;&#x7ECD;</p>
-<p>&#x4E3A;&#x4EC0;&#x4E48;&#x9700;&#x8981;DR&#xFF1F; &#x56E0;&#x4E3A;NAT&#x6A21;&#x5F0F;&#x6548;&#x7387;&#x592A;&#x4F4E;<br>DR&#x65B9;&#x5F0F;&#x7279;&#x70B9;&#xFF1F;&#x6210;&#x672C;&#xFF1F;&#x90FD;&#x662F;&#x516C;&#x7F51;&#x5730;&#x5740;<br></p><figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://192.168.84.188:8081/uploads/1654863105680397002lvsdrstrct.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure><p></p>
+<p>&#x4E3A;&#x4EC0;&#x4E48;&#x9700;&#x8981;DR&#xFF1F; &#x56E0;&#x4E3A;NAT&#x6A21;&#x5F0F;&#x6548;&#x7387;&#x592A;&#x4F4E;<br>DR&#x65B9;&#x5F0F;&#x7279;&#x70B9;&#xFF1F;&#x6210;&#x672C;&#xFF1F;&#x90FD;&#x662F;&#x516C;&#x7F51;&#x5730;&#x5740;<br><img src="http://192.168.84.188:8081/uploads/1654863105680397002lvsdrstrct.png" alt=""></p>
 <p><strong>&#x7F51;&#x7EDC;&#x8F6C;&#x53D1;:</strong><br>&#x57FA;&#x4E8E;2&#x5C42;&#x7684;&#x6570;&#x636E;&#x62A5;&#x6587;&#x7684;&#x8F6C;&#x53D1;, &#x8981;&#x6BD4;&#x57FA;&#x4E8E;3&#x5C42;&#x7684;&#x7F51;&#x7EDC;&#x8F6C;&#x53D1;&#x6548;&#x7387;&#x8981;&#x9AD8;</p>
 <p> LVS-DR &#x662F;&#x57FA;&#x4E8E;2&#x5C42;&#x7684;&#x8F6C;&#x53D1;, &#x6240;&#x4EE5;&#x5728;LVS&#x4E2D;&#x6240;&#x6709;&#x7684;&#x6A21;&#x5F0F;, &#x6548;&#x7387;&#x662F;&#x6700;&#x597D;&#x7684;</p>
 <p>1)&#xFF1A;&#x57FA;&#x4E8E;mac&#x7684;&#x6570;&#x636E;&#x62A5;&#x6587;&#x8F6C;&#x53D1;, &#x662F;&#x6548;&#x7387;&#x6700;&#x597D;&#x7684;, &#x4F46;&#x662F;&#x662F;&#x6839;&#x636E;&#x4EA4;&#x6362;&#x673A;&#x7684;MAC&#x5730;&#x5740;&#x8868;&#x6765;&#x5B9E;&#x73B0;&#x7684;<br>    MAC&#x8868;&#x4E3B;&#x8981;&#x544A;&#x8BC9;&#x4F60;, &#x5230;xxxx&#x5730;&#x65B9;&#x8BE5;&#x8D70;&#x90A3;&#x4E2A;&#x7AEF;&#x53E3;<br>    &#x5982;&#x679C;&#x4EA4;&#x6362;&#x4E0D;&#x77E5;&#x9053;&#x5BF9;&#x65B9;&#x5728;&#x54EA;&#x513F;, &#x8FD9;&#x4E2A;&#x65F6;&#x5019;, &#x4ED6;&#x5C31;&#x8981;&#x8FDB;&#x884C;&#x5E7F;&#x64AD;, &#x5C31;&#x95EE;xxxx&#x5728;&#x54EA;&#x513F;, &#x5982;&#x679C;&#x5BF9;&#x5E94;&#x7684;&#x8BBE;&#x5907;&#x7ED9;&#x4E86;&#x56DE;&#x5E94;, &#x90A3;&#x4E48;&#x4EA4;&#x6362;&#x673A;&#x4E5F;&#x5C31;&#x66F4;&#x65B0;&#x4E86;&#x81EA;&#x5DF1;&#x7684;MAC&#x5730;&#x5740;&#x8868;&#x8BB0;&#x5F55;&#x5230;xxxx&#x9700;&#x8981;&#x8D70;&#x8FD9;&#x4E2A;&#x7AEF;&#x53E3;<br>2)&#xFF1A;2&#x5C42;&#x8BBE;&#x5907;&#x4E0D;&#x5177;&#x6709;&#x8DEF;&#x7531;&#x529F;&#x80FD;, &#x90A3;&#x4E48;&#x5E7F;&#x64AD;&#x4E5F;&#x5C31;&#x4E0D;&#x5177;&#x6709;&#x8DE8;&#x8DEF;&#x7531;&#x7684;&#x529F;&#x80FD;, &#x6240;&#x6709;&#x8981;&#x5B9E;&#x73B0;mac&#x5730;&#x5740;&#x5E7F;&#x64AD;, &#x5FC5;&#x987B;&#x5728;&#x540C;&#x4E00;&#x7269;&#x7406;&#x7F51;&#x6BB5;<br>3)&#xFF1A;vlan&#x5177;&#x6709;&#x9694;&#x79BB;&#x5E7F;&#x64AD;&#x7684;&#x529F;&#x80FD;, &#x6240;&#x6709;&#x8981;&#x80FD;&#x5904;&#x7406;mac&#x5730;&#x5740;&#x5E7F;&#x64AD;, &#x5C31;&#x5E94;&#x8BE5;&#x5728;&#x540C;&#x4E00;&#x4E2A;VLAN&#x4E2D;  </p>
@@ -300,17 +1885,159 @@
 <h2 id="&#x4F7F;&#x7528;LVS-DR&#x642D;&#x5EFA;&#x96C6;&#x7FA4;"><a href="#&#x4F7F;&#x7528;LVS-DR&#x642D;&#x5EFA;&#x96C6;&#x7FA4;" class="headerlink" title="&#x4F7F;&#x7528;LVS-DR&#x642D;&#x5EFA;&#x96C6;&#x7FA4;"></a>&#x4F7F;&#x7528;LVS-DR&#x642D;&#x5EFA;&#x96C6;&#x7FA4;</h2><p>Director<br>DIP<code>192.68.110.13</code><br>DG<code>192.168.110.1</code><br>VIP<code>192.168.110.10</code></p>
 <p>RS1<br>RIP<code>192.168.110.11</code><br>DG<code>192.168.110.1</code><br>VIP<code>192.168.110.10</code></p>
 <p>RS2<br>RIP<code>192.168.110.12</code><br>DG<code>192.168.110.1</code><br>VIP<code>192.168.110.10</code></p>
-<p><strong>&#x914D;&#x7F6E;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x5206;&#x53D1;&#x5668;</strong><br></p><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line"># &#x914D;&#x7F6E;VIP</span><br><span class="line">ifconfig ens33:1 192.168.110.10</span><br><span class="line"></span><br><span class="line">&#x914D;&#x7F6E;&#x7F51;&#x5173;</span><br><span class="line">route del default gw x.x.x.x</span><br><span class="line">route add default gw 192.168.110.10 dev ens33</span><br><span class="line"></span><br><span class="line"># &#x914D;&#x7F6E;LVS/DR</span><br><span class="line">ipvsadm --clear</span><br><span class="line">[root@server13 ~]# ipvsadm -A -t 192.168.110.10:80 -s rr</span><br><span class="line">[root@server13 ~]# ipvsadm -Ln</span><br><span class="line">IP Virtual Server version 1.2.1 (size=4096)</span><br><span class="line">Prot LocalAddress:Port Scheduler Flags</span><br><span class="line">  -&gt; RemoteAddress:Port           Forward Weight ActiveConn InActConn</span><br><span class="line">TCP  192.168.110.10:80 rr</span><br><span class="line">[root@server13 ~]# ipvsadm -a -t 192.168.110.10:80 -r 192.168.110.11 -g</span><br><span class="line">[root@server13 ~]# ipvsadm -a -t 192.168.110.10:80 -r 192.168.110.12 -g</span><br><span class="line">[root@server13 ~]# ipvsadm -Ln</span><br><span class="line">IP Virtual Server version 1.2.1 (size=4096)</span><br><span class="line">Prot LocalAddress:Port Scheduler Flags</span><br><span class="line">  -&gt; RemoteAddress:Port           Forward Weight ActiveConn InActConn</span><br><span class="line">TCP  192.168.110.10:80 rr</span><br><span class="line">  -&gt; 192.168.110.11:80            Route   1      0          0</span><br><span class="line">  -&gt; 192.168.110.12:80            Route   1      0          0</span><br><span class="line">[root@server13 ~]#</span><br><span class="line"># -g DR&#x6A21;&#x5F0F;</span><br><span class="line"># -m IPTun&#x6A21;&#x5F0F;</span><br></pre></td></tr></tbody></table></figure><p></p>
-<p><strong>&#x914D;&#x7F6E;Real Server</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">ifconfig ens33:1 192.168.110.10</span><br><span class="line">route del default gw x.x.x.x</span><br><span class="line">route add default gw 192.168.110.1 dev ens33</span><br><span class="line"></span><br><span class="line">ip_addr=`ip a | grep &quot;\&lt;inet\&gt;&quot; | grep -v &quot;127.0.0.1&quot; | tr &apos;/&apos; &apos; &apos; | awk &apos;{print $2}&apos; | head -1`</span><br><span class="line">yum install -y httpd</span><br><span class="line">echo $ip_addr &gt; /var/www/html/index.html</span><br><span class="line">systemctl start httpd</span><br><span class="line"></span><br><span class="line">echo 1 &gt; /proc/sys/net/ipv4/conf/ens33/arp_ignore</span><br><span class="line">echo 2 &gt; /proc/sys/net/ipv4/conf/ens33/arp_announce</span><br></pre></td></tr></tbody></table></figure><p></p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">ifconfig lo:1 192.168.110.10 netmask 255.255.255.255</span><br><span class="line">route del default gw xx.x.x.x</span><br><span class="line">route add default gw 192.168.110.1 dev ens33</span><br><span class="line"></span><br><span class="line">ip_addr=`ip a | grep &quot;\&lt;inet\&gt;&quot; | grep -v &quot;127.0.0.1&quot; | tr &apos;/&apos; &apos; &apos; | awk &apos;{print $2}&apos; | head -1`</span><br><span class="line">yum install -y httpd</span><br><span class="line">echo $ip_addr &gt; /var/www/html/index.html</span><br><span class="line">systemctl start httpd</span><br><span class="line"></span><br><span class="line">echo 1 &gt; /proc/sys/net/ipv4/conf/ens33/arp_ignore</span><br><span class="line">echo 2 &gt; /proc/sys/net/ipv4/conf/ens33/arp_announce</span><br></pre></td></tr></tbody></table></figure>
-<p><strong>&#x5728;RS1&#x4E0A;&#x8BBF;&#x95EE;</strong><br></p><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[root@server11 ~]# curl 192.168.110.10</span><br><span class="line">192.168.110.11</span><br><span class="line">[root@server11 ~]# curl 192.168.110.10</span><br><span class="line">192.168.110.11</span><br><span class="line">[root@server11 ~]# curl 192.168.110.10</span><br><span class="line">192.168.110.11</span><br><span class="line">[root@server11 ~]# curl 192.168.110.10</span><br><span class="line">192.168.110.11</span><br><span class="line">[root@server11 ~]# curl 192.168.110.10</span><br><span class="line">192.168.110.11</span><br><span class="line">[root@server11 ~]# curl 192.168.110.10</span><br><span class="line">192.168.110.11</span><br><span class="line">[root@server11 ~]# curl 192.168.110.10</span><br><span class="line">192.168.110.11</span><br><span class="line">[root@server11 ~]# curl 192.168.110.10</span><br><span class="line">192.168.110.11</span><br><span class="line">[root@server11 ~]#</span><br></pre></td></tr></tbody></table></figure><p></p>
-<p><strong>&#x5728;RS2&#x4E0A;&#x8BBF;&#x95EE;</strong><br></p><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[root@server12 ~]# curl 192.168.110.10</span><br><span class="line">192.168.110.12</span><br><span class="line">[root@server12 ~]# curl 192.168.110.10</span><br><span class="line">192.168.110.12</span><br><span class="line">[root@server12 ~]# curl 192.168.110.10</span><br><span class="line">192.168.110.12</span><br><span class="line">[root@server12 ~]# curl 192.168.110.10</span><br><span class="line">192.168.110.12</span><br><span class="line">[root@server12 ~]# curl 192.168.110.10</span><br><span class="line">192.168.110.12</span><br><span class="line">[root@server12 ~]# curl 192.168.110.10</span><br><span class="line">192.168.110.12</span><br><span class="line">[root@server12 ~]#</span><br></pre></td></tr></tbody></table></figure><p></p>
-<p><strong>&#x5728;&#x5BA2;&#x6237;&#x7AEF;&#x8BBF;&#x95EE;</strong><br></p><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[root@repo_srv ~]# curl 192.168.110.10</span><br><span class="line">192.168.110.11</span><br><span class="line">[root@repo_srv ~]# curl 192.168.110.10</span><br><span class="line">192.168.110.12</span><br><span class="line">[root@repo_srv ~]# curl 192.168.110.10</span><br><span class="line">192.168.110.11</span><br><span class="line">[root@repo_srv ~]# curl 192.168.110.10</span><br><span class="line">192.168.110.12</span><br><span class="line">[root@repo_srv ~]# curl 192.168.110.10</span><br><span class="line">192.168.110.11</span><br><span class="line">[root@repo_srv ~]# curl 192.168.110.10</span><br><span class="line">192.168.110.12</span><br><span class="line">[root@repo_srv ~]#</span><br></pre></td></tr></tbody></table></figure><p></p>
-<h2 id="&#x6269;&#x5C55;&#xFF1A;Shell&#x811A;&#x672C;"><a href="#&#x6269;&#x5C55;&#xFF1A;Shell&#x811A;&#x672C;" class="headerlink" title="&#x6269;&#x5C55;&#xFF1A;Shell&#x811A;&#x672C;"></a>&#x6269;&#x5C55;&#xFF1A;Shell&#x811A;&#x672C;</h2><p><strong>Director</strong><br>DIP<code>192.168.110.15</code><br>DG<code>192.168.110.1</code><br>VIP<code>192.168.110.10</code></p>
+<p><strong>&#x914D;&#x7F6E;&#x8D1F;&#x8F7D;&#x5747;&#x8861;&#x5206;&#x53D1;&#x5668;</strong>  </p>
+<pre><code># &#x914D;&#x7F6E;VIP
+ifconfig ens33:1 192.168.110.10
+
+&#x914D;&#x7F6E;&#x7F51;&#x5173;
+route del default gw x.x.x.x
+route add default gw 192.168.110.10 dev ens33
+
+# &#x914D;&#x7F6E;LVS/DR
+ipvsadm --clear
+[root@server13 ~]# ipvsadm -A -t 192.168.110.10:80 -s rr
+[root@server13 ~]# ipvsadm -Ln
+IP Virtual Server version 1.2.1 (size=4096)
+Prot LocalAddress:Port Scheduler Flags
+  -&gt; RemoteAddress:Port           Forward Weight ActiveConn InActConn
+TCP  192.168.110.10:80 rr
+[root@server13 ~]# ipvsadm -a -t 192.168.110.10:80 -r 192.168.110.11 -g
+[root@server13 ~]# ipvsadm -a -t 192.168.110.10:80 -r 192.168.110.12 -g
+[root@server13 ~]# ipvsadm -Ln
+IP Virtual Server version 1.2.1 (size=4096)
+Prot LocalAddress:Port Scheduler Flags
+  -&gt; RemoteAddress:Port           Forward Weight ActiveConn InActConn
+TCP  192.168.110.10:80 rr
+  -&gt; 192.168.110.11:80            Route   1      0          0
+  -&gt; 192.168.110.12:80            Route   1      0          0
+[root@server13 ~]#
+# -g DR&#x6A21;&#x5F0F;
+# -m IPTun&#x6A21;&#x5F0F;
+</code></pre><p><strong>&#x914D;&#x7F6E;Real Server</strong>  </p>
+<pre><code class="shell">ifconfig ens33:1 192.168.110.10
+route del default gw x.x.x.x
+route add default gw 192.168.110.1 dev ens33
+
+ip_addr=`ip a | grep &quot;\&lt;inet\&gt;&quot; | grep -v &quot;127.0.0.1&quot; | tr &apos;/&apos; &apos; &apos; | awk &apos;{print $2}&apos; | head -1`
+yum install -y httpd
+echo $ip_addr &gt; /var/www/html/index.html
+systemctl start httpd
+
+echo 1 &gt; /proc/sys/net/ipv4/conf/ens33/arp_ignore
+echo 2 &gt; /proc/sys/net/ipv4/conf/ens33/arp_announce
+</code></pre>
+<pre><code class="shell">ifconfig lo:1 192.168.110.10 netmask 255.255.255.255
+route del default gw xx.x.x.x
+route add default gw 192.168.110.1 dev ens33
+
+ip_addr=`ip a | grep &quot;\&lt;inet\&gt;&quot; | grep -v &quot;127.0.0.1&quot; | tr &apos;/&apos; &apos; &apos; | awk &apos;{print $2}&apos; | head -1`
+yum install -y httpd
+echo $ip_addr &gt; /var/www/html/index.html
+systemctl start httpd
+
+echo 1 &gt; /proc/sys/net/ipv4/conf/ens33/arp_ignore
+echo 2 &gt; /proc/sys/net/ipv4/conf/ens33/arp_announce
+</code></pre>
+<p><strong>&#x5728;RS1&#x4E0A;&#x8BBF;&#x95EE;</strong></p>
+<pre><code>[root@server11 ~]# curl 192.168.110.10
+192.168.110.11
+[root@server11 ~]# curl 192.168.110.10
+192.168.110.11
+[root@server11 ~]# curl 192.168.110.10
+192.168.110.11
+[root@server11 ~]# curl 192.168.110.10
+192.168.110.11
+[root@server11 ~]# curl 192.168.110.10
+192.168.110.11
+[root@server11 ~]# curl 192.168.110.10
+192.168.110.11
+[root@server11 ~]# curl 192.168.110.10
+192.168.110.11
+[root@server11 ~]# curl 192.168.110.10
+192.168.110.11
+[root@server11 ~]#
+</code></pre><p><strong>&#x5728;RS2&#x4E0A;&#x8BBF;&#x95EE;</strong></p>
+<pre><code>[root@server12 ~]# curl 192.168.110.10
+192.168.110.12
+[root@server12 ~]# curl 192.168.110.10
+192.168.110.12
+[root@server12 ~]# curl 192.168.110.10
+192.168.110.12
+[root@server12 ~]# curl 192.168.110.10
+192.168.110.12
+[root@server12 ~]# curl 192.168.110.10
+192.168.110.12
+[root@server12 ~]# curl 192.168.110.10
+192.168.110.12
+[root@server12 ~]#
+</code></pre><p><strong>&#x5728;&#x5BA2;&#x6237;&#x7AEF;&#x8BBF;&#x95EE;</strong></p>
+<pre><code>[root@repo_srv ~]# curl 192.168.110.10
+192.168.110.11
+[root@repo_srv ~]# curl 192.168.110.10
+192.168.110.12
+[root@repo_srv ~]# curl 192.168.110.10
+192.168.110.11
+[root@repo_srv ~]# curl 192.168.110.10
+192.168.110.12
+[root@repo_srv ~]# curl 192.168.110.10
+192.168.110.11
+[root@repo_srv ~]# curl 192.168.110.10
+192.168.110.12
+[root@repo_srv ~]#
+</code></pre><h2 id="&#x6269;&#x5C55;&#xFF1A;Shell&#x811A;&#x672C;"><a href="#&#x6269;&#x5C55;&#xFF1A;Shell&#x811A;&#x672C;" class="headerlink" title="&#x6269;&#x5C55;&#xFF1A;Shell&#x811A;&#x672C;"></a>&#x6269;&#x5C55;&#xFF1A;Shell&#x811A;&#x672C;</h2><p><strong>Director</strong><br>DIP<code>192.168.110.15</code><br>DG<code>192.168.110.1</code><br>VIP<code>192.168.110.10</code></p>
 <p><strong>RS1</strong><br>RIP<code>192.168.110.11</code><br>DG<code>192.168.110.1</code><br>VIP<code>192.168.110.10</code>  </p>
 <p><strong>RS2</strong><br>RIP<code>192.168.110.12</code><br>DG<code>192.168.110.1</code><br>VIP<code>192.168.110.10</code>  </p>
-<p><strong>Director</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Configure network</span></span><br><span class="line">/usr/sbin/ifconfig ens33 192.168.110.15 netmask 255.255.255.0</span><br><span class="line">/usr/sbin/ifconfig ens33:1 192.168.110.10 </span><br><span class="line">/usr/sbin/route add default gw 192.168.110.1 dev ens33:1</span><br><span class="line"></span><br><span class="line">/etc/init.d/network restart</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Config LVS</span></span><br><span class="line">yum install -y ipvsadm</span><br><span class="line"></span><br><span class="line">ipvsadm --clear</span><br><span class="line">ipvsadm -A -t 192.168.110.10:80 -s rr</span><br><span class="line">ipvsadm -a -t 192.168.110.10:80 -r 192.168.110.11 -g</span><br><span class="line">ipvsadm -a -t 192.168.110.10:80 -r 192.168.110.12 -g</span><br><span class="line"><span class="meta">#</span><span class="bash"> -g DR&#x6A21;&#x5F0F;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> -m IPTUN&#x6A21;&#x5F0F;</span></span><br><span class="line"></span><br><span class="line">ipvsadm -L -n</span><br></pre></td></tr></tbody></table></figure><p></p>
-<p><strong>Real Server</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">ifconfig lo:192.168.110.10 netmask 255.255.255.255</span><br><span class="line"></span><br><span class="line">sed -i &apos;s/GATEWAY=*.*.*.*/GATEWAY=192.168.110.1/g&apos; /etc/sysconfig/network-scripts/ifcfg-ens33</span><br><span class="line">/etc/init.d/network restart</span><br><span class="line"></span><br><span class="line">yum install -y httpd &amp;&gt; /dev/null</span><br><span class="line">ip_addr=`ip a | grep &quot;\&lt;inet\&gt;&quot; | grep -v &quot;127.0.0.1&quot; | tr &apos;/&apos; &apos; &apos; | awk &apos;{print $2}&apos; | head -1`</span><br><span class="line">echo &quot;$ip_addr&quot; &gt; /var/www/html/index.html</span><br><span class="line">systemctl restart httpd</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Disable ARP forward</span></span><br><span class="line">ifconfig ens33 -arp</span><br><span class="line"><span class="meta">#</span><span class="bash"> Permanent ways:</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">echo</span> 1 &gt; /proc/sys/net/ipv4/conf/ens33/arp_ignore</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">echo</span> 2 &gt; /proc/sys/net/ipv4/conf/ens33/apr_announce</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#############################################33333</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">echo</span> <span class="string">&quot;net.ipv4.conf.ens33.arp_ignore = 1&quot;</span> &gt;&gt; /etc/sysctl.conf</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">echo</span> <span class="string">&quot;net.ipv4.conf.ens33.arp_announce = 2&quot;</span> &gt;&gt; /etc/sysctl.conf</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">echo</span> <span class="string">&quot;net.ipv4.conf.all.arp_ignore = 1&quot;</span> &gt;&gt; /etc/sysctl.conf</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">echo</span> <span class="string">&quot;net.ipv4.conf.all.arp_announce = 2&quot;</span> &gt;&gt; /etc/sysctl.conf </span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">echo</span> <span class="string">&quot;net.ipv4.conf.lo.arp_ignore = 1&quot;</span> &gt;&gt; /etc/sysctl.conf</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">echo</span> <span class="string">&quot;net.ipv4.conf.lo.arp_announce = 2&quot;</span> &gt;&gt; /etc/sysctl.conf</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Enable ARP forward</span></span><br><span class="line"><span class="meta">#</span><span class="bash">ifconfig ens33 arp</span></span><br></pre></td></tr></tbody></table></figure><p></p>
+<p><strong>Director</strong>  </p>
+<pre><code class="shell">#!/bin/bash
+
+# Configure network
+/usr/sbin/ifconfig ens33 192.168.110.15 netmask 255.255.255.0
+/usr/sbin/ifconfig ens33:1 192.168.110.10 
+/usr/sbin/route add default gw 192.168.110.1 dev ens33:1
+
+/etc/init.d/network restart
+
+# Config LVS
+yum install -y ipvsadm
+
+ipvsadm --clear
+ipvsadm -A -t 192.168.110.10:80 -s rr
+ipvsadm -a -t 192.168.110.10:80 -r 192.168.110.11 -g
+ipvsadm -a -t 192.168.110.10:80 -r 192.168.110.12 -g
+# -g DR&#x6A21;&#x5F0F;
+# -m IPTUN&#x6A21;&#x5F0F;
+
+ipvsadm -L -n
+</code></pre>
+<p><strong>Real Server</strong>  </p>
+<pre><code class="shell">#!/bin/bash
+
+ifconfig lo:192.168.110.10 netmask 255.255.255.255
+
+sed -i &apos;s/GATEWAY=*.*.*.*/GATEWAY=192.168.110.1/g&apos; /etc/sysconfig/network-scripts/ifcfg-ens33
+/etc/init.d/network restart
+
+yum install -y httpd &amp;&gt; /dev/null
+ip_addr=`ip a | grep &quot;\&lt;inet\&gt;&quot; | grep -v &quot;127.0.0.1&quot; | tr &apos;/&apos; &apos; &apos; | awk &apos;{print $2}&apos; | head -1`
+echo &quot;$ip_addr&quot; &gt; /var/www/html/index.html
+systemctl restart httpd
+
+# Disable ARP forward
+ifconfig ens33 -arp
+# Permanent ways:
+#echo 1 &gt; /proc/sys/net/ipv4/conf/ens33/arp_ignore
+#echo 2 &gt; /proc/sys/net/ipv4/conf/ens33/apr_announce
+##############################################33333
+#echo &quot;net.ipv4.conf.ens33.arp_ignore = 1&quot; &gt;&gt; /etc/sysctl.conf
+#echo &quot;net.ipv4.conf.ens33.arp_announce = 2&quot; &gt;&gt; /etc/sysctl.conf
+#echo &quot;net.ipv4.conf.all.arp_ignore = 1&quot; &gt;&gt; /etc/sysctl.conf
+#echo &quot;net.ipv4.conf.all.arp_announce = 2&quot; &gt;&gt; /etc/sysctl.conf 
+#echo &quot;net.ipv4.conf.lo.arp_ignore = 1&quot; &gt;&gt; /etc/sysctl.conf
+#echo &quot;net.ipv4.conf.lo.arp_announce = 2&quot; &gt;&gt; /etc/sysctl.conf
+
+# Enable ARP forward
+#ifconfig ens33 arp
+</code></pre>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
@@ -330,355 +2057,51 @@
             document.body.appendChild(img);
           });
       </script>
-        </div>
-
-        <blockquote class="post-copyright">
-    <div class="content">
-        
-<span class="post-time">
-    最后更新：<time datetime="2022-06-11T09:49:44.144Z" itemprop="dateUpdated">2022-06-11 17:49:44</time>
-</span>
+</div>
 
 
-        
-        原文链接：<a href="/posts/be48d001/" target="_blank" rel="external">https://marnm.github.io/posts/be48d001/</a>
-        
-    </div>
-    <footer>
-        <div onclick="location.href='https://marnm.github.io'">
-            <img src="/img/avatar.gif" alt="Echo">
-            <a>Echo</a>
-        </div>
-    </footer>
-</blockquote>
-
-        
-    <div class="page-reward">
-        <nav class="myreward">
-            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
-        </nav>
-    </div>
-
-
-
-        <div class="post-footer">
+    <div class="post-guide">
+        <div class="item left">
             
-
+              <a href="/posts/df68056c/">
+                  <i class="fa fa-angle-left" aria-hidden="true"></i>
+                  LVS-IPTUN集群
+              </a>
             
-<div class="page-share-wrap">
-    
-
-<div class="page-share" id="pageShare">
-    <ul class="reset share-icons">
-      <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/be48d001/&title=《LVS-DR集群》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
-          <i class="icon icon-weibo"></i>
-        </a>
-      </li>
-      <li>
-        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
-          <i class="icon icon-weixin"></i>
-        </a>
-      </li>
-      <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/be48d001/&title=《LVS-DR集群》 — Deops's blog&source=Echo" data-title=" QQ">
-          <i class="icon icon-qq"></i>
-        </a>
-      </li>
-      <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/be48d001/" data-title=" Facebook">
-          <i class="icon icon-facebook"></i>
-        </a>
-      </li>
-      <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《LVS-DR集群》 — Deops's blog&url=https://marnm.github.io/posts/be48d001/&via=https://marnm.github.io" data-title=" Twitter">
-          <i class="icon icon-twitter"></i>
-        </a>
-      </li>
-      <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/be48d001/" data-title=" Google+">
-          <i class="icon icon-google-plus"></i>
-        </a>
-      </li>
-    </ul>
- </div>
-
-
-
-    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
-        <i class="icon icon-share-alt icon-lg"></i>
-    </a>
-</div>
-
-
-
+        </div>
+        <div class="item right">
+            
+              <a href="/posts/dcf8e277/">
+                LVS-NAT集群
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+              </a>
+            
         </div>
     </div>
 
-    
-<nav class="post-nav flex-row flex-justify-between">
-  
-    <div class="waves-block waves-effect prev">
-      <a href="/posts/df68056c/" id="post-prev" class="post-nav-link">
-        <h4 class="title">
-          上一篇：LVS-IPTUN集群
-        </h4>
-      </a>
-    </div>
-  
-
-  
-    <div class="waves-block waves-effect next">
-      <a href="/posts/dcf8e277/" id="post-next" class="post-nav-link">
-        <h4 class="title" data-hover="下一篇：LVS-NAT集群">下一篇：LVS-NAT集群</h4>
-      </a>
-    </div>
-  
-</nav>
 
 
 
-    
-    
-
-    
-
-    
-
-
-</article>
-
-</div>
-
-        <footer class="footer">
-    <div class="footer-content">
-        <span class="power">
-            <i class="icon icon-lg icon-copyright"></i>
-            2022
-            <i class="icon icon-lg icon-heart"></i>
-            <a href="https://marnm.github.io">marnm.github.io</a>
-            <br>
-            Power by
-            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
-            Theme
-            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
-        </span>
-
-        <br>
-
-        <span id="RunTime" style="color:#a7a7a2;"></span>
-        <br>
-
-        <span>
-            
-
-        </span>
-        <br>
-
-        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
-    </div>
-</footer>
-
-    </main>
-    
-        
-<div id="reward" class="page-modal reward-lay">
-    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <h3 class="reward-title">
-        <i class="icon icon-quote-left"></i>
-        <span>感谢您的鼓励支持！</span>
-        <i class="icon icon-quote-right"></i>
-    </h3>
-    <div class="reward-content">
-        
-        <div class="reward-code">
-            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
-        </div>
-        
-        <label class="reward-toggle">
-            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
-            <div class="reward-toggle-ctrol">
-                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
-                <span class="reward-toggle-item alipayPay">支付宝</span>
-            </div>
-        </label>
-        
-        <i class="icon icon-caret-up"></i>
-    </div>
-</div>
-
-
-    
-    <div class="mask" id="mask"></div>
-<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
-
-
-
-<div class="global-share" id="globalShare">
-    <ul class="reset share-icons">
-      <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/be48d001/&title=《LVS-DR集群》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
-          <i class="icon icon-weibo"></i>
-        </a>
-      </li>
-      <li>
-        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
-          <i class="icon icon-weixin"></i>
-        </a>
-      </li>
-      <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/be48d001/&title=《LVS-DR集群》 — Deops's blog&source=Echo" data-title=" QQ">
-          <i class="icon icon-qq"></i>
-        </a>
-      </li>
-      <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/be48d001/" data-title=" Facebook">
-          <i class="icon icon-facebook"></i>
-        </a>
-      </li>
-      <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《LVS-DR集群》 — Deops's blog&url=https://marnm.github.io/posts/be48d001/&via=https://marnm.github.io" data-title=" Twitter">
-          <i class="icon icon-twitter"></i>
-        </a>
-      </li>
-      <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/be48d001/" data-title=" Google+">
-          <i class="icon icon-google-plus"></i>
-        </a>
-      </li>
-    </ul>
- </div>
-
-
-<div class="page-modal wx-share" id="wxShare">
-    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p class="wechatshare">扫一扫，分享到微信</p>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABxElEQVR42u3aMY4DIQwF0Nz/0tk2FfNtA5qVHlWUEOYxhYVtPp94fH9G8ut6/u+cz4mBi4s75n6XIwGt/7VeIV8NFxf3PncdaPKlJzOjYIeLi/t67npmfmDCxcX979wTyQ8uLu47udUjSJ4grZ9yMFfDxcUdcPMq5bnPR+q7uLi4Le63ONYbyBstzafj4uJe4fYKGdVtVLf3sFVcXNzD3EmTIw9q1TUfQhguLu4Vbn4cqV6rSsofhXYsLi7udW41RUnKHPma0fEIFxf3IndXzTVJivLQ9pD84OLiXuHmVyh6rA3bxsXFvcJNyhzli1PFckn+anBxcW9yq4EpSXiqgalQYMXFxT3MnbQ3qiXUXovloWCKi4t7gDu5JtUbefLz8ApwcXEPc3e1QBJWNSBuuISBi4s74PYCUBIjk5VHuRouLu4xbq/JOrmckZdr6wc2XFzcPneeulQLoL2DES4u7k3u/EpENdWZHI9wcXFvcqvJSS/Vqb6CZhMFFxd3KzdPinpbyiNoub6Li4v7Am5ynWL9/agRi4uL+3rupMzanI+Li3uRmyQ/vcZJrxLT7Anj4uJu4vb+nJc8egWRDfVdXFzcDvcPfM1I50enV3YAAAAASUVORK5CYII=" alt="微信分享二维码">
-</div>
-
-
-
-
-    <!-- waves按钮特效 -->
-<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
-
-<!-- 主题配置脚本 -->
 <script>
-var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+	
+	
 </script>
-
-<!-- jquery -->
-<script src="/js/jquery.min.js?v=3.0"></script>
-
-<!-- 搜索 -->
-
-<div class="search-panel" id="search-panel">
-    <ul class="search-result" id="search-result"></ul>
+	</div>
+	<div id="footer">
+	<p>
+	©2019-<span id="footerYear"></span> 
+	<a href="/">Echo</a> 
+	
+	
+	<br>
+	Theme <a href="//github.com/wujun234/hexo-theme-tree" target="_blank">Tree</a>
+	by <a href="//github.com/wujun234" target="_blank">WuJun</a>
+	Powered by <a href="//hexo.io" target="_blank">Hexo</a>
+	</p>
 </div>
-<template id="search-tpl">
-<li class="item waves-block waves-effect" onclick="location.href='{path}'">
-    <div class="title ellipsis" title="{title}">{title}</div>
-</li>
-</template>
-
-
-<!-- main博客脚本 -->
-<script src="/js/main.min.js?v=3.0"></script>
-
-<!-- 动画&配置 -->
-<script src="/js/script.min.js?v=3.0"></script>
-
-<!-- 脚本管理 -->
-<script>
-
-if(window.innerWidth > 800){
-	/* 3D标题 */
-	$(".content-header").on("mousemove", threedee);
-
-	/* 底部追随鼠标 */
-	$(".footer").hover(2);
-
-	/* gotop键的涟漪 */
-	$("#gotop").hover(1);
-
-	/* 赞赏的粒子雨 */
-	$("#reward").hover(3);
-
-	/* 微信公众号的底部渲染 */
-	$("#wechat").hover(4);
-
-    /* 标题跳动 */
-    $(".archivestitle").bumpyText();
-
-	/* 图片点击放大 */
-	const postimg = jQuery(".post-content img:not(.github-emoji)");
-	postimg.on("click",function(){
-
-		mask.classList.add("in");
-		main.classList.add("Mask");
-		menu.classList.add("Mask");
-		var myimg = this.cloneNode(true);
-		myimg.classList.add("imgShow");
-
-		setTimeout(function(){
-			jQuery(myimg).animate({
-				opacity:"1"
-			},1000);
-		},0);
-
-		document.body.appendChild(myimg);
-
-		myimg.onclick=function(){
-			document.body.removeChild(myimg);
-			mask.classList.remove("in");
-			main.classList.remove("Mask");
-			menu.classList.remove("Mask");
-		};
-
-	});
-
-}
-
-/* 名字跳动 */
-$("#name").bumpyText();
-
-
-/* 网站运行时间 */
-setInterval(function () {
-	setTime("2019/01/01");
-}, 1000);
-
-/* 文章块的淡出 */
-postshow();
-
-/* 座右铭 */
-
-   getHitokoto();
-
-
-
-/* 粘贴提示 */
-G($(".post-content"), location.href, "Echo");
-
-
-/* 控制台 */
-if (window.console && window.console.log) {
-	setTimeout(function () {
-		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
-	}, 0);
-}
-
+<script type="text/javascript"> 
+	document.getElementById('footerYear').innerHTML = new Date().getFullYear() + '';
 </script>
-
-
-
-
-<!-- 公式渲染 -->
-
-
-
-<!-- 不蒜子 -->
-
-
+	<button id="totop-toggle" class="toggle"><i class="fa fa-angle-double-up" aria-hidden="true"></i></button>
 </body>
 </html>

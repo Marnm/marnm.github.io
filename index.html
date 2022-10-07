@@ -1,934 +1,2040 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head><meta name="generator" content="Hexo 3.8.0">
-    <meta http-equiv="Content-Language" content="zh-cn">
-    <meta charset="utf-8">
-    
-    
-    
-    <title>Deops&#39;s blog | 运维开发工程师</title>
-    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    
-    <meta name="theme-color" content="#77AAFF">
-    
-    
-    <meta name="keywords" content="Echo">
-    
-    
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+	
+	<!-- title -->
+	
+	<title>
+	 
+	Deops&#39;s blog
+	</title>
+	
+	<!-- keywords,description -->
+	
+		<meta name="keywords" content="Echo">
+	 
+		<meta name="description" content="Echo">
+	
 
-    
+	<!-- favicon -->
+	
+	<link rel="shortcut icon" href="/favicon.ico">
+	
 
-    <!-- Baidu Push -->
-<script>
-	(function(){
-		var bp = document.createElement('script');
-		var curProtocol = window.location.protocol.split(':')[0];
-		if (curProtocol === 'https') {
-			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+
+	<!-- search -->
+	<script>
+		var searchEngine = "https://www.google.com/search?q=";
+		if(typeof searchEngine == "undefined" || searchEngine == null || searchEngine == ""){
+			searchEngine = "https://www.google.com/search?q=";
 		}
-		else {
-			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		var homeHost = "https://marnm.github.io/";
+		if(typeof homeHost == "undefined" || homeHost == null || homeHost == ""){
+			homeHost = window.location.host;
 		}
-		var s = document.getElementsByTagName("script")[0];
-		s.parentNode.insertBefore(bp, s);
-	})();
-
-	var _hmt = _hmt || [];
-</script>
+	</script>
 
 
-
+	<link rel="stylesheet" href="/css/main.css">
+	<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/lib/highlight/styles/base16/solarized-dark.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
     
-    <meta name="description" content="Echo">
-<meta name="keywords" content="Echo">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Deops&#39;s blog">
-<meta property="og:url" content="https://marnm.github.io/index.html">
-<meta property="og:site_name" content="Deops&#39;s blog">
-<meta property="og:description" content="Echo">
-<meta property="og:locale" content="zh-Hans">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Deops&#39;s blog">
-<meta name="twitter:description" content="Echo">
-    
-        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
-    
-    <link rel="shortcut icon" href="/img/favicon.ico">
-    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
-    <script>window.lazyScripts=[]</script>
+    <!-- 引入代码高亮的 js -->
+    <script src="/lib/highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 
-    <!-- custom head -->
-    
-            
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/jquery-pjax@2.0.1/jquery.pjax.min.js"></script>
+	<script src="/js/main.js"></script>
+	
+		<script src="https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/valine@v1.4.14/dist/Valine.min.js"></script>
+	
+	
 </head>
 
 <body>
-    <div id="loading" class="active"></div>
-    <aside id="menu">
-  <div class="inner flex-row-vertical">
-    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
-        <i class="icon icon-lg icon-close"></i>
-    </a>
-    <div class="brand-wrap">
-      <div class="brand">
-        <a href="/" class="avatar waves-effect waves-circle waves-light">
-          <img src="/img/avatar.gif" alt="avatar">
-        </a>
-        <hgroup class="introduce">
-          <h5 class="nickname" id="name">Echo</h5>
-          
-            <div id="yiyanmotto" class="motto">&nbsp;</div>
-          
-        </hgroup>
-      </div>
-    </div>
-    <div class="scroll-wrap flex-col">
-      <ul class="nav">
-        
-              <li class="waves-block waves-effect active">
-                  <a href="/">
-                    <i class="icon icon-lg icon-home"></i>
-                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/archives">
-                    <i class="icon icon-lg icon-archives"></i>
-                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/categories">
-                    <i class="icon icon-lg icon-th-list"></i>
-                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/tags">
-                    <i class="icon icon-lg icon-tags"></i>
-                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/about">
-                    <i class="icon icon-lg icon-smile-o"></i>
-                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-      <div class="nav2">
-          
-              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
-                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
-              </a>
-          
-              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
-                <i class="icon icon-lg icon-github github"></i>
-              </a>
-          
-              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
-                <i class="icon icon-lg icon-tv tv"></i>
-              </a>
-          
-
-            </div>
-        
-      </ul>
-        
-    </div>
-  </div>
- 
-</aside>
-
-
-    <main id="main">
-        <header class="top-header" id="header">
-    <div class="flex-row">
-        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
-          <i class="icon icon-lg icon-navicon"></i>
-        </a>
-        <div class="flex-col header-title ellipsis">Deops&#39;s blog</div>
-        
-        <div class="search-wrap" id="search-wrap">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
-                <i class="icon icon-lg icon-chevron-left"></i>
-            </a>
-            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
-                <i class="icon icon-lg icon-search"></i>
-            </a>
-        </div>
-        
-        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
-            <i class="icon icon-lg icon-rss"></i>
-        </a>
-    </div>
-</header>
-<header class="content-header index-header">
-    
-    
-    <div class="container fade-scale">
-        <div id="myheader">
-            <h1 class="title">
-                 
-                    Deops&#39;s blog
-                
-            </h1>
-            <h5 class="subtitle">
-                
-                    努力成为一名资深运维工程师
-                
-            </h5>
-        </div>
-    </div>
-
-</header>
-
-<div class="container body-wrap">
-    <ul class="post-list">
-    
-        <li class="post-list-item fade">
-            <article id="post-Prometheus学习笔记" class="article-card article-type-post" itemprop="blogPost">
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a href="/posts/39c0f6a1/">Prometheus学习笔记</a>
-    </h3>
-  
-
-
-
-
-     <div class="post-meta">
-        <time class="post-time" title="2022-06-28 17:19:36" datetime="2022-06-28T09:19:36.000Z" itemprop="datePublished">2022-06-28</time>
-
-    </div>
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        <h2 id="二进制安装"><a href="#二进制安装" class="headerlink" title="二进制安装"></a>二进制安装</h2><p><strong>Download Prometheus Binary Pakcage</strong><br><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">curl -O --progress http://192.168.210.200/0221-note/prometheus-2.36.2.linux-amd64.tar.gz</span><br><span class="line">tar zxvf prometheus-2.36.2.linux-amd64.tar.gz -C /opt/</span><br><span class="line">mv prometheus-2.36.2.linux-amd64/ prometheus-2.36.2</span><br><span class="line">cd /opt/prometheus-2.36.2/</span><br><span class="line">vim /etc/systemd/system/prometheus.service</span><br></pre></td></tr></table></figure></p>
-    
-        <div>
-            <a href="/posts/39c0f6a1/" class="post-more waves-button">
-                阅读全文 »
-            </a>
-        </div>
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-ElasticSearch环境搭建" class="article-card article-type-post" itemprop="blogPost">
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a href="/posts/2d95f1c1/">ElasticSearch环境搭建</a>
-    </h3>
-  
-
-
-
-
-     <div class="post-meta">
-        <time class="post-time" title="2022-06-15 14:41:28" datetime="2022-06-15T06:41:28.000Z" itemprop="datePublished">2022-06-15</time>
-
-    </div>
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        <script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>
-    
-        <div>
-            <a href="/posts/2d95f1c1/" class="post-more waves-button">
-                阅读全文 »
-            </a>
-        </div>
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-Ceph分布式存储部署笔记" class="article-card article-type-post" itemprop="blogPost">
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a href="/posts/38843421/">Ceph分布式存储部署笔记</a>
-    </h3>
-  
-
-
-
-
-     <div class="post-meta">
-        <time class="post-time" title="2022-06-12 21:09:47" datetime="2022-06-12T13:09:47.000Z" itemprop="datePublished">2022-06-12</time>
-
-    </div>
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        <h2 id="&#x6982;&#x5FF5;"><a href="#&#x6982;&#x5FF5;" class="headerlink" title="&#x6982;&#x5FF5;"></a>&#x6982;&#x5FF5;</h2><h3 id="&#x5206;&#x5E03;&#x5F0F;&#x5B58;&#x50A8;&#x76F8;&#x5173;"><a href="#&#x5206;&#x5E03;&#x5F0F;&#x5B58;&#x50A8;&#x76F8;&#x5173;" class="headerlink" title="&#x5206;&#x5E03;&#x5F0F;&#x5B58;&#x50A8;&#x76F8;&#x5173;"></a>&#x5206;&#x5E03;&#x5F0F;&#x5B58;&#x50A8;&#x76F8;&#x5173;</h3><p>&#x5206;&#x5E03;&#x5F0F;&#x5B58;&#x50A8;&#x662F;&#x4E00;&#x79CD;&#x6570;&#x636E;&#x5B58;&#x50A8;&#x6280;&#x672F;&#xFF0C;&#x901A;&#x8FC7;&#x7F51;&#x7EDC;&#x4F7F;&#x7528;&#x4F01;&#x4E1A;&#x4E2D;&#x7684;&#x6BCF;&#x53F0;&#x673A;&#x5668;&#x4E0A;&#x7684;&#x78C1;&#x76D8;&#x7A7A;&#x95F4;&#xFF0C;&#x5E76;&#x5C06;&#x8FD9;&#x4E9B;&#x5206;&#x6563;&#x7684;&#x5B58;&#x50A8;&#x8D44;&#x6E90;&#x6784;&#x6210;&#x4E00;&#x4E2A;&#x865A;&#x62DF;&#x7684;&#x5B58;&#x50A8;&#x8BBE;&#x5907;&#xFF0C;&#x6570;&#x636E;&#x5206;&#x6563;&#x7684;&#x5B58;&#x50A8;&#x5728;&#x4F01;&#x4E1A;&#x7684;&#x5404;&#x4E2A;&#x89D2;&#x843D;&#x3002;</p>
-<h3 id="Ceph&#x76F8;&#x5173;"><a href="#Ceph&#x76F8;&#x5173;" class="headerlink" title="Ceph&#x76F8;&#x5173;"></a>Ceph&#x76F8;&#x5173;</h3><ul>
-<li>Ceph&#x662F;&#x4E00;&#x4E2A;&#x5BF9;&#x8C61;&#xFF08;object&#xFF09;&#x5F0F;&#x5B58;&#x50A8;&#x7CFB;&#x7EDF;&#xFF0C;&#x5B83;&#x628A;&#x6BCF;&#x4E00;&#x4E2A;&#x5F85;&#x7BA1;&#x7406;&#x7684;&#x6570;&#x636E;&#x6D41;&#xFF08;&#x4F8B;&#x5982;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;&#xFF09;&#x5207;&#x5206;&#x4E3A;&#x4E00;&#x4E2A;&#x5230;&#x591A;&#x4E2A;&#x56FA;&#x5B9A;&#x5927;&#x5C0F;&#x7684;&#x5BF9;&#x8C61;&#x6570;&#x636E;&#xFF0C;&#x5E76;&#x4EE5;&#x5176;&#x4E3A;&#x539F;&#x5B50;&#x5355;&#x5143;&#x5B8C;&#x6210;&#x6570;&#x636E;&#x5B58;&#x53D6;&#x3002;</li>
-<li>&#x5BF9;&#x8C61;&#x6570;&#x636E;&#x7684;&#x5E95;&#x5C42;&#x5B58;&#x50A8;&#x670D;&#x52A1;&#x662F;&#x7531;&#x591A;&#x4E2A;&#x4E3B;&#x673A;&#xFF08;host&#xFF09;&#x7EC4;&#x6210;&#x7684;&#x5B58;&#x50A8;&#x96C6;&#x7FA4;&#xFF0C;&#x8BE5;&#x96C6;&#x7FA4;&#x4E5F;&#x88AB;&#x79F0;&#x4E3A;RADOS&#xFF08;Reliable Automatic Distributed Object Store&#xFF09;&#x5B58;&#x50A8;&#x96C6;&#x7FA4;&#xFF0C;&#x53CA;&#x53EF;&#x9760;&#x81EA;&#x52A8;&#x5316;&#x5206;&#x5E03;&#x5F0F;&#x5BF9;&#x8C61;&#x5B58;&#x50A8;&#x7CFB;&#x7EDF;&#x3002;</li>
-<li>librados&#x662F;RADOS&#x5B58;&#x50A8;&#x96C6;&#x7FA4;&#x7684;API&#xFF0C;&#x5B83;&#x652F;&#x6301;C&#x3001;C++&#x3001;Java&#x3001;Python&#x3001;Ruby&#x548C;PHP&#x7B49;&#x7F16;&#x7A0B;&#x8BED;&#x8A00;</li>
-</ul>
-<p>&#x4E0D;&#x7BA1;&#x4F60;&#x662F;&#x60F3;&#x4E3A;&#x4E91;&#x5E73;&#x53F0;&#x63D0;&#x4F9B;Ceph &#x5BF9;&#x8C61;&#x5B58;&#x50A8;&#x548C;/&#x6216; Ceph &#x5757;&#x8BBE;&#x5907;&#xFF0C;&#x8FD8;&#x662F;&#x60F3;&#x90E8;&#x7F72;&#x4E00;&#x4E2A; Ceph &#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#x6216;&#x8005;&#x628A; Ceph &#x4F5C;&#x4E3A;&#x4ED6;&#x7528;&#xFF0C;&#x6240;&#x6709; Ceph &#x5B58;&#x50A8;&#x96C6;&#x7FA4;&#x7684;&#x90E8;&#x7F72;&#x90FD;&#x59CB;&#x4E8E;&#x90E8;&#x7F72;&#x4E00;&#x4E2A;&#x4E2A; Ceph &#x8282;&#x70B9;&#x3001;&#x7F51;&#x7EDC;&#x548C; Ceph &#x5B58;&#x50A8;&#x96C6;&#x7FA4;&#x3002; Ceph &#x5B58;&#x50A8;&#x96C6;&#x7FA4;&#x81F3;&#x5C11;&#x9700;&#x8981;&#x4E00;&#x4E2A; Ceph Monitor &#x548C;&#x4E24;&#x4E2A; OSD &#x5B88;&#x62A4;&#x8FDB;&#x7A0B;&#x3002;&#x800C;&#x8FD0;&#x884C; Ceph &#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#x5BA2;&#x6237;&#x7AEF;&#x65F6;&#xFF0C;&#x5219;&#x5FC5;&#x987B;&#x8981;&#x6709;&#x5143;&#x6570;&#x636E;&#x670D;&#x52A1;&#x5668;&#xFF08; Metadata Server &#xFF09;&#x3002;</p>
-<p><strong>Ceph OSDs</strong>: Ceph OSD &#x5B88;&#x62A4;&#x8FDB;&#x7A0B;&#xFF08; Ceph OSD &#xFF09;&#x7684;&#x529F;&#x80FD;&#x662F;<strong>&#x5B58;&#x50A8;&#x6570;&#x636E;&#xFF0C;&#x5904;&#x7406;&#x6570;&#x636E;&#x7684;&#x590D;&#x5236;&#x3001;&#x6062;&#x590D;&#x3001;&#x56DE;&#x586B;&#x3001;&#x518D;&#x5747;&#x8861;&#xFF0C;&#x5E76;&#x901A;&#x8FC7;&#x68C0;&#x67E5;&#x5176;&#x4ED6;OSD &#x5B88;&#x62A4;&#x8FDB;&#x7A0B;&#x7684;&#x5FC3;&#x8DF3;&#x6765;&#x5411; Ceph Monitors &#x63D0;&#x4F9B;&#x4E00;&#x4E9B;&#x76D1;&#x63A7;&#x4FE1;&#x606F;</strong>&#x3002;&#x5F53; Ceph &#x5B58;&#x50A8;&#x96C6;&#x7FA4;&#x8BBE;&#x5B9A;&#x4E3A;&#x6709;2&#x4E2A;&#x526F;&#x672C;&#x65F6;&#xFF0C;&#x81F3;&#x5C11;&#x9700;&#x8981;2&#x4E2A; OSD &#x5B88;&#x62A4;&#x8FDB;&#x7A0B;&#xFF0C;&#x96C6;&#x7FA4;&#x624D;&#x80FD;&#x8FBE;&#x5230; active+clean &#x72B6;&#x6001;&#xFF08; Ceph &#x9ED8;&#x8BA4;&#x6709;3&#x4E2A;&#x526F;&#x672C;&#xFF0C;&#x4F46;&#x4F60;&#x53EF;&#x4EE5;&#x8C03;&#x6574;&#x526F;&#x672C;&#x6570;&#xFF09;&#x3002;</p>
-<p><strong>Monitors</strong>: Ceph Monitor<strong>&#x7EF4;&#x62A4;&#x7740;&#x5C55;&#x793A;&#x96C6;&#x7FA4;&#x72B6;&#x6001;&#x7684;&#x5404;&#x79CD;&#x56FE;&#x8868;</strong>&#xFF0C;&#x5305;&#x62EC;&#x76D1;&#x89C6;&#x5668;&#x56FE;&#x3001; OSD &#x56FE;&#x3001;&#x5F52;&#x7F6E;&#x7EC4;&#xFF08; PG &#xFF09;&#x56FE;&#x3001;&#x548C; CRUSH &#x56FE;&#x3002; Ceph &#x4FDD;&#x5B58;&#x7740;&#x53D1;&#x751F;&#x5728;Monitors &#x3001; OSD &#x548C; PG&#x4E0A;&#x7684;&#x6BCF;&#x4E00;&#x6B21;&#x72B6;&#x6001;&#x53D8;&#x66F4;&#x7684;&#x5386;&#x53F2;&#x4FE1;&#x606F;&#xFF08;&#x79F0;&#x4E3A; epoch &#xFF09;&#x3002;</p>
-<p><strong>MDSs</strong>: Ceph &#x5143;&#x6570;&#x636E;&#x670D;&#x52A1;&#x5668;&#xFF08; MDS &#xFF09;&#x4E3A; Ceph &#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#x5B58;&#x50A8;&#x5143;&#x6570;&#x636E;&#xFF08;&#x4E5F;&#x5C31;&#x662F;&#x8BF4;&#xFF0C;Ceph &#x5757;&#x8BBE;&#x5907;&#x548C; Ceph &#x5BF9;&#x8C61;&#x5B58;&#x50A8;&#x4E0D;&#x4F7F;&#x7528;MDS &#xFF09;&#x3002;&#x5143;&#x6570;&#x636E;&#x670D;&#x52A1;&#x5668;&#x4F7F;&#x5F97; POSIX &#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#x7684;&#x7528;&#x6237;&#x4EEC;&#xFF0C;&#x53EF;&#x4EE5;&#x5728;&#x4E0D;&#x5BF9; Ceph &#x5B58;&#x50A8;&#x96C6;&#x7FA4;&#x9020;&#x6210;&#x8D1F;&#x62C5;&#x7684;&#x524D;&#x63D0;&#x4E0B;&#xFF0C;&#x6267;&#x884C;&#x8BF8;&#x5982; ls&#x3001;find &#x7B49;&#x57FA;&#x672C;&#x547D;&#x4EE4;&#x3002;</p>
-<p>Ceph &#x628A;&#x5BA2;&#x6237;&#x7AEF;&#x6570;&#x636E;&#x4FDD;&#x5B58;&#x4E3A;&#x5B58;&#x50A8;&#x6C60;&#x5185;&#x7684;&#x5BF9;&#x8C61;&#x3002;&#x901A;&#x8FC7;&#x4F7F;&#x7528; CRUSH &#x7B97;&#x6CD5;&#xFF0C; Ceph &#x53EF;&#x4EE5;&#x8BA1;&#x7B97;&#x51FA;&#x54EA;&#x4E2A;&#x5F52;&#x7F6E;&#x7EC4;&#xFF08;PG&#xFF09;&#x5E94;&#x8BE5;&#x6301;&#x6709;&#x6307;&#x5B9A;&#x7684;&#x5BF9;&#x8C61;(Object)&#xFF0C;&#x7136;&#x540E;&#x8FDB;&#x4E00;&#x6B65;&#x8BA1;&#x7B97;&#x51FA;&#x54EA;&#x4E2A; OSD &#x5B88;&#x62A4;&#x8FDB;&#x7A0B;&#x6301;&#x6709;&#x8BE5;&#x5F52;&#x7F6E;&#x7EC4;&#x3002; CRUSH &#x7B97;&#x6CD5;&#x4F7F;&#x5F97; Ceph &#x5B58;&#x50A8;&#x96C6;&#x7FA4;&#x80FD;&#x591F;&#x52A8;&#x6001;&#x5730;&#x4F38;&#x7F29;&#x3001;&#x518D;&#x5747;&#x8861;&#x548C;&#x4FEE;&#x590D;&#x3002;</p>
-<p><strong>Ceph&#x67B6;&#x6784;</strong><br></p><figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://192.168.84.188:8081/uploads/1655038820449485585ceph_str.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure><p></p>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://192.168.84.188:8081/uploads/1655038854435445522ceph_str2.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure>
-<p><strong>&#x4F53;&#x7CFB;&#x7ED3;&#x6784;</strong><br>Ceph &#x7528;&#x7EDF;&#x4E00;&#x7684;&#x7CFB;&#x7EDF;&#x63D0;&#x4F9B;&#x4E86;&#x5BF9;&#x8C61;&#x3001;&#x5757;&#x3001;&#x548C;&#x6587;&#x4EF6;&#x5B58;&#x50A8;&#x529F;&#x80FD;&#xFF0C;&#x5B83;&#x53EF;&#x9760;&#x6027;&#x9AD8;&#x3001;&#x7BA1;&#x7406;&#x7B80;&#x4FBF;&#x3001;&#x5E76;&#x4E14;&#x662F;&#x81EA;&#x7531;&#x8F6F;&#x4EF6;&#x3002; Ceph &#x7684;&#x5F3A;&#x5927;&#x8DB3;&#x4EE5;&#x6539;&#x53D8;&#x8D35;&#x516C;&#x53F8;&#x7684; IT &#x57FA;&#x7840;&#x67B6;&#x6784;&#x3001;&#x548C;&#x7BA1;&#x7406;&#x6D77;&#x91CF;&#x6570;&#x636E;&#x7684;&#x80FD;&#x529B;&#x3002;Ceph &#x53EF;&#x63D0;&#x4F9B;&#x6781;&#x5927;&#x7684;&#x4F38;&#x7F29;&#x6027;&#x2014;&#x2014;&#x4F9B;&#x6210;&#x5343;&#x7528;&#x6237;&#x8BBF;&#x95EE; PB &#x4E43;&#x81F3; EB &#x7EA7;&#x7684;&#x6570;&#x636E;&#x3002; Ceph &#x8282;&#x70B9;&#x4EE5;&#x666E;&#x901A;&#x786C;&#x4EF6;&#x548C;&#x667A;&#x80FD;&#x5B88;&#x62A4;&#x8FDB;&#x7A0B;&#x4F5C;&#x4E3A;&#x652F;&#x6491;&#x70B9;&#xFF0C; Ceph &#x5B58;&#x50A8;&#x96C6;&#x7FA4;&#x7EC4;&#x7EC7;&#x8D77;&#x4E86;&#x5927;&#x91CF;&#x8282;&#x70B9;&#xFF0C;&#x5B83;&#x4EEC;&#x4E4B;&#x95F4;&#x9760;&#x76F8;&#x4E92;&#x901A;&#x8BAF;&#x6765;&#x590D;&#x5236;&#x6570;&#x636E;&#x3001;&#x5E76;&#x52A8;&#x6001;&#x5730;&#x91CD;&#x5206;&#x5E03;&#x6570;&#x636E;&#x3002;</p>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://192.168.84.188:8081/uploads/1655039042670905246ceph_struc.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure>
-<h2 id="&#x5206;&#x5E03;&#x5F0F;&#x5B58;&#x50A8;&#x65B9;&#x6848;&#x2014;&#x2014;Ceph"><a href="#&#x5206;&#x5E03;&#x5F0F;&#x5B58;&#x50A8;&#x65B9;&#x6848;&#x2014;&#x2014;Ceph" class="headerlink" title="&#x5206;&#x5E03;&#x5F0F;&#x5B58;&#x50A8;&#x65B9;&#x6848;&#x2014;&#x2014;Ceph"></a>&#x5206;&#x5E03;&#x5F0F;&#x5B58;&#x50A8;&#x65B9;&#x6848;&#x2014;&#x2014;Ceph</h2><p><strong>&#x73AF;&#x5883;</strong><br>Server01 <code>192.168.110.10</code>&#x3001;Ceph Admin<br>Server02 <code>192.168.110.11</code>&#x3001;monitor&#x3001;mgr<br>Server03 <code>192.168.110.12</code>&#x3001;monitor&#x3001;mgr<br>Server04 <code>192.168.110.13</code>&#x3001;monitor&#x3001;mgr<br>&#x8BF4;&#x660E;&#xFF1A;server02-0&#x662F;Ceph&#x5B58;&#x50A8;&#x96C6;&#x7FA4;&#x8282;&#x70B9;&#xFF0C;&#x5B83;&#x4EEC;&#x5206;&#x522B;&#x4F5C;&#x4E3A;MON&#x8282;&#x70B9;&#x548C;OSD&#x8282;&#x70B9;&#xFF0C;&#x5404;&#x81EA;&#x62E5;&#x6709;&#x4E13;&#x7528;&#x4E8E;&#x5B58;&#x50A8;&#x6570;&#x636E;&#x7684;&#x78C1;&#x76D8;&#x8BBE;&#x5907;/dev/sdb&#x548C;/dev/sdc&#xFF0C;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x73AF;&#x5883;&#x5747;&#x4E3A;RHEL7&#x6216;&#x8005;CentOS7&#x800C;ceph-admin&#x4E3B;&#x673A;&#x662F;&#x4E3A;&#x7BA1;&#x7406;&#x8282;&#x70B9;&#xFF0C;&#x7528;&#x4E8E;&#x90E8;&#x7F72;ceph-deploy&#x3002;</p>
-<h3 id="&#x57FA;&#x7840;&#x73AF;&#x5883;&#x51C6;&#x5907;"><a href="#&#x57FA;&#x7840;&#x73AF;&#x5883;&#x51C6;&#x5907;" class="headerlink" title="&#x57FA;&#x7840;&#x73AF;&#x5883;&#x51C6;&#x5907;"></a>&#x57FA;&#x7840;&#x73AF;&#x5883;&#x51C6;&#x5907;</h3><p>&#x501F;&#x52A9;&#x4E8E;NTP&#x670D;&#x52A1;&#x8BBE;&#x5B9A;&#x5404;&#x8282;&#x70B9;&#x65F6;&#x95F4;&#x7CBE;&#x786E;&#x540C;&#x6B65;&#xFF1B;<br>&#x901A;&#x8FC7;DNS&#x5B8C;&#x6210;&#x5404;&#x8282;&#x70B9;&#x7684;&#x4E3B;&#x673A;&#x540D;&#x79F0;&#x89E3;&#x6790;&#xFF0C;&#x6D4B;&#x8BD5;&#x73AF;&#x5883;&#x4E3B;&#x673A;&#x6570;&#x91CF;&#x8F83;&#x5C11;&#x65F6;&#x4E5F;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;hosts&#x6587;&#x4EF6;&#x8FDB;&#x884C;&#xFF1B;<br>&#x5173;&#x95ED;&#x5404;&#x8282;&#x70B9;&#x7684;iptables&#x6216;firewalld&#x670D;&#x52A1;&#xFF0C;&#x5E76;&#x786E;&#x4FDD;&#x5B83;&#x4EEC;&#x88AB;&#x7981;&#x6B62;&#x968F;&#x7CFB;&#x7EDF;&#x5F15;&#x5BFC;&#x8FC7;&#x7A0B;&#x542F;&#x52A8;&#xFF1B;<br>&#x5404;&#x8282;&#x70B9;&#x7981;&#x7528;SELinux&#xFF1B;  </p>
-<p>&#x8BBE;&#x5B9A;&#x65F6;&#x949F;&#x540C;&#x6B65;</p>
-<pre><code>cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-</code></pre><p><strong>&#x4F18;&#x5316;&#x7CFB;&#x7EDF;</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">sed -i &apos;s/SELINUX=enforcing/SELINUX=disabled/&apos; /etc/selinux/config &amp;&gt; /dev/null</span><br><span class="line">setenforce 0</span><br><span class="line">systemctl stop firewalld &amp;&gt; /dev/null</span><br><span class="line">systemctl disable firewalld &amp;&gt; /dev/null</span><br><span class="line">iptables -F</span><br><span class="line">systemctl stop NetworkManager &amp;&gt; /dev/null</span><br><span class="line">systemctl disable NetworkManager &amp;&gt; /dev/null</span><br><span class="line">echo 1 &gt; /proc/sys/net/ipv4/ip_forward</span><br></pre></td></tr></tbody></table></figure><p></p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">echo -e &quot;192.168.110.10\tserver10&quot; &gt;&gt; /etc/hosts</span><br><span class="line">echo -e &quot;192.168.110.11\tserver11&quot; &gt;&gt; /etc/hosts</span><br><span class="line">echo -e &quot;192.168.110.12\tserver12&quot; &gt;&gt; /etc/hosts</span><br><span class="line">echo -e &quot;192.168.110.13\tserver13&quot; &gt;&gt; /etc/hosts</span><br></pre></td></tr></tbody></table></figure>
-<p><strong>&#x521B;&#x5EFA;&#x90E8;&#x7F72;Ceph&#x7684;&#x7279;&#x5B9A;&#x8D26;&#x53F7;</strong><br>&#x90E8;&#x7F72;&#x5DE5;&#x5177;ceph-deploy &#x5FC5;&#x987B;&#x4EE5;&#x666E;&#x901A;&#x7528;&#x6237;&#x767B;&#x5F55;&#x5230;Ceph&#x96C6;&#x7FA4;&#x7684;&#x5404;&#x76EE;&#x6807;&#x8282;&#x70B9;&#xFF0C;&#x4E14;&#x6B64;&#x7528;&#x6237;&#x9700;&#x8981;&#x62E5;&#x6709;&#x65E0;&#x5BC6;&#x7801;&#x4F7F;&#x7528;sudo&#x547D;&#x4EE4;&#x7684;&#x6743;&#x9650;&#xFF0C;&#x4EE5;&#x4FBF;&#x5728;&#x5B89;&#x88C5;&#x8F6F;&#x4EF6;&#x53CA;&#x751F;&#x6210;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x7684;&#x8FC7;&#x7A0B;&#x4E2D;&#x65E0;&#x9700;&#x4E2D;&#x65AD;&#x914D;&#x7F6E;&#x8FC7;&#x7A0B;&#x3002;&#x4E0D;&#x8FC7;&#xFF0C;&#x8F83;&#x65B0;&#x7248;&#x7684;ceph-deploy&#x4E5F;&#x652F;&#x6301;&#x7528; &#x201D;&#x2013;username&#x201C; &#x9009;&#x9879;&#x63D0;&#x4F9B;&#x53EF;&#x65E0;&#x5BC6;&#x7801;&#x4F7F;&#x7528;sudo&#x547D;&#x4EE4;&#x7684;&#x7528;&#x6237;&#x540D;&#xFF08;&#x5305;&#x62EC; root &#xFF0C;&#x4F46;&#x4E0D;&#x5EFA;&#x8BAE;&#x8FD9;&#x6837;&#x505A;&#xFF09;&#x3002;<br>&#x53E6;&#x5916;&#xFF0C;&#x4F7F;&#x7528;&#x201D;ceph-deploy &#x2013;username {username} &#x201C;&#x547D;&#x4EE4;&#x65F6;&#xFF0C;&#x6307;&#x5B9A;&#x7684;&#x7528;&#x6237;&#x9700;&#x8981;&#x80FD;&#x591F;&#x901A;&#x8FC7;SSH&#x534F;&#x8BAE;&#x81EA;&#x52A8;&#x8BA4;&#x8BC1;&#x5E76;&#x8FDE;&#x63A5;&#x5230;&#x5404;Ceph&#x8282;&#x70B9;&#xFF0C;&#x4EE5;&#x514D;ceph-deploy&#x547D;&#x4EE4;&#x5728;&#x914D;&#x7F6E;&#x4E2D;&#x9014;&#x9700;&#x8981;&#x7528;&#x6237;&#x8F93;&#x5165;&#x5BC6;&#x7801;&#x3002;</p>
-<p><strong>&#x5728;&#x5404;Ceph&#x8282;&#x70B9;&#x521B;&#x5EFA;&#x65B0;&#x7528;&#x6237;</strong><br>&#x9996;&#x5148;&#x9700;&#x8981;&#x5728;&#x5404;&#x8282;&#x70B9;&#x4EE5;&#x7BA1;&#x7406;&#x5458;&#x7684;&#x8EAB;&#x4EFD;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x4E13;&#x7528;&#x4E8E;ceph-deploy&#x7684;&#x7279;&#x5B9A;&#x7528;&#x6237;&#x8D26;&#x53F7;&#xFF0C;&#x4F8B;&#x5982;cephadm&#xFF08;&#x5EFA;&#x8BAE;&#x4E0D;&#x8981;&#x4F7F;&#x7528;ceph&#xFF09;&#xFF0C;&#x5E76;&#x4E3A;&#x5176;&#x8BBE;&#x7F6E;&#x8BA4;&#x8BC1;&#x5BC6;&#x7801;&#xFF08;&#x4F8B;&#x5982;Cephpasswd&#xFF09;&#xFF1A;<br>&#x7136;&#x540E;&#xFF0C;&#x786E;&#x4FDD;&#x8FD9;&#x4E9B;&#x8282;&#x70B9;&#x4E0A;&#x65B0;&#x521B;&#x5EFA;&#x7684;&#x7528;&#x6237;cephadm&#x90FD;&#x6709;&#x65E0;&#x5BC6;&#x7801;&#x8FD0;&#x884C;sudo&#x547D;&#x4EE4;&#x7684;&#x6743;&#x9650;&#x3002;<br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">useradd cephadm</span><br><span class="line">echo CephPasswd | passwd --stdin cephadm</span><br><span class="line">visudo</span><br><span class="line"><span class="meta">#</span># Allow root to run any commands anywhere</span><br><span class="line">root    ALL=(ALL)       ALL</span><br><span class="line">cephadm ALL=(ALL)       NOPASSWD:ALL</span><br></pre></td></tr></tbody></table></figure><p></p>
-<p><strong>&#x914D;&#x7F6E;&#x597D;&#x7F51;&#x7EDC;&#x6E90;</strong>   </p>
-<p>yum&#x6E90;<br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span> CentOS-Base.repo</span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta">#</span> The mirror system uses the connecting IP address of the client and the</span><br><span class="line"><span class="meta">#</span> update status of each mirror to pick mirrors that are updated to and</span><br><span class="line"><span class="meta">#</span> geographically close to the client.  You should use this for CentOS updates</span><br><span class="line"><span class="meta">#</span> unless you are manually picking other mirrors.</span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta">#</span> If the mirrorlist= does not work for you, as a fall back you can try the</span><br><span class="line"><span class="meta">#</span> remarked out baseurl= line instead.</span><br><span class="line"><span class="meta">#</span></span><br><span class="line"><span class="meta">#</span> CentOS-Base.repo</span><br><span class="line"></span><br><span class="line">[base]</span><br><span class="line">name=CentOS-$releasever - Base</span><br><span class="line"><span class="meta">#</span>mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=os&amp;infra=$infra</span><br><span class="line">baseurl=https://mirrors.ustc.edu.cn/centos/$releasever/os/$basearch/</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>released updates</span><br><span class="line">[updates]</span><br><span class="line">name=CentOS-$releasever - Updates</span><br><span class="line"><span class="meta">#</span>mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=updates&amp;infra=$infra</span><br><span class="line">baseurl=https://mirrors.ustc.edu.cn/centos/$releasever/updates/$basearch/</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>additional packages that may be useful</span><br><span class="line">[extras]</span><br><span class="line">name=CentOS-$releasever - Extras</span><br><span class="line"><span class="meta">#</span>mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=extras&amp;infra=$infra</span><br><span class="line">baseurl=https://mirrors.ustc.edu.cn/centos/$releasever/extras/$basearch/</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>additional packages that extend functionality of existing packages</span><br><span class="line">[centosplus]</span><br><span class="line">name=CentOS-$releasever - Plus</span><br><span class="line"><span class="meta">#</span>mirrorlist=http://mirrorlist.centos.org/?release=$releasever&amp;arch=$basearch&amp;repo=centosplus&amp;infra=$infra</span><br><span class="line">baseurl=https://mirrors.ustc.edu.cn/centos/$releasever/centosplus/$basearch/</span><br><span class="line">gpgcheck=1</span><br><span class="line">enabled=0</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7</span><br></pre></td></tr></tbody></table></figure><p></p>
-<p>epel&#x6E90;<br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span> epel.repo</span><br><span class="line">[epel]</span><br><span class="line">name=Extra Packages for Enterprise Linux 7 - $basearch</span><br><span class="line">baseurl=https://mirrors.ustc.edu.cn/epel/7/$basearch</span><br><span class="line"><span class="meta">#</span>metalink=https://mirrors.fedoraproject.org/metalink?repo=epel-7&amp;arch=$basearch</span><br><span class="line">failovermethod=priority</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7</span><br><span class="line"></span><br><span class="line">[epel-debuginfo]</span><br><span class="line">name=Extra Packages for Enterprise Linux 7 - $basearch - Debug</span><br><span class="line">baseurl=https://mirrors.ustc.edu.cn/epel/7/$basearch/debug</span><br><span class="line"><span class="meta">#</span>metalink=https://mirrors.fedoraproject.org/metalink?repo=epel-debug-7&amp;arch=$basearch</span><br><span class="line">failovermethod=priority</span><br><span class="line">enabled=0</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7</span><br><span class="line">gpgcheck=1</span><br><span class="line"></span><br><span class="line">[epel-source]</span><br><span class="line">name=Extra Packages for Enterprise Linux 7 - $basearch - Source</span><br><span class="line">baseurl=https://mirrors.ustc.edu.cn/epel/7/SRPMS</span><br><span class="line"><span class="meta">#</span>metalink=https://mirrors.fedoraproject.org/metalink?repo=epel-source-7&amp;arch=$basearch</span><br><span class="line">failovermethod=priority</span><br><span class="line">enabled=0</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7</span><br><span class="line">gpgcheck=1</span><br></pre></td></tr></tbody></table></figure><p></p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">sudo sed -e &apos;s|^mirrorlist=|#mirrorlist=|g&apos; \</span><br><span class="line">         -e &apos;s|^#baseurl=http://mirrors.ustc.edu.cn/ceph/|baseurl=https://mirrors.ustc.edu.cn/ceph|g&apos; \</span><br><span class="line">         -i.bak \</span><br><span class="line">         /etc/yum.repos.d/ceph.repo</span><br></pre></td></tr></tbody></table></figure>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span> ceph.repo</span><br><span class="line">[Ceph]</span><br><span class="line">name=Ceph packages for $basearch</span><br><span class="line">baseurl=https://mirrors.ustc.edu.cn/ceph/rpm-mimic/el7/$basearch</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line">type=rpm-md</span><br><span class="line">gpgkey=https://mirrors.ustc.edu.cn/ceph/keys/release.asc</span><br><span class="line"></span><br><span class="line">[Ceph-noarch]</span><br><span class="line">name=Ceph noarch packages</span><br><span class="line">baseurl=https://mirrors.ustc.edu.cn/ceph/rpm-mimic/el7/noarch</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line">type=rpm-md</span><br><span class="line">gpgkey=https://mirrors.ustc.edu.cn/ceph/keys/release.asc</span><br><span class="line"></span><br><span class="line">[ceph-source]</span><br><span class="line">name=Ceph source packages</span><br><span class="line">baseurl=https://mirrors.ustc.edu.cn/ceph/rpm-mimic/el7/SRPMS</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=1</span><br><span class="line">type=rpm-md</span><br><span class="line">gpgkey=https://mirrors.ustc.edu.cn/ceph/keys/release.asc</span><br></pre></td></tr></tbody></table></figure>
-<p><strong>&#x4F9D;&#x8D56;&#x5305;&#x5B89;&#x88C5;</strong></p>
-<pre><code>yum install yum-plugin-priorities
-yum install -y snappy leveldb gdisk python-argparse gperftools-libs
-</code></pre><p><strong>&#x786E;&#x4FDD;<code>priorities.conf</code>&#x542F;&#x7528;</strong><br></p><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[main]</span><br><span class="line">enabled = 1</span><br></pre></td></tr></tbody></table></figure><p></p>
-<h3 id="&#x521D;&#x59CB;&#x5316;RADOS&#x96C6;&#x7FA4;"><a href="#&#x521D;&#x59CB;&#x5316;RADOS&#x96C6;&#x7FA4;" class="headerlink" title="&#x521D;&#x59CB;&#x5316;RADOS&#x96C6;&#x7FA4;"></a>&#x521D;&#x59CB;&#x5316;RADOS&#x96C6;&#x7FA4;</h3><p><strong>&#x914D;&#x7F6E;&#x7528;&#x6237;&#x57FA;&#x4E8E;&#x5BC6;&#x94A5;&#x7684;ssh&#x8BA4;&#x8BC1;</strong><br>ceph-deploy&#x547D;&#x4EE4;&#x4E0D;&#x652F;&#x6301;&#x8FD0;&#x884C;&#x4E2D;&#x9014;&#x7684;&#x5BC6;&#x7801;&#x8F93;&#x5165;&#xFF0C;&#x56E0;&#x6B64;&#xFF0C;&#x5FC5;&#x987B;&#x5728;&#x7BA1;&#x7406;&#x8282;&#x70B9;&#xFF08;ceph-admin.magedu.com&#xFF09;&#x4E0A;&#x751F;&#x6210;SSH&#x5BC6;&#x94A5;&#x5E76;&#x5C06;&#x5176;&#x516C;&#x94A5;&#x5206;&#x53D1;&#x81F3;Ceph&#x96C6;&#x7FA4;&#x7684;&#x5404;&#x8282;&#x70B9;&#x4E0A;&#x3002;&#x4E0B;&#x9762;&#x76F4;&#x63A5;&#x4EE5;cephadm&#x7528;&#x6237;&#x7684;&#x8EAB;&#x4EFD;&#x751F;&#x6210;SSH&#x5BC6;&#x94A5;&#x5BF9;&#xFF1A;<br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">su - cephadm</span><br><span class="line">ssh-keygen -t rsa -P &quot;&quot;</span><br><span class="line">ssh-copy-id -i .ssh/id_rsa.pub cephadm@192.168.110.11</span><br><span class="line">ssh-copy-id -i .ssh/id_rsa.pub cephadm@192.168.110.12</span><br><span class="line">ssh-copy-id -i .ssh/id_rsa.pub cephadm@192.168.110.13</span><br></pre></td></tr></tbody></table></figure><p></p>
-<p> &#x53E6;&#x5916;&#xFF0C;&#x4E3A;&#x4E86;&#x540E;&#x7EED;&#x64CD;&#x4F5C;&#x4E4B;&#x4FBF;&#xFF0C;&#x5EFA;&#x8BAE;&#x4FEE;&#x6539;&#x7BA1;&#x7406;&#x8282;&#x70B9;&#x4E0A;cephadm&#x7528;&#x6237;&#x7684; ~/.ssh/config &#x6587;&#x4EF6;&#xFF0C;&#x8BBE;&#x5B9A;&#x5176;&#x8BBF;&#x95EE;Ceph&#x96C6;&#x7FA4;&#x5404;&#x8282;&#x70B9;&#x65F6;&#x9ED8;&#x8BA4;&#x4F7F;&#x7528;&#x7684;&#x7528;&#x6237;&#x540D;&#x4E3A;&#xFF0C;&#x4ECE;&#x800C;&#x907F;&#x514D;&#x6BCF;&#x6B21;&#x6267;&#x884C;ceph-deploy&#x547D;&#x4EE4;&#x65F6;&#x90FD;&#x8981;&#x6307;&#x5B9A; &#x4F7F;&#x7528;&#x201D;&#x2013;username&#x201C;&#x9009;&#x9879;&#x8BBE;&#x7F6E;&#x4F7F;&#x7528;&#x7684;&#x7528;&#x6237;&#x540D;&#x3002;</p>
-<pre><code>vim ~/.ssh/config
-chmod 600 ~/.ssh/conf
-</code></pre><figure class="highlight"><table><tbody><tr><td class="code"><pre><span class="line">host 192.168.110.11</span><br><span class="line">    hostname server11</span><br><span class="line">    user cephadm</span><br><span class="line">host 192.168.110.12</span><br><span class="line">    hostname server12</span><br><span class="line">    user cephadm</span><br><span class="line">host 192.168.110.13</span><br><span class="line">    hostname server13</span><br><span class="line">    user cephadm</span><br></pre></td></tr></tbody></table></figure>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">yum install -y ceph ceph-osd ceph-mds ceph-mon ceph-radosgw ceph-deploy python-setuptools python2-subprocess32 python-pip</span><br><span class="line">[cephadm@server10 ~]$ ceph</span><br><span class="line">ceph                   ceph-dencoder          ceph-kvstore-tool      ceph-osdomap-tool</span><br><span class="line">ceph-authtool          ceph-deploy            ceph-mds               ceph-post-file</span><br><span class="line">ceph-bluestore-tool    ceph-detect-init       ceph-mgr               ceph-rbdnamer</span><br><span class="line">ceph-clsinfo           ceph-disk              ceph-mon               ceph-run</span><br><span class="line">ceph-conf              cephfs-data-scan       ceph-monstore-tool     ceph-syn</span><br><span class="line">ceph-crash             cephfs-journal-tool    ceph-objectstore-tool  ceph-volume</span><br><span class="line">ceph-create-keys       cephfs-table-tool      ceph-osd               ceph-volume-systemd</span><br><span class="line">[cephadm@server10 ~]$ ceph</span><br></pre></td></tr></tbody></table></figure>
-<p><strong>&#x521D;&#x59CB;&#x5316;&#x7B2C;&#x4E00;&#x4E2A;Monitor&#x8282;&#x70B9;&#xFF0C;&#x51C6;&#x5907;&#x521B;&#x5EFA;&#x96C6;&#x7FA4;</strong><br></p><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[cephadm@server10 ~]$ cd ceph-cluster/</span><br><span class="line">[cephadm@server10 ~]$ sudo ceph-deploy new server11</span><br><span class="line">[ceph_deploy.conf][DEBUG ] found configuration file at: /root/.cephdeploy.conf</span><br><span class="line">[ceph_deploy.cli][INFO  ] Invoked (2.0.1): /bin/ceph-deploy new server11</span><br><span class="line">[ceph_deploy.cli][INFO  ] ceph-deploy options:</span><br><span class="line">[ceph_deploy.cli][INFO  ]  username                      : None</span><br><span class="line">[ceph_deploy.cli][INFO  ]  func                          : &lt;function new at 0xb24c80&gt;</span><br><span class="line">[ceph_deploy.cli][INFO  ]  verbose                       : False</span><br><span class="line">[ceph_deploy.cli][INFO  ]  overwrite_conf                : False</span><br><span class="line">[ceph_deploy.cli][INFO  ]  quiet                         : False</span><br><span class="line">[ceph_deploy.cli][INFO  ]  cd_conf                       : &lt;ceph_deploy.conf.cephdeploy.Conf instance at 0xb88440&gt;</span><br><span class="line">[ceph_deploy.cli][INFO  ]  cluster                       : ceph</span><br><span class="line">[ceph_deploy.cli][INFO  ]  ssh_copykey                   : True</span><br><span class="line">[ceph_deploy.cli][INFO  ]  mon                           : [&apos;server11&apos;]</span><br><span class="line">[ceph_deploy.cli][INFO  ]  public_network                : None</span><br><span class="line">[ceph_deploy.cli][INFO  ]  ceph_conf                     : None</span><br><span class="line">[ceph_deploy.cli][INFO  ]  cluster_network               : None</span><br><span class="line">[ceph_deploy.cli][INFO  ]  default_release               : False</span><br><span class="line">[ceph_deploy.cli][INFO  ]  fsid                          : None</span><br><span class="line">[ceph_deploy.new][DEBUG ] Creating new cluster named ceph</span><br><span class="line">[ceph_deploy.new][INFO  ] making sure passwordless SSH succeeds</span><br><span class="line">[server11][DEBUG ] connected to host: server10</span><br><span class="line">[server11][INFO  ] Running command: ssh -CT -o BatchMode=yes server11</span><br><span class="line">[ceph_deploy.new][WARNIN] could not connect via SSH</span><br><span class="line">[ceph_deploy.new][INFO  ] will connect again with password prompt</span><br><span class="line">The authenticity of host &apos;server11 (192.168.110.11)&apos; can&apos;t be established.</span><br><span class="line">ECDSA key fingerprint is SHA256:e7cue1MdMEpwkjIK701euHvZbH+/pt3DW0z+EkV9tOc.</span><br><span class="line">ECDSA key fingerprint is MD5:cb:ce:07:fb:10:58:b8:71:49:3b:4f:d3:f4:c7:38:7a.</span><br><span class="line">Are you sure you want to continue connecting (yes/no)? yes</span><br><span class="line">Warning: Permanently added &apos;server11&apos; (ECDSA) to the list of known hosts.</span><br><span class="line">[server11][DEBUG ] connected to host: server11</span><br><span class="line">[server11][DEBUG ] detect platform information from remote host</span><br><span class="line">[server11][DEBUG ] detect machine type</span><br><span class="line">[ceph_deploy.new][INFO  ] adding public keys to authorized_keys</span><br><span class="line">[server11][DEBUG ] append contents to file</span><br><span class="line">[server11][DEBUG ] connected to host: server11</span><br><span class="line">[server11][DEBUG ] detect platform information from remote host</span><br><span class="line">[server11][DEBUG ] detect machine type</span><br><span class="line">[server11][DEBUG ] find the location of an executable</span><br><span class="line">[server11][INFO  ] Running command: /usr/sbin/ip link show</span><br><span class="line">[server11][INFO  ] Running command: /usr/sbin/ip addr show</span><br><span class="line">[server11][DEBUG ] IP addresses found: [u&apos;192.168.110.11&apos;]</span><br><span class="line">[ceph_deploy.new][DEBUG ] Resolving host server11</span><br><span class="line">[ceph_deploy.new][DEBUG ] Monitor server11 at 192.168.110.11</span><br><span class="line">[ceph_deploy.new][DEBUG ] Monitor initial members are [&apos;server11&apos;]</span><br><span class="line">[ceph_deploy.new][DEBUG ] Monitor addrs are [&apos;192.168.110.11&apos;]</span><br><span class="line">[ceph_deploy.new][DEBUG ] Creating a random mon key...</span><br><span class="line">[ceph_deploy.new][DEBUG ] Writing monitor keyring to ceph.mon.keyring...</span><br><span class="line">[ceph_deploy.new][DEBUG ] Writing initial config to ceph.conf...</span><br><span class="line">[cephadm@server10 ceph-cluster]$ ls</span><br><span class="line">ceph.conf  ceph-deploy-ceph.log  ceph.mon.keyring</span><br><span class="line">[cephadm@server10 ceph-cluster]$</span><br></pre></td></tr></tbody></table></figure><p></p>
-<p>&#x7F16;&#x8F91;&#x751F;&#x6210;ceph.conf&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF0C;&#x5728;[global]&#x914D;&#x7F6E;&#x6BB5;&#x4E2D;&#x8BBE;&#x7F6E;Ceph&#x96C6;&#x7FA4;&#x9762;&#x5411;&#x5BA2;&#x6237;&#x7AEF;&#x901A;&#x4FE1;&#x65F6;&#x4F7F;&#x7528;&#x7684;IP&#x5730;&#x5740;&#x6240;&#x5728;&#x7684;&#x7F51;&#x7EDC;</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">Last login: Tue Jun 14 18:09:03 2022 from 192.168.110.1</span><br><span class="line">[root@store03 ~]# ceph-volume lvm list</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">====== osd.2 =======</span><br><span class="line"></span><br><span class="line">  [block]       /dev/ceph-b7434f6a-3353-4795-8a8e-19b9ac3d4f57/osd-block-b91adee1-bd7c-41ec-a283-1e46cdcb0660</span><br><span class="line"></span><br><span class="line">      block device              /dev/ceph-b7434f6a-3353-4795-8a8e-19b9ac3d4f57/osd-block-b91adee1-bd7c-41ec-a283-1e46cdcb0660</span><br><span class="line">      block uuid                f4M8H8-xGEn-y4yN-Kt1l-8nBb-IYNN-uZZiHM</span><br><span class="line">      cephx lockbox secret</span><br><span class="line">      cluster fsid              ffd17baf-ce0e-48f4-b59b-2a84049aca37</span><br><span class="line">      cluster name              ceph</span><br><span class="line">      crush device class        None</span><br><span class="line">      encrypted                 0</span><br><span class="line">      osd fsid                  b91adee1-bd7c-41ec-a283-1e46cdcb0660</span><br><span class="line">      osd id                    2</span><br><span class="line">      type                      block</span><br><span class="line">      vdo                       0</span><br><span class="line">      devices                   /dev/sdb</span><br><span class="line">[root@store03 ~]#</span><br></pre></td></tr></tbody></table></figure>
-<script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>
-    
-        <div>
-            <a href="/posts/38843421/" class="post-more waves-button">
-                阅读全文 »
-            </a>
-        </div>
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-LVS和KeepAlived实现高可用集群" class="article-card article-type-post" itemprop="blogPost">
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a href="/posts/640aafef/">LVS和KeepAlived实现高可用集群</a>
-    </h3>
-  
-
-
-
-
-     <div class="post-meta">
-        <time class="post-time" title="2022-06-10 16:26:16" datetime="2022-06-10T08:26:16.000Z" itemprop="datePublished">2022-06-10</time>
-
-    </div>
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        <h2 id="keepalived相关"><a href="#keepalived相关" class="headerlink" title="keepalived相关"></a>keepalived相关</h2><p>keepalive的学习参考网站：<a href="https://www.keepalived.org/" target="_blank" rel="noopener">https://www.keepalived.org/</a></p>
-<p>在学习keepalived之前, 我们来思考一个问题：<strong>LVS只是负责负载均衡的转发，那如果后台的Real Server的服务挂掉以后，LVS是否能主动把这个摘除掉吗？</strong> 答案是：<strong>肯定不行的</strong>，就是LVS不具备把后端挂掉的Real Server摘除掉，所以keepalived的应用而生。</p>
-<p>keepalived 起初就是为LVS设计的，专门用来监控集群系统中各个服务节点的状态，<strong>它根据tcp/ip参考模型的第三四和第五层交换机制检测每个服务节点的状态，每个服务节点异常或者工作障碍，keepalvied将立刻检测到，并把障碍节点剔除，是毫秒级的</strong>，当后台节点恢复正常以后，keepalived有自动将服务节点重新添加在服务器集群中。<br>
-    
-        <div>
-            <a href="/posts/640aafef/" class="post-more waves-button">
-                阅读全文 »
-            </a>
-        </div>
-    </p></div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/KeepAlived/">KeepAlived</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LVS/">LVS</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-使用HAProxy实现七层负载均衡" class="article-card article-type-post" itemprop="blogPost">
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a href="/posts/da58b03e/">使用HAProxy实现七层负载均衡</a>
-    </h3>
-  
-
-
-
-
-     <div class="post-meta">
-        <time class="post-time" title="2022-06-08 10:30:51" datetime="2022-06-08T02:30:51.000Z" itemprop="datePublished">2022-06-08</time>
-
-    </div>
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        <script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>
-    
-        <div>
-            <a href="/posts/da58b03e/" class="post-more waves-button">
-                阅读全文 »
-            </a>
-        </div>
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-KVM虚拟机迁移" class="article-card article-type-post" itemprop="blogPost">
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a href="/posts/16305c66/">KVM虚拟机迁移</a>
-    </h3>
-  
-
-
-
-
-     <div class="post-meta">
-        <time class="post-time" title="2022-06-07 13:45:42" datetime="2022-06-07T05:45:42.000Z" itemprop="datePublished">2022-06-07</time>
-
-    </div>
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        <script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>
-    
-        <div>
-            <a href="/posts/16305c66/" class="post-more waves-button">
-                阅读全文 »
-            </a>
-        </div>
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-KVM虚拟机添加磁盘" class="article-card article-type-post" itemprop="blogPost">
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a href="/posts/d69c6e72/">KVM虚拟机添加磁盘</a>
-    </h3>
-  
-
-
-
-
-     <div class="post-meta">
-        <time class="post-time" title="2022-06-07 13:45:36" datetime="2022-06-07T05:45:36.000Z" itemprop="datePublished">2022-06-07</time>
-
-    </div>
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        <script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>
-    
-        <div>
-            <a href="/posts/d69c6e72/" class="post-more waves-button">
-                阅读全文 »
-            </a>
-        </div>
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-KVM虚拟机克隆和快照" class="article-card article-type-post" itemprop="blogPost">
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a href="/posts/204af86b/">KVM虚拟机克隆和快照</a>
-    </h3>
-  
-
-
-
-
-     <div class="post-meta">
-        <time class="post-time" title="2022-06-07 13:45:27" datetime="2022-06-07T05:45:27.000Z" itemprop="datePublished">2022-06-07</time>
-
-    </div>
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        <script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>
-    
-        <div>
-            <a href="/posts/204af86b/" class="post-more waves-button">
-                阅读全文 »
-            </a>
-        </div>
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-KVM图形化" class="article-card article-type-post" itemprop="blogPost">
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a href="/posts/dba5727f/">KVM图形化</a>
-    </h3>
-  
-
-
-
-
-     <div class="post-meta">
-        <time class="post-time" title="2022-06-07 13:45:11" datetime="2022-06-07T05:45:11.000Z" itemprop="datePublished">2022-06-07</time>
-
-    </div>
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        <script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>
-    
-        <div>
-            <a href="/posts/dba5727f/" class="post-more waves-button">
-                阅读全文 »
-            </a>
-        </div>
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-基于Docker搭建Prometheus" class="article-card article-type-post" itemprop="blogPost">
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a href="/posts/e364486e/">基于Docker搭建Prometheus</a>
-    </h3>
-  
-
-
-
-
-     <div class="post-meta">
-        <time class="post-time" title="2022-06-07 13:44:56" datetime="2022-06-07T05:44:56.000Z" itemprop="datePublished">2022-06-07</time>
-
-    </div>
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        <script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>
-    
-        <div>
-            <a href="/posts/e364486e/" class="post-more waves-button">
-                阅读全文 »
-            </a>
-        </div>
-    </div>
-    
-</article>
-
-        </li>
-    
-    </ul>
-
-    
-<nav id="page-nav">
-    <div class="inner">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="extend next" rel="next" href="/page/2/">下一页</a>
-    </div>
-</nav>
-
-
-</div>
-
-        <footer class="footer">
-    <div class="footer-content">
-        <span class="power">
-            <i class="icon icon-lg icon-copyright"></i>
-            2022
-            <i class="icon icon-lg icon-heart"></i>
-            <a href="https://marnm.github.io">marnm.github.io</a>
-            <br>
-            Power by
-            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
-            Theme
-            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
-        </span>
-
-        <br>
-
-        <span id="RunTime" style="color:#a7a7a2;"></span>
-        <br>
-
-        <span>
-            
-
-        </span>
-        <br>
-
-        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
-    </div>
-</footer>
-
-    </main>
-    
-    <div class="mask" id="mask"></div>
-<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
-
-
-    <!-- waves按钮特效 -->
-<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
-
-<!-- 主题配置脚本 -->
-<script>
-var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3efe99c287df5a1d6f0d02d187e403c1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
 </script>
 
-<!-- jquery -->
-<script src="/js/jquery.min.js?v=3.0"></script>
+<header id="header">
+    <a id="title" href="/" class="logo">Deops's blog</a>
 
-<!-- 搜索 -->
+	<ul id="menu">
+		<li class="menu-item">
+			<a href="/about" class="menu-item-link">ABOUT</a>
+		</li>
+	
+		<li class="menu-item">
+			<a href="/tags" class="menu-item-link">标签</a>
+		</li>
+	
 
-<div class="search-panel" id="search-panel">
-    <ul class="search-result" id="search-result"></ul>
+	
+		<li class="menu-item">
+			<a href="/categories" class="menu-item-link">分类</a>
+		</li>
+	
+
+		<li class="menu-item">
+			<a href="https://github.com/Marnm" class="menu-item-link" target="_blank">
+				<i class="fa fa-github fa-2x"></i>
+			</a>
+		</li>
+	</ul>
+</header>
+
+	
+<div id="sidebar">
+	<button id="sidebar-toggle" class="toggle"><i class="fa fa-arrow-right " aria-hidden="true"></i></button>
+	
+	<div id="site-toc">
+		<input id="search-input" class="search-input" type="search" placeholder="按回车全站搜索">
+		<div id="tree">
+			
+
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Ansible自动化运维
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/b45e213f/">
+                     
+										    Ansible自动化管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/28c30eb2/">
+                     
+										    CTF线下赛AWD套路小结
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Ceph对象存储
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/e9abc941/">
+                     
+										    Ceph分布式存储
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/38843421/">
+                     
+										    Ceph分布式存储部署笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9964b559/">
+                     
+										    DHCP Server的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4782a8c2/">
+                     
+										    DNS Server的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5e357037/">
+                     
+										    Django教程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Docker
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/4a3d459a/">
+                     
+										    Docker学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										ELK Stack
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/2d95f1c1/">
+                     
+										    ElasticSearch环境搭建
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/573fc171/">
+                     
+										    Logstash二进制安装与启动
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b11339a9/">
+                     
+										    Logstash去除不需要的字段
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d05b44e0/">
+                     
+										    Logstash读取日志发送到ES
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9d56e705/">
+                     
+										    FTP/TFTP的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ca9298d7/">
+                     
+										    Git版本控制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/51acad32/">
+                     
+										    诺尔·巴尔扎克（Honoréde Balzac）的名言
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4def9c28/">
+                     
+										    In Your 20's These Things Matter More Than You Think
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/295162d9/">
+                     
+										    Java8 环境变量配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										KVM虚拟化
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/dba5727f/">
+                     
+										    KVM图形化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/204af86b/">
+                     
+										    KVM虚拟机克隆和快照
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d69c6e72/">
+                     
+										    KVM虚拟机添加磁盘
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/16305c66/">
+                     
+										    KVM虚拟机迁移
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7733d98/">
+                     
+										    LDAP的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5922577d/">
+                     
+										    LNMP手动部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/195423a2/">
+                     
+										    LNMP高可用架构配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/38cc96c8/">
+                     
+										    LVM磁盘管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/be48d001/">
+                     
+										    LVS-DR集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/df68056c/">
+                     
+										    LVS-IPTUN集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dcf8e277/">
+                     
+										    LVS-NAT集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/640aafef/">
+                     
+										    LVS和KeepAlived实现高可用集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/82734d8/">
+                     
+										    Linux命令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/67ee4dec/">
+                     
+										    Linux学习笔记 - 关于开源
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d53cba09/">
+                     
+										    Linux常用性能分析工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/15c0e66c/">
+                     
+										    Linux常见日志文件
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/480c215d/">
+                     
+										    Linux性能管理工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a9bb0c1a/">
+                     
+										    Linux文件的特殊权限
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/cc999d74/">
+                     
+										    Linux文件的隐藏属性
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b7f1c6/">
+                     
+										    Linux文本四剑客
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/aabbd398/">
+                     
+										    Linux无法挂载sysroot并自动进入紧急模式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b3f64b7d/">
+                     
+										    Linux生成随机密码方法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e025952a/">
+                     
+										    Linux登录退出提示信息欢迎信息
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ee2f9f35/">
+                     
+										    Linux的PAM模块
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1e844aa4/">
+                     
+										    Linux的归档与解压缩
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c4bbfe69/">
+                     
+										    Linux的日志切割
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/be846aea/">
+                     
+										    Linux禁止和开启ping的方法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f20e14fd/">
+                     
+										    Linux网卡聚合及bond模式的原理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2fe5fc07/">
+                     
+										    Linux计划任务实现
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/365d0867/">
+                     
+										    Linux路由配置——route
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fbf617b4/">
+                     
+										    MariaDB
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bff83912/">
+                     
+										    Markdown 简明语法手册
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5125c787/">
+                     
+										    Markdown语法说明（快速入门）
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										MongoDB
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/8b1c1f4b/">
+                     
+										    MongoDB介绍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a36562d7/">
+                     
+										    MongoDB学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/55c06d78/">
+                     
+										    MongoDB安装部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										MySQL学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/16fc5dc4/">
+                     
+										    MySQL5.6
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/61fb6d52/">
+                     
+										    MySQL5.7
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bce68613/">
+                     
+										    MySQL基础
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f6e2d114/">
+                     
+										    使用RPM包安装MySQL5.7数据库
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/269a56e8/">
+                     
+										    MySQL备份与恢复（删库不跑路）
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/607e4760/">
+                     
+										    MySQL传统主从同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d77fafec/">
+                     
+										    MySQL的GTID主从同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/db0340bd/">
+                     
+										    MySQL高可用集群架构-MHA架构
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/62ec7971/">
+                     
+										    Atlas实现MySQL读写分离
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/490925f2/">
+                     
+										    MySQL数据库高级应用之读写分离
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/176dc5f3/">
+                     
+										    MyCat垂直分表操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8f74b0e7/">
+                     
+										    MyCat教程全国省份分片枚举操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/208cd020/">
+                     
+										    MySQL调优
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1876d05d/">
+                     
+										    NetworkManager管理工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/60444925/">
+                     
+										    NexT主题优化+美化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Nginx学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/f4d30967/">
+                     
+										    Nginx动静分离部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1db2b3f1/">
+                     
+										    Nginx平滑升级
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2793eb31/">
+                     
+										    Nginx日志管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2793eb31/">
+                     
+										    Nginx日志管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e0989926/">
+                     
+										    Nginx添加第三方模块
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/da411b72/">
+                     
+										    Nginx虚拟主机
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d4e5e907/">
+                     
+										    Nginx访问控制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d2802762/">
+                     
+										    Nginx高可用架构配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/36ba38f9/">
+                     
+										    NoSQL知识
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e8c4eb08/">
+                     
+										    OpenSSL使用教程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/97717e94/">
+                     
+										    PXE自动化部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Prometheus学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/39c0f6a1/">
+                     
+										    Prometheus学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1f351894/">
+                     
+										    Python-VirtualEnv
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/297a89d9/">
+                     
+										    Python学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fa8e89f7/">
+                     
+										    RAID磁盘阵列技术介绍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/afdfa673/">
+                     
+										    RHEL 7配置Yum软件仓库
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/32546aed/">
+                     
+										    RedHat Linux重置root管理员密码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/eb7dbe25/">
+                     
+										    RedHat_7 配置网卡信息
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Redis学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/5188e636/">
+                     
+										    Redis与其他应用的集成
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/49fbbc1/">
+                     
+										    Redis基本操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e8376589/">
+                     
+										    Redis安装部署——Cluster集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e78aaf59/">
+                     
+										    Redis安装部署——Sentinel模式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2acd829b/">
+                     
+										    Redis安装部署——主从复制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/119ed1dc/">
+                     
+										    Redis持久化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/18d7d749/">
+                     
+										    Redis概述
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e3fb0a3e/">
+                     
+										    Redis的数据备份与恢复
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3e3d973e/">
+                     
+										    Redis配合MySQL使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f03da4e7/">
+                     
+										    Redis配置文件详解
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/41f893fd/">
+                     
+										    Redis编译安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dbd9d26a/">
+                     
+										    SHELL编程类面试题
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f42b90f9/">
+                     
+										    SHELL脚本工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a8ba1e/">
+                     
+										    SHELL脚本练习
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c45f2736/">
+                     
+										    SQL Server 2008安装配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/aa142b64/">
+                     
+										    SQLite安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e228b71f/">
+                     
+										    SSH原理与应用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1fdc29d2/">
+                     
+										    Shell的基本运算符
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6309c3f8/">
+                     
+										    Shell编程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e76ba468/">
+                     
+										    Ubuntu Desktop优化与配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/129acd64/">
+                     
+										    Ubuntu修改配置及美化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b382711f/">
+                     
+										    VIM的使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e9c6771b/">
+                     
+										    Win10环境下Python2、3和pip2、3版本共存
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6ed6984b/">
+                     
+										    Windows进程管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/59089347/">
+                     
+										    Zabbix3.4邮件报警配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7034657d/">
+                     
+										    Zabbix4.0
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c7b4ec91/">
+                     
+										    firewalld学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1ebd4a76/">
+                     
+										    iproute2工具包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/57bbf635/">
+                     
+										    iptables学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3e189d0c/">
+                     
+										    mysqlclient无法安装的问题
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1939d3e2/">
+                     
+										    net-tools工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bae5d4f0/">
+                     
+										    rhel修改网卡命名规则
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3c7a2415/">
+                     
+										    rsync数据同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/37ca92de/">
+                     
+										    swap交换分区
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6efb91e0/">
+                     
+										    tcpdump与Wireshark的使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d185f6ae/">
+                     
+										    web性能压测学习
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bb750036/">
+                     
+										    你要懂得及时止损，别太在乎沉没成本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/da58b03e/">
+                     
+										    使用HAProxy实现七层负载均衡
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b161a250/">
+                     
+										    使用服务搭建Hexo个人博客
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										其它
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/9bf5b5/">
+                     
+										    我学练英语所使用的方法、工具与资料
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4c41c7ef/">
+                     
+										    十二句经典的爱情名言
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e364486e/">
+                     
+										    基于Docker搭建Prometheus
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/69c239dd/">
+                     
+										    基于LNMP架构搭建企业级开源监控系统Zabbix
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f801d3c5/">
+                     
+										    增加一台Filebeat收集httpd日志
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f5d6f6a9/">
+                     
+										    实战-GitLab更新代码后自动触发Jenkins进行部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fa35a60d/">
+                     
+										    性能测试指标详解
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a3c5d26/">
+                     
+										    搭建Jenkins实现持续集成-配置Jenkins自动拉取GitLab中的代码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4f96852/">
+                     
+										    搭建JumpServer管理王者荣耀数万台游戏服务器
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f0a65eeb/">
+                     
+										    根分区扩容
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2f57a694/">
+                     
+										    正则表达式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9e3f6743/">
+                     
+										    自由的灵魂必将远航
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/217dc297/">
+                     
+										    计算机概述
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8d4b7ae1/">
+                     
+										    计算机组成原理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dded0e80/">
+                     
+										    运维发展史
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/undefined/">
+                     
+										    邮件报警配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5095a46f/">
+                     
+										    配置Docker静态IP
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2b923a54/">
+                     
+										    配置GitLab邮件服务
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/76011417/">
+                     
+										    配置Zabbix3.4监控Apache服务
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+		</div>
+	</div>
 </div>
-<template id="search-tpl">
-<li class="item waves-block waves-effect" onclick="location.href='{path}'">
-    <div class="title ellipsis" title="{title}">{title}</div>
-</li>
-</template>
 
+	<!-- 引入正文 -->
+	<div id="content">
+		<div id="index">
+	
+		<div class="index-li">
+			<a href="/posts/39c0f6a1/">
+				<h2 class="index-title">
+					Prometheus学习笔记
+				</h2>
+				<div class="index-brief">
+					Create Systemctl start file
+[Unit]
+Description=Prometheus
+Wants=network-online.target
+After=network-online.target
 
-<!-- main博客脚本 -->
-<script src="/js/main.min.js?v=3.0"></script>
+[Service]
+User=prometheus
+Group=pro
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2022-06-28</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/2d95f1c1/">
+				<h2 class="index-title">
+					ElasticSearch环境搭建
+				</h2>
+				<div class="index-brief">
+					
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2022-06-15</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/38843421/">
+				<h2 class="index-title">
+					Ceph分布式存储部署笔记
+				</h2>
+				<div class="index-brief">
+					概念分布式存储相关分布式存储是一种数据存储技术，通过网络使用企业中的每台机器上的磁盘空间，并将这些分散的存储资源构成一个虚拟的存储设备，数据分散的存储在企业的各个角落。
+Ceph相关
+Ceph是一个对象（object）式存储系统，它把每一个待管理的数据流（例如一个文件）切分为一个到多个固定大小的对象
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2022-06-12</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/640aafef/">
+				<h2 class="index-title">
+					LVS和KeepAlived实现高可用集群
+				</h2>
+				<div class="index-brief">
+					keepalvied后来又加了VRRP功能，VRRP（虚拟路由器冗余协议），出现的目的就是解决静态路由单点故障的问题，通过vrrp可以实现网络不间断稳定运行。
+Keepalived是用C语言编写的路由软件。该项目的主要目标是为Linux系统和基于Linux的基础结构提供负载均衡和高可用性的简单而强大
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2022-06-10</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/da58b03e/">
+				<h2 class="index-title">
+					使用HAProxy实现七层负载均衡
+				</h2>
+				<div class="index-brief">
+					
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2022-06-08</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/16305c66/">
+				<h2 class="index-title">
+					KVM虚拟机迁移
+				</h2>
+				<div class="index-brief">
+					
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2022-06-07</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/d69c6e72/">
+				<h2 class="index-title">
+					KVM虚拟机添加磁盘
+				</h2>
+				<div class="index-brief">
+					
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2022-06-07</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/204af86b/">
+				<h2 class="index-title">
+					KVM虚拟机克隆和快照
+				</h2>
+				<div class="index-brief">
+					
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2022-06-07</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/dba5727f/">
+				<h2 class="index-title">
+					KVM图形化
+				</h2>
+				<div class="index-brief">
+					
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2022-06-07</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/e364486e/">
+				<h2 class="index-title">
+					基于Docker搭建Prometheus
+				</h2>
+				<div class="index-brief">
+					
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2022-06-07</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+	
+	<div id="index-paginator">
+		
+			<span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="extend next" rel="next" href="/page/2/">></a>
+		
+	</div>
+</div>
 
-<!-- 动画&配置 -->
-<script src="/js/script.min.js?v=3.0"></script>
-
-<!-- 脚本管理 -->
-<script>
-
-if(window.innerWidth > 800){
-	/* 3D标题 */
-	$(".content-header").on("mousemove", threedee);
-
-	/* 底部追随鼠标 */
-	$(".footer").hover(2);
-
-	/* gotop键的涟漪 */
-	$("#gotop").hover(1);
-
-	/* 赞赏的粒子雨 */
-	$("#reward").hover(3);
-
-	/* 微信公众号的底部渲染 */
-	$("#wechat").hover(4);
-
-    /* 标题跳动 */
-    $(".archivestitle").bumpyText();
-
-	/* 图片点击放大 */
-	const postimg = jQuery(".post-content img:not(.github-emoji)");
-	postimg.on("click",function(){
-
-		mask.classList.add("in");
-		main.classList.add("Mask");
-		menu.classList.add("Mask");
-		var myimg = this.cloneNode(true);
-		myimg.classList.add("imgShow");
-
-		setTimeout(function(){
-			jQuery(myimg).animate({
-				opacity:"1"
-			},1000);
-		},0);
-
-		document.body.appendChild(myimg);
-
-		myimg.onclick=function(){
-			document.body.removeChild(myimg);
-			mask.classList.remove("in");
-			main.classList.remove("Mask");
-			menu.classList.remove("Mask");
-		};
-
-	});
-
-}
-
-/* 名字跳动 */
-$("#name").bumpyText();
-
-
-/* 网站运行时间 */
-setInterval(function () {
-	setTime("2019/01/01");
-}, 1000);
-
-/* 文章块的淡出 */
-postshow();
-
-/* 座右铭 */
-
-   getHitokoto();
-
-
-
-/* 粘贴提示 */
-G($(".post-content"), location.href, "Echo");
-
-
-/* 控制台 */
-if (window.console && window.console.log) {
-	setTimeout(function () {
-		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
-	}, 0);
-}
-
+	</div>
+	<div id="footer">
+	<p>
+	©2019-<span id="footerYear"></span> 
+	<a href="/">Echo</a> 
+	
+	
+	<br>
+	Theme <a href="//github.com/wujun234/hexo-theme-tree" target="_blank">Tree</a>
+	by <a href="//github.com/wujun234" target="_blank">WuJun</a>
+	Powered by <a href="//hexo.io" target="_blank">Hexo</a>
+	</p>
+</div>
+<script type="text/javascript"> 
+	document.getElementById('footerYear').innerHTML = new Date().getFullYear() + '';
 </script>
-
-
-
-
-<!-- 公式渲染 -->
-
-
-
-<!-- 不蒜子 -->
-
-
+	<button id="totop-toggle" class="toggle"><i class="fa fa-angle-double-up" aria-hidden="true"></i></button>
 </body>
 </html>

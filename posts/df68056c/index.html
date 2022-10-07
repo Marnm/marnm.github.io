@@ -1,268 +1,2360 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head><meta name="generator" content="Hexo 3.8.0">
-    <meta http-equiv="Content-Language" content="zh-cn">
-    <meta charset="utf-8">
-    
-    
-    
-    <title>LVS-IPTUN集群 | Deops&#39;s blog | 运维开发工程师</title>
-    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    
-    <meta name="theme-color" content="#77AAFF">
-    
-    
-    <meta name="keywords" content="">
-    
-    
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+	
+	<!-- title -->
+	
+	<title>
+	
+		LVS-IPTUN集群 | 
+	 
+	Deops&#39;s blog
+	</title>
+	
+	<!-- keywords,description -->
+	
+		<meta name="keywords" content="Echo">
+	 
+		<meta name="description" content="Echo">
+	
 
-    
+	<!-- favicon -->
+	
+	<link rel="shortcut icon" href="/favicon.ico">
+	
 
-    <!-- Baidu Push -->
-<script>
-	(function(){
-		var bp = document.createElement('script');
-		var curProtocol = window.location.protocol.split(':')[0];
-		if (curProtocol === 'https') {
-			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+
+	<!-- search -->
+	<script>
+		var searchEngine = "https://www.google.com/search?q=";
+		if(typeof searchEngine == "undefined" || searchEngine == null || searchEngine == ""){
+			searchEngine = "https://www.google.com/search?q=";
 		}
-		else {
-			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		var homeHost = "https://marnm.github.io/";
+		if(typeof homeHost == "undefined" || homeHost == null || homeHost == ""){
+			homeHost = window.location.host;
 		}
-		var s = document.getElementsByTagName("script")[0];
-		s.parentNode.insertBefore(bp, s);
-	})();
-
-	var _hmt = _hmt || [];
-</script>
+	</script>
 
 
-
+	<link rel="stylesheet" href="/css/main.css">
+	<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/lib/highlight/styles/base16/solarized-dark.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
     
-    <meta name="description" content="title: LVS-IPTUN&amp;#x96C6;&amp;#x7FA4;abbrlink: df68056cdate: 2022-06-07 13:35:10tags: LVS  LVS-IP Tunnel&amp;#x6A21;&amp;#x5F0F;&amp;#x96C6;&amp;#x7FA4;DR&amp;#x65B9;&amp;#x5F0F;&amp;#x662F;&amp;#x901A;&amp;#x8FC7;MAC&amp;#xFF0C;&amp;#x89C4;&amp;#x6A21">
-<meta name="keywords" content="Echo">
-<meta property="og:type" content="article">
-<meta property="og:title" content="LVS-IPTUN集群">
-<meta property="og:url" content="https://marnm.github.io/posts/df68056c/index.html">
-<meta property="og:site_name" content="Deops&#39;s blog">
-<meta property="og:description" content="title: LVS-IPTUN&amp;#x96C6;&amp;#x7FA4;abbrlink: df68056cdate: 2022-06-07 13:35:10tags: LVS  LVS-IP Tunnel&amp;#x6A21;&amp;#x5F0F;&amp;#x96C6;&amp;#x7FA4;DR&amp;#x65B9;&amp;#x5F0F;&amp;#x662F;&amp;#x901A;&amp;#x8FC7;MAC&amp;#xFF0C;&amp;#x89C4;&amp;#x6A21">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://192.168.84.188:8081/uploads/1654946401852771703lvstun.png">
-<meta property="og:image" content="http://192.168.84.188:8081/uploads/1654946703638063644lvsiptuntop.png">
-<meta property="og:updated_time" content="2022-06-12T04:30:46.628Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="LVS-IPTUN集群">
-<meta name="twitter:description" content="title: LVS-IPTUN&amp;#x96C6;&amp;#x7FA4;abbrlink: df68056cdate: 2022-06-07 13:35:10tags: LVS  LVS-IP Tunnel&amp;#x6A21;&amp;#x5F0F;&amp;#x96C6;&amp;#x7FA4;DR&amp;#x65B9;&amp;#x5F0F;&amp;#x662F;&amp;#x901A;&amp;#x8FC7;MAC&amp;#xFF0C;&amp;#x89C4;&amp;#x6A21">
-<meta name="twitter:image" content="http://192.168.84.188:8081/uploads/1654946401852771703lvstun.png">
-    
-        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
-    
-    <link rel="shortcut icon" href="/img/favicon.ico">
-    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
-    <script>window.lazyScripts=[]</script>
+    <!-- 引入代码高亮的 js -->
+    <script src="/lib/highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 
-    <!-- custom head -->
-    
-            
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/jquery-pjax@2.0.1/jquery.pjax.min.js"></script>
+	<script src="/js/main.js"></script>
+	
+		<script src="https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/valine@v1.4.14/dist/Valine.min.js"></script>
+	
+	
 </head>
 
 <body>
-    <div id="loading" class="active"></div>
-    <aside id="menu" class="hide">
-  <div class="inner flex-row-vertical">
-    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
-        <i class="icon icon-lg icon-close"></i>
-    </a>
-    <div class="brand-wrap">
-      <div class="brand">
-        <a href="/" class="avatar waves-effect waves-circle waves-light">
-          <img src="/img/avatar.gif" alt="avatar">
-        </a>
-        <hgroup class="introduce">
-          <h5 class="nickname" id="name">Echo</h5>
-          
-            <div id="yiyanmotto" class="motto">&nbsp;</div>
-          
-        </hgroup>
-      </div>
-    </div>
-    <div class="scroll-wrap flex-col">
-      <ul class="nav">
-        
-              <li class="waves-block waves-effect">
-                  <a href="/">
-                    <i class="icon icon-lg icon-home"></i>
-                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/archives">
-                    <i class="icon icon-lg icon-archives"></i>
-                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/categories">
-                    <i class="icon icon-lg icon-th-list"></i>
-                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/tags">
-                    <i class="icon icon-lg icon-tags"></i>
-                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/about">
-                    <i class="icon icon-lg icon-smile-o"></i>
-                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-      <div class="nav2">
-          
-              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
-                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
-              </a>
-          
-              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
-                <i class="icon icon-lg icon-github github"></i>
-              </a>
-          
-              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
-                <i class="icon icon-lg icon-tv tv"></i>
-              </a>
-          
-
-            </div>
-        
-      </ul>
-        
-    </div>
-  </div>
- 
-</aside>
-
-
-    <main id="main">
-        <header class="top-header" id="header">
-    <div class="flex-row">
-        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
-          <i class="icon icon-lg icon-navicon"></i>
-        </a>
-        <div class="flex-col header-title ellipsis">LVS-IPTUN集群</div>
-        
-        <div class="search-wrap" id="search-wrap">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
-                <i class="icon icon-lg icon-chevron-left"></i>
-            </a>
-            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
-                <i class="icon icon-lg icon-search"></i>
-            </a>
-        </div>
-        
-        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
-            <i class="icon icon-lg icon-rss"></i>
-        </a>
-    </div>
-</header>
-<header class="content-header post-header">
-    
-    
-    <div class="container fade-scale">
-        <div id="myheader">
-            <h1 class="title">
-                
-            </h1>
-            <h5 class="subtitle">
-                
-                
-            </h5>
-        </div>
-    </div>
-
-</header>
-
-
-<div class="container body-wrap">
-    
-    <aside class="post-widget">
-        <nav class="post-toc-wrap" id="post-toc">
-            <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#LVS-IP-Tunnel模式集群"><span class="post-toc-number">1.</span> <span class="post-toc-text">LVS-IP Tunnel模式集群</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#扩展：Shell"><span class="post-toc-number">2.</span> <span class="post-toc-text">扩展：Shell</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#LVS压力测试"><span class="post-toc-number">3.</span> <span class="post-toc-text">LVS压力测试</span></a></li></ol>
-        </nav>
-    </aside>
-   
-<article id="post-LVS-IPTUN集群" class="post-article article-type-post fade" itemprop="blogPost">
-
-    <div class="post-card">
-        <h1 class="post-card-title">LVS-IPTUN集群</h1>
-        <div class="post-meta">
-            <i class="icon icon-lg icon-calendar-o"></i>
-            发表于
-            <time class="post-time" title="2022-06-07 13:35:10" datetime="2022-06-07T05:35:10.000Z" itemprop="datePublished">2022-06-07</time>
-
-            <br id="mybreak">
-            
-<script>
-	mybreak.style="display:none";
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3efe99c287df5a1d6f0d02d187e403c1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
 </script>
 
+<header id="header">
+    <a id="title" href="/" class="logo">Deops's blog</a>
 
-            <i>·</i>
+	<ul id="menu">
+		<li class="menu-item">
+			<a href="/about" class="menu-item-link">ABOUT</a>
+		</li>
+	
+		<li class="menu-item">
+			<a href="/tags" class="menu-item-link">标签</a>
+		</li>
+	
+
+	
+		<li class="menu-item">
+			<a href="/categories" class="menu-item-link">分类</a>
+		</li>
+	
+
+		<li class="menu-item">
+			<a href="https://github.com/Marnm" class="menu-item-link" target="_blank">
+				<i class="fa fa-github fa-2x"></i>
+			</a>
+		</li>
+	</ul>
+</header>
+
+	
+<div id="sidebar">
+	<button id="sidebar-toggle" class="toggle"><i class="fa fa-arrow-right " aria-hidden="true"></i></button>
+	
+	<div id="site-toc">
+		<input id="search-input" class="search-input" type="search" placeholder="按回车全站搜索">
+		<div id="tree">
+			
+
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Ansible自动化运维
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/b45e213f/">
+                     
+										    Ansible自动化管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/28c30eb2/">
+                     
+										    CTF线下赛AWD套路小结
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Ceph对象存储
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/e9abc941/">
+                     
+										    Ceph分布式存储
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/38843421/">
+                     
+										    Ceph分布式存储部署笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9964b559/">
+                     
+										    DHCP Server的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4782a8c2/">
+                     
+										    DNS Server的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5e357037/">
+                     
+										    Django教程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Docker
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/4a3d459a/">
+                     
+										    Docker学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										ELK Stack
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/2d95f1c1/">
+                     
+										    ElasticSearch环境搭建
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/573fc171/">
+                     
+										    Logstash二进制安装与启动
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b11339a9/">
+                     
+										    Logstash去除不需要的字段
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d05b44e0/">
+                     
+										    Logstash读取日志发送到ES
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9d56e705/">
+                     
+										    FTP/TFTP的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ca9298d7/">
+                     
+										    Git版本控制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/51acad32/">
+                     
+										    诺尔·巴尔扎克（Honoréde Balzac）的名言
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4def9c28/">
+                     
+										    In Your 20's These Things Matter More Than You Think
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/295162d9/">
+                     
+										    Java8 环境变量配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										KVM虚拟化
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/dba5727f/">
+                     
+										    KVM图形化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/204af86b/">
+                     
+										    KVM虚拟机克隆和快照
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d69c6e72/">
+                     
+										    KVM虚拟机添加磁盘
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/16305c66/">
+                     
+										    KVM虚拟机迁移
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7733d98/">
+                     
+										    LDAP的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5922577d/">
+                     
+										    LNMP手动部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/195423a2/">
+                     
+										    LNMP高可用架构配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/38cc96c8/">
+                     
+										    LVM磁盘管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/be48d001/">
+                     
+										    LVS-DR集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file active">
+									<a href="/posts/df68056c/">
+                     
+										    LVS-IPTUN集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dcf8e277/">
+                     
+										    LVS-NAT集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/640aafef/">
+                     
+										    LVS和KeepAlived实现高可用集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/82734d8/">
+                     
+										    Linux命令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/67ee4dec/">
+                     
+										    Linux学习笔记 - 关于开源
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d53cba09/">
+                     
+										    Linux常用性能分析工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/15c0e66c/">
+                     
+										    Linux常见日志文件
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/480c215d/">
+                     
+										    Linux性能管理工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a9bb0c1a/">
+                     
+										    Linux文件的特殊权限
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/cc999d74/">
+                     
+										    Linux文件的隐藏属性
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b7f1c6/">
+                     
+										    Linux文本四剑客
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/aabbd398/">
+                     
+										    Linux无法挂载sysroot并自动进入紧急模式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b3f64b7d/">
+                     
+										    Linux生成随机密码方法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e025952a/">
+                     
+										    Linux登录退出提示信息欢迎信息
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ee2f9f35/">
+                     
+										    Linux的PAM模块
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1e844aa4/">
+                     
+										    Linux的归档与解压缩
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c4bbfe69/">
+                     
+										    Linux的日志切割
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/be846aea/">
+                     
+										    Linux禁止和开启ping的方法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f20e14fd/">
+                     
+										    Linux网卡聚合及bond模式的原理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2fe5fc07/">
+                     
+										    Linux计划任务实现
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/365d0867/">
+                     
+										    Linux路由配置——route
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fbf617b4/">
+                     
+										    MariaDB
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bff83912/">
+                     
+										    Markdown 简明语法手册
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5125c787/">
+                     
+										    Markdown语法说明（快速入门）
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										MongoDB
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/8b1c1f4b/">
+                     
+										    MongoDB介绍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a36562d7/">
+                     
+										    MongoDB学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/55c06d78/">
+                     
+										    MongoDB安装部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										MySQL学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/16fc5dc4/">
+                     
+										    MySQL5.6
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/61fb6d52/">
+                     
+										    MySQL5.7
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bce68613/">
+                     
+										    MySQL基础
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f6e2d114/">
+                     
+										    使用RPM包安装MySQL5.7数据库
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/269a56e8/">
+                     
+										    MySQL备份与恢复（删库不跑路）
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/607e4760/">
+                     
+										    MySQL传统主从同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d77fafec/">
+                     
+										    MySQL的GTID主从同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/db0340bd/">
+                     
+										    MySQL高可用集群架构-MHA架构
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/62ec7971/">
+                     
+										    Atlas实现MySQL读写分离
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/490925f2/">
+                     
+										    MySQL数据库高级应用之读写分离
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/176dc5f3/">
+                     
+										    MyCat垂直分表操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8f74b0e7/">
+                     
+										    MyCat教程全国省份分片枚举操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/208cd020/">
+                     
+										    MySQL调优
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1876d05d/">
+                     
+										    NetworkManager管理工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/60444925/">
+                     
+										    NexT主题优化+美化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Nginx学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/f4d30967/">
+                     
+										    Nginx动静分离部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1db2b3f1/">
+                     
+										    Nginx平滑升级
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2793eb31/">
+                     
+										    Nginx日志管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2793eb31/">
+                     
+										    Nginx日志管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e0989926/">
+                     
+										    Nginx添加第三方模块
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/da411b72/">
+                     
+										    Nginx虚拟主机
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d4e5e907/">
+                     
+										    Nginx访问控制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d2802762/">
+                     
+										    Nginx高可用架构配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/36ba38f9/">
+                     
+										    NoSQL知识
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e8c4eb08/">
+                     
+										    OpenSSL使用教程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/97717e94/">
+                     
+										    PXE自动化部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Prometheus学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/39c0f6a1/">
+                     
+										    Prometheus学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1f351894/">
+                     
+										    Python-VirtualEnv
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/297a89d9/">
+                     
+										    Python学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fa8e89f7/">
+                     
+										    RAID磁盘阵列技术介绍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/afdfa673/">
+                     
+										    RHEL 7配置Yum软件仓库
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/32546aed/">
+                     
+										    RedHat Linux重置root管理员密码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/eb7dbe25/">
+                     
+										    RedHat_7 配置网卡信息
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Redis学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/5188e636/">
+                     
+										    Redis与其他应用的集成
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/49fbbc1/">
+                     
+										    Redis基本操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e8376589/">
+                     
+										    Redis安装部署——Cluster集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e78aaf59/">
+                     
+										    Redis安装部署——Sentinel模式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2acd829b/">
+                     
+										    Redis安装部署——主从复制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/119ed1dc/">
+                     
+										    Redis持久化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/18d7d749/">
+                     
+										    Redis概述
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e3fb0a3e/">
+                     
+										    Redis的数据备份与恢复
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3e3d973e/">
+                     
+										    Redis配合MySQL使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f03da4e7/">
+                     
+										    Redis配置文件详解
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/41f893fd/">
+                     
+										    Redis编译安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dbd9d26a/">
+                     
+										    SHELL编程类面试题
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f42b90f9/">
+                     
+										    SHELL脚本工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a8ba1e/">
+                     
+										    SHELL脚本练习
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c45f2736/">
+                     
+										    SQL Server 2008安装配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/aa142b64/">
+                     
+										    SQLite安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e228b71f/">
+                     
+										    SSH原理与应用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1fdc29d2/">
+                     
+										    Shell的基本运算符
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6309c3f8/">
+                     
+										    Shell编程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e76ba468/">
+                     
+										    Ubuntu Desktop优化与配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/129acd64/">
+                     
+										    Ubuntu修改配置及美化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b382711f/">
+                     
+										    VIM的使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e9c6771b/">
+                     
+										    Win10环境下Python2、3和pip2、3版本共存
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6ed6984b/">
+                     
+										    Windows进程管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/59089347/">
+                     
+										    Zabbix3.4邮件报警配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7034657d/">
+                     
+										    Zabbix4.0
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c7b4ec91/">
+                     
+										    firewalld学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1ebd4a76/">
+                     
+										    iproute2工具包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/57bbf635/">
+                     
+										    iptables学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3e189d0c/">
+                     
+										    mysqlclient无法安装的问题
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1939d3e2/">
+                     
+										    net-tools工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bae5d4f0/">
+                     
+										    rhel修改网卡命名规则
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3c7a2415/">
+                     
+										    rsync数据同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/37ca92de/">
+                     
+										    swap交换分区
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6efb91e0/">
+                     
+										    tcpdump与Wireshark的使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d185f6ae/">
+                     
+										    web性能压测学习
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bb750036/">
+                     
+										    你要懂得及时止损，别太在乎沉没成本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/da58b03e/">
+                     
+										    使用HAProxy实现七层负载均衡
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b161a250/">
+                     
+										    使用服务搭建Hexo个人博客
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										其它
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/9bf5b5/">
+                     
+										    我学练英语所使用的方法、工具与资料
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4c41c7ef/">
+                     
+										    十二句经典的爱情名言
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e364486e/">
+                     
+										    基于Docker搭建Prometheus
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/69c239dd/">
+                     
+										    基于LNMP架构搭建企业级开源监控系统Zabbix
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f801d3c5/">
+                     
+										    增加一台Filebeat收集httpd日志
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f5d6f6a9/">
+                     
+										    实战-GitLab更新代码后自动触发Jenkins进行部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fa35a60d/">
+                     
+										    性能测试指标详解
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a3c5d26/">
+                     
+										    搭建Jenkins实现持续集成-配置Jenkins自动拉取GitLab中的代码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4f96852/">
+                     
+										    搭建JumpServer管理王者荣耀数万台游戏服务器
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f0a65eeb/">
+                     
+										    根分区扩容
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2f57a694/">
+                     
+										    正则表达式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9e3f6743/">
+                     
+										    自由的灵魂必将远航
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/217dc297/">
+                     
+										    计算机概述
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8d4b7ae1/">
+                     
+										    计算机组成原理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dded0e80/">
+                     
+										    运维发展史
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/undefined/">
+                     
+										    邮件报警配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5095a46f/">
+                     
+										    配置Docker静态IP
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2b923a54/">
+                     
+										    配置GitLab邮件服务
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/76011417/">
+                     
+										    配置Zabbix3.4监控Apache服务
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+		</div>
+	</div>
+</div>
+
+	<!-- 引入正文 -->
+	<div id="content">
+		<h1 id="article-title">
+	LVS-IPTUN集群
+</h1>
+<div class="article-meta">
+	
+	<span>Echo</span>
+	<span>2022-06-07 13:35:10</span>
+		<div id="article-categories">
+    
+		<span>Categories：</span>
             
+    
 
-        </div>
-        <div class="post-count-custom">
-            <i class="icon icon-lg icon-comment-o"></i>
-            阅读本文可能花费您&nbsp;<span class="post-count">27</span>&nbsp;分钟
-        </div>
-        <div class="post-content" id="post-content" itemprop="postContent">
-            <hr>
+    
+		<span>Tags：</span>
+            
+    
+		</div>
+
+</div>
+
+<div id="article-content">
+	<hr>
 <p>title: LVS-IPTUN&#x96C6;&#x7FA4;<br>abbrlink: df68056c<br>date: 2022-06-07 13:35:10<br>tags: LVS</p>
 <hr>
 <h2 id="LVS-IP-Tunnel&#x6A21;&#x5F0F;&#x96C6;&#x7FA4;"><a href="#LVS-IP-Tunnel&#x6A21;&#x5F0F;&#x96C6;&#x7FA4;" class="headerlink" title="LVS-IP Tunnel&#x6A21;&#x5F0F;&#x96C6;&#x7FA4;"></a>LVS-IP Tunnel&#x6A21;&#x5F0F;&#x96C6;&#x7FA4;</h2><p>DR&#x65B9;&#x5F0F;&#x662F;&#x901A;&#x8FC7;MAC&#xFF0C;&#x89C4;&#x6A21;&#x662F;&#x4E00;&#x4E2A;&#x4EA4;&#x6362;&#x7F51;&#x7EDC;&#xFF1B;<br>&#x800C;IP Tun&#x65B9;&#x5F0F;&#xFF0C;&#x662F;&#x901A;&#x8FC7;&#x683C;&#x5F0F;&#x6570;&#x636E;&#x5305;&#x52A0;&#x4E0A;&#x65B0;&#x7684;IP&#x5934;&#x90E8;&#x6765;&#x5B9E;&#x73B0;&#xFF0C;&#x8FD9;&#x4E2A;&#x53EF;&#x4EE5;&#x8DE8;&#x6574;&#x4E2A;&#x5E7F;&#x57DF;&#x7F51;</p>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://192.168.84.188:8081/uploads/1654946401852771703lvstun.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure>
-<p>&#x5F02;&#x5730;&#x673A;&#x623F;&#x7684;&#x597D;&#x5904;&#xFF1A;&#x5BB9;&#x707E;</p>
+<p><img src="http://192.168.84.188:8081/uploads/1654946401852771703lvstun.png" alt=""><br>&#x5F02;&#x5730;&#x673A;&#x623F;&#x7684;&#x597D;&#x5904;&#xFF1A;&#x5BB9;&#x707E;</p>
 <p>&#x4F46;&#x662F;&#x662F;&#x5426;&#x53EF;&#x4EE5;&#x4FDD;&#x8BC1; &#x8FB9;&#x754C; &#x6700;&#x8FD1;&#x8BBF;&#x95EE;&#x5230;&#x5BF9;&#x5E94;&#x7684;real server&#x5462;&#xFF1F; &#x4E0D;&#x80FD;&#xFF0C;&#x8FD9;&#x662F;&#x6700;&#x5927;&#x7684;&#x95EE;&#x9898;</p>
-<p>DNS view&#x529F;&#x80FD;&#x5B9E;&#x73B0;  &#x8FB9;&#x754C;&#x6700;&#x8FD1;&#x8BBF;&#x95EE;  &#x667A;&#x80FD;DNS<br></p><figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://192.168.84.188:8081/uploads/1654946703638063644lvsiptuntop.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure><p></p>
+<p>DNS view&#x529F;&#x80FD;&#x5B9E;&#x73B0;  &#x8FB9;&#x754C;&#x6700;&#x8FD1;&#x8BBF;&#x95EE;  &#x667A;&#x80FD;DNS<br><img src="http://192.168.84.188:8081/uploads/1654946703638063644lvsiptuntop.png" alt=""></p>
 <p><strong>Director</strong><br>DIP<code>192.168.110.13</code><br>DG<code>192.168.110.1</code><br>VIP<code>192.168.110.10</code>  </p>
 <p><strong>RS1</strong><br>RIP<code>192.168.110.11</code><br>DG<code>192.168.110.1</code><br>VIP<code>192.168.110.10</code>  </p>
 <p><strong>RS2</strong><br>RIP<code>192.168.110.12</code><br>DG<code>192.168.110.1</code><br>VIP<code>192.168.110.10</code></p>
-<p><strong>&#x914D;&#x7F6E;Director</strong><br></p><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[root@server13 ~]# ifconfig</span><br><span class="line">ens33: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 192.168.110.13  netmask 255.255.255.0  broadcast 192.168.110.255</span><br><span class="line">        inet6 fe80::20c:29ff:fe1d:b97c  prefixlen 64  scopeid 0x20&lt;link&gt;</span><br><span class="line">        ether 00:0c:29:1d:b9:7c  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 136  bytes 12339 (12.0 KiB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 89  bytes 11483 (11.2 KiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536</span><br><span class="line">        inet 127.0.0.1  netmask 255.0.0.0</span><br><span class="line">        inet6 ::1  prefixlen 128  scopeid 0x10&lt;host&gt;</span><br><span class="line">        loop  txqueuelen 1  (Local Loopback)</span><br><span class="line">        RX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">[root@server13 ~]# ifconfig ens33:1 192.168.110.10 netmask 255.255.255.0</span><br><span class="line">[root@server13 ~]# ifcofngi</span><br><span class="line">-bash: ifcofngi: command not found</span><br><span class="line">[root@server13 ~]# ifconfig</span><br><span class="line">ens33: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 192.168.110.13  netmask 255.255.255.0  broadcast 192.168.110.255</span><br><span class="line">        inet6 fe80::20c:29ff:fe1d:b97c  prefixlen 64  scopeid 0x20&lt;link&gt;</span><br><span class="line">        ether 00:0c:29:1d:b9:7c  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 315  bytes 25839 (25.2 KiB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 184  bytes 21161 (20.6 KiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">ens33:1: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 192.168.110.10  netmask 255.255.255.0  broadcast 192.168.110.255</span><br><span class="line">        ether 00:0c:29:1d:b9:7c  txqueuelen 1000  (Ethernet)</span><br><span class="line"></span><br><span class="line">lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536</span><br><span class="line">        inet 127.0.0.1  netmask 255.0.0.0</span><br><span class="line">        inet6 ::1  prefixlen 128  scopeid 0x10&lt;host&gt;</span><br><span class="line">        loop  txqueuelen 1  (Local Loopback)</span><br><span class="line">        RX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">[root@server13 ~]#</span><br></pre></td></tr></tbody></table></figure><p></p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[root@server13 ~]# ipvsadm -C</span><br><span class="line">[root@server13 ~]# ipvsadm -A -t 192.168.110.10:80 -s rr</span><br><span class="line">[root@server13 ~]# ipvsadm -a -t 192.168.110.10:80 -r 192.168.110.12 -i</span><br><span class="line">[root@server13 ~]# ipvsadm -a -t 192.168.110.10:80 -r 192.168.110.11 -i</span><br><span class="line">[root@server13 ~]# ipvsadm -Ln</span><br><span class="line">IP Virtual Server version 1.2.1 (size=4096)</span><br><span class="line">Prot LocalAddress:Port Scheduler Flags</span><br><span class="line">  -&gt; RemoteAddress:Port           Forward Weight ActiveConn InActConn</span><br><span class="line">TCP  192.168.110.10:80 rr</span><br><span class="line">  -&gt; 192.168.110.11:80            Tunnel  1      0          0</span><br><span class="line">  -&gt; 192.168.110.12:80            Tunnel  1      0          0</span><br><span class="line">[root@server13 ~]#</span><br></pre></td></tr></tbody></table></figure>
-<p><strong>&#x914D;&#x7F6E;Real Server</strong><br></p><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[root@server11 ~]# ifconfig</span><br><span class="line">ens33: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 192.168.110.11  netmask 255.255.255.0  broadcast 192.168.110.255</span><br><span class="line">        inet6 fe80::250:56ff:fe27:4bff  prefixlen 64  scopeid 0x20&lt;link&gt;</span><br><span class="line">        ether 00:50:56:27:4b:ff  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 147  bytes 13187 (12.8 KiB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 90  bytes 11445 (11.1 KiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536</span><br><span class="line">        inet 127.0.0.1  netmask 255.0.0.0</span><br><span class="line">        inet6 ::1  prefixlen 128  scopeid 0x10&lt;host&gt;</span><br><span class="line">        loop  txqueuelen 1  (Local Loopback)</span><br><span class="line">        RX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">[root@server11 ~]# route -n</span><br><span class="line">Kernel IP routing table</span><br><span class="line">Destination     Gateway         Genmask         Flags Metric Ref    Use Iface</span><br><span class="line">0.0.0.0         192.168.110.1   0.0.0.0         UG    0      0        0 ens33</span><br><span class="line">169.254.0.0     0.0.0.0         255.255.0.0     U     1002   0        0 ens33</span><br><span class="line">192.168.110.0   0.0.0.0         255.255.255.0   U     0      0        0 ens33</span><br><span class="line">[root@server11 ~]# modprobe ipip</span><br><span class="line"># &#x52A0;&#x8F7D;ipip&#x96A7;&#x9053;&#x6A21;&#x5757;</span><br><span class="line"># &#x4F7F;&#x7528;ifconfig tunl0&#x65F6;&#xFF0C;&#x4F1A;&#x81EA;&#x52A8;&#x52A0;&#x8F7D;ipip&#x6A21;&#x5757;</span><br><span class="line">[root@server11 network-scripts]# lsmod | grep ipip</span><br><span class="line">ipip                   13465  0</span><br><span class="line">tunnel4                13252  1 ipip</span><br><span class="line">ip_tunnel              25163  1 ipip</span><br><span class="line">[root@server11 network-scripts]# ifconfig -a</span><br><span class="line">ens33: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 192.168.110.11  netmask 255.255.255.0  broadcast 192.168.110.255</span><br><span class="line">        inet6 fe80::250:56ff:fe27:4bff  prefixlen 64  scopeid 0x20&lt;link&gt;</span><br><span class="line">        ether 00:50:56:27:4b:ff  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 2159  bytes 170181 (166.1 KiB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 1206  bytes 153724 (150.1 KiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536</span><br><span class="line">        inet 127.0.0.1  netmask 255.0.0.0</span><br><span class="line">        inet6 ::1  prefixlen 128  scopeid 0x10&lt;host&gt;</span><br><span class="line">        loop  txqueuelen 1  (Local Loopback)</span><br><span class="line">        RX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">tunl0: flags=128&lt;NOARP&gt;  mtu 1480</span><br><span class="line">        tunnel   txqueuelen 1  (IPIP Tunnel)</span><br><span class="line">        RX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">[root@server11 network-scripts]# ifconfig tunl0 192.168.110.10 netmask 255.255.255.255</span><br><span class="line">[root@server11 network-scripts]# ifconfig</span><br><span class="line">ens33: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 192.168.110.11  netmask 255.255.255.0  broadcast 192.168.110.255</span><br><span class="line">        inet6 fe80::250:56ff:fe27:4bff  prefixlen 64  scopeid 0x20&lt;link&gt;</span><br><span class="line">        ether 00:50:56:27:4b:ff  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 2391  bytes 187611 (183.2 KiB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 1326  bytes 166252 (162.3 KiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536</span><br><span class="line">        inet 127.0.0.1  netmask 255.0.0.0</span><br><span class="line">        inet6 ::1  prefixlen 128  scopeid 0x10&lt;host&gt;</span><br><span class="line">        loop  txqueuelen 1  (Local Loopback)</span><br><span class="line">        RX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">tunl0: flags=193&lt;UP,RUNNING,NOARP&gt;  mtu 1480</span><br><span class="line">        inet 192.168.110.10  netmask 255.255.255.255</span><br><span class="line">        tunnel   txqueuelen 1  (IPIP Tunnel)</span><br><span class="line">        RX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">[root@server11 network-scripts]#</span><br><span class="line">[root@server11 network-scripts]# echo &apos;1&apos; &gt; /proc/sys/net/ipv4/conf/tunl0/arp_ignore</span><br><span class="line">[root@server11 network-scripts]# echo &apos;2&apos; &gt; /proc/sys/net/ipv4/conf/tunl0/arp_announce</span><br><span class="line">[root@server11 network-scripts]# echo &apos;1&apos; &gt; /proc/sys/net/ipv4/conf/all/arp_ignore</span><br><span class="line">[root@server11 network-scripts]# echo &apos;2&apos; &gt; /proc/sys/net/ipv4/conf/all/arp_announce</span><br><span class="line">[root@server11 network-scripts]# echo &apos;0&apos; &gt; /proc/sys/net/ipv4/conf/tunl0/rp_filter</span><br><span class="line">[root@server11 network-scripts]# echo &apos;0&apos; &gt; /proc/sys/net/ipv4/conf/all/rp_filter</span><br><span class="line">[root@server11 network-scripts]#</span><br></pre></td></tr></tbody></table></figure><p></p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[root@server12 ~]# ifconfig</span><br><span class="line">ens33: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 192.168.110.12  netmask 255.255.255.0  broadcast 192.168.110.255</span><br><span class="line">        inet6 fe80::250:56ff:fe33:b03c  prefixlen 64  scopeid 0x20&lt;link&gt;</span><br><span class="line">        ether 00:50:56:33:b0:3c  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 147  bytes 13091 (12.7 KiB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 90  bytes 10365 (10.1 KiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536</span><br><span class="line">        inet 127.0.0.1  netmask 255.0.0.0</span><br><span class="line">        inet6 ::1  prefixlen 128  scopeid 0x10&lt;host&gt;</span><br><span class="line">        loop  txqueuelen 1  (Local Loopback)</span><br><span class="line">        RX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">[root@server12 ~]# route -n</span><br><span class="line">Kernel IP routing table</span><br><span class="line">Destination     Gateway         Genmask         Flags Metric Ref    Use Iface</span><br><span class="line">0.0.0.0         192.168.110.1   0.0.0.0         UG    0      0        0 ens33</span><br><span class="line">169.254.0.0     0.0.0.0         255.255.0.0     U     1002   0        0 ens33</span><br><span class="line">192.168.110.0   0.0.0.0         255.255.255.0   U     0      0        0 ens33</span><br><span class="line">[root@server12 ~]# modprobe ipip</span><br><span class="line">[root@server12 ~]# ifconfig -a</span><br><span class="line">ens33: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 192.168.110.12  netmask 255.255.255.0  broadcast 192.168.110.255</span><br><span class="line">        inet6 fe80::250:56ff:fe33:b03c  prefixlen 64  scopeid 0x20&lt;link&gt;</span><br><span class="line">        ether 00:50:56:33:b0:3c  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 1185  bytes 92769 (90.5 KiB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 688  bytes 75786 (74.0 KiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536</span><br><span class="line">        inet 127.0.0.1  netmask 255.0.0.0</span><br><span class="line">        inet6 ::1  prefixlen 128  scopeid 0x10&lt;host&gt;</span><br><span class="line">        loop  txqueuelen 1  (Local Loopback)</span><br><span class="line">        RX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">tunl0: flags=128&lt;NOARP&gt;  mtu 1480</span><br><span class="line">        tunnel   txqueuelen 1  (IPIP Tunnel)</span><br><span class="line">        RX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">[root@server12 ~]# ifconfig tunl0 192.168.110.10 netmask 255.255.255.255</span><br><span class="line">[root@server12 ~]# ifconfig</span><br><span class="line">ens33: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500</span><br><span class="line">        inet 192.168.110.12  netmask 255.255.255.0  broadcast 192.168.110.255</span><br><span class="line">        inet6 fe80::250:56ff:fe33:b03c  prefixlen 64  scopeid 0x20&lt;link&gt;</span><br><span class="line">        ether 00:50:56:33:b0:3c  txqueuelen 1000  (Ethernet)</span><br><span class="line">        RX packets 1386  bytes 107919 (105.3 KiB)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 795  bytes 87800 (85.7 KiB)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536</span><br><span class="line">        inet 127.0.0.1  netmask 255.0.0.0</span><br><span class="line">        inet6 ::1  prefixlen 128  scopeid 0x10&lt;host&gt;</span><br><span class="line">        loop  txqueuelen 1  (Local Loopback)</span><br><span class="line">        RX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">tunl0: flags=193&lt;UP,RUNNING,NOARP&gt;  mtu 1480</span><br><span class="line">        inet 192.168.110.10  netmask 255.255.255.255</span><br><span class="line">        tunnel   txqueuelen 1  (IPIP Tunnel)</span><br><span class="line">        RX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        RX errors 0  dropped 0  overruns 0  frame 0</span><br><span class="line">        TX packets 0  bytes 0 (0.0 B)</span><br><span class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</span><br><span class="line"></span><br><span class="line">[root@server12 ~]#</span><br><span class="line">[root@server12 ~]# echo &apos;1&apos; &gt; /proc/sys/net/ipv4/conf/tunl0/arp_ignore</span><br><span class="line">[root@server12 ~]# echo &apos;2&apos; &gt; /proc/sys/net/ipv4/conf/tunl0/arp_announce</span><br><span class="line">[root@server12 ~]# echo &apos;1&apos; &gt; /proc/sys/net/ipv4/conf/all/arp_ignore</span><br><span class="line">[root@server12 ~]# echo &apos;2&apos; &gt; /proc/sys/net/ipv4/conf/all/arp_announce</span><br><span class="line">[root@server12 ~]# echo &apos;0&apos; &gt; /proc/sys/net/ipv4/conf/tunl0/rp_filter</span><br><span class="line">[root@server12 ~]# echo &apos;0&apos; &gt; /proc/sys/net/ipv4/conf/all/rp_filter</span><br><span class="line">[root@server12 ~]#</span><br></pre></td></tr></tbody></table></figure>
-<p><code>tunl0/rp_fileter</code>&#x6A21;&#x5F0F;&#x4E3A;1&#xFF0C;&#x9700;&#x8981;&#x6539;&#x4E3A;0&#xFF0C;&#x5173;&#x95ED;&#x6B64;&#x529F;&#x80FD;&#x3002;Linux&#x7684;rp_fileter&#x7528;&#x4E8E;<strong>&#x5B9E;&#x73B0;&#x53CD;&#x5411;&#x8FC7;&#x6EE4;&#x6280;&#x672F;&#xFF0C;&#x4E5F;&#x53EB;uRPF</strong>&#xFF0C;&#x5B83;&#x9A8C;&#x8BC1;&#x53CD;&#x5411;&#x6570;&#x636E;&#x5305;&#x7684;&#x6D41;&#x5411;&#xFF0C;&#x4EE5;&#x907F;&#x514D;&#x4F2A;&#x88C5;IP&#x653B;&#x51FB;&#xFF0C;&#x7136;&#x540E;&#xFF0C;&#x5728;LVS TUN&#x6A21;&#x5F0F;&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x7684;&#x6570;&#x636E;&#x5305;&#x65F6;&#x6709;&#x95EE;&#x9898;&#x7684;&#xFF0C;&#x56E0;&#x4E3A;&#x4ECE;Real Server ens33 &#x51FA;&#x53BB;&#x7684;IP&#x6570;&#x636E;&#x5305;&#x7684;&#x6E90;IP&#x5730;&#x5740;&#x5E94;&#x8BE5;&#x4E3A;192.168.110.11&#xFF0C;&#x800C;&#x4E0D;&#x662F;VIP&#x5730;&#x5740;&#xFF0C;&#x6240;&#x4EE5;&#x5FC5;&#x987B;&#x5173;&#x95ED;&#x8FD9;&#x4E00;&#x9879;&#x529F;&#x80FD;&#x3002; DR&#x548C;TUN&#x5728; &#x7F51;&#x7EDC;&#x5C42;&#x5B9E;&#x9645;&#x4E0A;&#x4F7F;&#x7528;&#x4E86;&#x4E00;&#x4E2A;&#x4F2A;&#x88C5;IP&#x6570;&#x636E;&#x5305;&#x7684;&#x529F;&#x80FD;&#xFF0C;&#x8BA9;client&#x6536;&#x5230;&#x6570;&#x636E;&#x5305;&#x540E;&#xFF0C;&#x8FD4;&#x56DE;&#x7684;&#x8BF7;&#x6C42;&#x518D;&#x6B21;&#x8F6C;&#x7ED9;&#x5206;&#x53D1;&#x5668;<br><code>echo &apos;0&apos; &gt; /proc/sys/net/ipv4/conf/all/rp_filter</code> #&#x8FD9;&#x4E2A;&#x503C;&#x9ED8;&#x8BA4;&#x5C31;&#x662F;0&#xFF0C;&#x6B64;&#x529F;&#x80FD;&#x5C31;&#x662F;&#x5173;&#x95ED;&#x7684;&#x3002;&#x6240;&#x4EE5;&#x5728;LVS DR&#x6A21;&#x5F0F;&#x4E2D;&#xFF0C;&#x4E0D;&#x9700;&#x8981;&#x4FEE;&#x6539;&#x8FD9;&#x4E00;&#x6837;&#x5185;&#x6838;&#x53C2;&#x6570;</p>
-<h2 id="&#x6269;&#x5C55;&#xFF1A;Shell"><a href="#&#x6269;&#x5C55;&#xFF1A;Shell" class="headerlink" title="&#x6269;&#x5C55;&#xFF1A;Shell"></a>&#x6269;&#x5C55;&#xFF1A;Shell</h2><p><strong>&#x914D;&#x7F6E;Director</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">ifconfig ens33 192.168.110.15</span><br><span class="line">ifconfig ens33:1 192.168.110.10</span><br><span class="line"></span><br><span class="line">yum install -y ipvsadm</span><br><span class="line">ipvsadm --clear</span><br><span class="line">ipvsadm -C</span><br><span class="line"></span><br><span class="line">ipvsadm -A -t 192.168.110.10:80 -s rr</span><br><span class="line">ipvsadm -a -t 192.168.110.10:80 -r 192.168.110.11 -i</span><br><span class="line">ipvsadm -a -t 192.168.110.10:80 -r 192.168.110.12 -i</span><br><span class="line"><span class="meta">#</span><span class="bash"> -i IP Tunnel Model</span></span><br></pre></td></tr></tbody></table></figure><p></p>
-<p><strong>&#x914D;&#x7F6E;RS</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">ifconfig lo 192.168.110.10 netmask 255.255.255.255 up</span><br><span class="line"><span class="meta">#</span><span class="bash"> Disable ARP forward</span></span><br><span class="line">ifconfig ens33 -arp</span><br><span class="line"><span class="meta">#</span><span class="bash"> Permanent ways:</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">echo</span> 1 &gt; /proc/sys/net/ipv4/conf/ens33/arp_ignore</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">echo</span> 2 &gt; /proc/sys/net/ipv4/conf/ens33/apr_announce</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#############################################33333</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">echo</span> <span class="string">&quot;net.ipv4.conf.ens33.arp_ignore = 1&quot;</span> &gt;&gt; /etc/sysctl.conf</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">echo</span> <span class="string">&quot;net.ipv4.conf.ens33.arp_announce = 2&quot;</span> &gt;&gt; /etc/sysctl.conf</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">echo</span> <span class="string">&quot;net.ipv4.conf.all.arp_ignore = 1&quot;</span> &gt;&gt; /etc/sysctl.conf</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">echo</span> <span class="string">&quot;net.ipv4.conf.all.arp_announce = 2&quot;</span> &gt;&gt; /etc/sysctl.conf </span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">echo</span> <span class="string">&quot;net.ipv4.conf.lo.arp_ignore = 1&quot;</span> &gt;&gt; /etc/sysctl.conf</span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="built_in">echo</span> <span class="string">&quot;net.ipv4.conf.lo.arp_announce = 2&quot;</span> &gt;&gt; /etc/sysctl.conf</span></span><br><span class="line"></span><br><span class="line">ip_addr=`ip a | grep &quot;\&lt;inet\&gt;&quot; | grep -v &quot;127.0.0.1&quot; | tr &apos;/&apos; &apos; &apos; | awk &apos;{print $2}&apos; | head -1`</span><br><span class="line">yum install -y httpd</span><br><span class="line">echo $ip_addr &gt; /var/www/html/index.html</span><br><span class="line">systemctl start httpd</span><br><span class="line">echo</span><br></pre></td></tr></tbody></table></figure><p></p>
-<h2 id="LVS&#x538B;&#x529B;&#x6D4B;&#x8BD5;"><a href="#LVS&#x538B;&#x529B;&#x6D4B;&#x8BD5;" class="headerlink" title="LVS&#x538B;&#x529B;&#x6D4B;&#x8BD5;"></a>LVS&#x538B;&#x529B;&#x6D4B;&#x8BD5;</h2><p><strong>ab&#x538B;&#x6D4B;</strong><br></p><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[root@repo_srv webbench-1.5]# ab -n 100000 -c 100 http://192.168.110.10/</span><br><span class="line">This is ApacheBench, Version 2.3 &lt;$Revision: 1430300 $&gt;</span><br><span class="line">Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/</span><br><span class="line">Licensed to The Apache Software Foundation, http://www.apache.org/</span><br><span class="line"></span><br><span class="line">Benchmarking 192.168.110.10 (be patient)</span><br><span class="line">Completed 10000 requests</span><br><span class="line">Completed 20000 requests</span><br><span class="line">Completed 30000 requests</span><br><span class="line">Completed 40000 requests</span><br><span class="line">Completed 50000 requests</span><br><span class="line">Completed 60000 requests</span><br><span class="line">Completed 70000 requests</span><br><span class="line">Completed 80000 requests</span><br><span class="line">Completed 90000 requests</span><br><span class="line">Completed 100000 requests</span><br><span class="line">Finished 100000 requests</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Server Software:        Apache/2.4.6</span><br><span class="line">Server Hostname:        192.168.110.10</span><br><span class="line">Server Port:            80</span><br><span class="line"></span><br><span class="line">Document Path:          /</span><br><span class="line">Document Length:        15 bytes</span><br><span class="line"></span><br><span class="line">Concurrency Level:      100</span><br><span class="line">Time taken for tests:   110.424 seconds</span><br><span class="line">Complete requests:      100000</span><br><span class="line">Failed requests:        0</span><br><span class="line">Write errors:           0</span><br><span class="line">Total transferred:      27400000 bytes</span><br><span class="line">HTML transferred:       1500000 bytes</span><br><span class="line">Requests per second:    905.60 [#/sec] (mean)</span><br><span class="line">Time per request:       110.424 [ms] (mean)</span><br><span class="line">Time per request:       1.104 [ms] (mean, across all concurrent requests)</span><br><span class="line">Transfer rate:          242.32 [Kbytes/sec] received</span><br><span class="line"></span><br><span class="line">Connection Times (ms)</span><br><span class="line">              min  mean[+/-sd] median   max</span><br><span class="line">Connect:        1   53  14.1     49     205</span><br><span class="line">Processing:    12   57  15.6     53     241</span><br><span class="line">Waiting:        1   44  14.8     42     204</span><br><span class="line">Total:         40  110  23.8    102     295</span><br><span class="line"></span><br><span class="line">Percentage of the requests served within a certain time (ms)</span><br><span class="line">  50%    102</span><br><span class="line">  66%    109</span><br><span class="line">  75%    117</span><br><span class="line">  80%    122</span><br><span class="line">  90%    138</span><br><span class="line">  95%    156</span><br><span class="line">  98%    188</span><br><span class="line">  99%    206</span><br><span class="line"> 100%    295 (longest request)</span><br><span class="line">[root@repo_srv webbench-1.5]#</span><br></pre></td></tr></tbody></table></figure><p></p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">top - 04:42:15 up  1:26,  2 users,  load average: 1.29, 0.90, 0.39</span><br><span class="line">Tasks: 317 total,   7 running, 309 sleeping,   0 stopped,   1 zombie</span><br><span class="line">%Cpu(s):  6.9 us, 17.3 sy,  0.0 ni, 62.4 id,  0.0 wa,  0.0 hi, 13.4 si,  0.0 st</span><br><span class="line">KiB Mem :   999696 total,   525164 free,   255652 used,   218880 buff/cache</span><br><span class="line">KiB Swap:  2097148 total,  2097148 free,        0 used.   538184 avail Mem</span><br><span class="line"></span><br><span class="line">   PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND</span><br><span class="line">     3 root      20   0       0      0      0 R  8.0  0.0   0:11.44 ksoftirqd/0</span><br><span class="line">     9 root      20   0       0      0      0 R  0.7  0.0   0:01.51 rcu_sched</span><br><span class="line">  1193 apache    20   0  226376   3784   1828 S  0.7  0.4   0:00.24 httpd</span><br><span class="line">  1286 apache    20   0  226376   3784   1828 S  0.7  0.4   0:00.14 httpd</span><br><span class="line">  1340 apache    20   0  226376   3788   1832 S  0.7  0.4   0:00.08 httpd</span><br><span class="line">  1416 apache    20   0  226376   3788   1832 S  0.7  0.4   0:00.11 httpd</span><br><span class="line">  1146 apache    20   0  226376   3784   1828 S  0.3  0.4   0:03.22 httpd</span><br><span class="line">  1149 apache    20   0  226376   3784   1828 S  0.3  0.4   0:03.23 httpd</span><br><span class="line">  1179 root      20   0       0      0      0 S  0.3  0.0   0:00.14 kworker/0:1</span><br><span class="line">  1181 apache    20   0  226376   3784   1828 S  0.3  0.4   0:03.13 httpd</span><br><span class="line">  1199 apache    20   0  226376   3784   1828 S  0.3  0.4   0:00.17 httpd</span><br><span class="line">  1204 apache    20   0  226376   3784   1828 S  0.3  0.4   0:00.19 httpd</span><br><span class="line">  1206 apache    20   0  226376   3784   1828 S  0.3  0.4   0:00.20 httpd</span><br><span class="line">  1207 apache    20   0  226376   3784   1828 S  0.3  0.4   0:00.17 httpd</span><br><span class="line">  1211 apache    20   0  226376   3784   1828 S  0.3  0.4   0:00.15 httpd</span><br><span class="line">  1213 apache    20   0  226376   3784   1828 S  0.3  0.4   0:00.14 httpd</span><br><span class="line">  1214 apache    20   0  226376   3784   1828 S  0.3  0.4   0:00.20 httpd</span><br></pre></td></tr></tbody></table></figure>
-  <figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">  top - 04:42:30 up 34 min,  2 users,  load average: 1.27, 0.77, 0.33</span><br><span class="line">Tasks: 301 total,   8 running, 292 sleeping,   0 stopped,   1 zombie</span><br><span class="line">%Cpu(s):  6.6 us, 12.8 sy,  0.0 ni, 45.6 id,  0.0 wa,  0.0 hi, 35.0 si,  0.0 st</span><br><span class="line">KiB Mem :   999696 total,   595392 free,   241748 used,   162556 buff/cache</span><br><span class="line">KiB Swap:  2097148 total,  2097148 free,        0 used.   573304 avail Mem</span><br><span class="line"></span><br><span class="line">   PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND</span><br><span class="line">     3 root      20   0       0      0      0 R  3.7  0.0   0:06.92 ksoftirqd/0</span><br><span class="line">     9 root      20   0       0      0      0 R  1.0  0.0   0:01.74 rcu_sched</span><br><span class="line">  1185 apache    20   0  226376   3780   1832 S  0.7  0.4   0:00.17 httpd</span><br><span class="line">  1205 apache    20   0  226376   3784   1836 S  0.7  0.4   0:00.17 httpd</span><br><span class="line">  1266 apache    20   0  226376   3780   1832 S  0.7  0.4   0:00.12 httpd</span><br><span class="line">  1293 apache    20   0  226376   3784   1836 S  0.7  0.4   0:00.10 httpd</span><br><span class="line">  1328 apache    20   0  226376   3784   1836 S  0.7  0.4   0:00.09 httpd</span><br><span class="line">   653 root      20   0  231348   6108   4760 S  0.3  0.6   0:03.72 vmtoolsd</span><br><span class="line">  1061 apache    20   0  226376   3780   1832 S  0.3  0.4   0:02.45 httpd</span><br><span class="line">  1062 apache    20   0  226376   3780   1832 S  0.3  0.4   0:02.25 httpd</span><br><span class="line">  1063 apache    20   0  226376   3780   1832 S  0.3  0.4   0:02.19 httpd</span><br><span class="line">  1067 apache    20   0  226376   3780   1832 S  0.3  0.4   0:01.08 httpd</span><br><span class="line">  1080 apache    20   0  226376   3780   1832 S  0.3  0.4   0:00.27 httpd</span><br><span class="line">  1085 apache    20   0  226376   3780   1832 S  0.3  0.4   0:00.28 httpd</span><br><span class="line">  1089 apache    20   0  226376   3780   1832 S  0.3  0.4   0:00.23 httpd</span><br><span class="line">  1092 apache    20   0  226376   3780   1832 S  0.3  0.4   0:00.25 httpd</span><br><span class="line">  1093 apache    20   0  226376   3784   1836 S  0.3  0.4   0:00.25 httpd</span><br></pre></td></tr></tbody></table></figure>
-<p>  2&#x53F0;&#x8D1F;&#x8F7D;&#x4F18;&#x70B9;&#x9876;&#x4E0D;&#x4F4F;&#x538B;&#x529B;&#x554A;&#x3002;&#x3002;&#x3002;&#x3002;</p>
-<p>  <strong>webbench&#x8DD1;&#x4E00;&#x4E0B;</strong><br>  </p><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">  [root@repo_srv webbench-1.5]# ls</span><br><span class="line">ChangeLog  COPYRIGHT  debian  Makefile  socket.c  webbench.1  webbench.c</span><br><span class="line">[root@repo_srv webbench-1.5]# make</span><br><span class="line">cc -Wall -ggdb -W -O   -c -o webbench.o webbench.c</span><br><span class="line">webbench.c: In function &#x2018;alarm_handler&#x2019;:</span><br><span class="line">webbench.c:77:31: warning: unused parameter &#x2018;signal&#x2019; [-Wunused-parameter]</span><br><span class="line"> static void alarm_handler(int signal)</span><br><span class="line">                               ^</span><br><span class="line">cc -Wall -ggdb -W -O  -o webbench webbench.o</span><br><span class="line">ctags *.c</span><br><span class="line">/bin/sh: ctags: command not found</span><br><span class="line">make: [tags] Error 127 (ignored)</span><br><span class="line">[root@repo_srv webbench-1.5]# yum install -y ctags</span><br><span class="line">Loaded plugins: product-id, search-disabled-repos, subscription-manager</span><br><span class="line">This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.</span><br><span class="line">Resolving Dependencies</span><br><span class="line">--&gt; Running transaction check</span><br><span class="line">---&gt; Package ctags.x86_64 0:5.8-13.el7 will be installed</span><br><span class="line">--&gt; Finished Dependency Resolution</span><br><span class="line"></span><br><span class="line">Dependencies Resolved</span><br><span class="line"></span><br><span class="line">=============================================================================================================================================================================================</span><br><span class="line"> Package                                    Arch                                        Version                                         Repository                                      Size</span><br><span class="line">=============================================================================================================================================================================================</span><br><span class="line">Installing:</span><br><span class="line"> ctags                                      x86_64                                      5.8-13.el7                                      local-yum                                      155 k</span><br><span class="line"></span><br><span class="line">Transaction Summary</span><br><span class="line">=============================================================================================================================================================================================</span><br><span class="line">Install  1 Package</span><br><span class="line"></span><br><span class="line">Total download size: 155 k</span><br><span class="line">Installed size: 351 k</span><br><span class="line">Downloading packages:</span><br><span class="line">Running transaction check</span><br><span class="line">Running transaction test</span><br><span class="line">Transaction test succeeded</span><br><span class="line">Running transaction</span><br><span class="line">  Installing : ctags-5.8-13.el7.x86_64                                                                                                                                                   1/1</span><br><span class="line">  Verifying  : ctags-5.8-13.el7.x86_64                                                                                                                                                   1/1</span><br><span class="line"></span><br><span class="line">Installed:</span><br><span class="line">  ctags.x86_64 0:5.8-13.el7</span><br><span class="line"></span><br><span class="line">Complete!</span><br><span class="line">[root@repo_srv webbench-1.5]# make</span><br><span class="line">ctags *.c</span><br><span class="line">[root@repo_srv webbench-1.5]# make install</span><br><span class="line">install -s webbench /usr/local/bin</span><br><span class="line">install -m 644 webbench.1 /usr/local/man/man1</span><br><span class="line">install: cannot create regular file &#x2018;/usr/local/man/man1&#x2019;: No such file or directory</span><br><span class="line">make: *** [install] Error 1</span><br><span class="line">[root@repo_srv webbench-1.5]# mkdir -p /usr/local/man/man1</span><br><span class="line">[root@repo_srv webbench-1.5]# make install</span><br><span class="line">install -s webbench /usr/local/bin</span><br><span class="line">install -m 644 webbench.1 /usr/local/man/man1</span><br><span class="line">install -d /usr/local/share/doc/webbench</span><br><span class="line">install -m 644 debian/copyright /usr/local/share/doc/webbench</span><br><span class="line">install -m 644 debian/changelog /usr/local/share/doc/webbench</span><br><span class="line">[root@repo_srv webbench-1.5]# webbench</span><br><span class="line">webbench [option]... URL</span><br><span class="line">  -f|--force               Don&apos;t wait for reply from server.</span><br><span class="line">  -r|--reload              Send reload request - Pragma: no-cache.</span><br><span class="line">  -t|--time &lt;sec&gt;          Run benchmark for &lt;sec&gt; seconds. Default 30.</span><br><span class="line">  -p|--proxy &lt;server:port&gt; Use proxy server for request.</span><br><span class="line">  -c|--clients &lt;n&gt;         Run &lt;n&gt; HTTP clients at once. Default one.</span><br><span class="line">  -9|--http09              Use HTTP/0.9 style requests.</span><br><span class="line">  -1|--http10              Use HTTP/1.0 protocol.</span><br><span class="line">  -2|--http11              Use HTTP/1.1 protocol.</span><br><span class="line">  --get                    Use GET request method.</span><br><span class="line">  --head                   Use HEAD request method.</span><br><span class="line">  --options                Use OPTIONS request method.</span><br><span class="line">  --trace                  Use TRACE request method.</span><br><span class="line">  -?|-h|--help             This information.</span><br><span class="line">  -V|--version             Display program version.</span><br><span class="line">[root@repo_srv webbench-1.5]#</span><br></pre></td></tr></tbody></table></figure><p></p>
-<p>&#x6D4B;&#x8BD5;&#xFF1A;<br></p><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[root@repo_srv webbench-1.5]# webbench -c 1 -t 1 http://192.168.110.10/</span><br><span class="line">Webbench - Simple Web Benchmark 1.5</span><br><span class="line">Copyright (c) Radim Kolar 1997-2004, GPL Open Source Software.</span><br><span class="line"></span><br><span class="line">Benchmarking: GET http://192.168.110.10/</span><br><span class="line">1 client, running 1 sec.</span><br><span class="line"></span><br><span class="line">Speed=21899 pages/min, 100010 bytes/sec.</span><br><span class="line">Requests: 365 susceed, 0 failed.</span><br><span class="line">[root@repo_srv webbench-1.5]#</span><br></pre></td></tr></tbody></table></figure><p></p>
-<p><code>-c</code> &#x4E3A;&#x5BA2;&#x6237;&#x7AEF;&#x6570;    <code>-t</code>&#x6301;&#x7EED;&#x8BBF;&#x95EE;&#x65F6;&#x95F4;&#xFF08;&#x79D2;&#xFF09;<br>&#x5F53;&#x53EA;&#x6709;&#x4E00;&#x4E2A;&#x5BA2;&#x6237;&#x7AEF;&#x65F6;&#xFF0C;&#x4E00;&#x5206;&#x949F;&#x53EF;&#x4EE5;&#x54CD;&#x5E94;21899&#x4E2A;&#x9875;&#x9762;&#xFF0C;1&#x79D2;&#x53EF;&#x4EE5;&#x4F20;&#x8F93;100010&#x5B57;&#x8282;<br>1&#x4E2A;&#x5BA2;&#x6237;&#x7AEF;&#xFF0C;1&#x79D2;&#x4EA7;&#x751F;&#x4E86;365&#x4E2A;&#x8BF7;&#x6C42;&#xFF0C;0&#x4E2A;&#x5931;&#x8D25;</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[root@repo_srv webbench-1.5]# webbench -c 20 -t 10 http://192.168.110.10</span><br><span class="line">Webbench - Simple Web Benchmark 1.5</span><br><span class="line">Copyright (c) Radim Kolar 1997-2004, GPL Open Source Software.</span><br><span class="line"></span><br><span class="line">Invalid URL syntax - hostname don&apos;t ends with &apos;/&apos;.</span><br><span class="line">[root@repo_srv webbench-1.5]# webbench -c 20 -t 10 http://192.168.110.10/</span><br><span class="line">Webbench - Simple Web Benchmark 1.5</span><br><span class="line">Copyright (c) Radim Kolar 1997-2004, GPL Open Source Software.</span><br><span class="line"></span><br><span class="line">Benchmarking: GET http://192.168.110.10/</span><br><span class="line">20 clients, running 10 sec.</span><br><span class="line"></span><br><span class="line">Speed=62010 pages/min, 283151 bytes/sec.</span><br><span class="line">Requests: 10335 susceed, 0 failed.</span><br><span class="line">[root@repo_srv webbench-1.5]#</span><br></pre></td></tr></tbody></table></figure>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[root@repo_srv ~]# webbench -c 1000 -t 60 http://192.168.110.10/</span><br><span class="line">Webbench - Simple Web Benchmark 1.5</span><br><span class="line">Copyright (c) Radim Kolar 1997-2004, GPL Open Source Software.</span><br><span class="line"></span><br><span class="line">Benchmarking: GET http://192.168.110.10/</span><br><span class="line">1000 clients, running 60 sec.</span><br><span class="line"></span><br><span class="line">Speed=36868 pages/min, 168336 bytes/sec.</span><br><span class="line">Requests: 36868 susceed, 0 failed.</span><br><span class="line">[root@repo_srv ~]#</span><br></pre></td></tr></tbody></table></figure><script>
+<p><strong>&#x914D;&#x7F6E;Director</strong></p>
+<pre><code>[root@server13 ~]# ifconfig
+ens33: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+        inet 192.168.110.13  netmask 255.255.255.0  broadcast 192.168.110.255
+        inet6 fe80::20c:29ff:fe1d:b97c  prefixlen 64  scopeid 0x20&lt;link&gt;
+        ether 00:0c:29:1d:b9:7c  txqueuelen 1000  (Ethernet)
+        RX packets 136  bytes 12339 (12.0 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 89  bytes 11483 (11.2 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10&lt;host&gt;
+        loop  txqueuelen 1  (Local Loopback)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+[root@server13 ~]# ifconfig ens33:1 192.168.110.10 netmask 255.255.255.0
+[root@server13 ~]# ifcofngi
+-bash: ifcofngi: command not found
+[root@server13 ~]# ifconfig
+ens33: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+        inet 192.168.110.13  netmask 255.255.255.0  broadcast 192.168.110.255
+        inet6 fe80::20c:29ff:fe1d:b97c  prefixlen 64  scopeid 0x20&lt;link&gt;
+        ether 00:0c:29:1d:b9:7c  txqueuelen 1000  (Ethernet)
+        RX packets 315  bytes 25839 (25.2 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 184  bytes 21161 (20.6 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+ens33:1: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+        inet 192.168.110.10  netmask 255.255.255.0  broadcast 192.168.110.255
+        ether 00:0c:29:1d:b9:7c  txqueuelen 1000  (Ethernet)
+
+lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10&lt;host&gt;
+        loop  txqueuelen 1  (Local Loopback)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+[root@server13 ~]#
+</code></pre><pre><code>[root@server13 ~]# ipvsadm -C
+[root@server13 ~]# ipvsadm -A -t 192.168.110.10:80 -s rr
+[root@server13 ~]# ipvsadm -a -t 192.168.110.10:80 -r 192.168.110.12 -i
+[root@server13 ~]# ipvsadm -a -t 192.168.110.10:80 -r 192.168.110.11 -i
+[root@server13 ~]# ipvsadm -Ln
+IP Virtual Server version 1.2.1 (size=4096)
+Prot LocalAddress:Port Scheduler Flags
+  -&gt; RemoteAddress:Port           Forward Weight ActiveConn InActConn
+TCP  192.168.110.10:80 rr
+  -&gt; 192.168.110.11:80            Tunnel  1      0          0
+  -&gt; 192.168.110.12:80            Tunnel  1      0          0
+[root@server13 ~]#
+</code></pre><p><strong>&#x914D;&#x7F6E;Real Server</strong></p>
+<pre><code>[root@server11 ~]# ifconfig
+ens33: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+        inet 192.168.110.11  netmask 255.255.255.0  broadcast 192.168.110.255
+        inet6 fe80::250:56ff:fe27:4bff  prefixlen 64  scopeid 0x20&lt;link&gt;
+        ether 00:50:56:27:4b:ff  txqueuelen 1000  (Ethernet)
+        RX packets 147  bytes 13187 (12.8 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 90  bytes 11445 (11.1 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10&lt;host&gt;
+        loop  txqueuelen 1  (Local Loopback)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+[root@server11 ~]# route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         192.168.110.1   0.0.0.0         UG    0      0        0 ens33
+169.254.0.0     0.0.0.0         255.255.0.0     U     1002   0        0 ens33
+192.168.110.0   0.0.0.0         255.255.255.0   U     0      0        0 ens33
+[root@server11 ~]# modprobe ipip
+# &#x52A0;&#x8F7D;ipip&#x96A7;&#x9053;&#x6A21;&#x5757;
+# &#x4F7F;&#x7528;ifconfig tunl0&#x65F6;&#xFF0C;&#x4F1A;&#x81EA;&#x52A8;&#x52A0;&#x8F7D;ipip&#x6A21;&#x5757;
+[root@server11 network-scripts]# lsmod | grep ipip
+ipip                   13465  0
+tunnel4                13252  1 ipip
+ip_tunnel              25163  1 ipip
+[root@server11 network-scripts]# ifconfig -a
+ens33: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+        inet 192.168.110.11  netmask 255.255.255.0  broadcast 192.168.110.255
+        inet6 fe80::250:56ff:fe27:4bff  prefixlen 64  scopeid 0x20&lt;link&gt;
+        ether 00:50:56:27:4b:ff  txqueuelen 1000  (Ethernet)
+        RX packets 2159  bytes 170181 (166.1 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 1206  bytes 153724 (150.1 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10&lt;host&gt;
+        loop  txqueuelen 1  (Local Loopback)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+tunl0: flags=128&lt;NOARP&gt;  mtu 1480
+        tunnel   txqueuelen 1  (IPIP Tunnel)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+[root@server11 network-scripts]# ifconfig tunl0 192.168.110.10 netmask 255.255.255.255
+[root@server11 network-scripts]# ifconfig
+ens33: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+        inet 192.168.110.11  netmask 255.255.255.0  broadcast 192.168.110.255
+        inet6 fe80::250:56ff:fe27:4bff  prefixlen 64  scopeid 0x20&lt;link&gt;
+        ether 00:50:56:27:4b:ff  txqueuelen 1000  (Ethernet)
+        RX packets 2391  bytes 187611 (183.2 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 1326  bytes 166252 (162.3 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10&lt;host&gt;
+        loop  txqueuelen 1  (Local Loopback)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+tunl0: flags=193&lt;UP,RUNNING,NOARP&gt;  mtu 1480
+        inet 192.168.110.10  netmask 255.255.255.255
+        tunnel   txqueuelen 1  (IPIP Tunnel)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+[root@server11 network-scripts]#
+[root@server11 network-scripts]# echo &apos;1&apos; &gt; /proc/sys/net/ipv4/conf/tunl0/arp_ignore
+[root@server11 network-scripts]# echo &apos;2&apos; &gt; /proc/sys/net/ipv4/conf/tunl0/arp_announce
+[root@server11 network-scripts]# echo &apos;1&apos; &gt; /proc/sys/net/ipv4/conf/all/arp_ignore
+[root@server11 network-scripts]# echo &apos;2&apos; &gt; /proc/sys/net/ipv4/conf/all/arp_announce
+[root@server11 network-scripts]# echo &apos;0&apos; &gt; /proc/sys/net/ipv4/conf/tunl0/rp_filter
+[root@server11 network-scripts]# echo &apos;0&apos; &gt; /proc/sys/net/ipv4/conf/all/rp_filter
+[root@server11 network-scripts]#
+</code></pre><pre><code>[root@server12 ~]# ifconfig
+ens33: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+        inet 192.168.110.12  netmask 255.255.255.0  broadcast 192.168.110.255
+        inet6 fe80::250:56ff:fe33:b03c  prefixlen 64  scopeid 0x20&lt;link&gt;
+        ether 00:50:56:33:b0:3c  txqueuelen 1000  (Ethernet)
+        RX packets 147  bytes 13091 (12.7 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 90  bytes 10365 (10.1 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10&lt;host&gt;
+        loop  txqueuelen 1  (Local Loopback)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+[root@server12 ~]# route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+0.0.0.0         192.168.110.1   0.0.0.0         UG    0      0        0 ens33
+169.254.0.0     0.0.0.0         255.255.0.0     U     1002   0        0 ens33
+192.168.110.0   0.0.0.0         255.255.255.0   U     0      0        0 ens33
+[root@server12 ~]# modprobe ipip
+[root@server12 ~]# ifconfig -a
+ens33: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+        inet 192.168.110.12  netmask 255.255.255.0  broadcast 192.168.110.255
+        inet6 fe80::250:56ff:fe33:b03c  prefixlen 64  scopeid 0x20&lt;link&gt;
+        ether 00:50:56:33:b0:3c  txqueuelen 1000  (Ethernet)
+        RX packets 1185  bytes 92769 (90.5 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 688  bytes 75786 (74.0 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10&lt;host&gt;
+        loop  txqueuelen 1  (Local Loopback)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+tunl0: flags=128&lt;NOARP&gt;  mtu 1480
+        tunnel   txqueuelen 1  (IPIP Tunnel)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+[root@server12 ~]# ifconfig tunl0 192.168.110.10 netmask 255.255.255.255
+[root@server12 ~]# ifconfig
+ens33: flags=4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+        inet 192.168.110.12  netmask 255.255.255.0  broadcast 192.168.110.255
+        inet6 fe80::250:56ff:fe33:b03c  prefixlen 64  scopeid 0x20&lt;link&gt;
+        ether 00:50:56:33:b0:3c  txqueuelen 1000  (Ethernet)
+        RX packets 1386  bytes 107919 (105.3 KiB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 795  bytes 87800 (85.7 KiB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73&lt;UP,LOOPBACK,RUNNING&gt;  mtu 65536
+        inet 127.0.0.1  netmask 255.0.0.0
+        inet6 ::1  prefixlen 128  scopeid 0x10&lt;host&gt;
+        loop  txqueuelen 1  (Local Loopback)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+tunl0: flags=193&lt;UP,RUNNING,NOARP&gt;  mtu 1480
+        inet 192.168.110.10  netmask 255.255.255.255
+        tunnel   txqueuelen 1  (IPIP Tunnel)
+        RX packets 0  bytes 0 (0.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+[root@server12 ~]#
+[root@server12 ~]# echo &apos;1&apos; &gt; /proc/sys/net/ipv4/conf/tunl0/arp_ignore
+[root@server12 ~]# echo &apos;2&apos; &gt; /proc/sys/net/ipv4/conf/tunl0/arp_announce
+[root@server12 ~]# echo &apos;1&apos; &gt; /proc/sys/net/ipv4/conf/all/arp_ignore
+[root@server12 ~]# echo &apos;2&apos; &gt; /proc/sys/net/ipv4/conf/all/arp_announce
+[root@server12 ~]# echo &apos;0&apos; &gt; /proc/sys/net/ipv4/conf/tunl0/rp_filter
+[root@server12 ~]# echo &apos;0&apos; &gt; /proc/sys/net/ipv4/conf/all/rp_filter
+[root@server12 ~]#
+</code></pre><p><code>tunl0/rp_fileter</code>&#x6A21;&#x5F0F;&#x4E3A;1&#xFF0C;&#x9700;&#x8981;&#x6539;&#x4E3A;0&#xFF0C;&#x5173;&#x95ED;&#x6B64;&#x529F;&#x80FD;&#x3002;Linux&#x7684;rp_fileter&#x7528;&#x4E8E;<strong>&#x5B9E;&#x73B0;&#x53CD;&#x5411;&#x8FC7;&#x6EE4;&#x6280;&#x672F;&#xFF0C;&#x4E5F;&#x53EB;uRPF</strong>&#xFF0C;&#x5B83;&#x9A8C;&#x8BC1;&#x53CD;&#x5411;&#x6570;&#x636E;&#x5305;&#x7684;&#x6D41;&#x5411;&#xFF0C;&#x4EE5;&#x907F;&#x514D;&#x4F2A;&#x88C5;IP&#x653B;&#x51FB;&#xFF0C;&#x7136;&#x540E;&#xFF0C;&#x5728;LVS TUN&#x6A21;&#x5F0F;&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x7684;&#x6570;&#x636E;&#x5305;&#x65F6;&#x6709;&#x95EE;&#x9898;&#x7684;&#xFF0C;&#x56E0;&#x4E3A;&#x4ECE;Real Server ens33 &#x51FA;&#x53BB;&#x7684;IP&#x6570;&#x636E;&#x5305;&#x7684;&#x6E90;IP&#x5730;&#x5740;&#x5E94;&#x8BE5;&#x4E3A;192.168.110.11&#xFF0C;&#x800C;&#x4E0D;&#x662F;VIP&#x5730;&#x5740;&#xFF0C;&#x6240;&#x4EE5;&#x5FC5;&#x987B;&#x5173;&#x95ED;&#x8FD9;&#x4E00;&#x9879;&#x529F;&#x80FD;&#x3002; DR&#x548C;TUN&#x5728; &#x7F51;&#x7EDC;&#x5C42;&#x5B9E;&#x9645;&#x4E0A;&#x4F7F;&#x7528;&#x4E86;&#x4E00;&#x4E2A;&#x4F2A;&#x88C5;IP&#x6570;&#x636E;&#x5305;&#x7684;&#x529F;&#x80FD;&#xFF0C;&#x8BA9;client&#x6536;&#x5230;&#x6570;&#x636E;&#x5305;&#x540E;&#xFF0C;&#x8FD4;&#x56DE;&#x7684;&#x8BF7;&#x6C42;&#x518D;&#x6B21;&#x8F6C;&#x7ED9;&#x5206;&#x53D1;&#x5668;<br><code>echo &apos;0&apos; &gt; /proc/sys/net/ipv4/conf/all/rp_filter</code> #&#x8FD9;&#x4E2A;&#x503C;&#x9ED8;&#x8BA4;&#x5C31;&#x662F;0&#xFF0C;&#x6B64;&#x529F;&#x80FD;&#x5C31;&#x662F;&#x5173;&#x95ED;&#x7684;&#x3002;&#x6240;&#x4EE5;&#x5728;LVS DR&#x6A21;&#x5F0F;&#x4E2D;&#xFF0C;&#x4E0D;&#x9700;&#x8981;&#x4FEE;&#x6539;&#x8FD9;&#x4E00;&#x6837;&#x5185;&#x6838;&#x53C2;&#x6570;</p>
+<h2 id="&#x6269;&#x5C55;&#xFF1A;Shell"><a href="#&#x6269;&#x5C55;&#xFF1A;Shell" class="headerlink" title="&#x6269;&#x5C55;&#xFF1A;Shell"></a>&#x6269;&#x5C55;&#xFF1A;Shell</h2><p><strong>&#x914D;&#x7F6E;Director</strong> </p>
+<pre><code class="shell">#!/bin/bash
+
+ifconfig ens33 192.168.110.15
+ifconfig ens33:1 192.168.110.10
+
+yum install -y ipvsadm
+ipvsadm --clear
+ipvsadm -C
+
+ipvsadm -A -t 192.168.110.10:80 -s rr
+ipvsadm -a -t 192.168.110.10:80 -r 192.168.110.11 -i
+ipvsadm -a -t 192.168.110.10:80 -r 192.168.110.12 -i
+# -i IP Tunnel Model
+</code></pre>
+<p><strong>&#x914D;&#x7F6E;RS</strong>  </p>
+<pre><code class="shell">#!/bin/bash
+
+ifconfig lo 192.168.110.10 netmask 255.255.255.255 up
+# Disable ARP forward
+ifconfig ens33 -arp
+# Permanent ways:
+#echo 1 &gt; /proc/sys/net/ipv4/conf/ens33/arp_ignore
+#echo 2 &gt; /proc/sys/net/ipv4/conf/ens33/apr_announce
+##############################################33333
+#echo &quot;net.ipv4.conf.ens33.arp_ignore = 1&quot; &gt;&gt; /etc/sysctl.conf
+#echo &quot;net.ipv4.conf.ens33.arp_announce = 2&quot; &gt;&gt; /etc/sysctl.conf
+#echo &quot;net.ipv4.conf.all.arp_ignore = 1&quot; &gt;&gt; /etc/sysctl.conf
+#echo &quot;net.ipv4.conf.all.arp_announce = 2&quot; &gt;&gt; /etc/sysctl.conf 
+#echo &quot;net.ipv4.conf.lo.arp_ignore = 1&quot; &gt;&gt; /etc/sysctl.conf
+#echo &quot;net.ipv4.conf.lo.arp_announce = 2&quot; &gt;&gt; /etc/sysctl.conf
+
+ip_addr=`ip a | grep &quot;\&lt;inet\&gt;&quot; | grep -v &quot;127.0.0.1&quot; | tr &apos;/&apos; &apos; &apos; | awk &apos;{print $2}&apos; | head -1`
+yum install -y httpd
+echo $ip_addr &gt; /var/www/html/index.html
+systemctl start httpd
+echo 
+</code></pre>
+<h2 id="LVS&#x538B;&#x529B;&#x6D4B;&#x8BD5;"><a href="#LVS&#x538B;&#x529B;&#x6D4B;&#x8BD5;" class="headerlink" title="LVS&#x538B;&#x529B;&#x6D4B;&#x8BD5;"></a>LVS&#x538B;&#x529B;&#x6D4B;&#x8BD5;</h2><p><strong>ab&#x538B;&#x6D4B;</strong></p>
+<pre><code>[root@repo_srv webbench-1.5]# ab -n 100000 -c 100 http://192.168.110.10/
+This is ApacheBench, Version 2.3 &lt;$Revision: 1430300 $&gt;
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking 192.168.110.10 (be patient)
+Completed 10000 requests
+Completed 20000 requests
+Completed 30000 requests
+Completed 40000 requests
+Completed 50000 requests
+Completed 60000 requests
+Completed 70000 requests
+Completed 80000 requests
+Completed 90000 requests
+Completed 100000 requests
+Finished 100000 requests
+
+
+Server Software:        Apache/2.4.6
+Server Hostname:        192.168.110.10
+Server Port:            80
+
+Document Path:          /
+Document Length:        15 bytes
+
+Concurrency Level:      100
+Time taken for tests:   110.424 seconds
+Complete requests:      100000
+Failed requests:        0
+Write errors:           0
+Total transferred:      27400000 bytes
+HTML transferred:       1500000 bytes
+Requests per second:    905.60 [#/sec] (mean)
+Time per request:       110.424 [ms] (mean)
+Time per request:       1.104 [ms] (mean, across all concurrent requests)
+Transfer rate:          242.32 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        1   53  14.1     49     205
+Processing:    12   57  15.6     53     241
+Waiting:        1   44  14.8     42     204
+Total:         40  110  23.8    102     295
+
+Percentage of the requests served within a certain time (ms)
+  50%    102
+  66%    109
+  75%    117
+  80%    122
+  90%    138
+  95%    156
+  98%    188
+  99%    206
+ 100%    295 (longest request)
+[root@repo_srv webbench-1.5]#
+</code></pre><pre><code>top - 04:42:15 up  1:26,  2 users,  load average: 1.29, 0.90, 0.39
+Tasks: 317 total,   7 running, 309 sleeping,   0 stopped,   1 zombie
+%Cpu(s):  6.9 us, 17.3 sy,  0.0 ni, 62.4 id,  0.0 wa,  0.0 hi, 13.4 si,  0.0 st
+KiB Mem :   999696 total,   525164 free,   255652 used,   218880 buff/cache
+KiB Swap:  2097148 total,  2097148 free,        0 used.   538184 avail Mem
+
+   PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND
+     3 root      20   0       0      0      0 R  8.0  0.0   0:11.44 ksoftirqd/0
+     9 root      20   0       0      0      0 R  0.7  0.0   0:01.51 rcu_sched
+  1193 apache    20   0  226376   3784   1828 S  0.7  0.4   0:00.24 httpd
+  1286 apache    20   0  226376   3784   1828 S  0.7  0.4   0:00.14 httpd
+  1340 apache    20   0  226376   3788   1832 S  0.7  0.4   0:00.08 httpd
+  1416 apache    20   0  226376   3788   1832 S  0.7  0.4   0:00.11 httpd
+  1146 apache    20   0  226376   3784   1828 S  0.3  0.4   0:03.22 httpd
+  1149 apache    20   0  226376   3784   1828 S  0.3  0.4   0:03.23 httpd
+  1179 root      20   0       0      0      0 S  0.3  0.0   0:00.14 kworker/0:1
+  1181 apache    20   0  226376   3784   1828 S  0.3  0.4   0:03.13 httpd
+  1199 apache    20   0  226376   3784   1828 S  0.3  0.4   0:00.17 httpd
+  1204 apache    20   0  226376   3784   1828 S  0.3  0.4   0:00.19 httpd
+  1206 apache    20   0  226376   3784   1828 S  0.3  0.4   0:00.20 httpd
+  1207 apache    20   0  226376   3784   1828 S  0.3  0.4   0:00.17 httpd
+  1211 apache    20   0  226376   3784   1828 S  0.3  0.4   0:00.15 httpd
+  1213 apache    20   0  226376   3784   1828 S  0.3  0.4   0:00.14 httpd
+  1214 apache    20   0  226376   3784   1828 S  0.3  0.4   0:00.20 httpd
+</code></pre><pre><code>  top - 04:42:30 up 34 min,  2 users,  load average: 1.27, 0.77, 0.33
+Tasks: 301 total,   8 running, 292 sleeping,   0 stopped,   1 zombie
+%Cpu(s):  6.6 us, 12.8 sy,  0.0 ni, 45.6 id,  0.0 wa,  0.0 hi, 35.0 si,  0.0 st
+KiB Mem :   999696 total,   595392 free,   241748 used,   162556 buff/cache
+KiB Swap:  2097148 total,  2097148 free,        0 used.   573304 avail Mem
+
+   PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND
+     3 root      20   0       0      0      0 R  3.7  0.0   0:06.92 ksoftirqd/0
+     9 root      20   0       0      0      0 R  1.0  0.0   0:01.74 rcu_sched
+  1185 apache    20   0  226376   3780   1832 S  0.7  0.4   0:00.17 httpd
+  1205 apache    20   0  226376   3784   1836 S  0.7  0.4   0:00.17 httpd
+  1266 apache    20   0  226376   3780   1832 S  0.7  0.4   0:00.12 httpd
+  1293 apache    20   0  226376   3784   1836 S  0.7  0.4   0:00.10 httpd
+  1328 apache    20   0  226376   3784   1836 S  0.7  0.4   0:00.09 httpd
+   653 root      20   0  231348   6108   4760 S  0.3  0.6   0:03.72 vmtoolsd
+  1061 apache    20   0  226376   3780   1832 S  0.3  0.4   0:02.45 httpd
+  1062 apache    20   0  226376   3780   1832 S  0.3  0.4   0:02.25 httpd
+  1063 apache    20   0  226376   3780   1832 S  0.3  0.4   0:02.19 httpd
+  1067 apache    20   0  226376   3780   1832 S  0.3  0.4   0:01.08 httpd
+  1080 apache    20   0  226376   3780   1832 S  0.3  0.4   0:00.27 httpd
+  1085 apache    20   0  226376   3780   1832 S  0.3  0.4   0:00.28 httpd
+  1089 apache    20   0  226376   3780   1832 S  0.3  0.4   0:00.23 httpd
+  1092 apache    20   0  226376   3780   1832 S  0.3  0.4   0:00.25 httpd
+  1093 apache    20   0  226376   3784   1836 S  0.3  0.4   0:00.25 httpd
+</code></pre><p>  2&#x53F0;&#x8D1F;&#x8F7D;&#x4F18;&#x70B9;&#x9876;&#x4E0D;&#x4F4F;&#x538B;&#x529B;&#x554A;&#x3002;&#x3002;&#x3002;&#x3002;</p>
+<p>  <strong>webbench&#x8DD1;&#x4E00;&#x4E0B;</strong>  </p>
+<pre><code>  [root@repo_srv webbench-1.5]# ls
+ChangeLog  COPYRIGHT  debian  Makefile  socket.c  webbench.1  webbench.c
+[root@repo_srv webbench-1.5]# make
+cc -Wall -ggdb -W -O   -c -o webbench.o webbench.c
+webbench.c: In function &#x2018;alarm_handler&#x2019;:
+webbench.c:77:31: warning: unused parameter &#x2018;signal&#x2019; [-Wunused-parameter]
+ static void alarm_handler(int signal)
+                               ^
+cc -Wall -ggdb -W -O  -o webbench webbench.o
+ctags *.c
+/bin/sh: ctags: command not found
+make: [tags] Error 127 (ignored)
+[root@repo_srv webbench-1.5]# yum install -y ctags
+Loaded plugins: product-id, search-disabled-repos, subscription-manager
+This system is not registered to Red Hat Subscription Management. You can use subscription-manager to register.
+Resolving Dependencies
+--&gt; Running transaction check
+---&gt; Package ctags.x86_64 0:5.8-13.el7 will be installed
+--&gt; Finished Dependency Resolution
+
+Dependencies Resolved
+
+=============================================================================================================================================================================================
+ Package                                    Arch                                        Version                                         Repository                                      Size
+=============================================================================================================================================================================================
+Installing:
+ ctags                                      x86_64                                      5.8-13.el7                                      local-yum                                      155 k
+
+Transaction Summary
+=============================================================================================================================================================================================
+Install  1 Package
+
+Total download size: 155 k
+Installed size: 351 k
+Downloading packages:
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  Installing : ctags-5.8-13.el7.x86_64                                                                                                                                                   1/1
+  Verifying  : ctags-5.8-13.el7.x86_64                                                                                                                                                   1/1
+
+Installed:
+  ctags.x86_64 0:5.8-13.el7
+
+Complete!
+[root@repo_srv webbench-1.5]# make
+ctags *.c
+[root@repo_srv webbench-1.5]# make install
+install -s webbench /usr/local/bin
+install -m 644 webbench.1 /usr/local/man/man1
+install: cannot create regular file &#x2018;/usr/local/man/man1&#x2019;: No such file or directory
+make: *** [install] Error 1
+[root@repo_srv webbench-1.5]# mkdir -p /usr/local/man/man1
+[root@repo_srv webbench-1.5]# make install
+install -s webbench /usr/local/bin
+install -m 644 webbench.1 /usr/local/man/man1
+install -d /usr/local/share/doc/webbench
+install -m 644 debian/copyright /usr/local/share/doc/webbench
+install -m 644 debian/changelog /usr/local/share/doc/webbench
+[root@repo_srv webbench-1.5]# webbench
+webbench [option]... URL
+  -f|--force               Don&apos;t wait for reply from server.
+  -r|--reload              Send reload request - Pragma: no-cache.
+  -t|--time &lt;sec&gt;          Run benchmark for &lt;sec&gt; seconds. Default 30.
+  -p|--proxy &lt;server:port&gt; Use proxy server for request.
+  -c|--clients &lt;n&gt;         Run &lt;n&gt; HTTP clients at once. Default one.
+  -9|--http09              Use HTTP/0.9 style requests.
+  -1|--http10              Use HTTP/1.0 protocol.
+  -2|--http11              Use HTTP/1.1 protocol.
+  --get                    Use GET request method.
+  --head                   Use HEAD request method.
+  --options                Use OPTIONS request method.
+  --trace                  Use TRACE request method.
+  -?|-h|--help             This information.
+  -V|--version             Display program version.
+[root@repo_srv webbench-1.5]#
+</code></pre><p>&#x6D4B;&#x8BD5;&#xFF1A;  </p>
+<pre><code>[root@repo_srv webbench-1.5]# webbench -c 1 -t 1 http://192.168.110.10/
+Webbench - Simple Web Benchmark 1.5
+Copyright (c) Radim Kolar 1997-2004, GPL Open Source Software.
+
+Benchmarking: GET http://192.168.110.10/
+1 client, running 1 sec.
+
+Speed=21899 pages/min, 100010 bytes/sec.
+Requests: 365 susceed, 0 failed.
+[root@repo_srv webbench-1.5]#
+</code></pre><p><code>-c</code> &#x4E3A;&#x5BA2;&#x6237;&#x7AEF;&#x6570;    <code>-t</code>&#x6301;&#x7EED;&#x8BBF;&#x95EE;&#x65F6;&#x95F4;&#xFF08;&#x79D2;&#xFF09;<br>&#x5F53;&#x53EA;&#x6709;&#x4E00;&#x4E2A;&#x5BA2;&#x6237;&#x7AEF;&#x65F6;&#xFF0C;&#x4E00;&#x5206;&#x949F;&#x53EF;&#x4EE5;&#x54CD;&#x5E94;21899&#x4E2A;&#x9875;&#x9762;&#xFF0C;1&#x79D2;&#x53EF;&#x4EE5;&#x4F20;&#x8F93;100010&#x5B57;&#x8282;<br>1&#x4E2A;&#x5BA2;&#x6237;&#x7AEF;&#xFF0C;1&#x79D2;&#x4EA7;&#x751F;&#x4E86;365&#x4E2A;&#x8BF7;&#x6C42;&#xFF0C;0&#x4E2A;&#x5931;&#x8D25;</p>
+<pre><code>[root@repo_srv webbench-1.5]# webbench -c 20 -t 10 http://192.168.110.10
+Webbench - Simple Web Benchmark 1.5
+Copyright (c) Radim Kolar 1997-2004, GPL Open Source Software.
+
+Invalid URL syntax - hostname don&apos;t ends with &apos;/&apos;.
+[root@repo_srv webbench-1.5]# webbench -c 20 -t 10 http://192.168.110.10/
+Webbench - Simple Web Benchmark 1.5
+Copyright (c) Radim Kolar 1997-2004, GPL Open Source Software.
+
+Benchmarking: GET http://192.168.110.10/
+20 clients, running 10 sec.
+
+Speed=62010 pages/min, 283151 bytes/sec.
+Requests: 10335 susceed, 0 failed.
+[root@repo_srv webbench-1.5]#
+</code></pre><pre><code>[root@repo_srv ~]# webbench -c 1000 -t 60 http://192.168.110.10/
+Webbench - Simple Web Benchmark 1.5
+Copyright (c) Radim Kolar 1997-2004, GPL Open Source Software.
+
+Benchmarking: GET http://192.168.110.10/
+1000 clients, running 60 sec.
+
+Speed=36868 pages/min, 168336 bytes/sec.
+Requests: 36868 susceed, 0 failed.
+[root@repo_srv ~]#
+</code></pre><script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
             if (!el.dataset.src) { return; }
@@ -281,355 +2373,51 @@
             document.body.appendChild(img);
           });
       </script>
-        </div>
-
-        <blockquote class="post-copyright">
-    <div class="content">
-        
-<span class="post-time">
-    最后更新：<time datetime="2022-06-12T04:30:46.628Z" itemprop="dateUpdated">2022-06-12 12:30:46</time>
-</span>
+</div>
 
 
-        
-        原文链接：<a href="/posts/df68056c/" target="_blank" rel="external">https://marnm.github.io/posts/df68056c/</a>
-        
-    </div>
-    <footer>
-        <div onclick="location.href='https://marnm.github.io'">
-            <img src="/img/avatar.gif" alt="Echo">
-            <a>Echo</a>
-        </div>
-    </footer>
-</blockquote>
-
-        
-    <div class="page-reward">
-        <nav class="myreward">
-            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
-        </nav>
-    </div>
-
-
-
-        <div class="post-footer">
+    <div class="post-guide">
+        <div class="item left">
             
-
+              <a href="/posts/e9abc941/">
+                  <i class="fa fa-angle-left" aria-hidden="true"></i>
+                  Ceph分布式存储
+              </a>
             
-<div class="page-share-wrap">
-    
-
-<div class="page-share" id="pageShare">
-    <ul class="reset share-icons">
-      <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/df68056c/&title=《LVS-IPTUN集群》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
-          <i class="icon icon-weibo"></i>
-        </a>
-      </li>
-      <li>
-        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
-          <i class="icon icon-weixin"></i>
-        </a>
-      </li>
-      <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/df68056c/&title=《LVS-IPTUN集群》 — Deops's blog&source=Echo" data-title=" QQ">
-          <i class="icon icon-qq"></i>
-        </a>
-      </li>
-      <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/df68056c/" data-title=" Facebook">
-          <i class="icon icon-facebook"></i>
-        </a>
-      </li>
-      <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《LVS-IPTUN集群》 — Deops's blog&url=https://marnm.github.io/posts/df68056c/&via=https://marnm.github.io" data-title=" Twitter">
-          <i class="icon icon-twitter"></i>
-        </a>
-      </li>
-      <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/df68056c/" data-title=" Google+">
-          <i class="icon icon-google-plus"></i>
-        </a>
-      </li>
-    </ul>
- </div>
-
-
-
-    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
-        <i class="icon icon-share-alt icon-lg"></i>
-    </a>
-</div>
-
-
-
+        </div>
+        <div class="item right">
+            
+              <a href="/posts/be48d001/">
+                LVS-DR集群
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+              </a>
+            
         </div>
     </div>
 
-    
-<nav class="post-nav flex-row flex-justify-between">
-  
-    <div class="waves-block waves-effect prev">
-      <a href="/posts/e9abc941/" id="post-prev" class="post-nav-link">
-        <h4 class="title">
-          上一篇：Ceph分布式存储
-        </h4>
-      </a>
-    </div>
-  
-
-  
-    <div class="waves-block waves-effect next">
-      <a href="/posts/be48d001/" id="post-next" class="post-nav-link">
-        <h4 class="title" data-hover="下一篇：LVS-DR集群">下一篇：LVS-DR集群</h4>
-      </a>
-    </div>
-  
-</nav>
 
 
 
-    
-    
-
-    
-
-    
-
-
-</article>
-
-</div>
-
-        <footer class="footer">
-    <div class="footer-content">
-        <span class="power">
-            <i class="icon icon-lg icon-copyright"></i>
-            2022
-            <i class="icon icon-lg icon-heart"></i>
-            <a href="https://marnm.github.io">marnm.github.io</a>
-            <br>
-            Power by
-            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
-            Theme
-            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
-        </span>
-
-        <br>
-
-        <span id="RunTime" style="color:#a7a7a2;"></span>
-        <br>
-
-        <span>
-            
-
-        </span>
-        <br>
-
-        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
-    </div>
-</footer>
-
-    </main>
-    
-        
-<div id="reward" class="page-modal reward-lay">
-    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <h3 class="reward-title">
-        <i class="icon icon-quote-left"></i>
-        <span>感谢您的鼓励支持！</span>
-        <i class="icon icon-quote-right"></i>
-    </h3>
-    <div class="reward-content">
-        
-        <div class="reward-code">
-            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
-        </div>
-        
-        <label class="reward-toggle">
-            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
-            <div class="reward-toggle-ctrol">
-                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
-                <span class="reward-toggle-item alipayPay">支付宝</span>
-            </div>
-        </label>
-        
-        <i class="icon icon-caret-up"></i>
-    </div>
-</div>
-
-
-    
-    <div class="mask" id="mask"></div>
-<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
-
-
-
-<div class="global-share" id="globalShare">
-    <ul class="reset share-icons">
-      <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/df68056c/&title=《LVS-IPTUN集群》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
-          <i class="icon icon-weibo"></i>
-        </a>
-      </li>
-      <li>
-        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
-          <i class="icon icon-weixin"></i>
-        </a>
-      </li>
-      <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/df68056c/&title=《LVS-IPTUN集群》 — Deops's blog&source=Echo" data-title=" QQ">
-          <i class="icon icon-qq"></i>
-        </a>
-      </li>
-      <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/df68056c/" data-title=" Facebook">
-          <i class="icon icon-facebook"></i>
-        </a>
-      </li>
-      <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《LVS-IPTUN集群》 — Deops's blog&url=https://marnm.github.io/posts/df68056c/&via=https://marnm.github.io" data-title=" Twitter">
-          <i class="icon icon-twitter"></i>
-        </a>
-      </li>
-      <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/df68056c/" data-title=" Google+">
-          <i class="icon icon-google-plus"></i>
-        </a>
-      </li>
-    </ul>
- </div>
-
-
-<div class="page-modal wx-share" id="wxShare">
-    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p class="wechatshare">扫一扫，分享到微信</p>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAAByUlEQVR42u3aSXLDMAwFUd3/0soBEtL9AYFWpZorlwfq0QsUBl4XXvevtfp09c5qz2tiyZUrt829t2v/eP7I1Z7cIFeu3PPcfaAhIYmEuf3fgYKdXLlyX8+tpSly5cr9f9w7XKT4kStX7ju5PAXZU9JDDtZqcuXKbXB5UjL3eqS/K1eu3BK3lqzw1kanXfLHb+XKlXuEywNKf7iSjmCX35QrV+4wtw+tlTHFwYxcuXIPcmvb8eDF06M4I5MrV+4Yl6QsaSGU7okaKHLlyj3O5Q1T3snkRHRguXLlfonL26BpEtOZmFykIytXrtyHuGnrM70eQQ7GkyG5cuWe5/KAwgerPLTxg8mVK3eamzYyOLE2pn2g+JErV26byxsTT92oTFswH4ofuXLlDnOv0kqvWfDWausemVy5ch/ipoGMQ9OrWqhWkytX7hFuP4tIGyi1ga5cuXKnuXe4+PFIwzQujeTKlXuE2y9y0gtbQfsDt2LlypU7we0UJ7Uw1wpwcuXKPcjlIw0yLkWtTzxKCW6LyJUr90tcPibplFhx10SuXLkv4HZqqdb35cqVe5BLShoSdHgClCY6cuXKPcl9NvSkR6qVVXLlyh3j/gCmAAsJmxMjzwAAAABJRU5ErkJggg==" alt="微信分享二维码">
-</div>
-
-
-
-
-    <!-- waves按钮特效 -->
-<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
-
-<!-- 主题配置脚本 -->
 <script>
-var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+	
+	
 </script>
-
-<!-- jquery -->
-<script src="/js/jquery.min.js?v=3.0"></script>
-
-<!-- 搜索 -->
-
-<div class="search-panel" id="search-panel">
-    <ul class="search-result" id="search-result"></ul>
+	</div>
+	<div id="footer">
+	<p>
+	©2019-<span id="footerYear"></span> 
+	<a href="/">Echo</a> 
+	
+	
+	<br>
+	Theme <a href="//github.com/wujun234/hexo-theme-tree" target="_blank">Tree</a>
+	by <a href="//github.com/wujun234" target="_blank">WuJun</a>
+	Powered by <a href="//hexo.io" target="_blank">Hexo</a>
+	</p>
 </div>
-<template id="search-tpl">
-<li class="item waves-block waves-effect" onclick="location.href='{path}'">
-    <div class="title ellipsis" title="{title}">{title}</div>
-</li>
-</template>
-
-
-<!-- main博客脚本 -->
-<script src="/js/main.min.js?v=3.0"></script>
-
-<!-- 动画&配置 -->
-<script src="/js/script.min.js?v=3.0"></script>
-
-<!-- 脚本管理 -->
-<script>
-
-if(window.innerWidth > 800){
-	/* 3D标题 */
-	$(".content-header").on("mousemove", threedee);
-
-	/* 底部追随鼠标 */
-	$(".footer").hover(2);
-
-	/* gotop键的涟漪 */
-	$("#gotop").hover(1);
-
-	/* 赞赏的粒子雨 */
-	$("#reward").hover(3);
-
-	/* 微信公众号的底部渲染 */
-	$("#wechat").hover(4);
-
-    /* 标题跳动 */
-    $(".archivestitle").bumpyText();
-
-	/* 图片点击放大 */
-	const postimg = jQuery(".post-content img:not(.github-emoji)");
-	postimg.on("click",function(){
-
-		mask.classList.add("in");
-		main.classList.add("Mask");
-		menu.classList.add("Mask");
-		var myimg = this.cloneNode(true);
-		myimg.classList.add("imgShow");
-
-		setTimeout(function(){
-			jQuery(myimg).animate({
-				opacity:"1"
-			},1000);
-		},0);
-
-		document.body.appendChild(myimg);
-
-		myimg.onclick=function(){
-			document.body.removeChild(myimg);
-			mask.classList.remove("in");
-			main.classList.remove("Mask");
-			menu.classList.remove("Mask");
-		};
-
-	});
-
-}
-
-/* 名字跳动 */
-$("#name").bumpyText();
-
-
-/* 网站运行时间 */
-setInterval(function () {
-	setTime("2019/01/01");
-}, 1000);
-
-/* 文章块的淡出 */
-postshow();
-
-/* 座右铭 */
-
-   getHitokoto();
-
-
-
-/* 粘贴提示 */
-G($(".post-content"), location.href, "Echo");
-
-
-/* 控制台 */
-if (window.console && window.console.log) {
-	setTimeout(function () {
-		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
-	}, 0);
-}
-
+<script type="text/javascript"> 
+	document.getElementById('footerYear').innerHTML = new Date().getFullYear() + '';
 </script>
-
-
-
-
-<!-- 公式渲染 -->
-
-
-
-<!-- 不蒜子 -->
-
-
+	<button id="totop-toggle" class="toggle"><i class="fa fa-angle-double-up" aria-hidden="true"></i></button>
 </body>
 </html>

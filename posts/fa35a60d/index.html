@@ -1,244 +1,1851 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head><meta name="generator" content="Hexo 3.8.0">
-    <meta http-equiv="Content-Language" content="zh-cn">
-    <meta charset="utf-8">
-    
-    
-    
-    <title>性能测试指标详解 | Deops&#39;s blog | 运维开发工程师</title>
-    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    
-    <meta name="theme-color" content="#77AAFF">
-    
-    
-    <meta name="keywords" content="">
-    
-    
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+	
+	<!-- title -->
+	
+	<title>
+	
+		性能测试指标详解 | 
+	 
+	Deops&#39;s blog
+	</title>
+	
+	<!-- keywords,description -->
+	
+		<meta name="keywords" content="Echo">
+	 
+		<meta name="description" content="Echo">
+	
 
-    
+	<!-- favicon -->
+	
+	<link rel="shortcut icon" href="/favicon.ico">
+	
 
-    <!-- Baidu Push -->
-<script>
-	(function(){
-		var bp = document.createElement('script');
-		var curProtocol = window.location.protocol.split(':')[0];
-		if (curProtocol === 'https') {
-			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+
+	<!-- search -->
+	<script>
+		var searchEngine = "https://www.google.com/search?q=";
+		if(typeof searchEngine == "undefined" || searchEngine == null || searchEngine == ""){
+			searchEngine = "https://www.google.com/search?q=";
 		}
-		else {
-			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		var homeHost = "https://marnm.github.io/";
+		if(typeof homeHost == "undefined" || homeHost == null || homeHost == ""){
+			homeHost = window.location.host;
 		}
-		var s = document.getElementsByTagName("script")[0];
-		s.parentNode.insertBefore(bp, s);
-	})();
-
-	var _hmt = _hmt || [];
-</script>
+	</script>
 
 
-
+	<link rel="stylesheet" href="/css/main.css">
+	<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/lib/highlight/styles/base16/solarized-dark.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
     
-    <meta name="description" content="&amp;#x6027;&amp;#x80FD;&amp;#x6D4B;&amp;#x8BD5;&amp;#x2014;&amp;#x2014;&amp;#x6027;&amp;#x80FD;&amp;#x6D4B;&amp;#x8BD5;&amp;#x5404;&amp;#x6307;&amp;#x6807;&amp;#x8BF4;&amp;#x660E;&amp;#x6027;&amp;#x80FD;&amp;#x6D4B;&amp;#x8BD5;&amp;#x6307;&amp;#x6807;&amp;#x662F;&amp;#x8861;&amp;#x91CF;&amp;#x7CFB;">
-<meta name="keywords" content="Echo">
-<meta property="og:type" content="article">
-<meta property="og:title" content="性能测试指标详解">
-<meta property="og:url" content="https://marnm.github.io/posts/fa35a60d/index.html">
-<meta property="og:site_name" content="Deops&#39;s blog">
-<meta property="og:description" content="&amp;#x6027;&amp;#x80FD;&amp;#x6D4B;&amp;#x8BD5;&amp;#x2014;&amp;#x2014;&amp;#x6027;&amp;#x80FD;&amp;#x6D4B;&amp;#x8BD5;&amp;#x5404;&amp;#x6307;&amp;#x6807;&amp;#x8BF4;&amp;#x660E;&amp;#x6027;&amp;#x80FD;&amp;#x6D4B;&amp;#x8BD5;&amp;#x6307;&amp;#x6807;&amp;#x662F;&amp;#x8861;&amp;#x91CF;&amp;#x7CFB;">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://192.168.84.188:8081/uploads/16529237626752468130515.png">
-<meta property="og:image" content="http://192.168.84.188:8081/uploads/1652923805160103382topcmd.png">
-<meta property="og:image" content="http://192.168.84.188:8081/uploads/1652923863850081274topmemory.png">
-<meta property="og:image" content="http://192.168.84.188:8081/uploads/1652923897275247246uptime_loadaverage.png">
-<meta property="og:image" content="http://192.168.84.188:8081/uploads/1652923915145507123w_loadaverage.png">
-<meta property="og:image" content="http://192.168.84.188:8081/uploads/1652923943410185712top_loadaverage.png">
-<meta property="og:image" content="http://192.168.84.188:8081/uploads/1652923992503954646iostat.png">
-<meta property="og:updated_time" content="2022-06-07T05:01:02.229Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="性能测试指标详解">
-<meta name="twitter:description" content="&amp;#x6027;&amp;#x80FD;&amp;#x6D4B;&amp;#x8BD5;&amp;#x2014;&amp;#x2014;&amp;#x6027;&amp;#x80FD;&amp;#x6D4B;&amp;#x8BD5;&amp;#x5404;&amp;#x6307;&amp;#x6807;&amp;#x8BF4;&amp;#x660E;&amp;#x6027;&amp;#x80FD;&amp;#x6D4B;&amp;#x8BD5;&amp;#x6307;&amp;#x6807;&amp;#x662F;&amp;#x8861;&amp;#x91CF;&amp;#x7CFB;">
-<meta name="twitter:image" content="http://192.168.84.188:8081/uploads/16529237626752468130515.png">
-    
-        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
-    
-    <link rel="shortcut icon" href="/img/favicon.ico">
-    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
-    <script>window.lazyScripts=[]</script>
+    <!-- 引入代码高亮的 js -->
+    <script src="/lib/highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 
-    <!-- custom head -->
-    
-            
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/jquery-pjax@2.0.1/jquery.pjax.min.js"></script>
+	<script src="/js/main.js"></script>
+	
+		<script src="https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/valine@v1.4.14/dist/Valine.min.js"></script>
+	
+	
 </head>
 
 <body>
-    <div id="loading" class="active"></div>
-    <aside id="menu" class="hide">
-  <div class="inner flex-row-vertical">
-    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
-        <i class="icon icon-lg icon-close"></i>
-    </a>
-    <div class="brand-wrap">
-      <div class="brand">
-        <a href="/" class="avatar waves-effect waves-circle waves-light">
-          <img src="/img/avatar.gif" alt="avatar">
-        </a>
-        <hgroup class="introduce">
-          <h5 class="nickname" id="name">Echo</h5>
-          
-            <div id="yiyanmotto" class="motto">&nbsp;</div>
-          
-        </hgroup>
-      </div>
-    </div>
-    <div class="scroll-wrap flex-col">
-      <ul class="nav">
-        
-              <li class="waves-block waves-effect">
-                  <a href="/">
-                    <i class="icon icon-lg icon-home"></i>
-                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/archives">
-                    <i class="icon icon-lg icon-archives"></i>
-                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/categories">
-                    <i class="icon icon-lg icon-th-list"></i>
-                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/tags">
-                    <i class="icon icon-lg icon-tags"></i>
-                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/about">
-                    <i class="icon icon-lg icon-smile-o"></i>
-                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-      <div class="nav2">
-          
-              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
-                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
-              </a>
-          
-              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
-                <i class="icon icon-lg icon-github github"></i>
-              </a>
-          
-              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
-                <i class="icon icon-lg icon-tv tv"></i>
-              </a>
-          
-
-            </div>
-        
-      </ul>
-        
-    </div>
-  </div>
- 
-</aside>
-
-
-    <main id="main">
-        <header class="top-header" id="header">
-    <div class="flex-row">
-        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
-          <i class="icon icon-lg icon-navicon"></i>
-        </a>
-        <div class="flex-col header-title ellipsis">性能测试指标详解</div>
-        
-        <div class="search-wrap" id="search-wrap">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
-                <i class="icon icon-lg icon-chevron-left"></i>
-            </a>
-            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
-                <i class="icon icon-lg icon-search"></i>
-            </a>
-        </div>
-        
-        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
-            <i class="icon icon-lg icon-rss"></i>
-        </a>
-    </div>
-</header>
-<header class="content-header post-header">
-    
-    
-    <div class="container fade-scale">
-        <div id="myheader">
-            <h1 class="title">
-                
-            </h1>
-            <h5 class="subtitle">
-                
-                
-            </h5>
-        </div>
-    </div>
-
-</header>
-
-
-<div class="container body-wrap">
-    
-    <aside class="post-widget">
-        <nav class="post-toc-wrap" id="post-toc">
-            <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#性能测试——性能测试各指标说明"><span class="post-toc-number">1.</span> <span class="post-toc-text">性能测试——性能测试各指标说明</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#系统性能测试指标"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">系统性能测试指标</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-1-响应时间"><span class="post-toc-number">1.1.1.</span> <span class="post-toc-text">1.1 响应时间</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-2-并发"><span class="post-toc-number">1.1.2.</span> <span class="post-toc-text">1.2 并发</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-3-点击量-点击率"><span class="post-toc-number">1.1.3.</span> <span class="post-toc-text">1.3 点击量/点击率</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-4-吞吐量-吞吐率"><span class="post-toc-number">1.1.4.</span> <span class="post-toc-text">1.4 吞吐量/吞吐率</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-5-TPS-QPS"><span class="post-toc-number">1.1.5.</span> <span class="post-toc-text">1.5 TPS/QPS</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-6-PV-UV"><span class="post-toc-number">1.1.6.</span> <span class="post-toc-text">1.6 PV/UV</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Linux服务器性能指标"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">Linux服务器性能指标</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-1-CPU使用率"><span class="post-toc-number">1.2.1.</span> <span class="post-toc-text">2.1 CPU使用率</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-2-内存占用率"><span class="post-toc-number">1.2.2.</span> <span class="post-toc-text">2.2 内存占用率</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-3-系统平均负载"><span class="post-toc-number">1.2.3.</span> <span class="post-toc-text">2.3 系统平均负载</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-4-磁盘I-O"><span class="post-toc-number">1.2.4.</span> <span class="post-toc-text">2.4 磁盘I/O</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-5-Linux常用性能命令"><span class="post-toc-number">1.2.5.</span> <span class="post-toc-text">2.5 Linux常用性能命令</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-5-1-CPU"><span class="post-toc-number">1.2.5.1.</span> <span class="post-toc-text">2.5.1 CPU</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-5-2-内存"><span class="post-toc-number">1.2.5.2.</span> <span class="post-toc-text">2.5.2 内存</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-5-3-负载"><span class="post-toc-number">1.2.5.3.</span> <span class="post-toc-text">2.5.3 负载</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-5-4-磁盘"><span class="post-toc-number">1.2.5.4.</span> <span class="post-toc-text">2.5.4 磁盘</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-5-5-整体"><span class="post-toc-number">1.2.5.5.</span> <span class="post-toc-text">2.5.5 整体</span></a></li></ol></li></ol></li></ol></li></ol>
-        </nav>
-    </aside>
-   
-<article id="post-性能测试指标详解" class="post-article article-type-post fade" itemprop="blogPost">
-
-    <div class="post-card">
-        <h1 class="post-card-title">性能测试指标详解</h1>
-        <div class="post-meta">
-            <i class="icon icon-lg icon-calendar-o"></i>
-            发表于
-            <time class="post-time" title="2022-06-07 12:54:19" datetime="2022-06-07T04:54:19.000Z" itemprop="datePublished">2022-06-07</time>
-
-            <br id="mybreak">
-            
-<script>
-	mybreak.style="display:none";
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3efe99c287df5a1d6f0d02d187e403c1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
 </script>
 
+<header id="header">
+    <a id="title" href="/" class="logo">Deops's blog</a>
 
-            <i>·</i>
+	<ul id="menu">
+		<li class="menu-item">
+			<a href="/about" class="menu-item-link">ABOUT</a>
+		</li>
+	
+		<li class="menu-item">
+			<a href="/tags" class="menu-item-link">标签</a>
+		</li>
+	
+
+	
+		<li class="menu-item">
+			<a href="/categories" class="menu-item-link">分类</a>
+		</li>
+	
+
+		<li class="menu-item">
+			<a href="https://github.com/Marnm" class="menu-item-link" target="_blank">
+				<i class="fa fa-github fa-2x"></i>
+			</a>
+		</li>
+	</ul>
+</header>
+
+	
+<div id="sidebar">
+	<button id="sidebar-toggle" class="toggle"><i class="fa fa-arrow-right " aria-hidden="true"></i></button>
+	
+	<div id="site-toc">
+		<input id="search-input" class="search-input" type="search" placeholder="按回车全站搜索">
+		<div id="tree">
+			
+
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Ansible自动化运维
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/b45e213f/">
+                     
+										    Ansible自动化管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/28c30eb2/">
+                     
+										    CTF线下赛AWD套路小结
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Ceph对象存储
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/e9abc941/">
+                     
+										    Ceph分布式存储
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/38843421/">
+                     
+										    Ceph分布式存储部署笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9964b559/">
+                     
+										    DHCP Server的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4782a8c2/">
+                     
+										    DNS Server的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5e357037/">
+                     
+										    Django教程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Docker
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/4a3d459a/">
+                     
+										    Docker学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										ELK Stack
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/2d95f1c1/">
+                     
+										    ElasticSearch环境搭建
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/573fc171/">
+                     
+										    Logstash二进制安装与启动
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b11339a9/">
+                     
+										    Logstash去除不需要的字段
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d05b44e0/">
+                     
+										    Logstash读取日志发送到ES
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9d56e705/">
+                     
+										    FTP/TFTP的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ca9298d7/">
+                     
+										    Git版本控制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/51acad32/">
+                     
+										    诺尔·巴尔扎克（Honoréde Balzac）的名言
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4def9c28/">
+                     
+										    In Your 20's These Things Matter More Than You Think
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/295162d9/">
+                     
+										    Java8 环境变量配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										KVM虚拟化
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/dba5727f/">
+                     
+										    KVM图形化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/204af86b/">
+                     
+										    KVM虚拟机克隆和快照
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d69c6e72/">
+                     
+										    KVM虚拟机添加磁盘
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/16305c66/">
+                     
+										    KVM虚拟机迁移
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7733d98/">
+                     
+										    LDAP的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5922577d/">
+                     
+										    LNMP手动部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/195423a2/">
+                     
+										    LNMP高可用架构配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/38cc96c8/">
+                     
+										    LVM磁盘管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/be48d001/">
+                     
+										    LVS-DR集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/df68056c/">
+                     
+										    LVS-IPTUN集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dcf8e277/">
+                     
+										    LVS-NAT集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/640aafef/">
+                     
+										    LVS和KeepAlived实现高可用集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/82734d8/">
+                     
+										    Linux命令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/67ee4dec/">
+                     
+										    Linux学习笔记 - 关于开源
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d53cba09/">
+                     
+										    Linux常用性能分析工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/15c0e66c/">
+                     
+										    Linux常见日志文件
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/480c215d/">
+                     
+										    Linux性能管理工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a9bb0c1a/">
+                     
+										    Linux文件的特殊权限
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/cc999d74/">
+                     
+										    Linux文件的隐藏属性
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b7f1c6/">
+                     
+										    Linux文本四剑客
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/aabbd398/">
+                     
+										    Linux无法挂载sysroot并自动进入紧急模式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b3f64b7d/">
+                     
+										    Linux生成随机密码方法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e025952a/">
+                     
+										    Linux登录退出提示信息欢迎信息
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ee2f9f35/">
+                     
+										    Linux的PAM模块
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1e844aa4/">
+                     
+										    Linux的归档与解压缩
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c4bbfe69/">
+                     
+										    Linux的日志切割
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/be846aea/">
+                     
+										    Linux禁止和开启ping的方法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f20e14fd/">
+                     
+										    Linux网卡聚合及bond模式的原理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2fe5fc07/">
+                     
+										    Linux计划任务实现
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/365d0867/">
+                     
+										    Linux路由配置——route
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fbf617b4/">
+                     
+										    MariaDB
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bff83912/">
+                     
+										    Markdown 简明语法手册
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5125c787/">
+                     
+										    Markdown语法说明（快速入门）
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										MongoDB
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/8b1c1f4b/">
+                     
+										    MongoDB介绍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a36562d7/">
+                     
+										    MongoDB学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/55c06d78/">
+                     
+										    MongoDB安装部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										MySQL学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/16fc5dc4/">
+                     
+										    MySQL5.6
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/61fb6d52/">
+                     
+										    MySQL5.7
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bce68613/">
+                     
+										    MySQL基础
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f6e2d114/">
+                     
+										    使用RPM包安装MySQL5.7数据库
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/269a56e8/">
+                     
+										    MySQL备份与恢复（删库不跑路）
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/607e4760/">
+                     
+										    MySQL传统主从同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d77fafec/">
+                     
+										    MySQL的GTID主从同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/db0340bd/">
+                     
+										    MySQL高可用集群架构-MHA架构
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/62ec7971/">
+                     
+										    Atlas实现MySQL读写分离
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/490925f2/">
+                     
+										    MySQL数据库高级应用之读写分离
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/176dc5f3/">
+                     
+										    MyCat垂直分表操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8f74b0e7/">
+                     
+										    MyCat教程全国省份分片枚举操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/208cd020/">
+                     
+										    MySQL调优
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1876d05d/">
+                     
+										    NetworkManager管理工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/60444925/">
+                     
+										    NexT主题优化+美化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Nginx学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/f4d30967/">
+                     
+										    Nginx动静分离部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1db2b3f1/">
+                     
+										    Nginx平滑升级
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2793eb31/">
+                     
+										    Nginx日志管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2793eb31/">
+                     
+										    Nginx日志管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e0989926/">
+                     
+										    Nginx添加第三方模块
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/da411b72/">
+                     
+										    Nginx虚拟主机
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d4e5e907/">
+                     
+										    Nginx访问控制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d2802762/">
+                     
+										    Nginx高可用架构配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/36ba38f9/">
+                     
+										    NoSQL知识
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e8c4eb08/">
+                     
+										    OpenSSL使用教程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/97717e94/">
+                     
+										    PXE自动化部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Prometheus学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/39c0f6a1/">
+                     
+										    Prometheus学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1f351894/">
+                     
+										    Python-VirtualEnv
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/297a89d9/">
+                     
+										    Python学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fa8e89f7/">
+                     
+										    RAID磁盘阵列技术介绍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/afdfa673/">
+                     
+										    RHEL 7配置Yum软件仓库
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/32546aed/">
+                     
+										    RedHat Linux重置root管理员密码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/eb7dbe25/">
+                     
+										    RedHat_7 配置网卡信息
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Redis学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/5188e636/">
+                     
+										    Redis与其他应用的集成
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/49fbbc1/">
+                     
+										    Redis基本操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e8376589/">
+                     
+										    Redis安装部署——Cluster集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e78aaf59/">
+                     
+										    Redis安装部署——Sentinel模式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2acd829b/">
+                     
+										    Redis安装部署——主从复制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/119ed1dc/">
+                     
+										    Redis持久化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/18d7d749/">
+                     
+										    Redis概述
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e3fb0a3e/">
+                     
+										    Redis的数据备份与恢复
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3e3d973e/">
+                     
+										    Redis配合MySQL使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f03da4e7/">
+                     
+										    Redis配置文件详解
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/41f893fd/">
+                     
+										    Redis编译安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dbd9d26a/">
+                     
+										    SHELL编程类面试题
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f42b90f9/">
+                     
+										    SHELL脚本工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a8ba1e/">
+                     
+										    SHELL脚本练习
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c45f2736/">
+                     
+										    SQL Server 2008安装配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/aa142b64/">
+                     
+										    SQLite安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e228b71f/">
+                     
+										    SSH原理与应用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1fdc29d2/">
+                     
+										    Shell的基本运算符
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6309c3f8/">
+                     
+										    Shell编程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e76ba468/">
+                     
+										    Ubuntu Desktop优化与配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/129acd64/">
+                     
+										    Ubuntu修改配置及美化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b382711f/">
+                     
+										    VIM的使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e9c6771b/">
+                     
+										    Win10环境下Python2、3和pip2、3版本共存
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6ed6984b/">
+                     
+										    Windows进程管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/59089347/">
+                     
+										    Zabbix3.4邮件报警配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7034657d/">
+                     
+										    Zabbix4.0
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c7b4ec91/">
+                     
+										    firewalld学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1ebd4a76/">
+                     
+										    iproute2工具包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/57bbf635/">
+                     
+										    iptables学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3e189d0c/">
+                     
+										    mysqlclient无法安装的问题
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1939d3e2/">
+                     
+										    net-tools工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bae5d4f0/">
+                     
+										    rhel修改网卡命名规则
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3c7a2415/">
+                     
+										    rsync数据同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/37ca92de/">
+                     
+										    swap交换分区
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6efb91e0/">
+                     
+										    tcpdump与Wireshark的使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d185f6ae/">
+                     
+										    web性能压测学习
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bb750036/">
+                     
+										    你要懂得及时止损，别太在乎沉没成本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/da58b03e/">
+                     
+										    使用HAProxy实现七层负载均衡
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b161a250/">
+                     
+										    使用服务搭建Hexo个人博客
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										其它
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/9bf5b5/">
+                     
+										    我学练英语所使用的方法、工具与资料
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4c41c7ef/">
+                     
+										    十二句经典的爱情名言
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e364486e/">
+                     
+										    基于Docker搭建Prometheus
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/69c239dd/">
+                     
+										    基于LNMP架构搭建企业级开源监控系统Zabbix
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f801d3c5/">
+                     
+										    增加一台Filebeat收集httpd日志
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f5d6f6a9/">
+                     
+										    实战-GitLab更新代码后自动触发Jenkins进行部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file active">
+									<a href="/posts/fa35a60d/">
+                     
+										    性能测试指标详解
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a3c5d26/">
+                     
+										    搭建Jenkins实现持续集成-配置Jenkins自动拉取GitLab中的代码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4f96852/">
+                     
+										    搭建JumpServer管理王者荣耀数万台游戏服务器
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f0a65eeb/">
+                     
+										    根分区扩容
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2f57a694/">
+                     
+										    正则表达式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9e3f6743/">
+                     
+										    自由的灵魂必将远航
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/217dc297/">
+                     
+										    计算机概述
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8d4b7ae1/">
+                     
+										    计算机组成原理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dded0e80/">
+                     
+										    运维发展史
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/undefined/">
+                     
+										    邮件报警配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5095a46f/">
+                     
+										    配置Docker静态IP
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2b923a54/">
+                     
+										    配置GitLab邮件服务
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/76011417/">
+                     
+										    配置Zabbix3.4监控Apache服务
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+		</div>
+	</div>
+</div>
+
+	<!-- 引入正文 -->
+	<div id="content">
+		<h1 id="article-title">
+	性能测试指标详解
+</h1>
+<div class="article-meta">
+	
+	<span>Echo</span>
+	<span>2022-06-07 12:54:19</span>
+		<div id="article-categories">
+    
+		<span>Categories：</span>
             
+    
 
-        </div>
-        <div class="post-count-custom">
-            <i class="icon icon-lg icon-comment-o"></i>
-            阅读本文可能花费您&nbsp;<span class="post-count">37</span>&nbsp;分钟
-        </div>
-        <div class="post-content" id="post-content" itemprop="postContent">
-            <h1 id="&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x2014;&#x2014;&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x5404;&#x6307;&#x6807;&#x8BF4;&#x660E;"><a href="#&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x2014;&#x2014;&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x5404;&#x6307;&#x6807;&#x8BF4;&#x660E;" class="headerlink" title="&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x2014;&#x2014;&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x5404;&#x6307;&#x6807;&#x8BF4;&#x660E;"></a>&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x2014;&#x2014;&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x5404;&#x6307;&#x6807;&#x8BF4;&#x660E;</h1><p>&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x6307;&#x6807;&#x662F;&#x8861;&#x91CF;&#x7CFB;&#x7EDF;&#x6027;&#x80FD;&#x7684;&#x8BC4;&#x4EF7;&#x6807;&#x51C6;&#xFF0C;&#x5E38;&#x7528;&#x7684;&#x7CFB;&#x7EDF;&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x6307;&#x6807;&#x5305;&#x62EC;&#xFF1A;&#x54CD;&#x5E94;&#x65F6;&#x95F4;&#x3001;&#x5E76;&#x53D1;&#x3001;&#x70B9;&#x51FB;&#x7387;&#x3001;&#x541E;&#x5410;&#x91CF;&#x3001;TPS/QPS&#x3001;PV/UV&#xFF1B;Linux&#x670D;&#x52A1;&#x5668;&#x5E38;&#x7528;&#x7684;&#x6027;&#x80FD;&#x6307;&#x6807;&#x5305;&#x62EC;&#xFF1A;CPU&#x4F7F;&#x7528;&#x7387;&#x3001;&#x5185;&#x5B58;&#x5360;&#x7528;&#x7387;&#x3001;&#x78C1;&#x76D8;IO&#x3001;&#x7CFB;&#x7EDF;&#x5E73;&#x5747;&#x8D1F;&#x8F7D;&#x7B49;&#x3002;</p>
+    
+		<span>Tags：</span>
+            
+    
+		</div>
+
+</div>
+
+<div id="article-content">
+	<h1 id="&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x2014;&#x2014;&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x5404;&#x6307;&#x6807;&#x8BF4;&#x660E;"><a href="#&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x2014;&#x2014;&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x5404;&#x6307;&#x6807;&#x8BF4;&#x660E;" class="headerlink" title="&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x2014;&#x2014;&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x5404;&#x6307;&#x6807;&#x8BF4;&#x660E;"></a>&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x2014;&#x2014;&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x5404;&#x6307;&#x6807;&#x8BF4;&#x660E;</h1><p>&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x6307;&#x6807;&#x662F;&#x8861;&#x91CF;&#x7CFB;&#x7EDF;&#x6027;&#x80FD;&#x7684;&#x8BC4;&#x4EF7;&#x6807;&#x51C6;&#xFF0C;&#x5E38;&#x7528;&#x7684;&#x7CFB;&#x7EDF;&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x6307;&#x6807;&#x5305;&#x62EC;&#xFF1A;&#x54CD;&#x5E94;&#x65F6;&#x95F4;&#x3001;&#x5E76;&#x53D1;&#x3001;&#x70B9;&#x51FB;&#x7387;&#x3001;&#x541E;&#x5410;&#x91CF;&#x3001;TPS/QPS&#x3001;PV/UV&#xFF1B;Linux&#x670D;&#x52A1;&#x5668;&#x5E38;&#x7528;&#x7684;&#x6027;&#x80FD;&#x6307;&#x6807;&#x5305;&#x62EC;&#xFF1A;CPU&#x4F7F;&#x7528;&#x7387;&#x3001;&#x5185;&#x5B58;&#x5360;&#x7528;&#x7387;&#x3001;&#x78C1;&#x76D8;IO&#x3001;&#x7CFB;&#x7EDF;&#x5E73;&#x5747;&#x8D1F;&#x8F7D;&#x7B49;&#x3002;</p>
 <h2 id="&#x7CFB;&#x7EDF;&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x6307;&#x6807;"><a href="#&#x7CFB;&#x7EDF;&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x6307;&#x6807;" class="headerlink" title="&#x7CFB;&#x7EDF;&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x6307;&#x6807;"></a>&#x7CFB;&#x7EDF;&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x6307;&#x6807;</h2><h3 id="1-1-&#x54CD;&#x5E94;&#x65F6;&#x95F4;"><a href="#1-1-&#x54CD;&#x5E94;&#x65F6;&#x95F4;" class="headerlink" title="1.1 &#x54CD;&#x5E94;&#x65F6;&#x95F4;"></a>1.1 &#x54CD;&#x5E94;&#x65F6;&#x95F4;</h3><p>&#x54CD;&#x5E94;&#x65F6;&#x95F4;&#x662F;&#x6307;&#x67D0;&#x4E2A;&#x8BF7;&#x6C42;&#x6216;&#x64CD;&#x4F5C;&#x53D1;&#x51FA;&#x5230;&#x63A5;&#x6536;&#x5230;&#x53CD;&#x9988;&#x6240;&#x6D88;&#x8017;&#x7684;&#x65F6;&#x95F4;&#xFF0C;&#x5305;&#x62EC;&#x5E94;&#x7528;&#x670D;&#x52A1;&#x5668;&#xFF08;&#x5BA2;&#x6237;&#x7AEF;&#xFF09;&#x5904;&#x7406;&#x65F6;&#x95F4;&#x3001;&#x7F51;&#x7EDC;&#x4F20;&#x8F93;&#x65F6;&#x95F4;&#x4EE5;&#x53CA;&#x6570;&#x636E;&#x5E93;&#x670D;&#x52A1;&#x5668;&#x5904;&#x7406;&#x65F6;&#x95F4;&#x3002;&#x6BD4;&#x5982;&#x4E00;&#x4E2A;&#x9875;&#x9762;&#x4ECE;&#x70B9;&#x51FB;/&#x8F93;&#x5165;&#x5230;&#x5B8C;&#x5168;&#x52A0;&#x8F7D;&#x7684;&#x65F6;&#x95F4;&#xFF1B;&#x5B8C;&#x6210;&#x4E00;&#x6B21;&#x589E;&#x52A0;&#x3001;&#x5220;&#x9664;&#x3001;&#x4FEE;&#x6539;&#x6216;&#x8005;&#x67E5;&#x8BE2;&#x52A8;&#x4F5C;&#x7684;&#x4E8B;&#x52A1;&#x54CD;&#x5E94;&#x65F6;&#x95F4;&#x7B49;&#x3002;</p>
 <p>&#x4E00;&#x4E2A;&#x8BF7;&#x6C42;&#x5728;&#x7F51;&#x7EDC;&#x4E0A;&#x7684;&#x4F20;&#x8F93;&#x5F80;&#x5F80;&#x8981;&#x7ECF;&#x5386;&#x591A;&#x4E2A;&#x7F51;&#x7EDC;&#x8282;&#x70B9;&#x624D;&#x80FD;&#x5230;&#x8FBE;&#x76EE;&#x6807;&#x670D;&#x52A1;&#x5668;&#xFF0C;&#x6211;&#x4EEC;&#x5047;&#x8BBE;&#x8BF7;&#x6C42;&#x7ECF;&#x5386;&#x4E86;&#x4E09;&#x4E2A;&#x7F51;&#x7EDC;&#x8282;&#x70B9;&#x7684;&#x4F20;&#x8F93;&#x65F6;&#x95F4;B1&#x3001;B2&#x3001;B3&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x7684;&#x5904;&#x7406;&#x65F6;&#x95F4;&#x4E3A;A&#xFF0C;&#x670D;&#x52A1;&#x5668;&#x7684;&#x54CD;&#x5E94;&#x65F6;&#x95F4;&#x4E3A;C&#x3002;&#x5219;&#x4E00;&#x6B21;&#x8BF7;&#x6C42;&#x7684;&#x5B8C;&#x6574;&#x8DEF;&#x5F84;&#x53EF;&#x4EE5;&#x63CF;&#x8FF0;&#x4E3A;&#x4E0B;&#x56FE;&#xFF1A;</p>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://192.168.84.188:8081/uploads/16529237626752468130515.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure>
+<p><img src="http://192.168.84.188:8081/uploads/16529237626752468130515.png" alt=""></p>
 <p>&#x5BA2;&#x6237;&#x7AEF;&#x4ECE;&#x53D1;&#x51FA;&#x8BF7;&#x6C42;&#x5230;&#x63A5;&#x6536;&#x5230;&#x670D;&#x52A1;&#x5668;&#x53CD;&#x9988;&#x7684;&#x5B8C;&#x6574;&#x94FE;&#x8DEF;&#x65F6;&#x95F4;&#x4E3A;A&#x2014;&gt;B1&#x2014;&gt;B2&#x2014;&gt;B3&#x2014;&gt;C&#xFF08;&#x8282;&#x70B9;&#x5904;&#x7406;&#x65F6;&#x95F4;&#x90FD;&#x5305;&#x62EC;&#x63A5;&#x6536;&#x548C;&#x53D1;&#x9001;&#x4E24;&#x4E2A;&#x8FC7;&#x7A0B;&#xFF09;&#x3002;&#x5219;&#x8BF7;&#x6C42;&#x7684;&#x54CD;&#x5E94;&#x65F6;&#x95F4;&#x4E3A;&#xFF1A;</p>
 <p>&#x54CD;&#x5E94;&#x65F6;&#x95F4;=A+B1+B2+B3+C</p>
 <h3 id="1-2-&#x5E76;&#x53D1;"><a href="#1-2-&#x5E76;&#x53D1;" class="headerlink" title="1.2 &#x5E76;&#x53D1;"></a>1.2 &#x5E76;&#x53D1;</h3><p>&#x5E76;&#x53D1;&#x662F;&#x6307;&#x591A;&#x4E2A;&#x7528;&#x6237;&#x5728;&#x540C;&#x4E00;&#x65F6;&#x671F;&#x5185;&#x8FDB;&#x884C;&#x76F8;&#x540C;&#x7684;&#x4E8B;&#x52A1;&#x5904;&#x7406;&#x6216;&#x64CD;&#x4F5C;&#x3002;&#x7531;&#x4E8E;&#x7528;&#x6237;&#x5728;&#x8FDB;&#x884C;&#x4E00;&#x7CFB;&#x5217;&#x64CD;&#x4F5C;&#x6D41;&#x7A0B;&#x65F6;&#x6709;&#x4E00;&#x5B9A;&#x7684;&#x65F6;&#x95F4;&#x95F4;&#x9694;&#xFF08;&#x5373;&#x7528;&#x6237;&#x601D;&#x8003;&#x65F6;&#x95F4;&#xFF09;&#x6216;&#x8005;&#x670D;&#x52A1;&#x5668;&#x5904;&#x7406;&#x8BF7;&#x6C42;&#x6709;&#x5148;&#x540E;&#x987A;&#x5E8F;&#xFF0C;&#x4E8E;&#x662F;&#xFF0C;&#x5C31;&#x4EA7;&#x751F;&#x4E86;&#x7EDD;&#x5BF9;&#x5E76;&#x53D1;&#x548C;&#x76F8;&#x5BF9;&#x5E76;&#x53D1;&#x6982;&#x5FF5;&#x7684;&#x533A;&#x5206;&#x3002;</p>
@@ -262,14 +1869,9 @@
 <p>UV&#xFF08;Unique Vistor&#xFF09;&#x662F;&#x7CFB;&#x7EDF;&#x6216;&#x8005;&#x7F51;&#x7AD9;&#x7684;&#x72EC;&#x7ACB;&#x8BBF;&#x5BA2;&#xFF0C;&#x4E00;&#x6BB5;&#x65F6;&#x95F4;&#x5185;&#x76F8;&#x540C;&#x5BA2;&#x6237;&#x7AEF;&#xFF08;&#x6216;PC&#xFF09;&#x8BBF;&#x95EE;&#x7CFB;&#x7EDF;&#x6216;&#x8005;&#x7F51;&#x7AD9;&#x53EA;&#x4F1A;&#x88AB;&#x8BB0;&#x5F55;&#x4E00;&#x6B21;&#xFF0C;&#x8FDE;&#x7EED;&#x91CD;&#x590D;&#x8BBF;&#x95EE;&#x6216;&#x8005;&#x6D4F;&#x89C8;&#x591A;&#x4E2A;&#x7CFB;&#x7EDF;&#x9875;&#x9762;&#x6B21;&#x6570;&#x4E0D;&#x4F1A;&#x8FDB;&#x884C;&#x7D2F;&#x8BA1;&#x3002;</p>
 <p>PV&#x548C;UV&#x6309;&#x7167;&#x7EDF;&#x8BA1;&#x5468;&#x671F;&#x5212;&#x5206;&#xFF0C;&#x53EF;&#x4EE5;&#x5212;&#x5206;&#x4E3A;&#x5168;&#x5929;PV&#x3001;&#x6BCF;&#x5C0F;&#x65F6;PV&#x3001;&#x5168;&#x5929;UV&#x548C;&#x6BCF;&#x5C0F;&#x65F6;UV&#x7B49;&#x3002;&#x5728;&#x4E00;&#x4E9B;&#x6570;&#x636E;&#x6216;&#x4EA4;&#x6613;&#x91CF;&#x975E;&#x5E38;&#x5E9E;&#x5927;&#x7684;&#x573A;&#x666F;&#x4E2D;&#xFF0C;&#x6BD4;&#x5982;&#x53CC;11&#x6216;618&#x7B49;&#x5168;&#x6C11;&#x8D2D;&#x7269;&#x6D3B;&#x52A8;&#x65F6;&#xFF0C;&#x5E38;&#x5E38;&#x8FD8;&#x4F1A;&#x7EDF;&#x8BA1;&#x5CF0;&#x503C;PV&#x548C;&#x5CF0;&#x503C;UV&#x3002;</p>
 <h2 id="Linux&#x670D;&#x52A1;&#x5668;&#x6027;&#x80FD;&#x6307;&#x6807;"><a href="#Linux&#x670D;&#x52A1;&#x5668;&#x6027;&#x80FD;&#x6307;&#x6807;" class="headerlink" title="Linux&#x670D;&#x52A1;&#x5668;&#x6027;&#x80FD;&#x6307;&#x6807;"></a>Linux&#x670D;&#x52A1;&#x5668;&#x6027;&#x80FD;&#x6307;&#x6807;</h2><h3 id="2-1-CPU&#x4F7F;&#x7528;&#x7387;"><a href="#2-1-CPU&#x4F7F;&#x7528;&#x7387;" class="headerlink" title="2.1 CPU&#x4F7F;&#x7528;&#x7387;"></a>2.1 CPU&#x4F7F;&#x7528;&#x7387;</h3><p>CPU&#x4F7F;&#x7528;&#x7387;&#x662F;&#x5355;&#x4F4D;&#x65F6;&#x95F4;&#x5185;&#x670D;&#x52A1;&#x5668;CPU&#x7684;&#x4F7F;&#x7528;&#x7EDF;&#x8BA1;&#xFF0C;&#x53EF;&#x4EE5;&#x7528;&#x9664;CPU&#x7A7A;&#x95F2;&#x65F6;&#x95F4;&#x5916;&#x5176;&#x4ED6;&#x65F6;&#x95F4;&#x5360;&#x603B;CPU&#x65F6;&#x95F4;&#x7684;&#x767E;&#x5206;&#x6BD4;&#x6765;&#x8868;&#x793A;&#xFF0C;&#x5373;&#xFF1A;CPU&#x4F7F;&#x7528;&#x7387;=1-CPU&#x7A7A;&#x95F2;&#x65F6;&#x95F4;/&#x603B;CPU&#x65F6;&#x95F4;</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">top ## top&#x547D;&#x4EE4;&#x95F4;&#x9694;3s&#x4F1A;&#x52A8;&#x6001;&#x6EDA;&#x52A8;&#x66F4;&#x65B0;&#x4E00;&#x6B21;&#x6570;&#x636E;</span><br></pre></td></tr></tbody></table></figure>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://192.168.84.188:8081/uploads/1652923805160103382topcmd.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure>
+<pre><code class="shell">top ## top&#x547D;&#x4EE4;&#x95F4;&#x9694;3s&#x4F1A;&#x52A8;&#x6001;&#x6EDA;&#x52A8;&#x66F4;&#x65B0;&#x4E00;&#x6B21;&#x6570;&#x636E;
+</code></pre>
+<p><img src="http://192.168.84.188:8081/uploads/1652923805160103382topcmd.png" alt=""></p>
 <p>&#x5B57;&#x6BB5;&#x8BF4;&#x660E;&#xFF1A;</p>
 <p>us (user)&#xFF1A;&#x7528;&#x6237;&#x6001;&#x7684;CPU&#x4F7F;&#x7528;&#x65F6;&#x95F4;&#x6BD4;&#x4F8B;&#xFF0C;&#x662F;&#x7528;&#x6237;&#x8FD0;&#x884C;&#x7A0B;&#x5E8F;&#x7684;&#x771F;&#x6B63;&#x65F6;&#x95F4;&#xFF0C;&#x5B83;&#x4E0D;&#x5305;&#x62EC;&#x540E;&#x9762;&#x7684;ni&#x65F6;&#x95F4;&#xFF1B;</p>
 <p>sy (system): &#x5185;&#x6838;&#x6001;&#x7684;CPU&#x4F7F;&#x7528;&#x65F6;&#x95F4;&#x6BD4;&#x4F8B;&#xFF0C;&#x662F;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x7684;&#x8FD0;&#x884C;&#x65F6;&#x95F4;&#xFF0C;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x8FD0;&#x884C;&#x65F6;&#xFF0C;&#x7528;&#x6237;&#x8FD0;&#x884C;&#x7A0B;&#x5E8F;&#x5F80;&#x5F80;&#x5904;&#x4E8E;&#x7B49;&#x5F85;&#x72B6;&#x6001;&#xFF1B;</p>
@@ -284,13 +1886,7 @@
 <h3 id="2-2-&#x5185;&#x5B58;&#x5360;&#x7528;&#x7387;"><a href="#2-2-&#x5185;&#x5B58;&#x5360;&#x7528;&#x7387;" class="headerlink" title="2.2 &#x5185;&#x5B58;&#x5360;&#x7528;&#x7387;"></a>2.2 &#x5185;&#x5B58;&#x5360;&#x7528;&#x7387;</h3><p>Linux&#x7684;&#x7CFB;&#x7EDF;&#x5185;&#x5B58;&#x7BA1;&#x7406;&#x673A;&#x5236;&#x9075;&#x5FAA;&#x5185;&#x5B58;&#x5229;&#x7528;&#x7387;&#x6700;&#x5927;&#x5316;&#x7684;&#x539F;&#x5219;&#x3002;&#x5185;&#x6838;&#x4F1A;&#x5C06;&#x7A7A;&#x4F59;&#x7684;&#x5185;&#x5B58;&#x5212;&#x5206;&#x4E3A;cached&#xFF08;&#x4E0D;&#x5C5E;&#x4E8E;free&#xFF09;&#xFF0C;&#x5BF9;&#x4E8E;&#x6709;&#x9891;&#x7E41;&#x8BFB;&#x53D6;&#x64CD;&#x4F5C;&#x7684;&#x6587;&#x4EF6;&#x6216;&#x6570;&#x636E;&#x4F1A;&#x88AB;&#x4FDD;&#x5B58;&#x5728;cached&#x4E2D;&#x3002;&#x56E0;&#x6B64;&#xFF0C;&#x5BF9;&#x4E8E;linux&#x7CFB;&#x7EDF;&#x6765;&#x8BF4;&#xFF0C;&#x53EF;&#x7528;&#x4E8E;&#x5206;&#x914D;&#x7684;&#x5185;&#x5B58;&#x4E0D;&#x6B62;free&#x7684;&#x5185;&#x5B58;&#xFF0C;&#x540C;&#x65F6;&#x8FD8;&#x5305;&#x62EC;cached&#x7684;&#x5185;&#x5B58;&#xFF08;&#x5176;&#x5B9E;&#x8FD8;&#x5305;&#x62EC;buffers&#x7684;&#x5185;&#x5B58;&#xFF09;&#x3002;</p>
 <p>cached&#x548C;buffers&#x90FD;&#x5C5E;&#x4E8E;&#x7F13;&#x5B58;&#xFF0C;&#x5B83;&#x4EEC;&#x7684;&#x533A;&#x522B;&#x4E3B;&#x8981;&#x5728;&#x4E8E;cached&#x4E3B;&#x8981;&#x7528;&#x6765;&#x7F13;&#x51B2;&#x9891;&#x7E41;&#x8BFB;&#x53D6;&#x7684;&#x6587;&#x4EF6;&#xFF0C;&#x5B83;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x8BB0;&#x5FC6;&#x6211;&#x4EEC;&#x6253;&#x5F00;&#x7684;&#x6587;&#x4EF6;&#x5185;&#x5BB9;&#xFF1B;&#x800C;buffers&#x4E3B;&#x8981;&#x7528;&#x6765;&#x7ED9;&#x5757;&#x8BBE;&#x5907;&#x505A;&#x7684;&#x7F13;&#x51B2;&#x5927;&#x5C0F;&#xFF0C;&#x53EA;&#x8BB0;&#x5F55;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#x7684;metadata&#x4EE5;&#x53CA;tracking in-flight pages&#x4FE1;&#x606F;&#xFF0C;&#x6BD4;&#x5982;&#x5B58;&#x50A8;&#x76EE;&#x5F55;&#x91CC;&#x9762;&#x7684;&#x5185;&#x5BB9;&#xFF0C;&#x6743;&#x9650;&#x7B49;&#x3002;</p>
 <p>top&#x5DE5;&#x5177;&#x65E2;&#x53EF;&#x4EE5;&#x67E5;&#x770B;&#x7CFB;&#x7EDF;CPU&#x4F7F;&#x7528;&#x60C5;&#x51B5;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x67E5;&#x770B;&#x7CFB;&#x7EDF;&#x5185;&#x5B58;&#x4F7F;&#x7528;&#x4FE1;&#x606F;&#x3002;</p>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://192.168.84.188:8081/uploads/1652923863850081274topmemory.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure>
+<p><img src="http://192.168.84.188:8081/uploads/1652923863850081274topmemory.png" alt=""></p>
 <p>&#x5728;&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x4E2D;&#xFF0C;&#x7ECF;&#x5E38;&#x4F1A;&#x7528;&#x5230;&#x7CFB;&#x7EDF;&#x5DF2;&#x7528;&#x5185;&#x5B58;&#x3001;&#x7269;&#x7406;&#x5DF2;&#x7528;&#x5185;&#x5B58;&#x3001;&#x7CFB;&#x7EDF;&#x5185;&#x5B58;&#x5360;&#x7528;&#x7387;&#x4EE5;&#x53CA;&#x7269;&#x7406;&#x5185;&#x5B58;&#x5360;&#x7528;&#x7387;&#x8FD9;&#x51E0;&#x4E2A;&#x6307;&#x6807;&#xFF0C;&#x5B83;&#x4EEC;&#x7684;&#x8BA1;&#x7B97;&#x516C;&#x5F0F;&#x5982;&#x4E0B;&#xFF1A;</p>
 <p>&#x7CFB;&#x7EDF;&#x5DF2;&#x7528;&#x5185;&#x5B58;MemUsed=MemTotal-MemFree           //&#x5305;&#x542B;buffers&#x548C;cached</p>
 <p>&#x7269;&#x7406;&#x5DF2;&#x7528;&#x5185;&#x5B58;-/+Used= MemTotal-MemFree-MemBuffers-MemCached</p>
@@ -299,27 +1895,9 @@
 <p>&#x4E00;&#x822C;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x7CFB;&#x7EDF;&#x5185;&#x5B58;&#x5360;&#x7528;&#x7387;&lt;=70%&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x8BA4;&#x4E3A;&#x7CFB;&#x7EDF;&#x7684;&#x5185;&#x5B58;&#x4F7F;&#x7528;&#x60C5;&#x51B5;&#x826F;&#x597D;&#xFF0C;&#x5982;&#x679C;&#x8D85;&#x51FA;&#x5219;&#x8BF4;&#x660E;&#x7CFB;&#x7EDF;&#x5185;&#x5B58;&#x8D44;&#x6E90;&#x7D27;&#x5F20;&#x3002;</p>
 <h3 id="2-3-&#x7CFB;&#x7EDF;&#x5E73;&#x5747;&#x8D1F;&#x8F7D;"><a href="#2-3-&#x7CFB;&#x7EDF;&#x5E73;&#x5747;&#x8D1F;&#x8F7D;" class="headerlink" title="2.3 &#x7CFB;&#x7EDF;&#x5E73;&#x5747;&#x8D1F;&#x8F7D;"></a>2.3 &#x7CFB;&#x7EDF;&#x5E73;&#x5747;&#x8D1F;&#x8F7D;</h3><p>&#x5F53;&#x53D1;&#x73B0;&#x7CFB;&#x7EDF;&#x51FA;&#x73B0;&#x5361;&#x65AD;&#x6216;&#x8005;&#x8FD0;&#x884C;&#x4E0D;&#x987A;&#x7545;&#x65F6;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;uptime&#xFF0C;top&#x6216;&#x8005;w&#x547D;&#x4EE4;&#x6765;&#x67E5;&#x770B;&#x7CFB;&#x7EDF;&#x7684;&#x8D1F;&#x8F7D;&#x60C5;&#x51B5;&#x3002;</p>
 <pre><code>uptime
-</code></pre><p><code>uptime</code>command<br></p><figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://192.168.84.188:8081/uploads/1652923897275247246uptime_loadaverage.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure><p></p>
-<p><code>w</code>command<br></p><figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://192.168.84.188:8081/uploads/1652923915145507123w_loadaverage.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure><p></p>
-<p><code>top</code>command<br></p><figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://192.168.84.188:8081/uploads/1652923943410185712top_loadaverage.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure><p></p>
+</code></pre><p><code>uptime</code>command<br><img src="http://192.168.84.188:8081/uploads/1652923897275247246uptime_loadaverage.png" alt=""></p>
+<p><code>w</code>command<br><img src="http://192.168.84.188:8081/uploads/1652923915145507123w_loadaverage.png" alt=""></p>
+<p><code>top</code>command<br><img src="http://192.168.84.188:8081/uploads/1652923943410185712top_loadaverage.png" alt=""></p>
 <p>Linux&#x7684;load average&#x8868;&#x793A;&#x7CFB;&#x7EDF;&#x8D1F;&#x8F7D;&#x7684;&#x5E73;&#x5747;&#x503C;&#xFF0C;&#x663E;&#x793A;&#x7684;&#x4E09;&#x4E2A;&#x6570;&#x503C;&#x5206;&#x522B;&#x8868;&#x793A;1&#x5206;&#x949F;&#x3001;5&#x5206;&#x949F;&#x548C;15&#x5206;&#x949F;&#x5185;&#x7684;&#x5E73;&#x5747;&#x8D1F;&#x8F7D;&#x60C5;&#x51B5;&#x3002;&#x8FD9;&#x91CC;&#x7684;&#x5E73;&#x5747;&#x8D1F;&#x8F7D;&#x662F;&#x6307;&#x5355;&#x4F4D;&#x65F6;&#x95F4;&#x5185;&#xFF0C;&#x7CFB;&#x7EDF;&#x5904;&#x4E8E;&#x53EF;&#x8FD0;&#x884C;&#x72B6;&#x6001;&#x548C;&#x4E0D;&#x53EF;&#x4E2D;&#x65AD;&#x72B6;&#x6001;&#x7684;&#x5E73;&#x5747;&#x8FDB;&#x7A0B;&#x6570;&#xFF0C;&#x53EF;&#x4EE5;&#x7B80;&#x5355;&#x7684;&#x7406;&#x89E3;&#x4E3A;&#x5E73;&#x5747;&#x8D1F;&#x8F7D;&#x5C31;&#x662F;&#x7CFB;&#x7EDF;&#x5E73;&#x5747;&#x6D3B;&#x8DC3;&#x8FDB;&#x7A0B;&#x6570;&#x3002;&#x5176;&#x4E2D;&#x53EF;&#x8FD0;&#x884C;&#x72B6;&#x6001;&#x662F;&#x6307;&#x6B63;&#x5728;&#x4F7F;&#x7528;CPU&#x6216;&#x8005;&#x6B63;&#x5728;&#x7B49;&#x5F85;CPU&#x7684;&#x8FDB;&#x7A0B;&#xFF08;&#x5904;&#x4E8E;R&#x72B6;&#x6001;&#xFF1A;Running&#x6216;&#x8005;Runnable&#x7684;&#x8FDB;&#x7A0B;&#xFF09;&#xFF1B;&#x4E0D;&#x53EF;&#x4E2D;&#x65AD;&#x72B6;&#x6001;&#x7684;&#x8FDB;&#x7A0B;&#x6307;&#x7684;&#x662F;&#x6B63;&#x5904;&#x4E8E;&#x5185;&#x6838;&#x6001;&#x5173;&#x952E;&#x6D41;&#x7A0B;&#x4E2D;&#x7684;&#x8FDB;&#x7A0B;&#xFF0C;&#x5904;&#x4E8E;&#x8FD9;&#x4E2A;&#x6D41;&#x7A0B;&#x7684;&#x8FDB;&#x7A0B;&#x662F;&#x4E0D;&#x53EF;&#x6253;&#x65AD;&#x7684;&#xFF0C;&#x6BD4;&#x5982;&#x7B49;&#x5F85;&#x786C;&#x4EF6;&#x8BBE;&#x5907;&#x7684;I/O&#x54CD;&#x5E94;&#x3002;</p>
 <p>&#x4E3E;&#x4E2A;&#x4F8B;&#x5B50;&#xFF0C;&#x5F53;&#x5E73;&#x5747;&#x8D1F;&#x8F7D;&#x7684;&#x503C;&#x4E3A;4&#xFF1A;</p>
 <p>&#x5BF9;&#x4E8E;&#x53EA;&#x6709;1&#x4E2A;CPU&#x7684;&#x7CFB;&#x7EDF;&#xFF0C;&#x610F;&#x5473;&#x7740;&#x5E73;&#x5747;&#x6709;3&#x4E2A;&#x8FDB;&#x7A0B;&#x7ADE;&#x4E89;&#x4E0D;&#x5230;CPU&#xFF1B;</p>
@@ -330,14 +1908,12 @@
 <p>&#x5982;&#x679C;1min&#x7684;&#x503C;&#x5927;&#x4E8E;5min&#x6216;&#x8005;15min&#x7684;&#x503C;&#xFF0C;&#x8BF4;&#x660E;&#x8D1F;&#x8F7D;&#x5728;&#x589E;&#x52A0;&#xFF1B;</p>
 <p>&#x5982;&#x679C;1min&#x7684;&#x503C;&#x5C0F;&#x4E8E;5min&#x6216;&#x8005;15min&#x7684;&#x503C;&#xFF0C;&#x8BF4;&#x660E;&#x8D1F;&#x8F7D;&#x5728;&#x51CF;&#x5C0F;&#xFF1B;</p>
 <h3 id="2-4-&#x78C1;&#x76D8;I-O"><a href="#2-4-&#x78C1;&#x76D8;I-O" class="headerlink" title="2.4 &#x78C1;&#x76D8;I/O"></a>2.4 &#x78C1;&#x76D8;I/O</h3><p>Linux&#x670D;&#x52A1;&#x5668;&#x6027;&#x80FD;&#x9664;&#x4E86;CPU&#x548C;&#x5185;&#x5B58;&#x5916;&#xFF0C;&#x8FD8;&#x6709;&#x78C1;&#x76D8;IO&#x4E5F;&#x662F;&#x4E00;&#x79CD;&#x5E38;&#x7528;&#x7684;&#x6027;&#x80FD;&#x6307;&#x6807;&#x3002;</p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> RHEL/CentOS</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> yum install sysstat</span></span><br><span class="line"></span><br><span class="line">iostat -x -k 2 3   # &#x6BCF;&#x9694;2S&#x8F93;&#x51FA;&#x78C1;&#x76D8;IO&#x7684;&#x4F7F;&#x7528;&#x60C5;&#x51B5;&#xFF0C;&#x5171;&#x91C7;&#x6837;3&#x6B21;</span><br></pre></td></tr></tbody></table></figure>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://192.168.84.188:8081/uploads/1652923992503954646iostat.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure>
+<pre><code class="shell"># RHEL/CentOS
+# yum install sysstat
+
+iostat -x -k 2 3   # &#x6BCF;&#x9694;2S&#x8F93;&#x51FA;&#x78C1;&#x76D8;IO&#x7684;&#x4F7F;&#x7528;&#x60C5;&#x51B5;&#xFF0C;&#x5171;&#x91C7;&#x6837;3&#x6B21;
+</code></pre>
+<p><img src="http://192.168.84.188:8081/uploads/1652923992503954646iostat.png" alt=""></p>
 <p>&#x5B57;&#x6BB5;&#x8BF4;&#x660E;&#xFF1A;</p>
 <p>rrqm/s: &#x6BCF;&#x79D2;&#x5BF9;&#x8BE5;&#x8BBE;&#x5907;&#x7684;&#x8BFB;&#x8BF7;&#x6C42;&#x88AB;&#x5408;&#x5E76;&#x6B21;&#x6570;&#xFF0C;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#x4F1A;&#x5BF9;&#x8BFB;&#x53D6;&#x540C;&#x5757;(block)&#x7684;&#x8BF7;&#x6C42;&#x8FDB;&#x884C;&#x5408;&#x5E76;&#xFF1B;</p>
 <p>wrqm/s: &#x6BCF;&#x79D2;&#x5BF9;&#x8BE5;&#x8BBE;&#x5907;&#x7684;&#x5199;&#x8BF7;&#x6C42;&#x88AB;&#x5408;&#x5E76;&#x6B21;&#x6570;&#xFF1B;</p>
@@ -353,18 +1929,235 @@
 <p>&#x5728;&#x6027;&#x80FD;&#x6D4B;&#x8BD5;&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x91CD;&#x70B9;&#x5173;&#x6CE8;iowait%&#x548C;%util&#x53C2;&#x6570;&#x3002;&#x5176;&#x4E2D;iowait% &#x8868;&#x793A;CPU&#x7B49;&#x5F85;IO&#x65F6;&#x95F4;&#x5360;&#x6574;&#x4E2A;CPU&#x5468;&#x671F;&#x7684;&#x767E;&#x5206;&#x6BD4;&#xFF0C;&#x5982;&#x679C;iowait&#x503C;&#x8D85;&#x8FC7;50%&#xFF0C;&#x6216;&#x8005;&#x660E;&#x663E;&#x5927;&#x4E8E;%system&#x3001;%user&#x4EE5;&#x53CA;%idle&#xFF0C;&#x8868;&#x793A;IO&#x53EF;&#x80FD;&#x5B58;&#x5728;&#x95EE;&#x9898;&#x4E86;&#xFF1B;%util&#x8868;&#x793A;&#x78C1;&#x76D8;&#x5FD9;&#x788C;&#x7684;&#x60C5;&#x51B5;&#xFF0C;&#x4E00;&#x822C;%util&lt;=70%&#x8868;&#x793A;&#x8BE5;&#x78C1;&#x76D8;IO&#x4F7F;&#x7528;&#x72B6;&#x6001;&#x826F;&#x597D;&#x3002;</p>
 <h3 id="2-5-Linux&#x5E38;&#x7528;&#x6027;&#x80FD;&#x547D;&#x4EE4;"><a href="#2-5-Linux&#x5E38;&#x7528;&#x6027;&#x80FD;&#x547D;&#x4EE4;" class="headerlink" title="2.5 Linux&#x5E38;&#x7528;&#x6027;&#x80FD;&#x547D;&#x4EE4;"></a>2.5 Linux&#x5E38;&#x7528;&#x6027;&#x80FD;&#x547D;&#x4EE4;</h3><h4 id="2-5-1-CPU"><a href="#2-5-1-CPU" class="headerlink" title="2.5.1 CPU"></a>2.5.1 CPU</h4><pre><code># &#x83B7;&#x53D6;CPU&#x8BE6;&#x60C5;
 cat /proc/sys/cpuinfo
-</code></pre><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 ~]# cat /proc/cpuinfo</span><br><span class="line">processor       : 0</span><br><span class="line">vendor_id       : GenuineIntel</span><br><span class="line">cpu family      : 6</span><br><span class="line">model           : 158</span><br><span class="line">model name      : Intel(R) Core(TM) i5-7400 CPU @ 3.00GHz</span><br><span class="line">stepping        : 9</span><br><span class="line">microcode       : 0xffffffff</span><br><span class="line">cpu MHz         : 2998.708</span><br><span class="line">cache size      : 6144 KB</span><br><span class="line">physical id     : 0</span><br><span class="line">siblings        : 1</span><br><span class="line">core id         : 0</span><br><span class="line">cpu cores       : 1</span><br><span class="line">apicid          : 0</span><br><span class="line">initial apicid  : 0</span><br><span class="line">fpu             : yes</span><br><span class="line">fpu_exception   : yes</span><br><span class="line">cpuid level     : 22</span><br><span class="line">wp              : yes</span><br><span class="line">flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon nopl xtopology tsc_reliable nonstop_tsc eagerfpu pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch arat fsgsbase tsc_adjust bmi1 avx2 smep bmi2 invpcid rdseed adx smap clflushopt xsaveopt xsavec xgetbv1</span><br><span class="line">bogomips        : 5999.99</span><br><span class="line">clflush size    : 64</span><br><span class="line">cache_alignment : 64</span><br><span class="line">address sizes   : 45 bits physical, 48 bits virtual</span><br><span class="line">power management:</span><br><span class="line"></span><br><span class="line">[root@rhel7 ~]#</span><br></pre></td></tr></tbody></table></figure>
+</code></pre><pre><code class="mbox">[root@rhel7 ~]# cat /proc/cpuinfo
+processor       : 0
+vendor_id       : GenuineIntel
+cpu family      : 6
+model           : 158
+model name      : Intel(R) Core(TM) i5-7400 CPU @ 3.00GHz
+stepping        : 9
+microcode       : 0xffffffff
+cpu MHz         : 2998.708
+cache size      : 6144 KB
+physical id     : 0
+siblings        : 1
+core id         : 0
+cpu cores       : 1
+apicid          : 0
+initial apicid  : 0
+fpu             : yes
+fpu_exception   : yes
+cpuid level     : 22
+wp              : yes
+flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ss syscall nx pdpe1gb rdtscp lm constant_tsc arch_perfmon nopl xtopology tsc_reliable nonstop_tsc eagerfpu pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm abm 3dnowprefetch arat fsgsbase tsc_adjust bmi1 avx2 smep bmi2 invpcid rdseed adx smap clflushopt xsaveopt xsavec xgetbv1
+bogomips        : 5999.99
+clflush size    : 64
+cache_alignment : 64
+address sizes   : 45 bits physical, 48 bits virtual
+power management:
+
+[root@rhel7 ~]#
+</code></pre>
 <p><strong>top</strong></p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">top - 05:37:21 up 2 days, 14:06,  2 users,  load average: 0.00, 0.05, 0.07</span><br><span class="line">Tasks: 164 total,   1 running, 163 sleeping,   0 stopped,   0 zombie</span><br><span class="line">%Cpu(s):  0.3 us,  0.7 sy,  0.0 ni, 99.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">KiB Mem :   999696 total,   162172 free,   482632 used,   354892 buff/cache</span><br><span class="line">KiB Swap:  2097148 total,  2064164 free,    32984 used.   303396 avail Mem</span><br><span class="line"></span><br><span class="line">   PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND</span><br><span class="line">   759 root      20   0  305248   3152   2824 S  0.3  0.3   5:39.77 vmtoolsd</span><br><span class="line">  1196 mysql     20   0 1131704 193936    564 S  0.3 19.4   1:15.66 mysqld</span><br><span class="line"> 13017 root      20   0 1621100  76124   4316 S  0.3  7.6   1:13.35 mongod</span><br><span class="line">     1 root      20   0  128212   4532   2512 S  0.0  0.5   0:11.69 systemd</span><br><span class="line">     2 root      20   0       0      0      0 S  0.0  0.0   0:00.02 kthreadd</span><br><span class="line">     3 root      20   0       0      0      0 S  0.0  0.0   0:06.71 ksoftirqd/0</span><br><span class="line">     5 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kworker/0:0H</span><br><span class="line">     7 root      rt   0       0      0      0 S  0.0  0.0   0:00.00 migration/0</span><br><span class="line">     8 root      20   0       0      0      0 S  0.0  0.0   0:00.00 rcu_bh</span><br><span class="line">     9 root      20   0       0      0      0 S  0.0  0.0   0:12.27 rcu_sched</span><br><span class="line">    10 root      rt   0       0      0      0 S  0.0  0.0   0:03.50 watchdog/0</span><br><span class="line">    12 root      20   0       0      0      0 S  0.0  0.0   0:00.00 kdevtmpfs</span><br><span class="line">    13 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 netns</span><br><span class="line">    14 root      20   0       0      0      0 S  0.0  0.0   0:00.13 khungtaskd</span><br><span class="line">    15 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 writeback</span><br><span class="line">    16 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kintegrityd</span><br><span class="line">    17 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 bioset</span><br><span class="line">    18 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kblockd</span><br><span class="line">    19 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 md</span><br><span class="line">    25 root      20   0       0      0      0 S  0.0  0.0   0:01.89 kswapd0</span><br><span class="line">    26 root      25   5       0      0      0 S  0.0  0.0   0:00.00 ksmd</span><br><span class="line">    27 root      39  19       0      0      0 S  0.0  0.0   0:01.39 khugepaged</span><br><span class="line">    28 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 crypto</span><br><span class="line">    36 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kthrotld</span><br><span class="line">    38 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kmpath_rdacd</span><br><span class="line">    39 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kpsmoused</span><br><span class="line">    41 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 ipv6_addrconf</span><br><span class="line">    60 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 deferwq</span><br><span class="line">    93 root      20   0       0      0      0 S  0.0  0.0   0:13.32 kauditd</span><br><span class="line">   272 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 ata_sff</span><br><span class="line">   273 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 mpt_poll_0</span><br><span class="line">   274 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 mpt/0</span><br><span class="line">   278 root      20   0       0      0      0 S  0.0  0.0   0:00.00 scsi_eh_0</span><br><span class="line">   280 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 scsi_tmf_0</span><br><span class="line">   284 root      20   0       0      0      0 S  0.0  0.0   0:00.01 scsi_eh_1</span><br><span class="line">   286 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 scsi_tmf_1</span><br></pre></td></tr></tbody></table></figure>
-<h4 id="2-5-2-&#x5185;&#x5B58;"><a href="#2-5-2-&#x5185;&#x5B58;" class="headerlink" title="2.5.2 &#x5185;&#x5B58;"></a>2.5.2 &#x5185;&#x5B58;</h4><p><strong>free -h</strong><br></p><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 ~]# free -h</span><br><span class="line">              total        used        free      shared  buff/cache   available</span><br><span class="line">Mem:           976M        659M        142M        1.4M        175M        140M</span><br><span class="line">Swap:          2.0G        215M        1.8G</span><br><span class="line">[root@rhel7 ~]#</span><br></pre></td></tr></tbody></table></figure><p></p>
+<pre><code class="mbox">top - 05:37:21 up 2 days, 14:06,  2 users,  load average: 0.00, 0.05, 0.07
+Tasks: 164 total,   1 running, 163 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.3 us,  0.7 sy,  0.0 ni, 99.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem :   999696 total,   162172 free,   482632 used,   354892 buff/cache
+KiB Swap:  2097148 total,  2064164 free,    32984 used.   303396 avail Mem
+
+   PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND
+   759 root      20   0  305248   3152   2824 S  0.3  0.3   5:39.77 vmtoolsd
+  1196 mysql     20   0 1131704 193936    564 S  0.3 19.4   1:15.66 mysqld
+ 13017 root      20   0 1621100  76124   4316 S  0.3  7.6   1:13.35 mongod
+     1 root      20   0  128212   4532   2512 S  0.0  0.5   0:11.69 systemd
+     2 root      20   0       0      0      0 S  0.0  0.0   0:00.02 kthreadd
+     3 root      20   0       0      0      0 S  0.0  0.0   0:06.71 ksoftirqd/0
+     5 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kworker/0:0H
+     7 root      rt   0       0      0      0 S  0.0  0.0   0:00.00 migration/0
+     8 root      20   0       0      0      0 S  0.0  0.0   0:00.00 rcu_bh
+     9 root      20   0       0      0      0 S  0.0  0.0   0:12.27 rcu_sched
+    10 root      rt   0       0      0      0 S  0.0  0.0   0:03.50 watchdog/0
+    12 root      20   0       0      0      0 S  0.0  0.0   0:00.00 kdevtmpfs
+    13 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 netns
+    14 root      20   0       0      0      0 S  0.0  0.0   0:00.13 khungtaskd
+    15 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 writeback
+    16 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kintegrityd
+    17 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 bioset
+    18 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kblockd
+    19 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 md
+    25 root      20   0       0      0      0 S  0.0  0.0   0:01.89 kswapd0
+    26 root      25   5       0      0      0 S  0.0  0.0   0:00.00 ksmd
+    27 root      39  19       0      0      0 S  0.0  0.0   0:01.39 khugepaged
+    28 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 crypto
+    36 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kthrotld
+    38 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kmpath_rdacd
+    39 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 kpsmoused
+    41 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 ipv6_addrconf
+    60 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 deferwq
+    93 root      20   0       0      0      0 S  0.0  0.0   0:13.32 kauditd
+   272 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 ata_sff
+   273 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 mpt_poll_0
+   274 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 mpt/0
+   278 root      20   0       0      0      0 S  0.0  0.0   0:00.00 scsi_eh_0
+   280 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 scsi_tmf_0
+   284 root      20   0       0      0      0 S  0.0  0.0   0:00.01 scsi_eh_1
+   286 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 scsi_tmf_1
+</code></pre>
+<h4 id="2-5-2-&#x5185;&#x5B58;"><a href="#2-5-2-&#x5185;&#x5B58;" class="headerlink" title="2.5.2 &#x5185;&#x5B58;"></a>2.5.2 &#x5185;&#x5B58;</h4><p><strong>free -h</strong></p>
+<pre><code class="mbox">[root@rhel7 ~]# free -h
+              total        used        free      shared  buff/cache   available
+Mem:           976M        659M        142M        1.4M        175M        140M
+Swap:          2.0G        215M        1.8G
+[root@rhel7 ~]#
+</code></pre>
 <p><strong>top</strong></p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">top - 05:38:40 up 2 days, 14:07,  2 users,  load average: 0.50, 0.16, 0.23</span><br><span class="line">Tasks: 158 total,   1 running, 157 sleeping,   0 stopped,   0 zombie</span><br><span class="line">%Cpu(s):  1.4 us,  0.7 sy,  0.0 ni, 98.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">KiB Mem :   999936 total,   144896 free,   675384 used,   179656 buff/cache</span><br><span class="line">KiB Swap:  2097148 total,  1876980 free,   220168 used.   143004 avail Mem</span><br><span class="line"></span><br><span class="line">   PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND</span><br><span class="line">  2492 root      20   0 1476824  89756   3588 S  1.0  9.0   4:59.62 mongod</span><br><span class="line">  2521 root      20   0 1508032  86256   3612 S  1.0  8.6   5:00.86 mongod</span><br><span class="line">  1410 root      20   0 1075224  65992   2844 S  0.3  6.6  13:18.62 mongod</span><br><span class="line">  1876 root      20   0  140832   1128    464 S  0.3  0.1   0:07.76 sshd</span><br><span class="line">  2802 root      20   0 1591648 110528   3800 S  0.3 11.1   4:43.63 mongod</span><br><span class="line">  3155 root      20   0 1062216  83944   3040 S  0.3  8.4   2:25.67 mongod</span><br><span class="line">     1 root      20   0  128044   2288    604 S  0.0  0.2   0:02.73 systemd</span><br><span class="line">     2 root      20   0       0      0      0 S  0.0  0.0   0:00.01 kthreadd</span><br><span class="line">     3 root      20   0       0      0      0 S  0.0  0.0   0:05.51 ksoftirqd/0</span><br><span class="line">     7 root      rt   0       0      0      0 S  0.0  0.0   0:00.00 migration/0</span><br><span class="line">     8 root      20   0       0      0      0 S  0.0  0.0   0:00.00 rcu_bh</span><br><span class="line">     9 root      20   0       0      0      0 S  0.0  0.0   0:15.00 rcu_sched</span><br><span class="line">    10 root      rt   0       0      0      0 S  0.0  0.0   0:05.00 watchdog/0</span><br><span class="line">    12 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 khelper</span><br><span class="line">    13 root      20   0       0      0      0 S  0.0  0.0   0:00.00 kdevtmpfs</span><br><span class="line">    14 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 netns</span><br><span class="line">    15 root      20   0       0      0      0 S  0.0  0.0   0:00.15 khungtaskd</span><br><span class="line">    16 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 writebac</span><br></pre></td></tr></tbody></table></figure>
-<h4 id="2-5-3-&#x8D1F;&#x8F7D;"><a href="#2-5-3-&#x8D1F;&#x8F7D;" class="headerlink" title="2.5.3 &#x8D1F;&#x8F7D;"></a>2.5.3 &#x8D1F;&#x8F7D;</h4><p><strong>uptime</strong><br></p><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 ~]# uptime</span><br><span class="line"> 05:39:08 up 2 days, 14:07,  2 users,  load average: 0.33, 0.15, 0.22</span><br><span class="line">[root@rhel7 ~]#</span><br></pre></td></tr></tbody></table></figure><p></p>
-<p><strong>top</strong><br></p><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 ~]# top</span><br><span class="line">top - 05:38:40 up 2 days, 14:07,  2 users,  load average: 0.50, 0.16, 0.23</span><br><span class="line">Tasks: 158 total,   1 running, 157 sleeping,   0 stopped,   0 zombie</span><br><span class="line">%Cpu(s):  1.4 us,  0.7 sy,  0.0 ni, 98.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st</span><br><span class="line">KiB Mem :   999936 total,   144896 free,   675384 used,   179656 buff/cache</span><br><span class="line">KiB Swap:  2097148 total,  1876980 free,   220168 used.   143004 avail Mem</span><br><span class="line"></span><br><span class="line">   PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND</span><br><span class="line">  2492 root      20   0 1476824  89756   3588 S  1.0  9.0   4:59.62 mongod</span><br><span class="line">  2521 root      20   0 1508032  86256   3612 S  1.0  8.6   5:00.86 mongod</span><br><span class="line">  1410 root      20   0 1075224  65992   2844 S  0.3  6.6  13:18.62 mongod</span><br><span class="line">  1876 root      20   0  140832   1128    464 S  0.3  0.1   0:07.76 sshd</span><br><span class="line">  2802 root      20   0 1591648 110528   3800 S  0.3 11.1   4:43.63 mongod</span><br><span class="line">  3155 root      20   0 1062216  83944   3040 S  0.3  8.4   2:25.67 mongod</span><br><span class="line">     1 root      20   0  128044   2288    604 S  0.0  0.2   0:02.73 systemd</span><br><span class="line">     2 root      20   0       0      0      0 S  0.0  0.0   0:00.01 kthreadd</span><br><span class="line">     3 root      20   0       0      0      0 S  0.0  0.0   0:05.51 ksoftirqd/0</span><br><span class="line">     7 root      rt   0       0      0      0 S  0.0  0.0   0:00.00 migration/0</span><br><span class="line">     8 root      20   0       0      0      0 S  0.0  0.0   0:00.00 rcu_bh</span><br><span class="line">     9 root      20   0       0      0      0 S  0.0  0.0   0:15.00 rcu_sched</span><br><span class="line">    10 root      rt   0       0      0      0 S  0.0  0.0   0:05.00 watchdog/0</span><br><span class="line">    12 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 khelper</span><br><span class="line">    13 root      20   0       0      0      0 S  0.0  0.0   0:00.00 kdevtmpfs</span><br></pre></td></tr></tbody></table></figure><p></p>
-<p><strong>w</strong><br></p><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 ~]# w</span><br><span class="line"> 05:39:57 up 2 days, 14:08,  2 users,  load average: 0.14, 0.13, 0.22</span><br><span class="line">USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT</span><br><span class="line">root     pts/1    192.168.73.1     Sat17    5.00s  0.56s  0.00s w</span><br><span class="line">root     pts/2    192.168.73.1     Sat17    9:33   0.30s  0.26s ping www.163.com</span><br><span class="line">[root@rhel7 ~]#</span><br></pre></td></tr></tbody></table></figure><p></p>
-<h4 id="2-5-4-&#x78C1;&#x76D8;"><a href="#2-5-4-&#x78C1;&#x76D8;" class="headerlink" title="2.5.4 &#x78C1;&#x76D8;"></a>2.5.4 &#x78C1;&#x76D8;</h4><p><strong>fdisk</strong><br></p><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 ~]# fdisk -l</span><br><span class="line"></span><br><span class="line">Disk /dev/sda: 21.5 GB, 21474836480 bytes, 41943040 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line">Disk label type: dos</span><br><span class="line">Disk identifier: 0x000d2bb3</span><br><span class="line"></span><br><span class="line">   Device Boot      Start         End      Blocks   Id  System</span><br><span class="line">/dev/sda1   *        2048     2099199     1048576   83  Linux</span><br><span class="line">/dev/sda2         2099200    41943039    19921920   8e  Linux LVM</span><br><span class="line"></span><br><span class="line">Disk /dev/sdb: 10.7 GB, 10737418240 bytes, 20971520 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Disk /dev/sdc: 10.7 GB, 10737418240 bytes, 20971520 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Disk /dev/sde: 10.7 GB, 10737418240 bytes, 20971520 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Disk /dev/sdf: 10.7 GB, 10737418240 bytes, 20971520 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Disk /dev/sdd: 10.7 GB, 10737418240 bytes, 20971520 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Disk /dev/sdg: 10.7 GB, 10737418240 bytes, 20971520 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Disk /dev/mapper/rhel-root: 18.2 GB, 18249416704 bytes, 35643392 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">Disk /dev/mapper/rhel-swap: 2147 MB, 2147483648 bytes, 4194304 sectors</span><br><span class="line">Units = sectors of 1 * 512 = 512 bytes</span><br><span class="line">Sector size (logical/physical): 512 bytes / 512 bytes</span><br><span class="line">I/O size (minimum/optimal): 512 bytes / 512 bytes</span><br><span class="line"></span><br><span class="line">[root@rhel7 ~]#</span><br></pre></td></tr></tbody></table></figure><p></p>
-<p><strong>df</strong><br></p><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 ~]# df -h</span><br><span class="line">Filesystem             Size  Used Avail Use% Mounted on</span><br><span class="line">/dev/mapper/rhel-root   17G  4.7G   13G  28% /</span><br><span class="line">devtmpfs               478M     0  478M   0% /dev</span><br><span class="line">tmpfs                  489M     0  489M   0% /dev/shm</span><br><span class="line">tmpfs                  489M  6.8M  482M   2% /run</span><br><span class="line">tmpfs                  489M     0  489M   0% /sys/fs/cgroup</span><br><span class="line">/dev/sr0               3.6G  3.6G     0 100% /media/cdrom</span><br><span class="line">/dev/sda1             1014M  121M  894M  12% /boot</span><br><span class="line">tmpfs                   98M     0   98M   0% /run/user/0</span><br><span class="line">[root@rhel7 ~]#</span><br></pre></td></tr></tbody></table></figure><p></p>
-<h4 id="2-5-5-&#x6574;&#x4F53;"><a href="#2-5-5-&#x6574;&#x4F53;" class="headerlink" title="2.5.5 &#x6574;&#x4F53;"></a>2.5.5 &#x6574;&#x4F53;</h4><p><strong>vmstat</strong><br></p><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[root@rhel7 ~]# vmstat</span><br><span class="line">procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----</span><br><span class="line"> r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st</span><br><span class="line"> 2  0 220132 137404     56 185372    0    1     6     6   87   12  0  0 99  0  0</span><br><span class="line">[root@rhel7 ~]#</span><br></pre></td></tr></tbody></table></figure><p></p>
+<pre><code class="mbox">top - 05:38:40 up 2 days, 14:07,  2 users,  load average: 0.50, 0.16, 0.23
+Tasks: 158 total,   1 running, 157 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  1.4 us,  0.7 sy,  0.0 ni, 98.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem :   999936 total,   144896 free,   675384 used,   179656 buff/cache
+KiB Swap:  2097148 total,  1876980 free,   220168 used.   143004 avail Mem
+
+   PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND
+  2492 root      20   0 1476824  89756   3588 S  1.0  9.0   4:59.62 mongod
+  2521 root      20   0 1508032  86256   3612 S  1.0  8.6   5:00.86 mongod
+  1410 root      20   0 1075224  65992   2844 S  0.3  6.6  13:18.62 mongod
+  1876 root      20   0  140832   1128    464 S  0.3  0.1   0:07.76 sshd
+  2802 root      20   0 1591648 110528   3800 S  0.3 11.1   4:43.63 mongod
+  3155 root      20   0 1062216  83944   3040 S  0.3  8.4   2:25.67 mongod
+     1 root      20   0  128044   2288    604 S  0.0  0.2   0:02.73 systemd
+     2 root      20   0       0      0      0 S  0.0  0.0   0:00.01 kthreadd
+     3 root      20   0       0      0      0 S  0.0  0.0   0:05.51 ksoftirqd/0
+     7 root      rt   0       0      0      0 S  0.0  0.0   0:00.00 migration/0
+     8 root      20   0       0      0      0 S  0.0  0.0   0:00.00 rcu_bh
+     9 root      20   0       0      0      0 S  0.0  0.0   0:15.00 rcu_sched
+    10 root      rt   0       0      0      0 S  0.0  0.0   0:05.00 watchdog/0
+    12 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 khelper
+    13 root      20   0       0      0      0 S  0.0  0.0   0:00.00 kdevtmpfs
+    14 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 netns
+    15 root      20   0       0      0      0 S  0.0  0.0   0:00.15 khungtaskd
+    16 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 writebac
+</code></pre>
+<h4 id="2-5-3-&#x8D1F;&#x8F7D;"><a href="#2-5-3-&#x8D1F;&#x8F7D;" class="headerlink" title="2.5.3 &#x8D1F;&#x8F7D;"></a>2.5.3 &#x8D1F;&#x8F7D;</h4><p><strong>uptime</strong></p>
+<pre><code class="mbox">[root@rhel7 ~]# uptime
+ 05:39:08 up 2 days, 14:07,  2 users,  load average: 0.33, 0.15, 0.22
+[root@rhel7 ~]#
+</code></pre>
+<p><strong>top</strong></p>
+<pre><code class="mbox">[root@rhel7 ~]# top
+top - 05:38:40 up 2 days, 14:07,  2 users,  load average: 0.50, 0.16, 0.23
+Tasks: 158 total,   1 running, 157 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  1.4 us,  0.7 sy,  0.0 ni, 98.0 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+KiB Mem :   999936 total,   144896 free,   675384 used,   179656 buff/cache
+KiB Swap:  2097148 total,  1876980 free,   220168 used.   143004 avail Mem
+
+   PID USER      PR  NI    VIRT    RES    SHR S %CPU %MEM     TIME+ COMMAND
+  2492 root      20   0 1476824  89756   3588 S  1.0  9.0   4:59.62 mongod
+  2521 root      20   0 1508032  86256   3612 S  1.0  8.6   5:00.86 mongod
+  1410 root      20   0 1075224  65992   2844 S  0.3  6.6  13:18.62 mongod
+  1876 root      20   0  140832   1128    464 S  0.3  0.1   0:07.76 sshd
+  2802 root      20   0 1591648 110528   3800 S  0.3 11.1   4:43.63 mongod
+  3155 root      20   0 1062216  83944   3040 S  0.3  8.4   2:25.67 mongod
+     1 root      20   0  128044   2288    604 S  0.0  0.2   0:02.73 systemd
+     2 root      20   0       0      0      0 S  0.0  0.0   0:00.01 kthreadd
+     3 root      20   0       0      0      0 S  0.0  0.0   0:05.51 ksoftirqd/0
+     7 root      rt   0       0      0      0 S  0.0  0.0   0:00.00 migration/0
+     8 root      20   0       0      0      0 S  0.0  0.0   0:00.00 rcu_bh
+     9 root      20   0       0      0      0 S  0.0  0.0   0:15.00 rcu_sched
+    10 root      rt   0       0      0      0 S  0.0  0.0   0:05.00 watchdog/0
+    12 root       0 -20       0      0      0 S  0.0  0.0   0:00.00 khelper
+    13 root      20   0       0      0      0 S  0.0  0.0   0:00.00 kdevtmpfs
+</code></pre>
+<p><strong>w</strong></p>
+<pre><code class="mbox">[root@rhel7 ~]# w
+ 05:39:57 up 2 days, 14:08,  2 users,  load average: 0.14, 0.13, 0.22
+USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+root     pts/1    192.168.73.1     Sat17    5.00s  0.56s  0.00s w
+root     pts/2    192.168.73.1     Sat17    9:33   0.30s  0.26s ping www.163.com
+[root@rhel7 ~]#
+</code></pre>
+<h4 id="2-5-4-&#x78C1;&#x76D8;"><a href="#2-5-4-&#x78C1;&#x76D8;" class="headerlink" title="2.5.4 &#x78C1;&#x76D8;"></a>2.5.4 &#x78C1;&#x76D8;</h4><p><strong>fdisk</strong></p>
+<pre><code class="mbox">[root@rhel7 ~]# fdisk -l
+
+Disk /dev/sda: 21.5 GB, 21474836480 bytes, 41943040 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x000d2bb3
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *        2048     2099199     1048576   83  Linux
+/dev/sda2         2099200    41943039    19921920   8e  Linux LVM
+
+Disk /dev/sdb: 10.7 GB, 10737418240 bytes, 20971520 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/sdc: 10.7 GB, 10737418240 bytes, 20971520 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/sde: 10.7 GB, 10737418240 bytes, 20971520 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/sdf: 10.7 GB, 10737418240 bytes, 20971520 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/sdd: 10.7 GB, 10737418240 bytes, 20971520 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/sdg: 10.7 GB, 10737418240 bytes, 20971520 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/rhel-root: 18.2 GB, 18249416704 bytes, 35643392 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/rhel-swap: 2147 MB, 2147483648 bytes, 4194304 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+[root@rhel7 ~]#
+</code></pre>
+<p><strong>df</strong></p>
+<pre><code class="mbox">[root@rhel7 ~]# df -h
+Filesystem             Size  Used Avail Use% Mounted on
+/dev/mapper/rhel-root   17G  4.7G   13G  28% /
+devtmpfs               478M     0  478M   0% /dev
+tmpfs                  489M     0  489M   0% /dev/shm
+tmpfs                  489M  6.8M  482M   2% /run
+tmpfs                  489M     0  489M   0% /sys/fs/cgroup
+/dev/sr0               3.6G  3.6G     0 100% /media/cdrom
+/dev/sda1             1014M  121M  894M  12% /boot
+tmpfs                   98M     0   98M   0% /run/user/0
+[root@rhel7 ~]#
+</code></pre>
+<h4 id="2-5-5-&#x6574;&#x4F53;"><a href="#2-5-5-&#x6574;&#x4F53;" class="headerlink" title="2.5.5 &#x6574;&#x4F53;"></a>2.5.5 &#x6574;&#x4F53;</h4><p><strong>vmstat</strong></p>
+<pre><code class="mbox">[root@rhel7 ~]# vmstat
+procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
+ 2  0 220132 137404     56 185372    0    1     6     6   87   12  0  0 99  0  0
+[root@rhel7 ~]#
+</code></pre>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
@@ -384,355 +2177,51 @@ cat /proc/sys/cpuinfo
             document.body.appendChild(img);
           });
       </script>
-        </div>
-
-        <blockquote class="post-copyright">
-    <div class="content">
-        
-<span class="post-time">
-    最后更新：<time datetime="2022-06-07T05:01:02.229Z" itemprop="dateUpdated">2022-06-07 13:01:02</time>
-</span>
+</div>
 
 
-        
-        原文链接：<a href="/posts/fa35a60d/" target="_blank" rel="external">https://marnm.github.io/posts/fa35a60d/</a>
-        
-    </div>
-    <footer>
-        <div onclick="location.href='https://marnm.github.io'">
-            <img src="/img/avatar.gif" alt="Echo">
-            <a>Echo</a>
-        </div>
-    </footer>
-</blockquote>
-
-        
-    <div class="page-reward">
-        <nav class="myreward">
-            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
-        </nav>
-    </div>
-
-
-
-        <div class="post-footer">
+    <div class="post-guide">
+        <div class="item left">
             
-
+              <a href="/posts/480c215d/">
+                  <i class="fa fa-angle-left" aria-hidden="true"></i>
+                  Linux性能管理工具
+              </a>
             
-<div class="page-share-wrap">
-    
-
-<div class="page-share" id="pageShare">
-    <ul class="reset share-icons">
-      <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/fa35a60d/&title=《性能测试指标详解》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
-          <i class="icon icon-weibo"></i>
-        </a>
-      </li>
-      <li>
-        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
-          <i class="icon icon-weixin"></i>
-        </a>
-      </li>
-      <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/fa35a60d/&title=《性能测试指标详解》 — Deops's blog&source=Echo" data-title=" QQ">
-          <i class="icon icon-qq"></i>
-        </a>
-      </li>
-      <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/fa35a60d/" data-title=" Facebook">
-          <i class="icon icon-facebook"></i>
-        </a>
-      </li>
-      <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《性能测试指标详解》 — Deops's blog&url=https://marnm.github.io/posts/fa35a60d/&via=https://marnm.github.io" data-title=" Twitter">
-          <i class="icon icon-twitter"></i>
-        </a>
-      </li>
-      <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/fa35a60d/" data-title=" Google+">
-          <i class="icon icon-google-plus"></i>
-        </a>
-      </li>
-    </ul>
- </div>
-
-
-
-    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
-        <i class="icon icon-share-alt icon-lg"></i>
-    </a>
-</div>
-
-
-
+        </div>
+        <div class="item right">
+            
+              <a href="/posts/e8c4eb08/">
+                OpenSSL使用教程
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+              </a>
+            
         </div>
     </div>
 
-    
-<nav class="post-nav flex-row flex-justify-between">
-  
-    <div class="waves-block waves-effect prev">
-      <a href="/posts/480c215d/" id="post-prev" class="post-nav-link">
-        <h4 class="title">
-          上一篇：Linux性能管理工具
-        </h4>
-      </a>
-    </div>
-  
-
-  
-    <div class="waves-block waves-effect next">
-      <a href="/posts/e8c4eb08/" id="post-next" class="post-nav-link">
-        <h4 class="title" data-hover="下一篇：OpenSSL使用教程">下一篇：OpenSSL使用教程</h4>
-      </a>
-    </div>
-  
-</nav>
 
 
 
-    
-    
-
-    
-
-    
-
-
-</article>
-
-</div>
-
-        <footer class="footer">
-    <div class="footer-content">
-        <span class="power">
-            <i class="icon icon-lg icon-copyright"></i>
-            2022
-            <i class="icon icon-lg icon-heart"></i>
-            <a href="https://marnm.github.io">marnm.github.io</a>
-            <br>
-            Power by
-            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
-            Theme
-            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
-        </span>
-
-        <br>
-
-        <span id="RunTime" style="color:#a7a7a2;"></span>
-        <br>
-
-        <span>
-            
-
-        </span>
-        <br>
-
-        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
-    </div>
-</footer>
-
-    </main>
-    
-        
-<div id="reward" class="page-modal reward-lay">
-    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <h3 class="reward-title">
-        <i class="icon icon-quote-left"></i>
-        <span>感谢您的鼓励支持！</span>
-        <i class="icon icon-quote-right"></i>
-    </h3>
-    <div class="reward-content">
-        
-        <div class="reward-code">
-            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
-        </div>
-        
-        <label class="reward-toggle">
-            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
-            <div class="reward-toggle-ctrol">
-                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
-                <span class="reward-toggle-item alipayPay">支付宝</span>
-            </div>
-        </label>
-        
-        <i class="icon icon-caret-up"></i>
-    </div>
-</div>
-
-
-    
-    <div class="mask" id="mask"></div>
-<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
-
-
-
-<div class="global-share" id="globalShare">
-    <ul class="reset share-icons">
-      <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/fa35a60d/&title=《性能测试指标详解》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
-          <i class="icon icon-weibo"></i>
-        </a>
-      </li>
-      <li>
-        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
-          <i class="icon icon-weixin"></i>
-        </a>
-      </li>
-      <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/fa35a60d/&title=《性能测试指标详解》 — Deops's blog&source=Echo" data-title=" QQ">
-          <i class="icon icon-qq"></i>
-        </a>
-      </li>
-      <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/fa35a60d/" data-title=" Facebook">
-          <i class="icon icon-facebook"></i>
-        </a>
-      </li>
-      <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《性能测试指标详解》 — Deops's blog&url=https://marnm.github.io/posts/fa35a60d/&via=https://marnm.github.io" data-title=" Twitter">
-          <i class="icon icon-twitter"></i>
-        </a>
-      </li>
-      <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/fa35a60d/" data-title=" Google+">
-          <i class="icon icon-google-plus"></i>
-        </a>
-      </li>
-    </ul>
- </div>
-
-
-<div class="page-modal wx-share" id="wxShare">
-    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p class="wechatshare">扫一扫，分享到微信</p>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAAB00lEQVR42u3aQY6DMAwFUO5/aWY7UkX4jkOoqpdVNWXglYXlfOc44nX+W59/GX87vufxxMLFxW1zz+G6umZ8h09Q/u34Wbi4uDu540Jz9bla1JIfdmPDxcX9Sm6/n8LFxf09bt7o5JsfXFzc7+R2WpAc12mDcHFxd3LzpuS5z4/ku7i4uFPcs7iSeLQTs948HRcXdws3Lyh585GXsOpzcXFx93CrA5IkPM0LXP5qCgkuLi7uIm4eVs6FF9X2KOrIcHFxH+Pe9D5x0amOQ/KDXNFABRcXdym3dQxialPUiU5wcXH3cOcOYUxuXRoTk6P6/nBxcRvcvMmYa27GJSl5EYW6i4uLu4g7V1A6R6zmyiUuLu5O7qoDE9UBSf4Wo7qLi4u7lDt32CJpU6rjlk7zhIuL+wS3eqN8NDIXsN5sinBxcTdy838etyP5cY08IsHFxX2LW40+O8cpqvdfkNTi4uLG3LO4qqPWzsELXFzct7idIxHVwWrePE0OWXFxcZdyO5uTZPiRUAoFDhcXdyM33xTlQ9ZqY9TKd3FxcV/l5j+ms8Uqpya4uLivcvNApHPN5fW4uLgbuXlIOjci7RBxcXH3czuDzzwcqQYiC/JdXFzcGe4fZ+DiMexsCeoAAAAASUVORK5CYII=" alt="微信分享二维码">
-</div>
-
-
-
-
-    <!-- waves按钮特效 -->
-<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
-
-<!-- 主题配置脚本 -->
 <script>
-var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+	
+	
 </script>
-
-<!-- jquery -->
-<script src="/js/jquery.min.js?v=3.0"></script>
-
-<!-- 搜索 -->
-
-<div class="search-panel" id="search-panel">
-    <ul class="search-result" id="search-result"></ul>
+	</div>
+	<div id="footer">
+	<p>
+	©2019-<span id="footerYear"></span> 
+	<a href="/">Echo</a> 
+	
+	
+	<br>
+	Theme <a href="//github.com/wujun234/hexo-theme-tree" target="_blank">Tree</a>
+	by <a href="//github.com/wujun234" target="_blank">WuJun</a>
+	Powered by <a href="//hexo.io" target="_blank">Hexo</a>
+	</p>
 </div>
-<template id="search-tpl">
-<li class="item waves-block waves-effect" onclick="location.href='{path}'">
-    <div class="title ellipsis" title="{title}">{title}</div>
-</li>
-</template>
-
-
-<!-- main博客脚本 -->
-<script src="/js/main.min.js?v=3.0"></script>
-
-<!-- 动画&配置 -->
-<script src="/js/script.min.js?v=3.0"></script>
-
-<!-- 脚本管理 -->
-<script>
-
-if(window.innerWidth > 800){
-	/* 3D标题 */
-	$(".content-header").on("mousemove", threedee);
-
-	/* 底部追随鼠标 */
-	$(".footer").hover(2);
-
-	/* gotop键的涟漪 */
-	$("#gotop").hover(1);
-
-	/* 赞赏的粒子雨 */
-	$("#reward").hover(3);
-
-	/* 微信公众号的底部渲染 */
-	$("#wechat").hover(4);
-
-    /* 标题跳动 */
-    $(".archivestitle").bumpyText();
-
-	/* 图片点击放大 */
-	const postimg = jQuery(".post-content img:not(.github-emoji)");
-	postimg.on("click",function(){
-
-		mask.classList.add("in");
-		main.classList.add("Mask");
-		menu.classList.add("Mask");
-		var myimg = this.cloneNode(true);
-		myimg.classList.add("imgShow");
-
-		setTimeout(function(){
-			jQuery(myimg).animate({
-				opacity:"1"
-			},1000);
-		},0);
-
-		document.body.appendChild(myimg);
-
-		myimg.onclick=function(){
-			document.body.removeChild(myimg);
-			mask.classList.remove("in");
-			main.classList.remove("Mask");
-			menu.classList.remove("Mask");
-		};
-
-	});
-
-}
-
-/* 名字跳动 */
-$("#name").bumpyText();
-
-
-/* 网站运行时间 */
-setInterval(function () {
-	setTime("2019/01/01");
-}, 1000);
-
-/* 文章块的淡出 */
-postshow();
-
-/* 座右铭 */
-
-   getHitokoto();
-
-
-
-/* 粘贴提示 */
-G($(".post-content"), location.href, "Echo");
-
-
-/* 控制台 */
-if (window.console && window.console.log) {
-	setTimeout(function () {
-		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
-	}, 0);
-}
-
+<script type="text/javascript"> 
+	document.getElementById('footerYear').innerHTML = new Date().getFullYear() + '';
 </script>
-
-
-
-
-<!-- 公式渲染 -->
-
-
-
-<!-- 不蒜子 -->
-
-
+	<button id="totop-toggle" class="toggle"><i class="fa fa-angle-double-up" aria-hidden="true"></i></button>
 </body>
 </html>

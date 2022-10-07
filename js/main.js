@@ -1,653 +1,371 @@
-(function (w, d) {
-    const body = d.body,
-        $ = d.querySelector.bind(d),
-        $$ = d.querySelectorAll.bind(d),
-        root = $("html"),
-        gotop = $("#gotop"),
-        menu = $("#menu"),
-        main = $("#main"),
-        header = $("#header"),
-        mask = $("#mask"),
-        menuToggle = $("#menu-toggle"),
-        menuOff = $("#menu-off"),
-        title = $(".header-title"),
-        loading = $("#loading"),
-        isPost = location.href.indexOf("post") !== -1,
-        animate = w.requestAnimationFrame,
-        scrollSpeed = 200 / (1000 / 60),
-        forEach = Array.prototype.forEach,
-        isWX = (/micromessenger/i).test(navigator.userAgent),
-        noop = function () {},
-        offset = function (el) {
-            let x = el.offsetLeft,
-                y = el.offsetTop;
-            if (el.offsetParent) {
-                const pOfs = arguments.callee(el.offsetParent);
-                x += pOfs.x;
-                y += pOfs.y;
-            }
-            return {
-                x: x,
-                y: y
-            };
-        };
-    let even = "ontouchstart" in w && (/Mobile|Android|iOS|iPhone|iPad|iPod|Windows Phone|KFAPWI/i).test(navigator.userAgent) ? "touchstart" : "click";
-    let docEl = d.documentElement;
-    if (w.innerWidth > 600) {
-        if ((window.navigator.userAgent.indexOf("WOW") > -1 || window.navigator.userAgent.indexOf("Edge") > -1 || window.navigator.userAgent.indexOf("MSIE") > -1) && window.navigator.userAgent.indexOf("Trident") === -1) {
-            docEl = body;
-        }
+$(document).ready(function () {
+  hljs.initHighlightingOnLoad();
+  clickTreeDirectory();
+  serachTree();
+  pjaxLoad();
+  showArticleIndex();
+  switchTreeOrIndex();
+  scrollToTop();
+  pageScroll();
+  wrapImageWithFancyBox();
+});
+
+// 页面滚动
+function pageScroll() {
+  var start_hight = 0;
+  $(window).on('scroll', function () {
+    var end_hight = $(window).scrollTop();
+    var distance = end_hight - start_hight;
+    start_hight = end_hight;
+    var $header = $('#header');
+    if (distance > 0 && end_hight > 50) {
+      $header.hide();
+    } else if (distance < 0) {
+      $header.show();
     } else {
-        if (window.navigator.userAgent.indexOf("Android") > -1) {
-            if (window.navigator.userAgent.indexOf("Browser") > -1) {
-                docEl = body;
-            }
-        }
+      return false;
     }
-    const Blog = {
-        goTop: function (end) {
-            const top = docEl.scrollTop;
-            const interval = arguments.length > 2 ? arguments[1] : Math.abs(top - end) / scrollSpeed;
-            if (top && top > end) {
-                docEl.scrollTop = Math.max(top - interval, 0);
-                animate(arguments.callee.bind(this, end, interval));
-            } else if (end && top < end) {
-                docEl.scrollTop = Math.min(top + interval, end);
-                animate(arguments.callee.bind(this, end, interval));
-            } else {
-                this.toc.actived(end);
-            }
-        },
-        toggleGotop: function (top) {
-            if (top > w.innerHeight / 2) {
-                gotop.classList.add("in");
-            } else {
-                gotop.classList.remove("in");
-            }
-        },
-        toggleMenu: function (flag) {
-            if (flag) {
-                menu.classList.remove("hide");
-                if (!isPost) {
-                    main.classList.remove("menuoff");
-                    jQuery(title).animate({
-                        marginRight: "-20%"
-                    });
-                }
-                if (w.innerWidth < 1241) {
-                    mask.classList.add("in");
-                    menu.classList.add("show");
+  })
+}
 
-                    if (isWX) {
-                        const top = docEl.scrollTop;
-                        main.classList.add("lock");
-                        main.scrollTop = top;
-                    } else {
-                        root.classList.add("lock");
-                    }
-                }
-            } else {
-                mask.classList.remove("in");
-                menu.classList.remove("show");
+// 回到顶部
+function scrollToTop() {
+  $("#totop-toggle").on("click", function (e) {
+    $("html").animate({scrollTop: 0}, 200);
+  });
+}
 
-                if (isWX) {
-                    const top = main.scrollTop;
-                    main.classList.remove("lock");
-                    docEl.scrollTop = top;
-                } else {
-                    root.classList.remove("lock");
-                }
-            }
-        },
-        fixedHeader: function (top) {
-            if (top > header.clientHeight) {
-                header.classList.add("fixed");
-            } else {
-                header.classList.remove("fixed");
-            }
-        },
-        toc: (function () {
-            const toc = $("#post-toc");
-            if (!toc || !toc.children.length) {
-                if (isPost) {
-                    main.classList.add("show");
-                }
-
-                return {
-                    fixed: noop,
-                    actived: noop
-                };
-            }
-            const bannerH = $(".post-header").clientHeight,
-                headerH = header.clientHeight,
-                titles = $("#post-content").querySelectorAll("h1, h2, h3, h4, h5, h6");
-            toc.querySelector(`a[href="#${ titles[0].id }"]`).parentNode.classList.add("active");
-
-            main.classList.add("tocshow");
-
-            title.classList.add("toc");
-            $(".footer").classList.add("toc");
-
-            return {
-                fixed: function (top) {
-                    if (top >= bannerH - headerH) {
-                        toc.classList.add("fixed");
-                    } else {
-                        toc.classList.remove("fixed");
-                    }
-                },
-                actived: function (top) {
-                    for (let i = 0, len = titles.length; i < len; i++) {
-                        if (top > offset(titles[i]).y - headerH - 5) {
-                            toc.querySelector("li.active").classList.remove("active");
-                            const active = toc.querySelector(`a[href="#${ titles[i].id }"]`).parentNode;
-                            active.classList.add("active");
-                        }
-                    }
-                    if (top < offset(titles[0]).y) {
-                        toc.querySelector("li.active").classList.remove("active");
-                        toc.querySelector(`a[href="#${ titles[0].id }"]`).parentNode.classList.add("active");
-                    }
-                }
-            };
-        }()),
-        hideOnMask: [],
-        modal: function (target) {
-            this.$modal = $(target);
-            this.$off = this.$modal.querySelector(".close");
-            const mythis = this;
-            this.show = function () {
-                mask.classList.add("in");
-                if (w.innerWidth > 800) {
-                    main.classList.add("Mask");
-                    menu.classList.add("Mask");
-                }
-                mythis.$modal.classList.add("ready");
-                setTimeout(function () {
-                    mythis.$modal.classList.add("in");
-                }, 0);
-            };
-            this.onHide = noop;
-            this.hide = function () {
-                mythis.onHide();
-                mask.classList.remove("in");
-                if (w.innerWidth > 800) {
-                    main.classList.remove("Mask");
-                    menu.classList.remove("Mask");
-                    const myimg = d.querySelector(".imgShow");
-                    if (myimg) {
-                        document.body.removeChild(myimg);
-                    }
-                }
-
-                mythis.$modal.classList.remove("in");
-                setTimeout(function () {
-                    mythis.$modal.classList.remove("ready");
-                }, 300);
-            };
-            this.toggle = function () {
-                return mythis.$modal.classList.contains("in") ? mythis.hide() : mythis.show();
-            };
-            Blog.hideOnMask.push(this.hide);
-            if (this.$off) {
-                this.$off.addEventListener(even, this.hide);
-            }
-        },
-        share: function () {
-            const pageShare = $("#pageShare"),
-                fab = $("#shareFab"),
-                shareModal = new this.modal("#globalShare");
-            if (fab) {
-                fab.addEventListener(even, function () {
-                    pageShare.classList.toggle("in");
-                }, false);
-                d.addEventListener(even, function (e) {
-                    if (!fab.contains(e.target)) {
-                        pageShare.classList.remove("in");
-                    }
-                }, false);
-            }
-            const wxModal = new this.modal("#wxShare");
-            wxModal.onHide = shareModal.hide;
-            forEach.call($$(".wxFab"), function (el) {
-                el.addEventListener(even, wxModal.toggle);
-            });
-        },
-        reward: function () {
-            const modal = new this.modal("#reward");
-            const $rewardCode = $("#rewardCode");
-            const $rewardToggle = $("#rewardToggle");
-            let tipFirstt = false,tipPosition = -1;
-            const wechatPay = $(".wechatPay");
-            const alipayPay = $(".alipayPay");
-            const caret = $(".icon-caret-up");
-            $("#rewardBtn").addEventListener(even, function () {
-                if (tipPosition === -1){
-                    $rewardCode.src = $rewardCode.dataset.img;
-                } else if (tipPosition === 1){
-                    $rewardCode.src = $rewardToggle.dataset.alipay;
-                } else if (tipPosition === 0){
-                    $rewardCode.src = $rewardToggle.dataset.wechat;
-                }
-                modal.toggle();
-            });
-
-            wechatPay.addEventListener("click", function () {
-                tipFirstt = true;
-            });
-            if ($rewardToggle) {
-                $rewardToggle.addEventListener("change", function () {
-                    if (!this.checked) {
-                        $rewardCode.src = this.dataset.alipay;
-                        alipayPay.classList.add("show");
-                        wechatPay.classList.remove("show");
-                        caret.style = "margin-left:20%;";
-                        tipPosition = 1;
-                    } else if (!tipFirstt) {
-                        $rewardCode.src = this.dataset.alipay;
-                        alipayPay.classList.add("show");
-                        wechatPay.classList.remove("show");
-                        caret.style = "margin-left:20%;";
-                        this.checked = false;
-                        tipPosition = 1;
-                    } else {
-                        $rewardCode.src = this.dataset.wechat;
-                        alipayPay.classList.remove("show");
-                        wechatPay.classList.add("show");
-                        caret.style = "margin-left:-20%;";
-                        tipPosition = 0;
-                    }
-                });
-            }
-        },
-        tabBar: function (el) {
-            el.parentNode.parentNode.classList.toggle("expand");
-        },
-        page: (function () {
-            const $elements = $$(".fade, .fade-scale");
-            let visible = false;
-            return {
-                loaded: function () {
-                    forEach.call($elements, function (el) {
-                        el.classList.add("in");
-                    });
-                    visible = true;
-                },
-                unload: function () {
-                    forEach.call($elements, function (el) {
-                        el.classList.remove("in");
-                    });
-                    visible = false;
-                },
-                visible: visible
-            };
-        }()),
-        lightbox: (function () {
-            function LightBox(element) {
-                this.$img = element.querySelector("img");
-                this.$overlay = element.querySelector("overlay");
-                this.margin = 40;
-                this.title = this.$img.title || this.$img.alt || "";
-                this.isZoom = false;
-                let naturalW, naturalH, imgRect, docW, docH;
-                this.calcRect = function () {
-                    docW = body.clientWidth;
-                    docH = body.clientHeight;
-                    const inH = docH - this.margin * 2;
-                    let ww = naturalW;
-                    let h = naturalH;
-                    const t = this.margin;
-                    const l = 0;
-                    const sw = ww > docW ? docW / ww : 1;
-                    const sh = h > inH ? inH / h : 1;
-                    const s = Math.min(sw, sh);
-                    ww = ww * s;
-                    h = h * s;
-                    return {
-                        w: ww,
-                        h: h,
-                        t: (docH - h) / 2 - imgRect.top,
-                        l: (docW - ww) / 2 - imgRect.left + this.$img.offsetLeft
-                    };
-                };
-                this.setImgRect = function (rect) {
-                    this.$img.style.cssText = `width: ${ rect.w }px; max-width: ${ rect.w }px; height:${ rect.h }px; top: ${ rect.t }px; left: ${ rect.l }px`;
-                };
-                this.setFrom = function () {
-                    this.setImgRect({
-                        w: imgRect.width,
-                        h: imgRect.height,
-                        t: 0,
-                        l: (element.offsetWidth - imgRect.width) / 2
-                    });
-                };
-                this.setTo = function () {
-                    this.setImgRect(this.calcRect());
-                };
-                this.addTitle = function () {
-                    if (!this.title) {
-                        return;
-                    }
-                    this.$caption = d.createElement("div");
-                    this.$caption.innerHTML = this.title;
-                    this.$caption.className = "overlay-title";
-                    element.appendChild(this.$caption);
-                };
-                this.removeTitle = function () {
-                    if (this.$caption) {
-                        element.removeChild(this.$caption);
-                    }
-                };
-                const mythis = this;
-                this.zoomIn = function () {
-                    naturalW = this.$img.naturalWidth || this.$img.width;
-                    naturalH = this.$img.naturalHeight || this.$img.height;
-                    imgRect = this.$img.getBoundingClientRect();
-                    element.style.height = `${imgRect.height }px`;
-                    element.classList.add("ready");
-                    this.setFrom();
-                    this.addTitle();
-                    this.$img.classList.add("zoom-in");
-                    setTimeout(function () {
-                        element.classList.add("active");
-                        mythis.setTo();
-                        mythis.isZoom = true;
-                    }, 0);
-                };
-                this.zoomOut = function () {
-                    this.isZoom = false;
-                    element.classList.remove("active");
-                    this.$img.classList.add("zoom-in");
-                    this.setFrom();
-                    setTimeout(function () {
-                        mythis.$img.classList.remove("zoom-in");
-                        mythis.$img.style.cssText = "";
-                        mythis.removeTitle();
-                        element.classList.remove("ready");
-                        element.removeAttribute("style");
-                    }, 300);
-                };
-                element.addEventListener("click", function (e) {
-                    if (mythis.isZoom) {
-                        mythis.zoomOut();
-                    } else if (e.target.tagName === "IMG") {
-                        mythis.zoomIn();
-                    }
-                });
-                d.addEventListener("scroll", function () {
-                    if (mythis.isZoom) {
-                        mythis.zoomOut();
-                    }
-                });
-                w.addEventListener("resize", function () {
-                    if (mythis.isZoom) {
-                        mythis.zoomOut();
-                    }
-                });
-            }
-            forEach.call($$(".img-lightbox"), function (el) {
-                new LightBox(el);
-            });
-        }()),
-        loadScript: function (scripts) {
-            scripts.forEach(function (src) {
-                const s = d.createElement("script");
-                s.src = src;
-                s.async = true;
-                body.appendChild(s);
-            });
-        }
-    };
-    /* 页面加载第二个执行的事件 */
-    w.addEventListener("load", function () {
-        loading.classList.remove("active");
-        Blog.page.loaded();
-        if (w.lazyScripts && w.lazyScripts.length) {
-            Blog.loadScript(w.lazyScripts);
-        }
-    });
-    /* 页面加载第一个执行的事件 */
-    w.addEventListener("DOMContentLoaded", function () {
-        const top = docEl.scrollTop;
-        Blog.toc.fixed(top);
-        Blog.toc.actived(top);
-        Blog.page.loaded();
-    });
-    /* 打开邮箱时，不触发关闭页面事件 */
-    let ignoreUnload = false;
-    const $mailTarget = $("a[href^=\"mailto\"]");
-    if ($mailTarget) {
-        $mailTarget.addEventListener(even, function () {
-            ignoreUnload = true;
-        });
-    }
-    /* 页面关闭 刷新事件 */
-    w.addEventListener("beforeunload", function () {
-        if (!ignoreUnload) {
-            Blog.page.unload();
-        } else {
-            ignoreUnload = false;
-        }
-    });
-    /* 页面加载第三个执行的事件 */
-    w.addEventListener("pageshow", function () {
-        if (!Blog.page.visible) {
-            Blog.page.loaded();
-        }
-    });
-    /* 调整窗口大小时，自动 */
-    w.addEventListener("resize", function () {
-        even = "ontouchstart" in w ? "touchstart" : "click";
-        w.BLOG.even = even;
-        Blog.toggleMenu();
-    });
-    gotop.addEventListener(even, function () {
-        animate(Blog.goTop.bind(Blog, 0));
-    }, false);
-    menuToggle.addEventListener(even, function (e) {
-        Blog.toggleMenu(true);
-        e.preventDefault();
-    }, false);
-    menuOff.addEventListener(even, function () {
-        menu.classList.add("hide");
-        if (!isPost) {
-            main.classList.add("menuoff");
-            jQuery(title).animate({
-                marginRight: "-3%"
-            });
-        }
-    }, false);
-    mask.addEventListener(even, function (e) {
-        Blog.toggleMenu();
-        Blog.hideOnMask.forEach(function (hide) {
-            hide();
-        });
-        e.preventDefault();
-    }, false);
-    d.addEventListener("scroll", function () {
-        const top = docEl.scrollTop;
-        Blog.toggleGotop(top);
-        Blog.fixedHeader(top);
-        Blog.toc.fixed(top);
-        Blog.toc.actived(top);
-    }, false);
-    if (w.BLOG.SHARE && isPost) {
-        Blog.share();
-    }
-    if (w.BLOG.REWARD) {
-        Blog.reward();
-    }
-    Blog.noop = noop;
-    Blog.even = even;
-    Blog.$ = $;
-    Blog.$$ = $$;
-    Object.keys(Blog).reduce(function (g, e) {
-        g[e] = Blog[e];
-        return g;
-    }, w.BLOG);
-
-    if (w.Waves) {
-        Waves.init();
-        Waves.attach(".global-share li", ["waves-block"]);
-        Waves.attach(".article-tag-list-link, #page-nav a, #page-nav span", ["waves-button"]);
+// 侧面目录
+function switchTreeOrIndex() {
+  $('#sidebar-toggle').on('click', function () {
+    if ($('#sidebar').hasClass('on')) {
+      scrollOff();
     } else {
-        console.error("Waves loading failed.");
+      scrollOn();
     }
-
-}(window, document));
-
-/*search*/
-(function () {
-
-    const G = window || this,
-        even = G.BLOG.even,
-        $ = G.BLOG.$,
-        searchIco = $("#search"),
-        searchWrap = $("#search-wrap"),
-        keyInput = $("#key"),
-        back = $("#back"),
-        searchPanel = $("#search-panel"),
-        searchResult = $("#search-result"),
-        searchTpl = $("#search-tpl").innerHTML,
-        JSON_DATA = `${G.BLOG.ROOT }/content.json`.replace(/\/{2}/g, "/");
-    let searchData;
-
-    function loadData(success) {
-
-        if (!searchData) {
-            const xhr = new XMLHttpRequest();
-
-            xhr.open("GET", JSON_DATA, true);
-
-            xhr.onload = function () {
-                if (this.status >= 200 && this.status < 300) {
-
-
-                    const res = JSON.parse(this.response);
-
-
-                    searchData = res instanceof Array ? res : res.posts;
-
-
-                    success(searchData);
-                } else {
-                    console.error(this.statusText);
-                }
-            };
-
-            xhr.onerror = function () {
-                console.error(this.statusText);
-            };
-
-            xhr.send();
-
-        } else {
-            success(searchData);
+  });
+  $('body').click(function (e) {
+    if (window.matchMedia("(max-width: 1100px)").matches) {
+      var target = $(e.target);
+      if (!target.is('#sidebar *')) {
+        if ($('#sidebar').hasClass('on')) {
+          scrollOff();
         }
+      }
     }
+  });
+  if (window.matchMedia("(min-width: 1100px)").matches) {
+    scrollOn();
+  } else {
+    scrollOff();
+  }
+  ;
+}
 
-    function tpl(html, data) {
-        return html.replace(/\{\w+\}/g, function (str) {
-            const prop = str.replace(/\{|\}/g, "");
-            return data[prop] || "";
-        });
+//生成文章目录
+function showArticleIndex() {
+  $(".article-toc").empty();
+  $(".article-toc").hide();
+  $(".article-toc.active-toc").removeClass("active-toc");
+  $("#tree .active").next().addClass('active-toc');
+
+  var labelList = $("#article-content").children();
+  var content = "<ul>";
+  var max_level = 4;
+  for (var i = 0; i < labelList.length; i++) {
+    var level = 5;
+    if ($(labelList[i]).is("h1")) {
+      level = 1;
+    } else if ($(labelList[i]).is("h2")) {
+      level = 2;
+    } else if ($(labelList[i]).is("h3")) {
+      level = 3;
+    } else if ($(labelList[i]).is("h4")) {
+      level = 4;
     }
+    if (level < max_level) {
+      max_level = level;
+    }
+  }
+  for (var i = 0; i < labelList.length; i++) {
+    var level = 0;
+    if ($(labelList[i]).is("h1")) {
+      level = 1 - max_level + 1;
+    } else if ($(labelList[i]).is("h2")) {
+      level = 2 - max_level + 1;
+    } else if ($(labelList[i]).is("h3")) {
+      level = 3 - max_level + 1;
+    } else if ($(labelList[i]).is("h4")) {
+      level = 4 - max_level + 1;
+    }
+    if (level != 0) {
+      $(labelList[i]).before(
+          '<span class="anchor" id="_label' + i + '"></span>');
+      content += '<li class="level_' + level
+          + '"><i class="fa fa-circle" aria-hidden="true"></i><a href="#_label'
+          + i + '"> ' + $(labelList[i]).text() + '</a></li>';
+    }
+  }
+  content += "</ul>"
 
-    const root = $("html");
+  $(".article-toc.active-toc").append(content);
 
-    const Control = {
-        show: function () {
-            if (G.innerWidth < 760) {
-                root.classList.add("lock-size");
+  if (null != $(".article-toc a") && 0 != $(".article-toc a").length) {
+
+    // 点击目录索引链接，动画跳转过去，不是默认闪现过去
+    $(".article-toc a").on("click", function (e) {
+      e.preventDefault();
+      // 获取当前点击的 a 标签，并前触发滚动动画往对应的位置
+      var target = $(this.hash);
+      $("body, html").animate(
+          {'scrollTop': target.offset().top},
+          500
+      );
+    });
+
+    // 监听浏览器滚动条，当浏览过的标签，给他上色。
+    $(window).on("scroll", function (e) {
+      var anchorList = $(".anchor");
+      anchorList.each(function () {
+        var tocLink = $('.article-toc a[href="#' + $(this).attr("id") + '"]');
+        var anchorTop = $(this).offset().top;
+        var windowTop = $(window).scrollTop();
+        if (anchorTop <= windowTop + 100) {
+          tocLink.addClass("read");
+        } else {
+          tocLink.removeClass("read");
+        }
+      });
+    });
+  }
+  $(".article-toc.active-toc").show();
+  $(".article-toc.active-toc").children().show();
+}
+
+function pjaxLoad() {
+  $(document).pjax('#menu a', '#content',
+      {fragment: '#content', timeout: 8000});
+  $(document).pjax('#tree a', '#content',
+      {fragment: '#content', timeout: 8000});
+  $(document).pjax('#index a', '#content',
+      {fragment: '#content', timeout: 8000});
+  $(document).on({
+    "pjax:complete": function (e) {
+      $("pre code").each(function (i, block) {
+        hljs.highlightBlock(block);
+      });
+      // 添加 active
+      $("#tree .active").removeClass("active");
+      var title = $("#article-title").text().trim();
+      if (title.length) {
+        var searchResult = $("#tree li.file").find(
+            "a:contains('" + title + "')");
+        if (searchResult.length) {
+          $(".fa-minus-square-o").removeClass("fa-minus-square-o").addClass(
+              "fa-plus-square-o");
+          $("#tree ul").css("display", "none");
+          if (searchResult.length > 1) {
+            var categorie = $("#article-categories span:last a").html();
+            if (typeof categorie != "undefined") {
+              categorie = categorie.trim();
+              searchResult = $("#tree li.directory a:contains('" + categorie
+                  + "')").siblings().find("a:contains('" + title + "')");
             }
-            searchPanel.classList.add("in");
-        },
-        hide: function () {
-            if (G.innerWidth < 760) {
-                root.classList.remove("lock-size");
-            }
-            searchPanel.classList.remove("in");
+          }
+          searchResult[0].parentNode.classList.add("active");
+          showActiveTree($("#tree .active"), true)
         }
-    };
+        showArticleIndex();
+      }
+      wrapImageWithFancyBox();
+    }
+  });
+}
 
-    function render(data) {
-        let html = "";
-        if (data.length) {
+// 搜索框输入事件
+function serachTree() {
+  // 解决搜索大小写问题
+  jQuery.expr[':'].contains = function (a, i, m) {
+    return jQuery(a).text().toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
+  };
 
-            html = data.map(function (post) {
+  $("#search-input").on("input", function (e) {
+    e.preventDefault();
 
-                return tpl(searchTpl, {
-                    title: post.title,
-                    path: `${G.BLOG.ROOT }/${ post.path}`.replace(/\/{2,}/g, "/"),
-                    date: new Date(post.date).toLocaleDateString(),
-                    tags: post.tags.map(function (tag) {
-                        return `<span>#${ tag.name }</span>`;
-                    }).join("")
-                });
+    // 获取 inpiut 输入框的内容
+    var inputContent = e.currentTarget.value;
 
-            }).join("");
+    // 没值就收起父目录，但是得把 active 的父目录都展开
+    if (inputContent.length === 0) {
+      $(".fa-minus-square-o").removeClass("fa-minus-square-o").addClass(
+          "fa-plus-square-o");
+      $("#tree ul").css("display", "none");
+      if ($("#tree .active").length) {
+        showActiveTree($("#tree .active"), true);
+      } else {
+        $("#tree").children().css("display", "block");
+      }
+    }
+    // 有值就搜索，并且展开父目录
+    else {
+      $(".fa-plus-square-o").removeClass("fa-plus-square-o").addClass(
+          "fa-minus-square-o");
+      $("#tree ul").css("display", "none");
+      var searchResult = $("#tree li").find(
+          "a:contains('" + inputContent + "')");
+      if (searchResult.length) {
+        showActiveTree(searchResult.parent(), false)
+      }
+    }
+  });
 
-        } else {
-            html = "<li class=\"tips\"><i class=\"icon icon-coffee icon-3x\"></i><p>Results not found!</p></li>";
-        }
+  $("#search-input").on("keyup", function (e) {
+    e.preventDefault();
+    if (event.keyCode == 13) {
+      var inputContent = e.currentTarget.value;
 
-        searchResult.innerHTML = html;
+      if (inputContent.length === 0) {
+      } else {
+        window.open(searchEngine + inputContent + "%20site:" + homeHost,
+            "_blank");
+      }
+    }
+  });
+}
+
+// 点击目录事件
+function clickTreeDirectory() {
+  // 判断有 active 的话，就递归循环把它的父目录打开
+  var treeActive = $("#tree .active");
+  if (treeActive.length) {
+    showActiveTree(treeActive, true);
+  }
+
+  // 点击目录，就触发折叠动画效果
+  $(document).on("click", "#tree a[class='directory']", function (e) {
+    // 用来清空所有绑定的其他事件
+    e.preventDefault();
+
+    var icon = $(this).children(".fa");
+    var iconIsOpen = icon.hasClass("fa-minus-square-o");
+    var subTree = $(this).siblings("ul");
+
+    icon.removeClass("fa-minus-square-o").removeClass("fa-plus-square-o");
+
+    if (iconIsOpen) {
+      if (typeof subTree != "undefined") {
+        subTree.slideUp({duration: 100});
+      }
+      icon.addClass("fa-plus-square-o");
+    } else {
+      if (typeof subTree != "undefined") {
+        subTree.slideDown({duration: 100});
+      }
+      icon.addClass("fa-minus-square-o");
+    }
+  });
+}
+
+// 循环递归展开父节点
+function showActiveTree(jqNode, isSiblings) {
+  if (jqNode.attr("id") === "tree") {
+    return;
+  }
+  if (jqNode.is("ul")) {
+    jqNode.css("display", "block");
+
+    // 这个 isSiblings 是给搜索用的
+    // true 就显示开同级兄弟节点
+    // false 就是给搜索用的，值需要展示它自己就好了，不展示兄弟节点
+    if (isSiblings) {
+      jqNode.siblings().css("display", "block");
+      jqNode.siblings("a").css("display", "inline");
+      jqNode.siblings("a").find(".fa-plus-square-o").removeClass(
+          "fa-plus-square-o").addClass("fa-minus-square-o");
+    }
+  }
+  jqNode.each(function () {
+    showActiveTree($(this).parent(), isSiblings);
+  });
+}
+
+function scrollOn() {
+  var $sidebar = $('#sidebar'),
+      $content = $('#content'),
+      $header = $('#header'),
+      $footer = $('#footer'),
+      $togglei = $('#sidebar-toggle i');
+
+  $togglei.addClass('fa-close');
+  $togglei.removeClass('fa-arrow-right');
+  $sidebar.addClass('on');
+  $sidebar.removeClass('off');
+
+  if (window.matchMedia("(min-width: 1100px)").matches) {
+    $content.addClass('content-on');
+    $content.removeClass('content-off');
+    $header.addClass('header-on');
+    $header.removeClass('off');
+    $footer.addClass('header-on');
+    $footer.removeClass('off');
+  }
+}
+
+function scrollOff() {
+  var $sidebar = $('#sidebar'),
+      $content = $('#content'),
+      $header = $('#header'),
+      $footer = $('#footer'),
+      $togglei = $('#sidebar-toggle i');
+
+  $togglei.addClass('fa-arrow-right');
+  $togglei.removeClass('fa-close');
+  $sidebar.addClass('off');
+  $sidebar.removeClass('on');
+
+  $content.addClass('off');
+  $content.removeClass('content-on');
+  $header.addClass('off');
+  $header.removeClass('header-on');
+  $footer.addClass('off');
+  $footer.removeClass('header-on');
+}
+
+/**
+ * Wrap images with fancybox support.
+ */
+function wrapImageWithFancyBox() {
+  $('img').not('#header img').each(function () {
+    var $image = $(this);
+    var imageCaption = $image.attr('alt');
+    var $imageWrapLink = $image.parent('a');
+
+    if ($imageWrapLink.length < 1) {
+      var src = this.getAttribute('src');
+      var idx = src.lastIndexOf('?');
+      if (idx != -1) {
+        src = src.substring(0, idx);
+      }
+      $imageWrapLink = $image.wrap('<a href="' + src + '"></a>').parent('a');
     }
 
-    function regtest(raw, regExp) {
-        regExp.lastIndex = 0;
-        return regExp.test(raw);
+    $imageWrapLink.attr('data-fancybox', 'images');
+    if (imageCaption) {
+      $imageWrapLink.attr('data-caption', imageCaption);
     }
 
-    function matcher(post, regExp) {
-        return regtest(post.title, regExp) || post.tags.some(function (tag) {
-            return regtest(tag.name, regExp);
-        }) || regtest(post.text, regExp);
+  });
+
+  $('[data-fancybox="images"]').fancybox({
+    buttons: [
+      'slideShow',
+      'thumbs',
+      'zoom',
+      'fullScreen',
+      'close'
+    ],
+    thumbs: {
+      autoStart: false
     }
-
-    function search(e) {
-        const key = this.value.trim();
-        if (!key) {
-            return;
-        }
-
-        const regExp = new RegExp(key.replace(/[ ]/g, "|"), "gmi");
-
-        loadData(function (data) {
-            const result = data.filter(function (post) {
-                return matcher(post, regExp);
-            });
-
-            render(result);
-            Control.show();
-        });
-
-        e.preventDefault();
-    }
-
-
-    searchIco.addEventListener(even, function () {
-        searchWrap.classList.toggle("in");
-        keyInput.value = "";
-        if (searchWrap.classList.contains("in")) {
-            keyInput.focus();
-        } else {
-            keyInput.blur();
-        }
-    });
-
-    back.addEventListener(even, function () {
-        searchWrap.classList.remove("in");
-        Control.hide();
-    });
-
-    document.addEventListener(even, function (e) {
-        if (e.target.id !== "key" && even === "click") {
-            Control.hide();
-        }
-    });
-
-    keyInput.addEventListener("input", search);
-    keyInput.addEventListener(even, search);
-
-}).call(this);
+  });
+}

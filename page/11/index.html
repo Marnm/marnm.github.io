@@ -1,1274 +1,2087 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head><meta name="generator" content="Hexo 3.8.0">
-    <meta http-equiv="Content-Language" content="zh-cn">
-    <meta charset="utf-8">
-    
-    
-    
-    <title>Deops&#39;s blog | 运维开发工程师</title>
-    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    
-    <meta name="theme-color" content="#77AAFF">
-    
-    
-    <meta name="keywords" content="Echo">
-    
-    
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+	
+	<!-- title -->
+	
+	<title>
+	 
+	Deops&#39;s blog
+	</title>
+	
+	<!-- keywords,description -->
+	
+		<meta name="keywords" content="Echo">
+	 
+		<meta name="description" content="Echo">
+	
 
-    
+	<!-- favicon -->
+	
+	<link rel="shortcut icon" href="/favicon.ico">
+	
 
-    <!-- Baidu Push -->
-<script>
-	(function(){
-		var bp = document.createElement('script');
-		var curProtocol = window.location.protocol.split(':')[0];
-		if (curProtocol === 'https') {
-			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+
+	<!-- search -->
+	<script>
+		var searchEngine = "https://www.google.com/search?q=";
+		if(typeof searchEngine == "undefined" || searchEngine == null || searchEngine == ""){
+			searchEngine = "https://www.google.com/search?q=";
 		}
-		else {
-			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		var homeHost = "https://marnm.github.io/";
+		if(typeof homeHost == "undefined" || homeHost == null || homeHost == ""){
+			homeHost = window.location.host;
 		}
-		var s = document.getElementsByTagName("script")[0];
-		s.parentNode.insertBefore(bp, s);
-	})();
-
-	var _hmt = _hmt || [];
-</script>
+	</script>
 
 
-
+	<link rel="stylesheet" href="/css/main.css">
+	<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/lib/highlight/styles/base16/solarized-dark.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
     
-    <meta name="description" content="Echo">
-<meta name="keywords" content="Echo">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Deops&#39;s blog">
-<meta property="og:url" content="https://marnm.github.io/page/11/index.html">
-<meta property="og:site_name" content="Deops&#39;s blog">
-<meta property="og:description" content="Echo">
-<meta property="og:locale" content="zh-Hans">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Deops&#39;s blog">
-<meta name="twitter:description" content="Echo">
-    
-        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
-    
-    <link rel="shortcut icon" href="/img/favicon.ico">
-    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
-    <script>window.lazyScripts=[]</script>
+    <!-- 引入代码高亮的 js -->
+    <script src="/lib/highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 
-    <!-- custom head -->
-    
-            
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/jquery-pjax@2.0.1/jquery.pjax.min.js"></script>
+	<script src="/js/main.js"></script>
+	
+		<script src="https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/valine@v1.4.14/dist/Valine.min.js"></script>
+	
+	
 </head>
 
 <body>
-    <div id="loading" class="active"></div>
-    <aside id="menu">
-  <div class="inner flex-row-vertical">
-    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
-        <i class="icon icon-lg icon-close"></i>
-    </a>
-    <div class="brand-wrap">
-      <div class="brand">
-        <a href="/" class="avatar waves-effect waves-circle waves-light">
-          <img src="/img/avatar.gif" alt="avatar">
-        </a>
-        <hgroup class="introduce">
-          <h5 class="nickname" id="name">Echo</h5>
-          
-            <div id="yiyanmotto" class="motto">&nbsp;</div>
-          
-        </hgroup>
-      </div>
-    </div>
-    <div class="scroll-wrap flex-col">
-      <ul class="nav">
-        
-              <li class="waves-block waves-effect">
-                  <a href="/">
-                    <i class="icon icon-lg icon-home"></i>
-                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/archives">
-                    <i class="icon icon-lg icon-archives"></i>
-                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/categories">
-                    <i class="icon icon-lg icon-th-list"></i>
-                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/tags">
-                    <i class="icon icon-lg icon-tags"></i>
-                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/about">
-                    <i class="icon icon-lg icon-smile-o"></i>
-                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-      <div class="nav2">
-          
-              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
-                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
-              </a>
-          
-              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
-                <i class="icon icon-lg icon-github github"></i>
-              </a>
-          
-              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
-                <i class="icon icon-lg icon-tv tv"></i>
-              </a>
-          
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3efe99c287df5a1d6f0d02d187e403c1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
 
-            </div>
-        
-      </ul>
-        
-    </div>
-  </div>
- 
-</aside>
+<header id="header">
+    <a id="title" href="/" class="logo">Deops's blog</a>
 
+	<ul id="menu">
+		<li class="menu-item">
+			<a href="/about" class="menu-item-link">ABOUT</a>
+		</li>
+	
+		<li class="menu-item">
+			<a href="/tags" class="menu-item-link">标签</a>
+		</li>
+	
 
-    <main id="main">
-        <header class="top-header" id="header">
-    <div class="flex-row">
-        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
-          <i class="icon icon-lg icon-navicon"></i>
-        </a>
-        <div class="flex-col header-title ellipsis">Deops&#39;s blog</div>
-        
-        <div class="search-wrap" id="search-wrap">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
-                <i class="icon icon-lg icon-chevron-left"></i>
-            </a>
-            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
-                <i class="icon icon-lg icon-search"></i>
-            </a>
-        </div>
-        
-        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
-            <i class="icon icon-lg icon-rss"></i>
-        </a>
-    </div>
-</header>
-<header class="content-header index-header">
-    
-    
-    <div class="container fade-scale">
-        <div id="myheader">
-            <h1 class="title">
-                 
-                    Deops&#39;s blog
-                
-            </h1>
-            <h5 class="subtitle">
-                
-                    努力成为一名资深运维工程师
-                
-            </h5>
-        </div>
-    </div>
+	
+		<li class="menu-item">
+			<a href="/categories" class="menu-item-link">分类</a>
+		</li>
+	
 
+		<li class="menu-item">
+			<a href="https://github.com/Marnm" class="menu-item-link" target="_blank">
+				<i class="fa fa-github fa-2x"></i>
+			</a>
+		</li>
+	</ul>
 </header>
 
-<div class="container body-wrap">
-    <ul class="post-list">
-    
-        <li class="post-list-item fade">
-            <article id="post-VIM的使用" class="article-card article-type-post" itemprop="blogPost">
+	
+<div id="sidebar">
+	<button id="sidebar-toggle" class="toggle"><i class="fa fa-arrow-right " aria-hidden="true"></i></button>
+	
+	<div id="site-toc">
+		<input id="search-input" class="search-input" type="search" placeholder="按回车全站搜索">
+		<div id="tree">
+			
 
-    
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Ansible自动化运维
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/b45e213f/">
+                     
+										    Ansible自动化管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/28c30eb2/">
+                     
+										    CTF线下赛AWD套路小结
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Ceph对象存储
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/e9abc941/">
+                     
+										    Ceph分布式存储
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/38843421/">
+                     
+										    Ceph分布式存储部署笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9964b559/">
+                     
+										    DHCP Server的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4782a8c2/">
+                     
+										    DNS Server的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5e357037/">
+                     
+										    Django教程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Docker
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/4a3d459a/">
+                     
+										    Docker学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										ELK Stack
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/2d95f1c1/">
+                     
+										    ElasticSearch环境搭建
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/573fc171/">
+                     
+										    Logstash二进制安装与启动
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b11339a9/">
+                     
+										    Logstash去除不需要的字段
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d05b44e0/">
+                     
+										    Logstash读取日志发送到ES
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9d56e705/">
+                     
+										    FTP/TFTP的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ca9298d7/">
+                     
+										    Git版本控制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/51acad32/">
+                     
+										    诺尔·巴尔扎克（Honoréde Balzac）的名言
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4def9c28/">
+                     
+										    In Your 20's These Things Matter More Than You Think
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/295162d9/">
+                     
+										    Java8 环境变量配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										KVM虚拟化
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/dba5727f/">
+                     
+										    KVM图形化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/204af86b/">
+                     
+										    KVM虚拟机克隆和快照
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d69c6e72/">
+                     
+										    KVM虚拟机添加磁盘
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/16305c66/">
+                     
+										    KVM虚拟机迁移
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7733d98/">
+                     
+										    LDAP的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5922577d/">
+                     
+										    LNMP手动部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/195423a2/">
+                     
+										    LNMP高可用架构配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/38cc96c8/">
+                     
+										    LVM磁盘管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/be48d001/">
+                     
+										    LVS-DR集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/df68056c/">
+                     
+										    LVS-IPTUN集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dcf8e277/">
+                     
+										    LVS-NAT集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/640aafef/">
+                     
+										    LVS和KeepAlived实现高可用集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/82734d8/">
+                     
+										    Linux命令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/67ee4dec/">
+                     
+										    Linux学习笔记 - 关于开源
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d53cba09/">
+                     
+										    Linux常用性能分析工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/15c0e66c/">
+                     
+										    Linux常见日志文件
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/480c215d/">
+                     
+										    Linux性能管理工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a9bb0c1a/">
+                     
+										    Linux文件的特殊权限
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/cc999d74/">
+                     
+										    Linux文件的隐藏属性
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b7f1c6/">
+                     
+										    Linux文本四剑客
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/aabbd398/">
+                     
+										    Linux无法挂载sysroot并自动进入紧急模式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b3f64b7d/">
+                     
+										    Linux生成随机密码方法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e025952a/">
+                     
+										    Linux登录退出提示信息欢迎信息
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ee2f9f35/">
+                     
+										    Linux的PAM模块
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1e844aa4/">
+                     
+										    Linux的归档与解压缩
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c4bbfe69/">
+                     
+										    Linux的日志切割
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/be846aea/">
+                     
+										    Linux禁止和开启ping的方法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f20e14fd/">
+                     
+										    Linux网卡聚合及bond模式的原理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2fe5fc07/">
+                     
+										    Linux计划任务实现
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/365d0867/">
+                     
+										    Linux路由配置——route
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fbf617b4/">
+                     
+										    MariaDB
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bff83912/">
+                     
+										    Markdown 简明语法手册
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5125c787/">
+                     
+										    Markdown语法说明（快速入门）
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										MongoDB
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/8b1c1f4b/">
+                     
+										    MongoDB介绍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a36562d7/">
+                     
+										    MongoDB学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/55c06d78/">
+                     
+										    MongoDB安装部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										MySQL学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/16fc5dc4/">
+                     
+										    MySQL5.6
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/61fb6d52/">
+                     
+										    MySQL5.7
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bce68613/">
+                     
+										    MySQL基础
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f6e2d114/">
+                     
+										    使用RPM包安装MySQL5.7数据库
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/269a56e8/">
+                     
+										    MySQL备份与恢复（删库不跑路）
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/607e4760/">
+                     
+										    MySQL传统主从同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d77fafec/">
+                     
+										    MySQL的GTID主从同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/db0340bd/">
+                     
+										    MySQL高可用集群架构-MHA架构
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/62ec7971/">
+                     
+										    Atlas实现MySQL读写分离
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/490925f2/">
+                     
+										    MySQL数据库高级应用之读写分离
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/176dc5f3/">
+                     
+										    MyCat垂直分表操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8f74b0e7/">
+                     
+										    MyCat教程全国省份分片枚举操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/208cd020/">
+                     
+										    MySQL调优
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1876d05d/">
+                     
+										    NetworkManager管理工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/60444925/">
+                     
+										    NexT主题优化+美化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Nginx学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/f4d30967/">
+                     
+										    Nginx动静分离部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1db2b3f1/">
+                     
+										    Nginx平滑升级
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2793eb31/">
+                     
+										    Nginx日志管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2793eb31/">
+                     
+										    Nginx日志管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e0989926/">
+                     
+										    Nginx添加第三方模块
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/da411b72/">
+                     
+										    Nginx虚拟主机
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d4e5e907/">
+                     
+										    Nginx访问控制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d2802762/">
+                     
+										    Nginx高可用架构配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/36ba38f9/">
+                     
+										    NoSQL知识
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e8c4eb08/">
+                     
+										    OpenSSL使用教程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/97717e94/">
+                     
+										    PXE自动化部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Prometheus学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/39c0f6a1/">
+                     
+										    Prometheus学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1f351894/">
+                     
+										    Python-VirtualEnv
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/297a89d9/">
+                     
+										    Python学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fa8e89f7/">
+                     
+										    RAID磁盘阵列技术介绍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/afdfa673/">
+                     
+										    RHEL 7配置Yum软件仓库
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/32546aed/">
+                     
+										    RedHat Linux重置root管理员密码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/eb7dbe25/">
+                     
+										    RedHat_7 配置网卡信息
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Redis学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/5188e636/">
+                     
+										    Redis与其他应用的集成
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/49fbbc1/">
+                     
+										    Redis基本操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e8376589/">
+                     
+										    Redis安装部署——Cluster集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e78aaf59/">
+                     
+										    Redis安装部署——Sentinel模式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2acd829b/">
+                     
+										    Redis安装部署——主从复制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/119ed1dc/">
+                     
+										    Redis持久化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/18d7d749/">
+                     
+										    Redis概述
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e3fb0a3e/">
+                     
+										    Redis的数据备份与恢复
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3e3d973e/">
+                     
+										    Redis配合MySQL使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f03da4e7/">
+                     
+										    Redis配置文件详解
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/41f893fd/">
+                     
+										    Redis编译安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dbd9d26a/">
+                     
+										    SHELL编程类面试题
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f42b90f9/">
+                     
+										    SHELL脚本工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a8ba1e/">
+                     
+										    SHELL脚本练习
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c45f2736/">
+                     
+										    SQL Server 2008安装配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/aa142b64/">
+                     
+										    SQLite安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e228b71f/">
+                     
+										    SSH原理与应用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1fdc29d2/">
+                     
+										    Shell的基本运算符
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6309c3f8/">
+                     
+										    Shell编程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e76ba468/">
+                     
+										    Ubuntu Desktop优化与配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/129acd64/">
+                     
+										    Ubuntu修改配置及美化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b382711f/">
+                     
+										    VIM的使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e9c6771b/">
+                     
+										    Win10环境下Python2、3和pip2、3版本共存
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6ed6984b/">
+                     
+										    Windows进程管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/59089347/">
+                     
+										    Zabbix3.4邮件报警配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7034657d/">
+                     
+										    Zabbix4.0
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c7b4ec91/">
+                     
+										    firewalld学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1ebd4a76/">
+                     
+										    iproute2工具包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/57bbf635/">
+                     
+										    iptables学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3e189d0c/">
+                     
+										    mysqlclient无法安装的问题
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1939d3e2/">
+                     
+										    net-tools工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bae5d4f0/">
+                     
+										    rhel修改网卡命名规则
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3c7a2415/">
+                     
+										    rsync数据同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/37ca92de/">
+                     
+										    swap交换分区
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6efb91e0/">
+                     
+										    tcpdump与Wireshark的使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d185f6ae/">
+                     
+										    web性能压测学习
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bb750036/">
+                     
+										    你要懂得及时止损，别太在乎沉没成本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/da58b03e/">
+                     
+										    使用HAProxy实现七层负载均衡
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b161a250/">
+                     
+										    使用服务搭建Hexo个人博客
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										其它
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/9bf5b5/">
+                     
+										    我学练英语所使用的方法、工具与资料
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4c41c7ef/">
+                     
+										    十二句经典的爱情名言
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e364486e/">
+                     
+										    基于Docker搭建Prometheus
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/69c239dd/">
+                     
+										    基于LNMP架构搭建企业级开源监控系统Zabbix
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f801d3c5/">
+                     
+										    增加一台Filebeat收集httpd日志
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f5d6f6a9/">
+                     
+										    实战-GitLab更新代码后自动触发Jenkins进行部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fa35a60d/">
+                     
+										    性能测试指标详解
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a3c5d26/">
+                     
+										    搭建Jenkins实现持续集成-配置Jenkins自动拉取GitLab中的代码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4f96852/">
+                     
+										    搭建JumpServer管理王者荣耀数万台游戏服务器
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f0a65eeb/">
+                     
+										    根分区扩容
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2f57a694/">
+                     
+										    正则表达式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9e3f6743/">
+                     
+										    自由的灵魂必将远航
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/217dc297/">
+                     
+										    计算机概述
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8d4b7ae1/">
+                     
+										    计算机组成原理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dded0e80/">
+                     
+										    运维发展史
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/undefined/">
+                     
+										    邮件报警配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5095a46f/">
+                     
+										    配置Docker静态IP
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2b923a54/">
+                     
+										    配置GitLab邮件服务
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/76011417/">
+                     
+										    配置Zabbix3.4监控Apache服务
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+		</div>
+	</div>
+</div>
 
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a href="/posts/b382711f/">VIM的使用</a>
-    </h3>
-  
-
-
-
-
-     <div class="post-meta">
-        <time class="post-time" title="2022-06-07 12:38:35" datetime="2022-06-07T04:38:35.000Z" itemprop="datePublished">2022-06-07</time>
-
-    </div>
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        <figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="https://gitee.com/fnaichu/mypicbed/raw/master/img/202205111548935.png" alt="" title="">
+	<!-- 引入正文 -->
+	<div id="content">
+		<div id="index">
+	
+		<div class="index-li">
+			<a href="/posts/97717e94/">
+				<h2 class="index-title">
+					PXE自动化部署
+				</h2>
+				<div class="index-brief">
+					LinuxPXE/KickstartBIOS模式配置网络服务器（NFS，HTTPS，HTTP，FTP）用于存储ISO镜像配置DHCP
+yum install -y dhcp
+cp /usr/share/doc/dhcp*/dhcpd.conf.example /etc/dhcp/dhcpd.conf
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2022-06-07</span>
+                    
+                            
+                    
                 </div>
-                <div class="image-caption"></div>
-            </figure>
-<p><strong>VIM&#x57FA;&#x672C;&#x914D;&#x7F6E;</strong></p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">&quot; &#x8BBE;&#x5B9A;&#x9ED8;&#x8BA4;&#x89E3;&#x7801;&#xA0;</span><br><span class="line">set fenc=utf-8</span><br><span class="line">set fencs=utf-8,usc-bom,euc-jp,gb18030,gbk,gb2312,cp936</span><br><span class="line"></span><br><span class="line">&quot; &#x4FA6;&#x6D4B;&#x6587;&#x4EF6;&#x7C7B;&#x578B;</span><br><span class="line">filetype on&#xA0;</span><br><span class="line">&quot; &#x8F7D;&#x5165;&#x6587;&#x4EF6;&#x7C7B;&#x578B;&#x63D2;&#x4EF6;&#xA0;</span><br><span class="line">filetype plugin on&#xA0;&#xA0;</span><br><span class="line"></span><br><span class="line">&quot; &#x8BED;&#x6CD5;&#x9AD8;&#x4EAE;&#xA0;</span><br><span class="line">syntax enable</span><br><span class="line">syntax on&#xA0;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&quot; &#x4E0D;&#x8981;&#x5907;&#x4EFD;&#x6587;&#x4EF6;&#xFF08;&#x6839;&#x636E;&#x81EA;&#x5DF1;&#x9700;&#x8981;&#x53D6;&#x820D;&#xFF09;&#xA0;</span><br><span class="line">set nobackup&#xA0;</span><br><span class="line"></span><br><span class="line">&quot; &#x4E0D;&#x8981;&#x751F;&#x6210;swap&#x6587;&#x4EF6;&#xFF0C;&#x5F53;buffer&#x88AB;&#x4E22;&#x5F03;&#x7684;&#x65F6;&#x5019;&#x9690;&#x85CF;&#x5B83;&#xA0;</span><br><span class="line">setlocal noswapfile&#xA0;</span><br><span class="line">set bufhidden=hide&#xA0;</span><br><span class="line"></span><br><span class="line">&quot; &#x4F7F;&#x56DE;&#x683C;&#x952E;&#xFF08;backspace&#xFF09;&#x6B63;&#x5E38;&#x5904;&#x7406;indent, eol, start&#x7B49;&#xA0;</span><br><span class="line">set backspace=2&#xA0;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&quot; &#x7EE7;&#x627F;&#x524D;&#x4E00;&#x884C;&#x7684;&#x7F29;&#x8FDB;&#x65B9;&#x5F0F;&#xFF0C;&#x7279;&#x522B;&#x9002;&#x7528;&#x4E8E;&#x591A;&#x884C;&#x6CE8;&#x91CA;&#xA0;</span><br><span class="line">set autoindent&#xA0;</span><br><span class="line">&quot; &#x4E3A;C&#x7A0B;&#x5E8F;&#x63D0;&#x4F9B;&#x81EA;&#x52A8;&#x7F29;&#x8FDB;&#xA0;</span><br><span class="line">set smartindent&#xA0;</span><br><span class="line">&quot;&#x4F7F;&#x7528;C&#x6837;&#x5F0F;&#x7684;&#x7F29;&#x8FDB;&#xA0;</span><br><span class="line">set cindent&#xA0;</span><br><span class="line"></span><br><span class="line">&quot; &#x5236;&#x8868;&#x7B26;&#x4E3A;4&#xA0;</span><br><span class="line">set tabstop=4&#xA0;</span><br><span class="line">&quot; &#x7EDF;&#x4E00;&#x7F29;&#x8FDB;&#x4E3A;4&#xA0;</span><br><span class="line">set softtabstop=4&#xA0;</span><br><span class="line">set shiftwidth=4&#xA0;</span><br><span class="line"></span><br><span class="line">set cindent &quot;c/c++&#x81EA;&#x52A8;&#x7F29;&#x8FDB;&quot;</span><br><span class="line">set smartindent</span><br><span class="line">set autoindent&quot;&#x53C2;&#x8003;&#x4E0A;&#x4E00;&#x884C;&#x7684;&#x7F29;&#x8FDB;&#x65B9;&#x5F0F;&#x8FDB;&#x884C;&#x81EA;&#x52A8;&#x7F29;&#x8FDB;&quot;</span><br><span class="line">filetype indent on &quot;&#x6839;&#x636E;&#x6587;&#x4EF6;&#x7C7B;&#x578B;&#x8FDB;&#x884C;&#x7F29;&#x8FDB;&quot;</span><br><span class="line">set softtabstop=4 &quot;4 character as a tab&quot;</span><br><span class="line">set shiftwidth=4</span><br><span class="line">set smarttab</span><br></pre></td></tr></tbody></table></figure>
-<p><strong>VIM&#x9ED8;&#x8BA4;&#x4E3B;&#x9898;&#x63A8;&#x8350;</strong></p>
-<ul>
-<li>darkblue</li>
-<li>delek</li>
-</ul>
-<p><strong>&#x4EE5;&#x5341;&#x516D;&#x8FDB;&#x5236;&#x67E5;&#x770B;&#x6587;&#x4EF6;</strong></p>
-<pre><code>%!xxd
-</code></pre><script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>
-    
-        <div>
-            <a href="/posts/b382711f/" class="post-more waves-button">
-                阅读全文 »
-            </a>
-        </div>
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-PXE自动化部署" class="article-card article-type-post" itemprop="blogPost">
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a href="/posts/97717e94/">PXE自动化部署</a>
-    </h3>
-  
-
-
-
-
-     <div class="post-meta">
-        <time class="post-time" title="2022-06-07 12:37:37" datetime="2022-06-07T04:37:37.000Z" itemprop="datePublished">2022-06-07</time>
-
-    </div>
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        <h2 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h2><h3 id="PXE-Kickstart"><a href="#PXE-Kickstart" class="headerlink" title="PXE/Kickstart"></a>PXE/Kickstart</h3><h4 id="BIOS&#x6A21;&#x5F0F;"><a href="#BIOS&#x6A21;&#x5F0F;" class="headerlink" title="BIOS&#x6A21;&#x5F0F;"></a>BIOS&#x6A21;&#x5F0F;</h4><p>&#x914D;&#x7F6E;&#x7F51;&#x7EDC;&#x670D;&#x52A1;&#x5668;&#xFF08;NFS&#xFF0C;HTTPS&#xFF0C;HTTP&#xFF0C;FTP&#xFF09;&#x7528;&#x4E8E;&#x5B58;&#x50A8;ISO&#x955C;&#x50CF;<br><strong>&#x914D;&#x7F6E;DHCP</strong></p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">yum install -y dhcp</span><br><span class="line">cp /usr/share/doc/dhcp*/dhcpd.conf.example /etc/dhcp/dhcpd.conf</span><br><span class="line">vim /etc/dhcp/dhcpd.conf</span><br></pre></td></tr></tbody></table></figure>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">allow booting;</span><br><span class="line">allow bootp;</span><br><span class="line">ddns-update-style interim;</span><br><span class="line">ignore client-updates;</span><br><span class="line">subnet 192.168.10.0 netmask 255.255.255.0 {</span><br><span class="line">    option subnet-mask 255.255.255.0;</span><br><span class="line">    option domain-name-servers 192.168.10.10;</span><br><span class="line">    range dynamic-bootp 192.168.10.100 192.168.10.200;</span><br><span class="line">    default-lease-time 21600;</span><br><span class="line">    max-lease-time 43200;</span><br><span class="line">    next-server 192.168.10.10;</span><br><span class="line">    filename <span class="string">&quot;pxelinux.0&quot;</span>;</span><br><span class="line"> }</span><br></pre></td></tr></tbody></table></figure>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">systemctl restart dhcpd &amp;&amp; systemctl <span class="built_in">enable</span> dhcpd</span><br></pre></td></tr></tbody></table></figure>
-<p><strong>&#x914D;&#x7F6E;tftp &#x63D0;&#x4F9B;&#x5F15;&#x5BFC;&#x6587;&#x4EF6;</strong></p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">yum install -y tftp-server xinetd</span><br><span class="line">vim /etc/xinet.d/tftp</span><br><span class="line"></span><br><span class="line">service tftp {</span><br><span class="line">    socket_type = dgram</span><br><span class="line">    protocol = udp</span><br><span class="line">    <span class="built_in">wait</span> = yes</span><br><span class="line">    user = root</span><br><span class="line">    server = /usr/sbin/in.tftpd</span><br><span class="line">    server_args = -s /var/lib/tftpboot</span><br><span class="line">    <span class="built_in">disable</span> = no</span><br><span class="line">    per_source = 11</span><br><span class="line">    cps = 100 2</span><br><span class="line">    flags = IPv4</span><br><span class="line"> </span><br><span class="line">systemctl restart xinetd &amp;&amp; systemctl <span class="built_in">enable</span> xinetd</span><br><span class="line">firewall-cmd --permanent --add-port=69/udp</span><br><span class="line">firewall-cmd --reload</span><br></pre></td></tr></tbody></table></figure>
-<p>&#x83B7;&#x53D6;pxelinux.0&#x6587;&#x4EF6;</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># &#x5B89;&#x88C5;syslinux&#x5305;</span></span><br><span class="line">yum install -y syslinux</span><br><span class="line">cp /usr/share/syslinux/pxelinux.0 /var/lib/tftpboot/</span><br><span class="line"><span class="comment"># &#x6216;</span></span><br><span class="line"><span class="comment"># &#x76F4;&#x63A5;&#x52A0;&#x538B;rpm&#x5305;</span></span><br><span class="line">mount -t iso9660 /dev/cdrom /media/cdrom -o loop,ro</span><br><span class="line">cp -pr /media/cdrom/Packages/syslinux-x.xx-xx.x86_64.rpm ./</span><br><span class="line">rpm2cpio syslinux-x.xx-xx.x86_64.rpm | cpio -dimv</span><br><span class="line"><span class="comment"># &#x590D;&#x5236;pxelinux.0&#x5230;/var/lib/tftpboot/pxelinux/&#x4E2D; </span></span><br><span class="line">cp pxelinux.0 /var/lib/tftpboot/</span><br></pre></td></tr></tbody></table></figure>
-<p>&#x590D;&#x5236;&#x5F15;&#x5BFC;&#x6587;&#x4EF6;&#x5230;tftp&#x6839;&#x76EE;&#x5F55;&#x4E2D;</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">cp /media/cdrom/images/pxeboot/{vmlinuz,initrd.img} /var/lib/tftpboot/</span><br><span class="line">cp /media/cdrom/isolinux/{vesamenu.c32,boot.msg} /var/lib/tftpboot/</span><br></pre></td></tr></tbody></table></figure>
-<p>&#x5F15;&#x5BFC;&#x83DC;&#x5355;default&#x6587;&#x4EF6;</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># &#x521B;&#x5EFA;&#x76EE;&#x5F55;</span></span><br><span class="line">mkdir /var/lib/tftpboot/pxelinux.cfg</span><br><span class="line"><span class="comment"># &#x521B;&#x5EFA;&#x914D;&#x7F6E;&#x6587;&#x4EF6;</span></span><br><span class="line">vim /var/lib/tftpboot/pxelinux.cfg/default</span><br><span class="line"><span class="comment"># &#x6216;</span></span><br><span class="line">cp /media/cdrom/isolinux/isolinux.cfg /var/lib/tftpboot/pxelinux.cfg/default</span><br></pre></td></tr></tbody></table></figure>
-<p><strong>&#x914D;&#x7F6E;FTP</strong><br>&#x590D;&#x5236;&#x955C;&#x50CF;&#x5B89;&#x88C5;&#x6587;&#x4EF6;&#x5230;ftp&#x76EE;&#x5F55;</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">yum install -y vsftpd</span><br><span class="line">cp -pvr /media/cdrom/* /var/ftp/pub/</span><br><span class="line"></span><br><span class="line">firewall-cmd --permanent --add-service=ftp</span><br><span class="line">firewall-cmd --reload</span><br><span class="line">setsebool -P ftpd_connect_all_unreserved=on</span><br><span class="line"></span><br><span class="line">systemctl restart vsftpd &amp;&amp; systemctl <span class="built_in">enable</span> vsftpd</span><br></pre></td></tr></tbody></table></figure>
-<p><strong>&#x521B;&#x5EFA;kickstart&#x914D;&#x7F6E;&#x6587;&#x4EF6;</strong><br>&#x751F;&#x6210;kickstart&#x6587;&#x4EF6;<br><a href="https://access.redhat.com/labs/kickstartconfig/" target="_blank" rel="noopener">&#x4F7F;&#x7528;&#x5728;&#x7EBF;&#x751F;&#x6210;&#x5668;&#xFF08;&#x9700;&#x8981;&#x6CE8;&#x518C;&#x767B;&#x5F55;&#xFF09;</a><br>&#x751F;&#x6210;&#x540E;&#x4E0B;&#x8F7D;&#x547D;&#x540D;&#x5B58;&#x653E;&#x5230;/var/ftp/pub/ks.cfg<br>&#x6216;<br>&#x4F7F;&#x7528;&#x7528;&#x6237;&#x76EE;&#x5F55;&#x4E0B;&#x7684;&#x9ED8;&#x8BA4;&#x6A21;&#x677F;anaconda-ks.cfg</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">cp /root/anaconda-ks.cfg /var/ftp/pub/ks.cfg</span><br><span class="line">chmod +r /var/ftp/pub/ks.cfg</span><br></pre></td></tr></tbody></table></figure>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">---------------------dhcpd.confg--------------------------</span><br><span class="line"> allow booting;</span><br><span class="line"> allow bootp;</span><br><span class="line"> ddns-update-style interim;</span><br><span class="line"> ignore client-updates;</span><br><span class="line"> subnet 192.168.10.0 netmask 255.255.255.0 {</span><br><span class="line">     option subnet-mask 255.255.255.0;</span><br><span class="line">     option domain-name-servers 192.168.10.10;</span><br><span class="line">     range dynamic-bootp 192.168.10.100 192.168.10.200;</span><br><span class="line">     default-lease-time 21600;</span><br><span class="line">     max-lease-time 43200;</span><br><span class="line">     next-server 192.168.10.10;</span><br><span class="line">     filename &quot;pxelinux.0&quot;;</span><br><span class="line"> }</span><br></pre></td></tr></tbody></table></figure>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">---------------------tftp-----------------------</span><br><span class="line">disable = no</span><br></pre></td></tr></tbody></table></figure>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">---------------------default--------------------</span><br><span class="line">default linux</span><br><span class="line">...</span><br><span class="line"># 64 line &#x5730;&#x5740;&#x8981;&#x51C6;&#x786E;&#xFF0C;&#x955C;&#x50CF;&#x6587;&#x4EF6;&#x653E;&#x5728;&#x54EA;&#x4E2A;&#x76EE;&#x5F55;&#x5C31;&#x586B;&#x5230;&#x54EA;&#x4E2A;&#x76EE;&#x5F55;&#xFF0C;&#x9664;&#x975E;ftp&#x8BBE;&#x7F6E;&#x4E86;&#x9ED8;&#x8BA4;&#x76EE;&#x5F55;</span><br><span class="line">append initrd=initrd.img inst.stage2=ftp://192.168.128.120/pub ks=ftp://192.168.128.120/pub/ks.cfg quiet</span><br></pre></td></tr></tbody></table></figure>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">---------------------ks.cfg---------------------</span><br><span class="line"># &#x7CFB;&#x7EDF;&#x8BA4;&#x8BC1;&#x8BBE;&#x7F6E;</span><br><span class="line">auth --enableshadown --passalgo=sha512</span><br><span class="line"># &#x6587;&#x4EF6;&#x670D;&#x52A1;&#x5730;&#x5740;</span><br><span class="line"></span><br><span class="line"># &#x5730;&#x5740;&#x8981;&#x51C6;&#x786E;&#xFF0C;&#x955C;&#x50CF;&#x6587;&#x4EF6;&#x653E;&#x5728;&#x54EA;&#x4E2A;&#x76EE;&#x5F55;&#x5C31;&#x586B;&#x5230;&#x54EA;&#x4E2A;&#x76EE;&#x5F55;</span><br><span class="line">url --url=ftp://192.168.128.120/pub</span><br><span class="line">firstboot --enable</span><br><span class="line">ignoredisk --only-use=sda</span><br><span class="line">keyboard --vckeymap=us --xlayouts=&apos;us&apos;</span><br><span class="line">lang en_US.UTF-8</span><br><span class="line">network --bootproto=dhcp --device=eno16777728 --onboot=off --ipv6=auto</span><br><span class="line">network --hostname=localhost.localdomain</span><br><span class="line">rootpw --iscrypted $6$pDjJf42g8C6pL069$iI.PX/yFaqpo0ENw2pa7MomkjLyoae2zjMz2UZJ7b H3UO4oWtR1.Wk/hxZ3XIGmzGJPcs/MgpYssoi8hPCt8b/</span><br><span class="line"># &#x65F6;&#x533A;&#x8BBE;&#x7F6E;</span><br><span class="line">timezone Asia/Shanghai --isUtc</span><br><span class="line"># &#x5206;&#x533A;&#x65B9;&#x5F0F;</span><br><span class="line">clearpart --all --initlabel</span><br><span class="line"># &#x5B89;&#x88C5;rpm&#x5305;</span><br><span class="line"> 31 %packages</span><br><span class="line"> 32 @base</span><br><span class="line"> 33 @core</span><br><span class="line"> 34 @desktop-debugging</span><br><span class="line"> 35 @dial-up</span><br><span class="line"> 36 @fonts</span><br><span class="line"> 37 @gnome-desktop</span><br><span class="line"> 38 @guest-agents</span><br><span class="line"> 39 @guest-desktop-agents</span><br><span class="line"> 40 @input-methods</span><br><span class="line"> 41 @internet-browser</span><br><span class="line"> 42 @multimedia</span><br><span class="line"> 43 @print-client</span><br><span class="line"> 44 @x11</span><br><span class="line"> 45 </span><br><span class="line"> 46 %end</span><br></pre></td></tr></tbody></table></figure>
-<p>&#x68C0;&#x67E5;&#x670D;&#x52A1;&#x662F;&#x5426;&#x542F;&#x52A8;<br>systemctl status xinetd dhcpd</p>
-<h4 id="UEFI&#x6A21;&#x5F0F;"><a href="#UEFI&#x6A21;&#x5F0F;" class="headerlink" title="UEFI&#x6A21;&#x5F0F;"></a>UEFI&#x6A21;&#x5F0F;</h4><p>&#x5728;BOIS&#x6A21;&#x5F0F;&#x7684;&#x57FA;&#x7840;&#x4E0A;&#x66F4;&#x65B0;&#x5982;&#x4E0B;&#x914D;&#x7F6E;&#xFF1A;</p>
-<p>&#x66F4;&#x65B0;DHCP&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF0C;&#x53C2;&#x8003;&#x6A21;&#x677F;</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># DHCP Server Configuration file.</span></span><br><span class="line"><span class="comment">#   see /usr/share/doc/dhcp*/dhcpd.conf.example</span></span><br><span class="line"><span class="comment">#   see dhcpd.conf(5) man page</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">allow booting;</span><br><span class="line">allow bootp;</span><br><span class="line">ddns-update-style interim;</span><br><span class="line">ignore client-updates;</span><br><span class="line">option rfc3442-classless-static-routes code 121 = array of <span class="built_in">integer</span> 8;</span><br><span class="line">option ms-classless-static-routes code 249 = array of <span class="built_in">integer</span> 8;</span><br><span class="line">option space pxelinux;</span><br><span class="line">option pxelinux.magic code 208 = string;</span><br><span class="line">option pxelinux.configfile code 209 = text;</span><br><span class="line">option pxelinux.pathprefix code 210 = text;</span><br><span class="line">option pxelinux.reboottime code 211 = unsigned <span class="built_in">integer</span> 32;</span><br><span class="line">option architecture-type code 93 = unsigned <span class="built_in">integer</span> 16;</span><br><span class="line">subnet 192.168.128.0 netmask 255.255.255.0 {</span><br><span class="line">    option subnet-mask 255.255.255.0;</span><br><span class="line">    option domain-name-servers 192.168.128.120;</span><br><span class="line">    range dynamic-bootp 192.168.128.128 192.168.128.200;</span><br><span class="line">    default-lease-time 21600;</span><br><span class="line">    max-lease-time 43200;</span><br><span class="line"></span><br><span class="line">    class <span class="string">&quot;pxeclients&quot;</span>{</span><br><span class="line">        match <span class="keyword">if</span> substring(option vendor-class-identifier, 0, 9)=<span class="string">&quot;PXEClient&quot;</span>;</span><br><span class="line">        next-server 192.168.128.120;</span><br><span class="line">        <span class="keyword">if</span> option architecture-type = 00:07 {</span><br><span class="line">            filename <span class="string">&quot;shim.efi&quot;</span>;</span><br><span class="line">        } <span class="keyword">else</span> {</span><br><span class="line">            filename <span class="string">&quot;pxelinux.0&quot;</span>;</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-<p>&#x590D;&#x5236;uefi&#x5F15;&#x5BFC;&#x6587;&#x4EF6;</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">cp -pr /media/cdrom/Packages/shim-0.9-2.el7.x86_64.rpm </span><br><span class="line">cp -pr /media/cdrom/Packages/grub2-efi-2.02-0.44.el7.x86_64.rpm</span><br><span class="line">rpm2cpio shim-0.9-2.el7.x86_64.rpm | cpio -dimv</span><br><span class="line">rpm2cpio grub2-efi-2.02-0.44.el7.x86_64.rpm</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x590D;&#x5236;&#x76F8;&#x5173;&#x5F15;&#x5BFC;&#x6587;&#x4EF6;&#x5230;tftpboot/&#x76EE;&#x5F55;&#x4E0B;</span></span><br><span class="line">cp ./bootloaders/boot/efi/EFI/redhat/shim.efi /var/lib/tftpboot/</span><br><span class="line">cp ./bootloaders/boot/efi/EFI/redhat/grubx64.efi /var/lib/tftpboot/</span><br></pre></td></tr></tbody></table></figure>
-<p>&#x5728;/var/lib/tftpboot/&#x4E0B;&#x6DFB;&#x52A0;grub.cfg&#x914D;&#x7F6E;&#x6587;&#x4EF6;</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">vim /var/lib/tftpboot/uefi/grub.cfg&#xFF1A;</span><br><span class="line"><span class="built_in">set</span> timeout=60</span><br><span class="line"><span class="comment"># menuentry &apos;RHEL 7&apos;&#x662F;&#x5F15;&#x5BFC;&#x7684;&#x83DC;&#x5355;&#x540D;&#x79F0;</span></span><br><span class="line">menuentry <span class="string">&apos;RHEL 7&apos;</span> {</span><br><span class="line">	<span class="comment"># vmlinuz&#x7684;&#x5B58;&#x653E;&#x76EE;&#x5F55;,&#x5982;&#x679C;&#x6587;&#x4EF6;&#x5B58;&#x653E;&#x5728;/var/lib/tftpboot/&#x76EE;&#x5F55;&#x4E0B;&#xFF0C;&#x76F4;&#x63A5;&#x5148;vmlinuz</span></span><br><span class="line">    linuxefi vmlinuz ip=dhcp</span><br><span class="line">    <span class="comment"># &#x955C;&#x50CF;&#x5B89;&#x88C5;&#x6587;&#x4EF6;&#x7684;&#x5B58;&#x653E;&#x76EE;&#x5F55;</span></span><br><span class="line">    inst.repo=ftp://192.168.73.120/pub/</span><br><span class="line">    <span class="comment"># initrd.img&#x6587;&#x4EF6;&#x7684;&#x5B58;&#x653E;&#x53D1;&#x76EE;&#x5F55;</span></span><br><span class="line">    initrdefi initrd.img</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-<blockquote>
-<p>&#x542F;&#x52A8;&#x6240;&#x6709;&#x670D;&#x52A1;systemctl restart xinetd dhcpd</p>
-</blockquote>
-<p>&#x590D;&#x5236;&#x955C;&#x50CF;&#x6587;&#x4EF6;&#x5230;uefi/&#x76EE;&#x5F55;&#x4E0B;</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">cp /media/cdrom/images/pxeboot/{vmlinuz,initrd.img} /var/lib/tftpboot/</span><br></pre></td></tr></tbody></table></figure>
-<p><strong>&#x67E5;&#x770B;LInux&#x5904;&#x4E8E;BIOS&#x6A21;&#x5F0F;&#x8FD8;&#x662F;UEFI&#x6A21;&#x5F0F;</strong></p>
-<p>&#x5728;UEFI&#x6A21;&#x5F0F;&#x4E0B;Linux&#x7CFB;&#x7EDF;&#x5728;<code>/sys/firmware/</code>&#x76EE;&#x5F55;&#x4E0B;&#x5B58;&#x5728;<code>efi</code>&#x76EE;&#x5F55;&#xFF0C;BIOS&#x6A21;&#x5F0F;&#x662F;&#x6CA1;&#x6709;&#x8FD9;&#x4E2A;&#x76EE;&#x5F55;&#x7684;</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">ls -ld /sys/firmware/efi/</span><br><span class="line"></span><br><span class="line"><span class="comment"># BIOS&#x6A21;&#x5F0F;&#x4E0B;grub2&#x5F15;&#x5BFC;&#x6587;&#x4EF6;&#x4E3A;/etc/grub2.cfg</span></span><br><span class="line"><span class="comment"># EFI&#x6A21;&#x5F0F;&#x4E0B;grub2&#x5F15;&#x5BFC;&#x6587;&#x4EF6;&#x4E3A;/etc/grub2-efi.cfg</span></span><br><span class="line">[root@pxelab tftpboot]<span class="comment"># ls -lrt /etc/grub2.cfg</span></span><br><span class="line">lrwxrwxrwx. 1 root root 22 Jan 22 17:31 /etc/grub2.cfg -&gt; ../boot/grub2/grub.cfg</span><br><span class="line">[root@pxelab ~]<span class="comment"># ls -lrt /etc/grub2-efi.cfg</span></span><br><span class="line">lrwxrwxrwx. 1 root root 31 Jan 24 07:18 /etc/grub2-efi.cfg -&gt; ../boot/efi/EFI/redhat/grub.cfg</span><br></pre></td></tr></tbody></table></figure>
-<p>&#x5982;&#x679C;&#x662F;EFI&#x6A21;&#x5F0F;&#x7684;&#x7CFB;&#x7EDF;&#xFF0C;&#x6709;&#x5982;&#x4E0B;&#x76EE;&#x5F55;/&#x6587;&#x4EF6;&#xFF1A;</p>
-<figure class="highlight sh"><table><tbody><tr><td class="code"><pre><span class="line">[root@pxelab ~]<span class="comment"># ls -lrt /etc/grub2-efi.cfg</span></span><br><span class="line">lrwxrwxrwx. 1 root root 31 Jan 24 07:18 /etc/grub2-efi.cfg -&gt; ../boot/efi/EFI/redhat/grub.cfg</span><br><span class="line">[root@pxelab ~]<span class="comment"># ls -ld /boot/efi/EFI/</span></span><br><span class="line">drwx------. 4 root root 4096 Jan 24 07:19 /boot/efi/EFI/</span><br><span class="line">[root@pxelab ~]<span class="comment"># ls -lrt /boot/efi/EFI/</span></span><br><span class="line">total 8</span><br><span class="line">drwx------. 2 root root 4096 Jan 24 07:19 BOOTdrwx------. 3 root root 4096 Jan 24 07:21 redhat</span><br><span class="line">[root@pxelab ~]<span class="comment"># ls -lrt /boot/efi/EFI/*</span></span><br><span class="line">/boot/efi/EFI/BOOT:</span><br><span class="line">total 1340</span><br><span class="line">-rwx------. 1 root root   71784 Jul 20  2015 fallback.efi</span><br><span class="line">-rwx------. 1 root root 1295704 Jul 20  2015 BOOTX64.EFI</span><br><span class="line"></span><br><span class="line">/boot/efi/EFI/redhat:</span><br><span class="line">total 5812</span><br><span class="line">-rwx------. 1 root root 1289544 Jul 20  2015 shim-redhat.efi</span><br><span class="line">-rwx------. 1 root root 1295704 Jul 20  2015 shim.efi</span><br><span class="line">-rwx------. 1 root root 1282496 Jul 20  2015 MokManager.efi</span><br><span class="line">-rwx------. 1 root root     176 Jul 20  2015 BOOT.CSV</span><br><span class="line">-rwx------. 1 root root 1024464 Aug 29  2016 grubx64.efi</span><br><span class="line">-rwx------. 1 root root 1024464 Aug 29  2016 gcdx64.efi</span><br><span class="line">drwx------. 2 root root    4096 Jan 24 07:18 fonts</span><br><span class="line">-rwx------. 1 root root    1024 Jan 24 07:21 grubenv</span><br><span class="line">-rwx------. 1 root root    4245 Jan 24 07:21 grub.cfg</span><br><span class="line">[root@pxelab ~]<span class="comment">#</span></span><br></pre></td></tr></tbody></table></figure>
-<h3 id="Kickstart"><a href="#Kickstart" class="headerlink" title="Kickstart"></a>Kickstart</h3><p>&#x751F;&#x6210;kickstart&#x6587;&#x4EF6;<br>&#x4F7F;&#x7528;&#x5728;&#x7EBF;&#x751F;&#x6210;&#x5668;&#xFF08;&#x9700;&#x8981;&#x6CE8;&#x518C;&#x767B;&#x5F55;&#xFF09;<a href="https://access.redhat.com/labs/kickstartconfig/" target="_blank" rel="noopener">https://access.redhat.com/labs/kickstartconfig/</a><br>&#x6216;<br>&#x4F7F;&#x7528;&#x7528;&#x6237;&#x76EE;&#x5F55;&#x4E0B;&#x7684;&#x9ED8;&#x8BA4;&#x6A21;&#x677F;anaconda-ks.cfg</p>
-<blockquote>
-<p>&#x3010;&#x6CE8;&#x610F;&#xFF01;&#x3011;<br>&#x914D;&#x7F6E;&#x7684;&#x6BCF;&#x90E8;&#x5206;&#x5FC5;&#x987B;&#x6309;&#x987A;&#x5E8F;&#x6307;&#x5B9A;&#xFF0C;&#x6BCF;&#x90E8;&#x5206;&#x5185;&#x4E0D;&#x5FC5;&#x6309;&#x9700;&#x6392;&#x5E8F;<br>%addon&#x3001;%packages&#x3001;%pre&#x3001;%post&#x5FC5;&#x987B;&#x4EE5;%end&#x7ED3;&#x5C3E;</p>
-<p>#&#x6CE8;&#x91CA;</p>
-</blockquote>
-<p>&#x5B89;&#x88C5;kickstart&#x6587;&#x4EF6;&#x9A8C;&#x8BC1;&#x5668;</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">yum install pykickstart</span><br></pre></td></tr></tbody></table></figure>
-<p>&#x4F7F;&#x7528;ksvalidator&#x547D;&#x4EE4;&#x9A8C;&#x8BC1;ks&#x6587;&#x4EF6;&#x7684;&#x6B63;&#x786E;&#x6027;</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">ksvalidator kickstart.ks</span><br></pre></td></tr></tbody></table></figure>
-<p><strong>BIOS</strong></p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">append initrd=initrd.img inst.ks=[http/ftp/tftp/nfs]://192.168.73.120/var/lib/tftpboot/ks.cfg</span><br></pre></td></tr></tbody></table></figure>
-<p><strong>UEFI</strong></p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">kernel vmlinuz inst.ks=[http/ftp/tftp/nfs]://192.168.73.120/var/tftpboot/ks.cfg</span><br></pre></td></tr></tbody></table></figure>
-<p>kickstart&#x6587;&#x4EF6;&#x8BED;&#x6CD5;&#x53D8;&#x5316;</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">ksverdiff -f RHEL6 -t RHEL7</span><br><span class="line"><span class="comment"># -f&#x6307;&#x5B9A;&#x6BD4;&#x8F83;&#x7B2C;&#x4E00;&#x4E2A;&#x53D1;&#x884C;&#x7248;&#xFF0C;-t&#x6307;&#x5B9A;&#x6BD4;&#x8F83;&#x6700;&#x540E;&#x4E00;&#x4E2A;&#x53D1;&#x884C;&#x7248;</span></span><br></pre></td></tr></tbody></table></figure>
-<p>&#x4F7F;&#x7528;SSL&#x534F;&#x8BAE;&#x65F6;&#xFF0C;&#x7981;&#x7528;SSLv2&#x548C;SSLv3&#xFF0C;&#x8BE5;&#x9009;&#x9879;&#x89E6;&#x53D1;CVE-2014-3566&#x6F0F;&#x6D1E;</p>
-<h3 id="Cobbler-Kickstart"><a href="#Cobbler-Kickstart" class="headerlink" title="Cobbler+Kickstart"></a>Cobbler+Kickstart</h3><p>&#x5173;&#x95ED;SELinux&#x548C;&#x9632;&#x706B;&#x5899;&#xFF0C;&#x91CD;&#x542F;Linux</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">systemctl stop firewalld</span><br><span class="line">systemctl <span class="built_in">disable</span> firewalld</span><br><span class="line">iptables -F</span><br><span class="line">setenforce 0</span><br><span class="line"></span><br><span class="line">sed -i <span class="string">&apos;s/SELINUX=enforcing/SELINUX=disabled/g&apos;</span> /etc/selinux/configf</span><br></pre></td></tr></tbody></table></figure>
-<p>&#x66F4;&#x65B0;yum&#x6E90;&#x548C;epel&#x6E90;</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># &#x76F4;&#x63A5;&#x4F7F;&#x7528;&#x9ED8;&#x8BA4;&#x6E90;</span></span><br><span class="line">yum install -y epel-release</span><br></pre></td></tr></tbody></table></figure>
-<p>&#x5B89;&#x88C5;&#x5176;&#x4ED6;&#x670D;&#x52A1;</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">yum install -y dhcp pykickstart httpd dhcp rsync tftp-server xinetd syslinux</span><br></pre></td></tr></tbody></table></figure>
-<p>&#x5B89;&#x88C5;Cobbler</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">yum install cobbler cobbler-web</span><br></pre></td></tr></tbody></table></figure>
-<p>&#x4FEE;&#x6539;&#x670D;&#x52A1;&#x914D;&#x7F6E;&#x6587;&#x4EF6;</p>
-<blockquote>
-<p>vim /etc/cobbler/settings</p>
-</blockquote>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">&#x95EE;&#x9898; 1&#xFF1A;&#x4FEE;&#x6539; server &#x5730;&#x5740;&#x4E3A; 192.168.1.7</span><br><span class="line">&#x6539;&#xFF1A;390 server: 127.0.1</span><br><span class="line">&#x4E3A;&#xFF1A;390 server: 192.168.1.7</span><br><span class="line">&#x95EE;&#x9898; 2&#xFF1A;&#x4FEE;&#x6539; next_server &#x5730;&#x5740;&#x4E3A; 192.168.1.7</span><br><span class="line">&#x6539;&#xFF1A;278 next_server: 127.0.1</span><br><span class="line">&#x4E3A;&#xFF1A;278 next_server: 192.168.1.7</span><br><span class="line">&#x6539;&#xFF1A;242 manage_dhcp: 0</span><br><span class="line">&#x4E3A;&#xFF1A;242 manage_dhcp: 1</span><br></pre></td></tr></tbody></table></figure>
-<blockquote>
-<p>vim /etc/cobbler/dhcp.template</p>
-</blockquote>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">&#x6539;&#xFF1A;22 option routers 192.168.1.5; <span class="comment">#&#x4FEE;&#x6539;&#x9ED8;&#x8BA4;&#x7F51;&#x5173;&#x5730;&#x5740;</span></span><br><span class="line">&#x4E3A;&#xFF1A;22 option routers 192.168.1.1; <span class="comment">#&#x4EE5;&#x5B9E;&#x9645;&#x7684;&#x7F51;&#x5173;&#x4E3A;&#x51C6;</span></span><br><span class="line">&#x6539;&#xFF1A;23 option domain-name-servers 192.168.1.1; <span class="comment">#&#x4FEE;&#x6539; DNS &#x5730;&#x5740;</span></span><br><span class="line">&#x4E3A;&#xFF1A;23 option domain-name-servers 114.114.114.114;</span><br><span class="line">&#x5982;&#x4E0B;&#xFF1A;</span><br><span class="line"></span><br><span class="line"> 21 subnet 192.168.1.0 netmask 255.255.255.0 {</span><br><span class="line"> 22      option routers             192.168.1.1;</span><br><span class="line"> 23      option domain-name-servers 114.114.114.114;</span><br><span class="line"> 24      option subnet-mask         255.255.255.0;</span><br><span class="line"> 25      range dynamic-bootp        192.168.1.100 192.168.1.254;</span><br><span class="line"> 26      default-lease-time         21600;</span><br><span class="line"> 27      max-lease-time             43200;</span><br><span class="line"> 28      next-server                <span class="variable">$next_server</span>;</span><br></pre></td></tr></tbody></table></figure>
-<p>&#x542F;&#x52A8;&#x670D;&#x52A1;</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">systemctl start httpd cobblerd</span><br><span class="line">cobbler sync</span><br><span class="line">systemctl <span class="built_in">enable</span> httpd cobblerd</span><br></pre></td></tr></tbody></table></figure>
-<p>&#x68C0;&#x67E5;cobbler&#x662F;&#x5426;&#x5B58;&#x5728;&#x9519;&#x8BEF;</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">cobbler check</span><br><span class="line">systemctl restart cobblerd</span><br><span class="line">cobbler sync</span><br></pre></td></tr></tbody></table></figure>
-<p>&#x6302;&#x8F7D;&#x5149;&#x9A71;&#x5BFC;&#x5165;&#x955C;&#x50CF;</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">mount /dev/cdrom /mnt</span><br><span class="line">cobbler import --path=/mnt/ --name=CentOS7.6 --arch=x86_64</span><br></pre></td></tr></tbody></table></figure>
-<p>&#x67E5;&#x770B;cobbler&#x955C;&#x50CF;&#x914D;&#x7F6E;&#x6587;&#x4EF6;</p>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">cobbler list</span><br></pre></td></tr></tbody></table></figure>
-<h2 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h2><h3 id="PXE-Server"><a href="#PXE-Server" class="headerlink" title="PXE Server"></a>PXE Server</h3><h3 id="&#x4FEE;&#x6539;Windows&#x955C;&#x50CF;"><a href="#&#x4FEE;&#x6539;Windows&#x955C;&#x50CF;" class="headerlink" title="&#x4FEE;&#x6539;Windows&#x955C;&#x50CF;"></a>&#x4FEE;&#x6539;Windows&#x955C;&#x50CF;</h3><script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>
-    
-        <div>
-            <a href="/posts/97717e94/" class="post-more waves-button">
-                阅读全文 »
-            </a>
-        </div>
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-Linux计划任务实现" class="article-card article-type-post" itemprop="blogPost">
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a href="/posts/2fe5fc07/">Linux计划任务实现</a>
-    </h3>
-  
-
-
-
-
-     <div class="post-meta">
-        <time class="post-time" title="2022-06-07 12:37:20" datetime="2022-06-07T04:37:20.000Z" itemprop="datePublished">2022-06-07</time>
-
-    </div>
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        <h3 id="crontab"><a href="#crontab" class="headerlink" title="crontab"></a>crontab</h3><blockquote>
-<p>&#x63D0;&#x4EA4;&#x548C;&#x7BA1;&#x7406;&#x7528;&#x6237;&#x7684;&#x9700;&#x8981;&#x5468;&#x671F;&#x6027;&#x6267;&#x884C;&#x7684;&#x4EFB;&#x52A1;</p>
-</blockquote>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line"># Example of job definition:</span><br><span class="line"># .---------------- minute (0 - 59)</span><br><span class="line"># |  .------------- hour (0 - 23)</span><br><span class="line"># |  |  .---------- day of month (1 - 31)</span><br><span class="line"># |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...</span><br><span class="line"># |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat</span><br><span class="line"># |  |  |  |  |</span><br><span class="line"># *  *  *  *  * user-name  command to be executed</span><br></pre></td></tr></tbody></table></figure>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># crontab&#x4EFB;&#x52A1;&#x683C;&#x5F0F;</span></span><br><span class="line">minute hour day month week <span class="built_in">command</span> &#x987A;&#x5E8F;&#xFF1A;&#x5206; &#x65F6; &#x65E5; &#x6708; &#x5468;</span><br></pre></td></tr></tbody></table></figure>
-<p>&#x8BF4;&#x660E;&#xFF1A;</p>
-<ul>
-<li>minute: &#x8868;&#x793A;&#x5206;&#x949F;&#xFF0C;&#x53EF;&#x4EE5;&#x662F;&#x4ECE;0&#x5230;59&#x4E4B;&#x95F4;&#x7684;&#x4EFB;&#x4F55;&#x6574;&#x6570;</li>
-<li>hour: &#x8868;&#x793A;&#x5C0F;&#x65F6;&#xFF0C;&#x53EF;&#x4EE5;&#x662F;&#x4ECE;0&#x5230;23&#x4E4B;&#x95F4;&#x7684;&#x4EFB;&#x4F55;&#x6574;&#x6570;</li>
-<li>day: &#x8868;&#x793A;&#x65E5;&#x671F;&#xFF0C;&#x53EF;&#x4EE5;&#x662F;1-31&#x4E4B;&#x95F4;&#x7684;&#x4EFB;&#x4F55;&#x6574;&#x6570;</li>
-<li>month: &#x8868;&#x793A;&#x6708;&#x4EFD;&#xFF0C;&#x53EF;&#x4EE5;&#x662F;1-23&#x4E4B;&#x95F4;&#x7684;&#x4EFB;&#x4F55;&#x6574;&#x6570;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x662F;&#x82F1;&#x6587;</li>
-<li>week: &#x8868;&#x793A;&#x661F;&#x671F;&#x51E0;&#xFF0C;&#x53EF;&#x4EE5;&#x662F;0-7&#x4E4B;&#x95F4;&#x7684;&#x4EFB;&#x4F55;&#x6574;&#x6570;&#xFF0C;&#xFF08;0&#x548C;7&#x4EE3;&#x8868;&#x661F;&#x671F;&#x65E5;&#xFF09;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x662F;&#x82F1;&#x6587;</li>
-<li>command: &#x8981;&#x6267;&#x884C;&#x7684;&#x547D;&#x4EE4;&#xFF0C;&#x53EF;&#x4EE5;&#x662F;&#x7CFB;&#x7EDF;&#x547D;&#x4EE4;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x662F;&#x81EA;&#x5DF1;&#x7F16;&#x5199;&#x7684;&#x811A;&#x672C;</li>
-</ul>
-<hr>
-<ul>
-<li>&#x661F;&#x53F7;(*) : &#x4EE3;&#x8868;&#x6240;&#x6709;&#x53EF;&#x80FD;&#x7684;&#x503C;&#xFF0C;&#x4F8B;&#x5982;month&#x5B57;&#x6BB5;&#x5982;&#x679C;&#x662F;&#x661F;&#x53F7;&#xFF0C;&#x5219;&#x8868;&#x793A;&#x5728;&#x6EE1;&#x8DB3;&#x5176;&#x4ED6;&#x5B57;&#x6BB5;&#x7684;&#x5236;&#x7EA6;&#x6761;&#x4EF6;&#x540E;&#x6BCF;&#x6708;&#x90FD;&#x6267;&#x884C;&#x8BE5;&#x547D;&#x4EE4;&#x7684;&#x64CD;&#x4F5C;</li>
-<li>&#x9017;&#x53F7;(,)&#xFF1A;&#x53EF;&#x4EE5;&#x7528;&#x9017;&#x53F7;&#x9694;&#x5F00;&#x7684;&#x503C;&#x6307;&#x5B9A;&#x4E00;&#x4E2A;&#x5217;&#x8868;&#x8303;&#x56F4;&#xFF0C;&#x4F8B;&#x5982;1,2,4,7,9</li>
-<li>&#x4E2D;&#x6760;(-)&#xFF1A;&#x53EF;&#x4EE5;&#x7528;&#x6574;&#x6570;&#x4E4B;&#x95F4;&#x7684;&#x4E2D;&#x6760;&#x8868;&#x793A;&#x4E00;&#x4E2A;&#x6574;&#x6570;&#x8303;&#x56F4;&#xFF0C;&#x4F8B;&#x5982;2-6&#x8868;&#x793A;2,3,4,5,6</li>
-<li>&#x6B63;&#x659C;&#x7EBF;(/)&#xFF1A;&#x53EF;&#x4EE5;&#x7528;&#x6B63;&#x659C;&#x7EBF;&#x6307;&#x5B9A;&#x65F6;&#x95F4;&#x7684;&#x95F4;&#x9694;&#x9891;&#x7387;&#xFF0C;&#x4F8B;&#x5982;0-23/2&#x8868;&#x793A;&#x6BCF;&#x4E24;&#x4E2A;&#x5C0F;&#x65F6;&#x6267;&#x884C;&#x4E00;&#x6B21;&#x3002;&#x901A;&#x77E5;&#x6B63;&#x659C;&#x7EBF;&#x53EF;&#x4EE5;&#x548C;&#x661F;&#x53F7;&#x4E00;&#x8D77;&#x4F7F;&#x7528;&#xFF0C;&#x4F8B;&#x5982;*/10&#xFF0C;&#x5728;minute&#x5B57;&#x6BB5;&#x8868;&#x793A;&#x6BCF;&#x5341;&#x5206;&#x949F;&#x6267;&#x884C;&#x4E00;&#x6B21;</li>
-</ul>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># &#x6BCF;&#x5206;&#x949F;&#x6267;&#x884C;&#x4E00;&#x6B21;</span></span><br><span class="line">* * * * * <span class="built_in">command</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6BCF;&#x5C0F;&#x65F6;&#x7684;&#x7B2C;&#x4E09;&#x548C;&#x7B2C;15&#x5206;&#x949F;&#x6267;&#x884C;&#x4E00;&#x6B21;</span></span><br><span class="line">3,15 * * * * <span class="built_in">command</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x5728;&#x4E0A;&#x5348;8&#x70B9;&#x5230;11&#x70B9;&#x7684;&#x7B2C;3&#x548C;&#x7B2C;15&#x5206;&#x949F;&#x6267;&#x884C;</span></span><br><span class="line">3,15 8-11 * * * <span class="built_in">command</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6BCF;&#x9694;&#x4E24;&#x5929;&#x7684;&#x4E0A;&#x5348;8&#x70B9;&#x5230;11&#x70B9;&#x7684;&#x7B2C;3&#x548C;&#x7B2C;15&#x5206;&#x949F;&#x6267;&#x884C;&#x4E00;&#x6B21;</span></span><br><span class="line">3,15 8-11 */2 * * <span class="built_in">command</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6BCF;&#x4E2A;&#x661F;&#x671F;&#x4E00;&#x7684;&#x4E0A;&#x5348;8&#x70B9;&#x5230;11&#x70B9;&#x7684;&#x7B2C;3&#x548C;&#x7B2C;15&#x5206;&#x949F;&#x6267;&#x884C;</span></span><br><span class="line">3,15 8-11 * * 1 <span class="built_in">command</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6BCF;&#x665A;21:30&#x91CD;&#x542F;smb</span></span><br><span class="line">30 21 * * * /etc/init.d/smb restart</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6BCF;&#x6708;1&#x3001;10&#x3001;22&#x65E5;&#x7684;4:45&#x91CD;&#x542F;smb</span></span><br><span class="line">45 4 1,10,22 * * /etc/init.d/smb restart</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6BCF;&#x5468;&#x516D;&#xFF0C;&#x5468;&#x65E5;&#x7684;1:10&#x91CD;&#x542F;smb</span></span><br><span class="line">10 1 * * 6,7(&#x6216;&#x8005;6,0) /etc/init.d/smb restart</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6BCF;&#x5929;18:00&#x81F3;23:00&#x4E4B;&#x95F4;&#x6BCF;&#x9694;30&#x5206;&#x949F;&#x91CD;&#x542F;smb</span></span><br><span class="line">*/30(0,30) 18-23 * * * /etc/init.d/smb restart</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6BCF;&#x5468;&#x516D;&#x7684;&#x665A;&#x4E0A;11&#x91CD;&#x542F;smb</span></span><br><span class="line">0 23 * * 6 /etc/init.d/smb restart</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6BCF;&#x5C0F;&#x65F6;&#x91CD;&#x542F;smb</span></span><br><span class="line">* */1 * * * /etc/init.d/smb restart</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6BCF;&#x6708;4&#x53F7;&#x4E0E;&#x6BCF;&#x5468;&#x4E00;&#x5230;&#x5468;&#x4E09;&#x7684;11&#x70B9;&#x91CD;&#x542F;smb</span></span><br><span class="line">0 11 4 * 1-3(mon-wed) /etc/init.d/smb restart</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x4E00;&#x6708;&#x4E00;&#x53F7;&#x7684;4&#x70B9;&#x91CD;&#x542F;smb</span></span><br><span class="line">0 4 1 jan * /etc/init.d/smb restart</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6BCF;&#x5C0F;&#x65F6;&#x6267;&#x884C;/etc/cron.hourly&#x76EE;&#x5F55;&#x5185;&#x7684;&#x811A;&#x672C;</span></span><br><span class="line">01 * * * * root run-parts /etc/con.hourly</span><br></pre></td></tr></tbody></table></figure>
-<h3 id="at"><a href="#at" class="headerlink" title="at"></a>at</h3><blockquote>
-<p>&#x5728;&#x6307;&#x5B9A;&#x65F6;&#x95F4;&#x6267;&#x884C;&#x4E00;&#x4E2A;&#x4EFB;&#x52A1;</p>
-</blockquote>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># &#x4E09;&#x5929;&#x540E;&#x7684;&#x4E0B;&#x5348;5&#x70B9;&#x949F;&#x6267;&#x884C;/bin/ls</span></span><br><span class="line">at 5pm+3 days</span><br><span class="line">at&gt; /bin/ls</span><br><span class="line">at&gt; &lt;EOT&gt;</span><br><span class="line">Ctrl+D</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x660E;&#x5929;17&#x70B9;&#x949F;&#xFF0C;&#x8F93;&#x51FA;&#x65F6;&#x95F4;&#x5230;&#x6307;&#x5B9A;&#x6587;&#x4EF6;&#x5185;&#xFF1A;</span></span><br><span class="line">at 17:20 tomorrow</span><br><span class="line">at&gt; date &gt;/root/2022.log</span><br><span class="line">at&gt; &lt;EOT&gt;</span><br><span class="line">Ctrl+D</span><br></pre></td></tr></tbody></table></figure>
-<p><strong>atq &#x67E5;&#x770B;&#x7CFB;&#x7EDF;&#x6267;&#x884C;&#x5DE5;&#x4F5C;&#x4EFB;&#x52A1;</strong></p>
-<p><strong>atrm x &#x5220;&#x9664;&#x4EFB;&#x52A1;x</strong></p>
-<p><strong>at -c x &#x67E5;&#x770B;&#x5DF2;&#x7ECF;&#x8BBE;&#x7F6E;&#x7684;&#x4EFB;&#x52A1;&#x5185;&#x5BB9;</strong></p>
-<script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>
-    
-        <div>
-            <a href="/posts/2fe5fc07/" class="post-more waves-button">
-                阅读全文 »
-            </a>
-        </div>
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-Linux登录退出提示信息欢迎信息" class="article-card article-type-post" itemprop="blogPost">
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a href="/posts/e025952a/">Linux登录退出提示信息欢迎信息</a>
-    </h3>
-  
-
-
-
-
-     <div class="post-meta">
-        <time class="post-time" title="2022-06-07 12:37:10" datetime="2022-06-07T04:37:10.000Z" itemprop="datePublished">2022-06-07</time>
-
-    </div>
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        <script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>
-    
-        <div>
-            <a href="/posts/e025952a/" class="post-more waves-button">
-                阅读全文 »
-            </a>
-        </div>
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-Linux生成随机密码方法" class="article-card article-type-post" itemprop="blogPost">
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a href="/posts/b3f64b7d/">Linux生成随机密码方法</a>
-    </h3>
-  
-
-
-
-
-     <div class="post-meta">
-        <time class="post-time" title="2022-06-07 12:36:47" datetime="2022-06-07T04:36:47.000Z" itemprop="datePublished">2022-06-07</time>
-
-    </div>
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        <hr>
-<h3 id="gpg&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;"><a href="#gpg&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;" class="headerlink" title="gpg&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;"></a>gpg&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># </span></span><br><span class="line">gpg --gen-random --armor 2 12</span><br><span class="line"><span class="comment"># --gen-random &#x968F;&#x673A;&#x751F;&#x6210;&#x5B57;&#x7B26;</span></span><br><span class="line"><span class="comment"># -armor &#x751F;&#x6210;ASCII&#x5B57;&#x7B26;</span></span><br><span class="line"><span class="comment"># 2 &#x8D28;&#x91CF;&#x7EA7;&#x522B;&#xFF0C;0&#x3001;1&#x3001;2&#x4E09;&#x4E2A;&#x9009;&#x9879;</span></span><br><span class="line"><span class="comment"># 12    &#x5B57;&#x7B26;&#x957F;&#x5EA6;</span></span><br></pre></td></tr></tbody></table></figure>
-<p><strong>&#x8FC7;&#x6EE4;&#x7279;&#x6B8A;&#x5B57;&#x7B26;</strong><br></p><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">gpg --gen-random --armor 2 12 | sed <span class="string">&apos;s/[^a-zA-Z0-9]//g&apos;</span></span><br></pre></td></tr></tbody></table></figure><p></p>
-<p><strong>&#x68C0;&#x6D4B;&#x5BC6;&#x7801;&#x5F3A;&#x5EA6;</strong></p>
-<blockquote>
-<p>&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x5B89;&#x88C5;<code>cracklib</code>&#x5DE5;&#x5177;&#x6765;&#x68C0;&#x67E5;&#x5BC6;&#x7801;&#x5F3A;&#x5EA6;</p>
-</blockquote>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">yum install cracklib</span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;123545&quot;</span> | cracklib-check</span><br></pre></td></tr></tbody></table></figure>
-<h3 id="openssl&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;"><a href="#openssl&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;" class="headerlink" title="openssl&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;"></a>openssl&#x751F;&#x6210;&#x968F;&#x673A;&#x5B57;&#x7B26;</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">openssl rand -base64 15</span><br></pre></td></tr></tbody></table></figure>
-<p><strong>&#x8FC7;&#x6EE4;&#x7279;&#x6B8A;&#x5B57;&#x7B26;</strong><br></p><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">openssl rand -base64 15 | sed <span class="string">&apos;s/[a-zA-Z0-9]//g&apos;</span></span><br></pre></td></tr></tbody></table></figure><p></p>
-<script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>
-    
-        <div>
-            <a href="/posts/b3f64b7d/" class="post-more waves-button">
-                阅读全文 »
-            </a>
-        </div>
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-Linux的归档与解压缩" class="article-card article-type-post" itemprop="blogPost">
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a href="/posts/1e844aa4/">Linux的归档与解压缩</a>
-    </h3>
-  
-
-
-
-
-     <div class="post-meta">
-        <time class="post-time" title="2022-06-07 12:36:30" datetime="2022-06-07T04:36:30.000Z" itemprop="datePublished">2022-06-07</time>
-
-    </div>
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        <h3 id="Linux&#x89E3;&#x538B;&#x7F29;&#x5DE5;&#x5177;&#xFF08;&#x547D;&#x4EE4;&#xFF09;"><a href="#Linux&#x89E3;&#x538B;&#x7F29;&#x5DE5;&#x5177;&#xFF08;&#x547D;&#x4EE4;&#xFF09;" class="headerlink" title="Linux&#x89E3;&#x538B;&#x7F29;&#x5DE5;&#x5177;&#xFF08;&#x547D;&#x4EE4;&#xFF09;"></a>Linux&#x89E3;&#x538B;&#x7F29;&#x5DE5;&#x5177;&#xFF08;&#x547D;&#x4EE4;&#xFF09;</h3><blockquote>
-<p>tar &#x3001;gzip&#x3001;bzip2&#x3001;zip&#x3001;xz&#x3001;gunzip&#x3001;</p>
-</blockquote>
-<h3 id="tar"><a href="#tar" class="headerlink" title="tar"></a>tar</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">-c &#x521B;&#x5EFA;&#x6253;&#x5305;</span><br><span class="line">-x &#x5C55;&#x5F00;&#x5F52;&#x6863;&#x6587;&#x4EF6;</span><br><span class="line">-v &#x663E;&#x793A;&#x8FC7;&#x7A0B;&#x4FE1;&#x606F;</span><br><span class="line">-f &#x6307;&#x5B9A;&#x6587;&#x4EF6;/&#x76EE;&#x5F55;</span><br><span class="line">-O &#x5C06;&#x6587;&#x4EF6;&#x89E3;&#x5F00;&#x5230;&#x6807;&#x51C6;&#x8F93;&#x51FA;</span><br><span class="line">-C &#x6307;&#x5B9A;&#x8DEF;&#x5F84;</span><br><span class="line">-j bz2&#x683C;&#x5F0F;&#x6587;&#x4EF6;</span><br><span class="line">-J xz&#x683C;&#x5F0F;&#x6587;&#x4EF6;</span><br><span class="line">-z gzip&#x683C;&#x5F0F;&#x6587;&#x4EF6;</span><br></pre></td></tr></tbody></table></figure>
-<blockquote>
-<p>&#x89E3;&#x5305;&#xFF1A;tar -xvf filename.tar<br>&#x6253;&#x5305;&#xFF1A;tar -cvf filename.tar</p>
-</blockquote>
-<h3 id="gzip&#x683C;&#x5F0F;&#x6587;&#x4EF6;"><a href="#gzip&#x683C;&#x5F0F;&#x6587;&#x4EF6;" class="headerlink" title="gzip&#x683C;&#x5F0F;&#x6587;&#x4EF6;"></a>gzip&#x683C;&#x5F0F;&#x6587;&#x4EF6;</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">tar -zxvf filename.tar.gz   <span class="comment"># &#x89E3;&#x538B;gzip&#x683C;&#x5F0F;&#x538B;&#x7F29;&#x6587;&#x4EF6;</span></span><br><span class="line">tar -zcvf filename.tar.gz compress_dir  <span class="comment"># &#x521B;&#x5EFA;gzip&#x683C;&#x5F0F;&#x538B;&#x7F29;&#x6587;&#x4EF6;</span></span><br><span class="line"><span class="comment">################################33</span></span><br><span class="line">gunzip filename.gz  <span class="comment"># &#x89E3;&#x538B;gzip&#x683C;&#x5F0F;&#x6587;&#x4EF6;</span></span><br><span class="line">gzip -d filename.gz <span class="comment"># &#x89E3;&#x538B;gzip&#x683C;&#x5F0F;&#x6587;&#x4EF6;</span></span><br><span class="line">gzip filename.gz    <span class="comment"># &#x521B;&#x5EFA;gzip&#x683C;&#x5F0F;&#x6587;&#x4EF6;</span></span><br></pre></td></tr></tbody></table></figure>
-<h3 id="bz"><a href="#bz" class="headerlink" title="bz"></a>bz</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">bzip2 -d filename.bz    <span class="comment"># &#x89E3;&#x538B;bz&#x683C;&#x5F0F;&#x6587;&#x4EF6;</span></span><br><span class="line">bunzip2 filename.bz     <span class="comment"># &#x89E3;&#x538B;bz&#x683C;&#x5F0F;&#x6587;&#x4EF6;</span></span><br><span class="line"><span class="comment">################3</span></span><br><span class="line">tar jxvf    <span class="comment"># &#x89E3;&#x538B;bz&#x683C;&#x5F0F;&#x6587;&#x4EF6;</span></span><br></pre></td></tr></tbody></table></figure>
-<h3 id="bz2"><a href="#bz2" class="headerlink" title="bz2"></a>bz2</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">bzip2 -d filename.bz2   <span class="comment"># &#x89E3;&#x538B;bz2&#x683C;&#x5F0F;&#x6587;&#x4EF6;</span></span><br><span class="line">bunzip2 filename.bz2    <span class="comment"># &#x89E3;&#x538B;bz2&#x683C;&#x5F0F;&#x6587;&#x4EF6;</span></span><br><span class="line">bzip2 -z filename   <span class="comment"># &#x521B;&#x5EFA;bz2&#x683C;&#x5F0F;&#x6587;&#x4EF6;</span></span><br><span class="line"><span class="comment">####################</span></span><br><span class="line">tar jxvf filename.tar.bz2   <span class="comment"># &#x89E3;&#x538B;bz2&#x683C;&#x5F0F;&#x6587;&#x4EF6;</span></span><br><span class="line">tar jcvf file_dir   <span class="comment"># &#x521B;&#x5EFA;bz2&#x683C;&#x5F0F;&#x6587;&#x4EF6;</span></span><br></pre></td></tr></tbody></table></figure>
-<h3 id="z"><a href="#z" class="headerlink" title="z"></a>z</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">uncompress filename.z   <span class="comment"># &#x89E3;&#x538B;z&#x683C;&#x5F0F;&#x6587;&#x4EF6;</span></span><br><span class="line">compress    filename    <span class="comment"># &#x521B;&#x5EFA;z&#x683C;&#x5F0F;&#x6587;&#x4EF6;</span></span><br><span class="line"><span class="comment">##################</span></span><br><span class="line">tar Zxvf    <span class="comment"># &#x89E3;&#x538B;z&#x683C;&#x5F0F;&#x6587;&#x4EF6;</span></span><br><span class="line">tar Zcvf    <span class="comment"># &#x521B;&#x5EFA;z&#x683C;&#x5F0F;&#x6587;&#x4EF6;</span></span><br></pre></td></tr></tbody></table></figure>
-<h3 id="zip"><a href="#zip" class="headerlink" title="zip"></a>zip</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">unzip filename.zip  <span class="comment"># &#x89E3;&#x538B;zip&#x6587;&#x4EF6;</span></span><br><span class="line">zip filename.zip file_dir   <span class="comment"># &#x521B;&#x5EFA;zip&#x6587;&#x4EF6;</span></span><br></pre></td></tr></tbody></table></figure>
-<h3 id="rpm&#x5305;&#x7684;&#x89E3;&#x5305;"><a href="#rpm&#x5305;&#x7684;&#x89E3;&#x5305;" class="headerlink" title="rpm&#x5305;&#x7684;&#x89E3;&#x5305;"></a>rpm&#x5305;&#x7684;&#x89E3;&#x5305;</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">rpm2cpio filename.rpm | cpio -div</span><br></pre></td></tr></tbody></table></figure>
-<h3 id="deb&#x5305;&#x7684;&#x89E3;&#x5305;"><a href="#deb&#x5305;&#x7684;&#x89E3;&#x5305;" class="headerlink" title="deb&#x5305;&#x7684;&#x89E3;&#x5305;"></a>deb&#x5305;&#x7684;&#x89E3;&#x5305;</h3><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">ap p filename.deb data.tar.gz | tar zxvf -</span><br></pre></td></tr></tbody></table></figure><script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>
-    
-        <div>
-            <a href="/posts/1e844aa4/" class="post-more waves-button">
-                阅读全文 »
-            </a>
-        </div>
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-Linux命令" class="article-card article-type-post" itemprop="blogPost">
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a href="/posts/82734d8/">Linux命令</a>
-    </h3>
-  
-
-
-
-
-     <div class="post-meta">
-        <time class="post-time" title="2022-06-07 12:36:17" datetime="2022-06-07T04:36:17.000Z" itemprop="datePublished">2022-06-07</time>
-
-    </div>
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        <script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>
-    
-        <div>
-            <a href="/posts/82734d8/" class="post-more waves-button">
-                阅读全文 »
-            </a>
-        </div>
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-LDAP的配置与管理" class="article-card article-type-post" itemprop="blogPost">
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a href="/posts/7733d98/">LDAP的配置与管理</a>
-    </h3>
-  
-
-
-
-
-     <div class="post-meta">
-        <time class="post-time" title="2022-06-07 12:36:07" datetime="2022-06-07T04:36:07.000Z" itemprop="datePublished">2022-06-07</time>
-
-    </div>
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        <script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>
-    
-        <div>
-            <a href="/posts/7733d98/" class="post-more waves-button">
-                阅读全文 »
-            </a>
-        </div>
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-FTPTFTP的配置与管理" class="article-card article-type-post" itemprop="blogPost">
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a href="/posts/9d56e705/">FTP/TFTP的配置与管理</a>
-    </h3>
-  
-
-
-
-
-     <div class="post-meta">
-        <time class="post-time" title="2022-06-07 12:35:55" datetime="2022-06-07T04:35:55.000Z" itemprop="datePublished">2022-06-07</time>
-
-    </div>
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        <h2 id="TFTP"><a href="#TFTP" class="headerlink" title="TFTP"></a>TFTP</h2><blockquote>
-<p>&#x7B80;&#x5355;&#x6587;&#x4EF6;&#x4F20;&#x8F93;&#x534F;&#x8BAE;</p>
-</blockquote>
-<p><strong>&#x5B89;&#x88C5;</strong><br></p><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">yum install tftp-server tftp xinetd</span><br></pre></td></tr></tbody></table></figure><p></p>
-<p><strong>&#x914D;&#x7F6E;</strong><br></p><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">vim /etc/xinetd.d/ftp</span><br><span class="line"><span class="built_in">disable</span> = no</span><br></pre></td></tr></tbody></table></figure><p></p>
-<blockquote>
-<p>tftp&#x670D;&#x52A1;&#x6587;&#x4EF6;&#x9ED8;&#x8BA4;&#x5B58;&#x653E;&#x76EE;&#x5F55;<br>/var/lib/tftpboot/</p>
-</blockquote>
-<h2 id="FTP-Server"><a href="#FTP-Server" class="headerlink" title="FTP Server"></a>FTP Server</h2><h3 id="&#x7B80;&#x5355;&#x914D;&#x7F6E;"><a href="#&#x7B80;&#x5355;&#x914D;&#x7F6E;" class="headerlink" title="&#x7B80;&#x5355;&#x914D;&#x7F6E;"></a>&#x7B80;&#x5355;&#x914D;&#x7F6E;</h3><blockquote>
-<p><code>/etc/vsftpd/vsftpd.conf</code>  # ftp&#x4E3B;&#x8981;&#x914D;&#x7F6E;&#x6587;&#x4EF6;<br><code>/etc/vsftpd/ftpusers</code> # ftp&#x9ED1;&#x540D;&#x5355;<br><code>/etc/vsftpd/user_list</code> #&#x767D;&#x540D;&#x5355;<br><code>/var/ftp</code> ftp&#x9ED8;&#x8BA4;&#x6839;&#x76EE;&#x5F55;</p>
-</blockquote>
-<p><strong>&#x5B89;&#x88C5;</strong><br></p><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">yum install -y vsftp lftp</span><br></pre></td></tr></tbody></table></figure><p></p>
-<p><strong>&#x533F;&#x540D;&#x8BBF;&#x95EE;FTP&#x914D;&#x7F6E;</strong><br>&#x793A;&#x4F8B;<br></p><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># &#x542F;&#x7528;&#x533F;&#x540D;&#x8BBF;&#x95EE;</span></span><br><span class="line">anonymous_enable=YES</span><br><span class="line"><span class="comment"># &#x5141;&#x8BB8;&#x533F;&#x540D;&#x7528;&#x6237;&#x4E0A;&#x4F20;</span></span><br><span class="line">anon_upload_enable=YES</span><br><span class="line"><span class="comment"># &#x5141;&#x8BB8;&#x533F;&#x540D;&#x7528;&#x6237;&#x521B;&#x5EFA;&#x76EE;&#x5F55;</span></span><br><span class="line">anon_mkdir_write_enable=YES</span><br><span class="line"><span class="comment"># &#x5141;&#x8BB8;&#x533F;&#x540D;&#x7528;&#x6237;&#x4FEE;&#x6539;</span></span><br><span class="line">anon_other_write_enable=YES</span><br><span class="line">local_enable=YES</span><br><span class="line">write_enable=YES</span><br><span class="line">local_umask=022</span><br><span class="line">dirmessage_enable=YES</span><br><span class="line">xferlog_enable=YES</span><br><span class="line">connect_from_port_20=YES</span><br><span class="line">xferlog_std_format=YES</span><br><span class="line">listen=NO</span><br><span class="line">listen_ipv6=YES</span><br></pre></td></tr></tbody></table></figure><p></p>
-<h3 id="&#x591A;&#x7528;&#x6237;FTP"><a href="#&#x591A;&#x7528;&#x6237;FTP" class="headerlink" title="&#x591A;&#x7528;&#x6237;FTP"></a><strong>&#x591A;&#x7528;&#x6237;FTP</strong></h3><blockquote>
-<p>&#x5173;&#x95ED;&#x533F;&#x540D;&#x8BBF;&#x95EE;</p>
-</blockquote>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">vim /etc/vsftpd/vsftpd.conf</span><br><span class="line">anonymous_enable=NO</span><br><span class="line">...</span><br><span class="line">anon_other_write_enable=NO</span><br></pre></td></tr></tbody></table></figure>
-<blockquote>
-<p>&#x6DFB;&#x52A0;FTP&#x7528;&#x6237;<br></p><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">useradd -s /sbin/nologin ftp_user1</span><br><span class="line">useradd -s /sbin/nologin ftp_user2</span><br></pre></td></tr></tbody></table></figure><p></p>
-</blockquote>
-<blockquote>
-<p>&#x4FEE;&#x6539;&#x914D;&#x7F6E;&#x6587;&#x4EF6;</p>
-</blockquote>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">vim /etc/vsftpd/vsftpd.conf</span><br><span class="line"></span><br><span class="line">chroot_list_enable=YES</span><br><span class="line">chroot_list_file=/etc/vsftpd/chroot_list</span><br><span class="line">allow_writeable_chroot=YES</span><br><span class="line">local_enable=YES</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">touch /etc/vsftpd/chroot_list</span><br><span class="line">vim /etc/vsftpd/chroot_list</span><br><span class="line">ftp_user1</span><br><span class="line">ftp_user2</span><br></pre></td></tr></tbody></table></figure>
-<p><strong>&#x793A;&#x4F8B;</strong><br></p><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">anonymous_enable=NO</span><br><span class="line">anon_upload_enable=YES</span><br><span class="line">anon_mkdir_write_enable=YES</span><br><span class="line">anon_other_write_enable=NO</span><br><span class="line">local_root=/var/www/html</span><br><span class="line">chroot_list_enable=YES</span><br><span class="line">chroot_list_file=/etc/vsftpd/chroot_list</span><br><span class="line">allow_writeable_chroot=YES</span><br><span class="line">local_enable=YES</span><br><span class="line">local_umask=022</span><br><span class="line">write_enable=YES</span><br><span class="line">dirmessage_enable=YES</span><br><span class="line">xferlog_enable=YES</span><br><span class="line">connect_from_port_20=YES</span><br><span class="line">xferlog_std_format=YES</span><br><span class="line">listen=YES</span><br><span class="line"><span class="comment">#listen_ipv6=NO</span></span><br></pre></td></tr></tbody></table></figure><p></p>
-<h3 id="FTP&#x865A;&#x62DF;&#x7528;&#x6237;"><a href="#FTP&#x865A;&#x62DF;&#x7528;&#x6237;" class="headerlink" title="FTP&#x865A;&#x62DF;&#x7528;&#x6237;"></a>FTP&#x865A;&#x62DF;&#x7528;&#x6237;</h3><blockquote>
-<p><a href="https://access.redhat.com/solutions/54295" target="_blank" rel="noopener">https://access.redhat.com/solutions/54295</a><br>&#x521B;&#x5EFA;FTP&#x767B;&#x5F55;&#x7528;&#x6237;</p>
-</blockquote>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">vim /etc/vsftpd/login.txt</span><br><span class="line"></span><br><span class="line">user1</span><br><span class="line">user1_passwd</span><br><span class="line">user2</span><br><span class="line">user2_passwd</span><br></pre></td></tr></tbody></table></figure>
-<blockquote>
-<p>&#x5C06;&#x7528;&#x6237;&#x4FE1;&#x606F;&#x8F6C;&#x6362;&#x4E3A;&#x6570;&#x636E;&#x5E93;&#x6587;&#x4EF6;</p>
-</blockquote>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">db_load -T -t <span class="built_in">hash</span> -f /etc/vsftpd/login.txt /etc/vsftpd/login.db</span><br></pre></td></tr></tbody></table></figure>
-<blockquote>
-<p>&#x9700;&#x4FEE;&#x6539;&#x7528;&#x6237;&#x6570;&#x636E;&#x5E93;&#x7684;&#x6587;&#x4EF6;&#x6743;&#x9650;</p>
-</blockquote>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">chmod 0600 /etc/vsftpd/login.db</span><br></pre></td></tr></tbody></table></figure>
-<blockquote>
-<p>&#x66F4;&#x65B0;vsftpd pam&#x914D;&#x7F6E;&#x6587;&#x4EF6;</p>
-</blockquote>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">vim /etc/pam.d/vsftpd</span><br><span class="line"><span class="comment"># &#x5982;&#x679C;&#x4F60;&#x5141;&#x8BB8;ftp&#x865A;&#x62DF;yoghurt&#x8BBF;&#x95EE;&#xFF0C;&#x53EF;&#x4EE5;&#x628A;&#x5176;&#x5B83;&#x7684;&#x5185;&#x5BB9;&#x90FD;&#x6CE8;&#x91CA;&#x6389;</span></span><br><span class="line">auth        required    pam_userdb.so   db=/etc/vsftpd/login</span><br><span class="line">account    required   pam_userdb.so    db=/etc/vsftpd/login</span><br></pre></td></tr></tbody></table></figure>
-<blockquote>
-<p>&#x4E3A;&#x865A;&#x62DF;&#x7528;&#x6237;&#x521B;&#x5EFA;&#x4E3B;&#x76EE;&#x5F55;</p>
-</blockquote>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">mkdir /home/ftp</span><br><span class="line">mkdir -p /home/ftp/{user1,user2}</span><br><span class="line">chown -R ftp:ftp /home/ftp</span><br></pre></td></tr></tbody></table></figure>
-<blockquote>
-<p><strong>&#x4FEE;&#x6539;vsftpd&#x914D;&#x7F6E;&#x6587;&#x4EF6;</strong></p>
-</blockquote>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">vim /etc/vsftpd/vsftpd.conf</span><br><span class="line"><span class="comment"># &#x589E;&#x52A0;&#x5982;&#x4E0B;&#x53C2;&#x6570;</span></span><br><span class="line">guest_enable=YES</span><br><span class="line">guest_username=virtftp</span><br><span class="line">user_sub_token=<span class="variable">$USER</span></span><br><span class="line">local_root=/home/ftp/<span class="variable">$USER</span></span><br><span class="line">chroot_local_user=YES   <span class="comment"># &#x5F3A;&#x5236;&#x865A;&#x62DF;&#x7528;&#x6237;&#x53EA;&#x80FD;&#x8BBF;&#x95EE;&#x81EA;&#x5DF1;&#x7684;&#x4E3B;&#x76EE;&#x5F55;&#x4E2D;&#x7684;&#x6587;&#x4EF6;</span></span><br></pre></td></tr></tbody></table></figure>
-<blockquote>
-<p>&#x521B;&#x5EFA;virtftp&#x7528;&#x6237;</p>
-</blockquote>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">useradd -d /var/ftp -M -s /sbin/nologin virtftp</span><br></pre></td></tr></tbody></table></figure>
-<blockquote>
-<p>&#x521B;&#x5EFA;ftp&#x865A;&#x62DF;&#x7528;&#x6237;&#x914D;&#x7F6E;&#x6587;&#x4EF6;</p>
-</blockquote>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">vim /etc/vsftpd/vsftpd.conf</span><br><span class="line"><span class="comment"># &#x6DFB;&#x52A0;</span></span><br><span class="line">user_config_dir=/etc/vsftpd/vsftpd_user_conf</span><br><span class="line"></span><br><span class="line">mkdir /etc/vsftpd/vsftpd_user_conf</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;anon_world_readable_only=NO&quot;</span> &gt; /etc/vsftpd/vsftpd_user_conf/user1</span><br><span class="line"></span><br><span class="line">vim /etc/vsftpd/vsftpd_user_conf/user2</span><br><span class="line">anon_world_readable_only=NO</span><br><span class="line">write_enable=YES</span><br><span class="line">anon_upload_enable=YES</span><br></pre></td></tr></tbody></table></figure>
-<h2 id="vsftpd-conf&#x53C2;&#x6570;&#x8BF4;&#x660E;"><a href="#vsftpd-conf&#x53C2;&#x6570;&#x8BF4;&#x660E;" class="headerlink" title="vsftpd.conf&#x53C2;&#x6570;&#x8BF4;&#x660E;"></a>vsftpd.conf&#x53C2;&#x6570;&#x8BF4;&#x660E;</h2><blockquote>
-<p>&#x539F;&#x6587; <a href="http://vsftpd.beasts.org/vsftpd_conf.html#index" target="_blank" rel="noopener">http://vsftpd.beasts.org/vsftpd_conf.html#index</a></p>
-</blockquote>
-<h3 id="NAME"><a href="#NAME" class="headerlink" title="NAME"></a>NAME</h3><p>vsftpd.conf - vsftpd&#x914D;&#x7F6E;&#x6587;&#x4EF6;</p>
-<h3 id="DESCRIPTION"><a href="#DESCRIPTION" class="headerlink" title="DESCRIPTION"></a>DESCRIPTION</h3><blockquote>
-<p><code>vsftpd.conf</code> &#x7528;&#x4E8E;&#x63A7;&#x5236;vsftpd&#x884C;&#x4E3A;&#x3002;&#x9ED8;&#x8BA4;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;vsftpd&#x5728;<code>/etc/vsftpd.conf</code> &#x4F4D;&#x7F6E;&#x67E5;&#x627E;&#x6B64;&#x6587;&#x4EF6;&#x3002;&#x4F46;&#x662F;&#xFF0C;&#x60A8;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;vsftpd&#x6307;&#x5B9A;&#x547D;&#x4EE4;&#x884C;&#x53C2;&#x6570;&#x6765;&#x8986;&#x76D6;&#x5B83;&#x3002;</p>
-</blockquote>
-<h3 id="FORMAT"><a href="#FORMAT" class="headerlink" title="FORMAT"></a>FORMAT</h3><blockquote>
-<p><code>vsftpd.conf</code> &#x7684;&#x683C;&#x5F0F;&#x975E;&#x5E38;&#x7B80;&#x5355;&#x3002;&#x6BCF;&#x884C;&#x8981;&#x4E48;&#x662F;&#x6CE8;&#x91CA;&#xFF0C;&#x8981;&#x4E48;&#x662F;&#x6307;&#x4EE4;&#x3002;&#x6CE8;&#x91CA;&#x884C;&#x4EE5;<code>#</code> &#x5F00;&#x5934;&#x5E76;&#x88AB;vsftpd&#x5FFD;&#x7565;&#x3002;</p>
-</blockquote>
-<p><code>options=value</code>  &#x9009;&#x9879;=&#x503C;<br><strong>&#x6CE8;&#x610F;&#xFF01;</strong>&#x5728;&#x6BCF;&#x4E2A;=&#x548C;&#x5DE6;&#x53F3;&#x4E0D;&#x80FD;&#x6709;&#x7A7A;&#x683C;</p>
-<h3 id="&#x5E03;&#x5C14;&#x9009;&#x9879;"><a href="#&#x5E03;&#x5C14;&#x9009;&#x9879;" class="headerlink" title="&#x5E03;&#x5C14;&#x9009;&#x9879;"></a>&#x5E03;&#x5C14;&#x9009;&#x9879;</h3><blockquote>
-<p>&#x4E0B;&#x9762;&#x662F;Boolean&#x9009;&#x9879;&#x5217;&#x8868;&#x3002;&#x5E03;&#x5C14;&#x9009;&#x9879;&#x7684;&#x503C;&#x53EF;&#x4EE5;&#x8BBE;&#x7F6E;&#x4E3A;YES&#x6216;NO</p>
-</blockquote>
-<p><strong>allow_anon_ssl</strong><br>&#x53EA;&#x6709;<strong>ssl_enable=YES</strong>&#x65F6;&#x624D;&#x9002;&#x7528;&#x3002;&#x5982;&#x679C;&#x8BBE;&#x7F6E;&#x4E3A;YES&#xFF0C;&#x533F;&#x540D;&#x7528;&#x6237;&#x5C06;&#x88AB;&#x5141;&#x8BB8;&#x4F7F;&#x7528;&#x5B89;&#x5168;&#x7684;SSL&#x8FDE;&#x63A5;&#x3002;</p>
-<pre><code>- &#x9ED8;&#x8BA4;&#x503C;&#xFF1A;NO
-</code></pre><p><strong>anon_mkdir_write_enable</strong><br>    &#x5982;&#x679C;&#x8BBE;&#x7F6E;&#x4E3A;YES&#xFF0C;&#x5C06;&#x5141;&#x8BB8;&#x533F;&#x540D;&#x7528;&#x6237;&#x5728;&#x7279;&#x5B9A;&#x6761;&#x4EF6;&#x4E0B;&#x521B;&#x5EFA;&#x65B0;&#x76EE;&#x5F55;&#x3002;&#x4E3A;&#x6B64;&#xFF0C;&#x5FC5;&#x987B;&#x6FC0;&#x6D3B;<strong>write_enable</strong>&#xFF0C;&#x5E76;&#x4E14;ftp&#x533F;&#x540D;&#x7528;&#x6237;&#x5FC5;&#x987B;&#x5BF9;&#x7236;&#x76EE;&#x5F55;&#x5177;&#x6709;&#x5199;&#x6743;&#x9650;</p>
-<pre><code>- &#x9ED8;&#x8BA4;&#x503C;&#xFF1A;NO
-</code></pre><p><strong>anon_other_write_enable</strong><br># &#x5141;&#x8BB8;&#x533F;&#x540D;&#x7528;&#x6237;&#x88AB;&#x6267;&#x884C;&#x9664;&#x4E0A;&#x4F20;&#x548C;&#x521B;&#x5EFA;&#x76EE;&#x5F55;&#x4E4B;&#x5916;&#x7684;&#x5199;&#x64CD;&#x4F5C;&#xFF0C;&#x4F8B;&#x5982;&#x5220;&#x9664;&#x548C;&#x91CD;&#x547D;&#x540D;</p>
-<p><strong>anon_upload_enable</strong><br># &#x5141;&#x8BB8;&#x533F;&#x540D;&#x7528;&#x6237;&#x5728;&#x7279;&#x5B9A;&#x6761;&#x4EF6;&#x4E0B;&#x4E0A;&#x4F20;&#x6587;&#x4EF6;&#xFF0C;&#x5728;<strong>write_enable</strong>&#x6FC0;&#x6D3B;&#x7684;&#x6761;&#x4EF6;&#x4E0B;&#x3002;&#x5E76;&#x4E14;&#x533F;&#x540D;&#x7528;&#x6237;&#x4E0A;&#x4F20;&#x4F4D;&#x7F6E;&#x5177;&#x6709;&#x5199;&#x5165;&#x6743;&#x9650;<br># &#x865A;&#x62DF;&#x7528;&#x6237;&#x4E0A;&#x4F20; &#x4E5F;&#x9700;&#x8981;&#x6B64;&#x8BBE;&#x7F6E;&#xFF1B;&#x9ED8;&#x8BA4;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x865A;&#x62DF;&#x7528;&#x6237;&#x5177;&#x6709;&#x533F;&#x540D;&#xFF08;&#x5373;&#x6700;&#x5927;&#x9650;&#x5236;&#xFF09;&#x6743;&#x9650;</p>
-<ul>
-<li>&#x9ED8;&#x8BA4;&#x503C;&#xFF1A;NO</li>
-</ul>
-<p><strong>anon_world_readable_only</strong><br># &#x5141;&#x8BB8;&#x533F;&#x540D;&#x7528;&#x6237;&#x4E0B;&#x8F7D;&#x53EF;&#x8BFB;&#x6587;&#x4EF6;&#xFF0C;&#xFF08;&#x4E0D;&#x80FD;&#x5728;ftp&#x4E2D;&#x6253;&#x5F00;&#xFF09;</p>
-<ul>
-<li>&#x9ED8;&#x8BA4;&#x503C;&#xFF1A;YES</li>
-</ul>
-<p><strong>anonymous_enable</strong><br># &#x5141;&#x8BB8;&#x533F;&#x540D;&#x7528;&#x6237;&#x767B;&#x5F55;&#xFF0C;&#x9ED8;&#x8BA4;&#x7528;&#x6237;&#x540D;&#xFF1A;<strong>ftp</strong> &#x3001;<strong>anonymous</strong><br>&#x9ED8;&#x8BA4;&#x503C;&#xFF1A;YES</p>
-<p><strong>ascii_download_enable</strong><br># &#x4E0B;&#x8F7D;&#x65F6;&#x91C7;&#x7528;ASCII&#x6A21;&#x5F0F;&#x4F20;&#x8F93;&#x6570;&#x636E;</p>
-<p><strong>ascii_upload_enable</strong><br># &#x4E0A;&#x4F20;&#x65F6;&#x63A5;&#x6536;ASCII&#x6A21;&#x5F0F;&#x6570;&#x636E;&#x4F20;&#x8F93;</p>
-<p><strong>async_abor_enable</strong><br># &#x542F;&#x7528;<code>async ABOR</code> &#x7279;&#x6B8A;FTP&#x547D;&#x4EE4;&#x3002;&#x4E0D;&#x5EFA;&#x8BAE;&#x542F;&#x7528;</p>
-<p><strong>background</strong><br># FTP&#x4EE5;<code>listen</code>&#x6A21;&#x5F0F;&#x542F;&#x52A8;&#xFF0C;</p>
-<p><strong>check_shell</strong><br># &#x8BE5;&#x9009;&#x9879;&#x4EC5;&#x5BF9;&#x975E;PAM&#x6784;&#x5EFA;&#x7684;vsftpd&#x6709;&#x6548;&#x3002;&#x5982;&#x679C;&#x7981;&#x7528;&#xFF0C;vsftpd&#x5C06;&#x4E0D;&#x4F1A;&#x68C0;&#x67E5;/etc/shell&#x4EE5;&#x83B7;&#x53D6;&#x672C;&#x5730;&#x767B;&#x5F55;&#x7684;&#x6709;&#x6548;&#x7528;&#x6237;shell<br>&#x9ED8;&#x8BA4;&#x503C;&#xFF1A;YES</p>
-<p><strong>chmod_enable</strong><br># &#x5141;&#x8BB8;&#x4F7F;&#x7528;SITE CHMOD&#x547D;&#x4EE4;&#x3002;&#x4EC5;&#x4F7F;&#x7528;&#x4E0E;&#x672C;&#x5730;&#x7528;&#x6237;&#x3002;&#x533F;&#x540D;&#x7528;&#x6237;&#x65E0;&#x6CD5;&#x4F7F;&#x7528;SITE CHMOD&#x3002;<br>&#x9ED8;&#x8BA4;&#x503C;&#xFF1A;YES</p>
-<p><strong>chown_uploads</strong><br># &#x6240;&#x6709;&#x533F;&#x540D;&#x4E0A;&#x4F20;&#x6587;&#x4EF6;&#x7684;&#x6240;&#x6709;&#x6743;&#x90FD;&#x5C06;&#x66F4;&#x6539;&#x4E3A;<strong>chown_username</strong>&#x9009;&#x9879;&#x6307;&#x5B9A;&#x7684;&#x7528;&#x6237;&#x3002;</p>
-<p><strong>chroot_list_enable</strong><br># &#x53EA;&#x5141;&#x8BB8;&#x7528;&#x6237;&#x8BBF;&#x95EE;&#x81EA;&#x5DF1;&#x7684;&#x76EE;&#x5F55;&#x3002;<br># &#x5982;&#x679C;&#x542F;&#x7528;<strong>chroot_local_user</strong>&#xFF0C;&#x4E0E;&#x4E0A;&#x8FF0;&#x76F8;&#x53CD;</p>
-<p><strong>chroot_local_user</strong><br># &#x672C;&#x5730;&#x7528;&#x6237;&#x767B;&#x5F55;&#x540E;&#x53EA;&#x80FD;&#x8BBF;&#x95EE;&#x81EA;&#x5DF1;&#x7684;&#x4E3B;&#x76EE;&#x5F55;</p>
-<p><strong>connect_from_port_20</strong><br># &#x63A7;&#x5236;&#x7AEF;&#x53E3;&#x6570;&#x636E;&#x8FDE;&#x63A5;&#x662F;&#x5426;&#x4F7F;&#x7528;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x7684;&#x7AEF;&#x53E3;ftp&#x3002;</p>
-<p><strong>debug_ssl</strong><br># OpenSSL&#x8FDE;&#x63A5;&#x8BCA;&#x65AD;&#x5C06;&#x8F6C;&#x5B58;&#x5230;vsftpd&#x65E5;&#x5FD7;&#x6587;&#x4EF6;&#x3002;</p>
-<p><strong>delete_failed_uploads</strong><br># &#x5220;&#x9664;&#x4EFB;&#x4F55;&#x5931;&#x8D25;&#x7684;&#x4E0A;&#x4F20;&#x6587;&#x4EF6;</p>
-<p><strong>deny_email_enable</strong><br># &#x5982;&#x679C;&#x6FC0;&#x6D3B;&#xFF0C;&#x60A8;&#x53EF;&#x4EE5;&#x63D0;&#x4F9B;&#x5BFC;&#x81F4;&#x767B;&#x5F55;&#x88AB;&#x62D2;&#x7EDD;&#x7684;&#x533F;&#x540D;&#x5BC6;&#x7801;&#x7535;&#x5B50;&#x90AE;&#x4EF6;&#x54CD;&#x5E94;&#x5217;&#x8868;&#x3002;&#x9ED8;&#x8BA4;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x5305;&#x542B;&#x6B64;&#x5217;&#x8868;&#x7684;&#x6587;&#x4EF6;&#x662F; /etc/vsftpd.banned_emails&#xFF0C;&#x4F46;&#x60A8;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;banned_email_file &#x8BBE;&#x7F6E;&#x8986;&#x76D6;&#x5B83; &#x3002;</p>
-<p><strong>dirlist_enable</strong><br># &#x6240;&#x6709;&#x76EE;&#x5F55;&#x5217;&#x8868;&#x547D;&#x4EE4;&#x90FD;&#x5C06;&#x62D2;&#x7EDD;&#x6388;&#x6743;<br>&#x9ED8;&#x8BA4;&#x503C;&#xFF1A;YES</p>
-<p><strong>dirmessage_enable</strong><br># &#x7528;&#x6237;&#x5728;&#x4ED6;&#x4EEC;&#x7B2C;&#x4E00;&#x6B21;&#x8FDB;&#x5165;&#x65B0;&#x76EE;&#x5F55;&#x65F6;&#x770B;&#x5230;&#x6D88;&#x606F;&#x3002;&#x9ED8;&#x8BA4;&#x60C5;&#x51B5;&#x4E0B;&#x4F1A;&#x626B;&#x63CF;&#x76EE;&#x5F55;&#x4E2D;&#x7684;.message&#x6587;&#x4EF6;&#xFF0C;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;message_file&#x4FEE;&#x6539;</p>
-<p><strong>download_enable</strong><br># &#x5141;&#x8BB8;&#x4E0B;&#x8F7D;&#x3002;&#x5982;&#x679C;&#x8BBE;&#x7F6E;&#x4E3A;NO&#xFF0C;&#x6240;&#x6709;&#x4E0B;&#x8F7D;&#x8BF7;&#x6C42;&#x90FD;&#x5C06;&#x88AB;&#x62D2;&#x7EDD;<br>&#x9ED8;&#x8BA4;&#x503C;&#xFF1A;YES</p>
-<p><strong>dual_log_enable</strong><br># &#x53CC;&#x65E5;&#x5FD7;&#x6587;&#x4EF6;&#x3002;&#x542F;&#x7528;&#x5C06;&#x751F;&#x6210; <strong>/var/log/xferlog</strong> &#x548C; <strong>/var/log/vsftpd.log</strong>&#x3002;&#x524D;&#x8005;&#x662F;wu-ftpd&#x98CE;&#x683C;&#x7684;&#x4F20;&#x8F93;&#x65E5;&#x5FD7;&#xFF0C;&#x53EF;&#x7531;&#x6807;&#x51C6;&#x5DE5;&#x5177;&#x89E3;&#x6790;&#x3002;&#x540E;&#x8005;&#x662F;vsftpd&#x7684;&#x98CE;&#x683C;&#x65E5;&#x5FD7;&#x3002;</p>
-<p><strong>force_dot_files</strong><br># </p>
-<p><strong>force_anon_data_ssl</strong><br><strong>force_local_logins_ssl</strong><br><strong>guest_enable</strong><br><strong>hide_ids</strong><br><strong>implicit_ssl</strong><br><strong>listen</strong><br><strong>listen_ipv6</strong><br><strong>local_enable</strong><br><strong>lock_upload_files</strong><br><strong>log_ftp_protocol</strong><br><strong>ls_recurse_enable</strong><br><strong>mdtm_write</strong><br><strong>no_anon_password</strong><br><strong>no_log_lock</strong><br><strong>one_process_model</strong><br><strong>passwd_chroot_enable</strong><br><strong>pasv_addr_resolv</strong><br><strong>pasv_enable</strong><br><strong>pasv_promiscuous</strong><br><strong>port_enable</strong><br><strong>port_promiscuous</strong><br><strong>require_cert</strong><br><strong>require_ssl_reuse</strong><br><strong>run_as_launching_user</strong><br><strong>secure_email_list_enable</strong><br><strong>session_support</strong><br><strong>setproctitle_enable</strong><br><strong>ssl_enable</strong><br><strong>ssl_request_cert</strong><br><strong>ssl_sslv2</strong><br><strong>ssl_sslv3</strong><br><strong>ssl_tlsv1</strong><br><strong>strict_ssl_read_eof</strong><br><strong>strict_ssl_write_shutdown</strong><br><strong>syslog_enable</strong><br><strong>tcp_wrappers</strong><br><strong>text_userdb_names</strong><br><strong>tilde_user_enable</strong><br><strong>use_localtime</strong><br><strong>use_sendfile</strong><br><strong>userlist_deny</strong><br><strong>userlist_enable</strong><br><strong>calidate_cert</strong><br><strong>virtual_use_local_privs</strong><br><strong>write_enable</strong><br><strong>xferlog_enable</strong><br><strong>xferlog_std_format</strong></p>
-<h3 id="&#x6570;&#x503C;&#x9009;&#x9879;"><a href="#&#x6570;&#x503C;&#x9009;&#x9879;" class="headerlink" title="&#x6570;&#x503C;&#x9009;&#x9879;"></a>&#x6570;&#x503C;&#x9009;&#x9879;</h3><p><strong>accept_timeout</strong><br><strong>anon_max_rate</strong><br><strong>anon_umask</strong><br><strong>chown_upload_mode</strong><br><strong>connect_timeout</strong><br><strong>data_connection_timeout</strong><br><strong>delay_failed_login</strong><br><strong>delay_successful_login</strong><br><strong>file_open_mode</strong><br><strong>ftp_data_port</strong><br><strong>idle_session_timeout</strong><br><strong>listen_port</strong><br><strong>local_max_rate</strong><br><strong>local_umask</strong><br><strong>max_clients</strong><br><strong>max_login_fails</strong><br><strong>max_per_ip</strong><br><strong>pasv_max_port</strong><br><strong>pasv_min_port</strong><br><strong>trans_chunk_size</strong></p>
-<h3 id="&#x5B57;&#x7B26;&#x4E32;&#x9009;&#x9879;"><a href="#&#x5B57;&#x7B26;&#x4E32;&#x9009;&#x9879;" class="headerlink" title="&#x5B57;&#x7B26;&#x4E32;&#x9009;&#x9879;"></a>&#x5B57;&#x7B26;&#x4E32;&#x9009;&#x9879;</h3><p><strong>anon_root</strong><br><strong>banned_email_file</strong><br><strong>banner_file</strong><br><strong>ca_certs_file</strong><br><strong>chown_username</strong><br><strong>chroot_list_file</strong><br><strong>cmds_allowed</strong><br><strong>cmds_denied</strong><br><strong>deny_file</strong><br><strong>dsa_cert_file</strong><br><strong>dsa_private_key_file</strong><br><strong>email_password_file</strong><br><strong>ftp_username</strong><br><strong>ftpd_banner</strong><br><strong>guest_username</strong><br><strong>hide_file</strong><br><strong>listen_address</strong><br><strong>listen_address6</strong><br><strong>local_root</strong><br><strong>message_file</strong><br><strong>nopriv_user</strong><br><strong>pam_service_name</strong><br><strong>pasv_address</strong><br><strong>rsa_cert_file</strong><br><strong>rsa_private_key_file</strong><br><strong>secure_chroot_dir</strong><br><strong>ssl_ciphers</strong><br><strong>user_config_dir</strong><br><strong>user_sub_token</strong><br><strong>userlist_file</strong><br><strong>vsftpd_log_file</strong><br><strong>xferlog_file</strong></p>
-<script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>
-    
-        <div>
-            <a href="/posts/9d56e705/" class="post-more waves-button">
-                阅读全文 »
-            </a>
-        </div>
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-DNSServer的配置与管理" class="article-card article-type-post" itemprop="blogPost">
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a href="/posts/4782a8c2/">DNS Server的配置与管理</a>
-    </h3>
-  
-
-
-
-
-     <div class="post-meta">
-        <time class="post-time" title="2022-06-07 12:35:39" datetime="2022-06-07T04:35:39.000Z" itemprop="datePublished">2022-06-07</time>
-
-    </div>
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        <h2 id="&#x914D;&#x7F6E;&#x5B9E;&#x73B0;"><a href="#&#x914D;&#x7F6E;&#x5B9E;&#x73B0;" class="headerlink" title="&#x914D;&#x7F6E;&#x5B9E;&#x73B0;"></a>&#x914D;&#x7F6E;&#x5B9E;&#x73B0;</h2><blockquote>
-<p>&#x4FEE;&#x6539;/etc/named.conf&#x914D;&#x7F6E;&#x6587;&#x4EF6;</p>
-</blockquote>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">options {</span><br><span class="line">    listen-on port 53 { any; };</span><br><span class="line">    listen-on-v6 port 53 { any; };</span><br><span class="line">    ...</span><br><span class="line">    allow-query { any; };</span><br><span class="line">    ...</span><br><span class="line">    recursion yes;  # &#x662F;&#x5426;&#x542F;&#x7528;&#x9012;&#x5F52;&#x67E5;&#x8BE2;</span><br><span class="line">    </span><br><span class="line">    dnssec-enable yes;</span><br><span class="line">    dnssec-validation yes;</span><br><span class="line">    dnssec-lookaside auto;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">##------------------------------------------------</span><br><span class="line">## &#x8BE5;&#x914D;&#x7F6E;&#x5EFA;&#x8BAE;&#x6DFB;&#x52A0;&#x5230;/etc//etc/named.rfc1912.zones</span><br><span class="line"># &#x65B0;&#x589E;&#x5982;&#x4E0B;</span><br><span class="line">zone &quot;abc.cn&quot; IN {</span><br><span class="line">    type master;</span><br><span class="line">    file &quot;abc.cn.zone&quot;;</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">zone &quot;73.168.192.in-addr.arpa&quot; IN {</span><br><span class="line">    type master;</span><br><span class="line">    file &quot;192.168.73.arpa&quot;;</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
-<p><strong>&#x6DFB;&#x52A0;&#x6B63;&#x53CD;&#x5411;&#x89E3;&#x6790;</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x590D;&#x5236;&#x6B63;&#x5411;&#x89E3;&#x6790;&#x914D;&#x7F6E;&#x6A21;&#x677F;</span></span><br><span class="line">cp -p /var/named/named.localhost /var/named/abc.cn.zone</span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x590D;&#x5236;&#x53CD;&#x5411;&#x89E3;&#x6790;&#x914D;&#x7F6E;&#x6A21;&#x677F;</span></span><br><span class="line">cp -p /var/named/named.empty /var/named/192.168.73.arpa</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#############################################</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6DFB;&#x52A0;&#x6B63;&#x5411;&#x89E3;&#x6790;&#x914D;&#x7F6E;</span></span><br><span class="line">vim /var/named/abc.cn.zone</span><br></pre></td></tr></tbody></table></figure><p></p>
-<figure class="highlight"><table><tbody><tr><td class="code"><pre><span class="line">$TTL 1D</span><br><span class="line">abc.cn. IN SOA  dns.abc.cn. root.abc.cn. (</span><br><span class="line">                    0   ; serial</span><br><span class="line">                    1D  ; refresh</span><br><span class="line">                    1H  ; retry</span><br><span class="line">                    1W  ; expire</span><br><span class="line">                    3H )    ; minimum</span><br><span class="line">abc.cn. NS  dns.abc.cn.</span><br><span class="line">dns.abc.cn. A   192.168.73.5</span><br><span class="line">www.abc.cn. A   192.168.73.5</span><br><span class="line">www1.abc.cn.    CNAME   www.abc.cn.</span><br><span class="line"></span><br><span class="line"><span class="comment"># &#x6DFB;&#x52A0;&#x53CD;&#x5411;&#x89E3;&#x6790;&#x914D;&#x7F6E;</span></span><br><span class="line">vim /var/named/192.168.73.arpa</span><br><span class="line"></span><br><span class="line">$TTL 3H</span><br><span class="line">@   IN SOA  abc.cn. root.abc.cn. (</span><br><span class="line">                    0   ; serial</span><br><span class="line">                    1D  ; refresh</span><br><span class="line">                    1H  ; retry</span><br><span class="line">                    1W  ; expire</span><br><span class="line">                    3H )    ; minimum</span><br><span class="line">    NS  ns.abc.cn.</span><br><span class="line">ns  A   192.168.73.5</span><br><span class="line">5   PTR ns.abc.cn.</span><br><span class="line">5   PTR www.abc.cn.</span><br></pre></td></tr></tbody></table></figure>
-<h3 id="&#x914D;&#x7F6E;DNS&#x8F6C;&#x53D1;"><a href="#&#x914D;&#x7F6E;DNS&#x8F6C;&#x53D1;" class="headerlink" title="&#x914D;&#x7F6E;DNS&#x8F6C;&#x53D1;"></a>&#x914D;&#x7F6E;DNS&#x8F6C;&#x53D1;</h3><figure class="highlight"><table><tbody><tr><td class="code"><pre><span class="line">vim /etc/named.conf</span><br><span class="line"><span class="comment">################</span></span><br><span class="line">options{</span><br><span class="line">    forward first;</span><br><span class="line">    <span class="comment"># &#x591A;&#x4E2A;DNS&#x7528;;&#x9694;&#x5F00;</span></span><br><span class="line">    forwarders {</span><br><span class="line">        192.168.73.2;</span><br><span class="line">        114.114.114.114;</span><br><span class="line">        8.8.8.8;</span><br><span class="line">        8.8.4.4;</span><br><span class="line">        1.1.1.1;</span><br><span class="line">    };</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
-<h2 id="&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;DNS&#x670D;&#x52A1;"><a href="#&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;DNS&#x670D;&#x52A1;" class="headerlink" title="&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;DNS&#x670D;&#x52A1;"></a>&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;DNS&#x670D;&#x52A1;</h2><blockquote>
-<p>&#x4E3B;&#x4ECE;&#x673A;&#x5668;&#x8FDB;&#x884C;&#x65F6;&#x95F4;&#x540C;&#x6B65;</p>
-</blockquote>
-<figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">ntpd</span><br></pre></td></tr></tbody></table></figure>
-<p><strong>&#x4FEE;&#x6539;&#x4E3B;DNS&#x670D;&#x52A1;&#x5668;&#x914D;&#x7F6E;</strong><br></p><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">vim /etc/named.conf</span><br><span class="line">###################</span><br><span class="line">zone &quot;abc.cn&quot; IN {</span><br><span class="line">    type master;</span><br><span class="line">    file &quot;abc.cn.zone&quot;;</span><br><span class="line">    allow-transfer { 192.168.73/24; };  # &#x6DFB;&#x52A0;&#x8BE5;&#x53C2;&#x6570;</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">zone &quot;73.168.192.in-addr.arpa&quot; IN {</span><br><span class="line">    type master;</span><br><span class="line">    file &quot;192.168.73.arpa&quot;;</span><br><span class="line">    allow-transfer { 192.168.73/24; };  # &#x6DFB;&#x52A0;&#x8BE5;&#x53C2;&#x6570;</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure><p></p>
-<p><strong>&#x4FEE;&#x6539;&#x4ECE;DNS&#x670D;&#x52A1;&#x5668;&#x914D;&#x7F6E;</strong></p>
-<figure class="highlight"><table><tbody><tr><td class="code"><pre><span class="line">vim /etc/named.conf</span><br><span class="line">options{</span><br><span class="line">    listen-on port 53 { any; };</span><br><span class="line">    listen-on-v6 port 53 { any; };</span><br><span class="line">    ...</span><br><span class="line">    allow-query     { any; };</span><br><span class="line">    </span><br><span class="line">    recursion yes;</span><br><span class="line">    ...</span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">    dnssec-validation no;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">zone &quot;abc.cn&quot; IN {</span><br><span class="line">    type slave;</span><br><span class="line">    file &quot;slaves/abc.cn.zone.file&quot;;</span><br><span class="line">    masters { 192.168.73.5; };</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">zone &quot;73.168.192.in-addr.arpa&quot; IN {</span><br><span class="line">    type slave;</span><br><span class="line">    file &quot;slaves/192.168.73.arpa.file&quot;;</span><br><span class="line">    masters { 192.168.73.5; };</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure>
-<blockquote>
-<p>&#x91CD;&#x542F;&#x4ECE;DNS&#x670D;&#x52A1;&#x5668;&#xFF0C;<br>&#x67E5;&#x770B;/var/named/slaves/&#x76EE;&#x5F55;&#x4E0B;&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;<br>&#x4ECE;DNS&#x670D;&#x52A1;&#x80FD;&#x591F;&#x4ECE;&#x4E3B;DNS&#x590D;&#x5236;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x8FC7;&#x6765;</p>
-</blockquote>
-<h3 id="DNS&#x4E3B;&#x4ECE;&#x5BC6;&#x94A5;&#x8BA4;&#x8BC1;"><a href="#DNS&#x4E3B;&#x4ECE;&#x5BC6;&#x94A5;&#x8BA4;&#x8BC1;" class="headerlink" title="DNS&#x4E3B;&#x4ECE;&#x5BC6;&#x94A5;&#x8BA4;&#x8BC1;"></a>DNS&#x4E3B;&#x4ECE;&#x5BC6;&#x94A5;&#x8BA4;&#x8BC1;</h3><blockquote>
-<p>ntpd&#x4E3B;&#x4ECE;&#x65F6;&#x95F4;&#x540C;&#x6B65;</p>
-</blockquote>
-<p><strong>&#x4E3B;DNS&#x670D;&#x52A1;&#x5668;&#x914D;&#x7F6E;</strong><br></p><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># &#x751F;&#x6210;&#x5BC6;&#x94A5;</span></span><br><span class="line"><span class="built_in">cd</span> /var/named/chroot/etc/</span><br><span class="line">dnssec-keygen -a hmac-md5 -b 128 -n HOST &#x5BC6;&#x94A5;&#x540D;&#x79F0;</span><br><span class="line"><span class="comment"># &#x67E5;&#x770B;&#x5BC6;&#x94A5;&#x7684;&#x5BC6;&#x7801;</span></span><br><span class="line">cat k****.+**+***.key</span><br><span class="line">cat Kdnskey.+157+23495.key</span><br><span class="line">dnskey. IN KEY 512 3 157 Rg0mKvMMQ06YAoN0FcOCXQ==</span><br><span class="line">&#x590D;&#x5236;&#x5BC6;&#x7801;&#x4E32;</span><br><span class="line"><span class="comment">########################################</span></span><br><span class="line"><span class="comment"># &#x4FEE;&#x6539;&#x4E3B;DNS&#x670D;&#x52A1;&#x5668;&#x914D;&#x7F6E;&#x6587;&#x4EF6;</span></span><br><span class="line">vim /etc/named.conf</span><br><span class="line"><span class="comment"># &#x6DFB;&#x52A0;&#x5982;&#x4E0B;&#x914D;&#x7F6E;</span></span><br><span class="line">key <span class="string">&quot;dnskey&quot;</span> {</span><br><span class="line">    algorithm hmac-md5;</span><br><span class="line">    secret <span class="string">&quot;&#x7C98;&#x8D34;&#x751F;&#x6210;&#x7684;key&#x5BC6;&#x7801;&#x4E32;&quot;</span>;</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">zone <span class="string">&quot;abc.cn&quot;</span> IN {</span><br><span class="line">    <span class="built_in">type</span> master;</span><br><span class="line">    file <span class="string">&quot;abc.cn.zone&quot;</span>;</span><br><span class="line">    allow-transfer { key &#x5BC6;&#x94A5;&#x540D;&#x79F0; };</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">zone <span class="string">&quot;73.168.192.in-addr.arpa&quot;</span> IN {</span><br><span class="line">    <span class="built_in">type</span> master;</span><br><span class="line">    file <span class="string">&quot;192.168.73.apra&quot;</span>;</span><br><span class="line">    allow-transfer { key &#x5BC6;&#x94A5;&#x540D;&#x79F0; };</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure><p></p>
-<p><strong>&#x4ECE;DNS&#x670D;&#x52A1;&#x5668;&#x914D;&#x7F6E;</strong><br></p><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment"># &#x4FEE;&#x6539;dns&#x914D;&#x7F6E;&#x6587;&#x4EF6;</span></span><br><span class="line">vim /etc/named.conf</span><br><span class="line"><span class="comment"># &#x6DFB;&#x52A0;&#x5982;&#x4E0B;&#x914D;&#x7F6E;</span></span><br><span class="line">key <span class="string">&quot;dnskey&quot;</span> {</span><br><span class="line">    algorithm hmac-md5;</span><br><span class="line">    secret <span class="string">&quot;&#x7C98;&#x8D34;&#x751F;&#x6210;&#x7684;&#x5BC6;&#x94A5;&#x5230;&#x8BE5;&#x5904;&quot;</span>;</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">zone <span class="string">&quot;abc.cn&quot;</span> IN {</span><br><span class="line">    <span class="built_in">type</span> slave;</span><br><span class="line">    file <span class="string">&quot;slaves/abc.cn.zone.file&quot;</span>;</span><br><span class="line">    masters { 192.168.73.5 key dnskey; };</span><br><span class="line">};</span><br><span class="line"></span><br><span class="line">zone <span class="string">&quot;73.168.192.in-addr.arpa&quot;</span> IN {</span><br><span class="line">    <span class="built_in">type</span> slave;</span><br><span class="line">    file <span class="string">&quot;slaves/192.168.73.arpa.file&quot;</span>;</span><br><span class="line">    masters { 192.168.73.5 key dnskey; };</span><br><span class="line">};</span><br></pre></td></tr></tbody></table></figure><p></p>
-<h2 id="&#x5E38;&#x89C1;&#x95EE;&#x9898;&#x89E3;&#x51B3;"><a href="#&#x5E38;&#x89C1;&#x95EE;&#x9898;&#x89E3;&#x51B3;" class="headerlink" title="&#x5E38;&#x89C1;&#x95EE;&#x9898;&#x89E3;&#x51B3;"></a>&#x5E38;&#x89C1;&#x95EE;&#x9898;&#x89E3;&#x51B3;</h2><p><strong>&#x542F;&#x52A8;&#x72B6;&#x6001;&#x62A5;network unreachable&#x95EE;&#x9898;</strong><br></p><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;./DNSKEY/IN&apos;: 2001:503:ba3e::2:30#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;./NS/IN&apos;: 2001:503:ba3e::2:30#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;dlv.isc.org/DNSKEY/IN&apos;: 2001:500:48::1#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;dlv.isc.org/DNSKEY/IN&apos;: 2001:4f8:0:2::19#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;ns.isc.afilias-nst.info/A/IN&apos;: 2001:500:2f::f#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;ns.isc.afilias-nst.info/AAAA/IN&apos;: 2001:500:2f::f#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;ns.isc.afilias-nst.info/A/IN&apos;: 2001:500:1::803f:235#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;ns.isc.afilias-nst.info/AAAA/IN&apos;: 2001:500:1::803f:235#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;ns.isc.afilias-nst.info/A/IN&apos;: 2001:503:c27::2:30#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;ns.isc.afilias-nst.info/AAAA/IN&apos;: 2001:503:c27::2:30#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;ns.isc.afilias-nst.info/A/IN&apos;: 2001:500:1a::1#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;dlv.isc.org/DNSKEY/IN&apos;: 2001:4f8:0:2::20#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;dlv.isc.org/DNSKEY/IN&apos;: 2001:500:60::29#53</span><br><span class="line">Oct 23 11:39:03 server named[1585]: error (network unreachable) resolving &apos;ns1.isc.ultradns.net/A/IN&apos;: 2001:7fd::1#53</span><br></pre></td></tr></tbody></table></figure><p></p>
-<blockquote>
-<p>&#x914D;&#x7F6E;&#x9012;&#x5F52;&#x65F6;&#xFF0C;&#x8F6C;&#x53D1;&#x6570;&#x636E;&#x4F18;&#x5148;IPv6&#x8FED;&#x4EE3;</p>
-</blockquote>
-<p>&#x4FEE;&#x6539;<code>/etc/sysconfig/named</code><br></p><figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line"># &#x6DFB;&#x52A0;OPTIONS</span><br><span class="line">#/etc/sysconfig/named &#x662F;bind&#x5B88;&#x62A4;&#x8FDB;&#x7A0B;&#x542F;&#x52A8;&#x65F6;&#x4F20;&#x9012;&#x53C2;&#x6570;&#x7684;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF0C;</span><br><span class="line"></span><br><span class="line">OPTIONS=&quot;-4&quot;</span><br><span class="line"># BIND named process options</span><br><span class="line"># ~~~~~~~~~~~~~~~~~~~~~~~~~~</span><br></pre></td></tr></tbody></table></figure><p></p>
-<p>&#x53C2;&#x8003;&#xFF1A;<a href="https://www.cnblogs.com/zy09/p/14596993.html" target="_blank" rel="noopener">https://www.cnblogs.com/zy09/p/14596993.html</a></p>
-<p><strong>&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;DNS&#xFF0C;&#x5BA2;&#x6237;&#x7AEF;&#x65E0;&#x6CD5;&#x8BFB;&#x53D6;&#x4ECE;DNS&#x914D;&#x7F6E;</strong></p>
-<blockquote>
-<p>&#x4FEE;&#x6539;&#x4ECE;DNS&#x670D;&#x52A1;&#x5668;&#x914D;&#x7F6E;&#x6587;&#x4EF6;<br></p><figure class="highlight bash"><table><tbody><tr><td class="code"><pre><span class="line">vim /etc/named.conf</span><br><span class="line">dnssec-enable yes;  </span><br><span class="line">dnssec-validation no;   <span class="comment">#&#x5173;&#x95ED;&#x9A8C;&#x8BC1;</span></span><br></pre></td></tr></tbody></table></figure><p></p>
-</blockquote>
-<h2 id="DNS&#x914D;&#x7F6E;&#x89E3;&#x6790;"><a href="#DNS&#x914D;&#x7F6E;&#x89E3;&#x6790;" class="headerlink" title="DNS&#x914D;&#x7F6E;&#x89E3;&#x6790;"></a>DNS&#x914D;&#x7F6E;&#x89E3;&#x6790;</h2><blockquote>
-<p>An example of a simple resource record (RR):<br>example.com.    86400    IN    A    192.0.2.1</p>
-</blockquote>
-<p>example.com, &#x8D44;&#x6E90;&#x8BB0;&#x5F55;<br>86400,  time to live(TTL)<br>IN  &#x201C;the Internet system&#x201D;, &#x6307;&#x660E;RR&#x7684;&#x7684;&#x7C7B;&#x522B;<br>A   &#x6307;&#x660E;RR&#x7684;&#x7C7B;&#x578B;&#xFF0C;a host address<br>192.0.2.1   &#x6307;&#x660E;RR&#x5305;&#x542B;&#x7684;IP&#x5730;&#x5740;</p>
-<blockquote>
-<p>/etc/named.conf&#xFF0C;bind&#x7684;&#x4E3B;&#x8981;&#x914D;&#x7F6E;&#x6587;&#x4EF6;<br>/var/named/&#xFF0C;&#x4E3B;&#x8981;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x7684;&#x8F85;&#x52A9;&#x76EE;&#x5F55;</p>
-</blockquote>
-<p>SOA &#xFF0C;Start of Authority Record&#xFF0C;&#x8D77;&#x59CB;&#x6388;&#x6743;&#x8BB0;&#x5F55;&#xFF0C;&#x6BCF;&#x4E2A;&#x533A;&#x5728;&#x533A;&#x7684;&#x5F00;&#x59CB;&#x90FD;&#x5305;&#x542B;&#x4E00;&#x4E2A;<br>NS&#xFF0C;Name Server&#xFF0C;&#x57DF;&#x540D;&#x670D;&#x52A1;&#x5668;&#x8BB0;&#x5F55;&#xFF0C;&#x7528;&#x6765;&#x6307;&#x5B9A;&#x8BE5;&#x57DF;&#x540D;&#x7531;&#x54EA;&#x4E2A;DNS&#x670D;&#x52A1;&#x5668;&#x6765;&#x8FDB;&#x884C;&#x89E3;&#x6790;&#xFF0C;&#x6BCF;&#x4E2A;&#x533A;&#x81F3;&#x5C11;&#x5305;&#x542B;&#x4E00;&#x4E2A;NS<br>A&#xFF0C;&#x5730;&#x5740;&#x8D44;&#x6E90;&#x8BB0;&#x5F55;&#xFF0C;&#x628A;FQDN&#xFF08;&#x5B8C;&#x5168;&#x5408;&#x683C;&#x57DF;&#x540D;&#xFF0C;&#x6216;&#x5B8C;&#x6574;&#x7684;&#x8BA1;&#x7B97;&#x673A;&#x540D;&#xFF09;&#x6620;&#x5C04;&#x5230;IP&#x5730;&#x5740;&#xFF0C;&#x8BE5;&#x8BB0;&#x5F55;&#x80FD;&#x591F;&#x89E3;&#x6790;FQDN&#x57DF;&#x540D;&#x5BF9;&#x5E94;&#x7684;IP&#x5730;&#x5740;&#x3002;<br>PTR&#xFF0C;&#x6307;&#x9488;&#x8BB0;&#x5F55;&#xFF0C;&#x628A;IP&#x5730;&#x5740;&#x6620;&#x5C04;&#x5230;FQDN&#xFF0C;&#x7528;&#x4E8E;&#x53CD;&#x5411;&#x67E5;&#x8BE2;&#xFF0C;&#x901A;&#x8FC7;IP&#x5730;&#x5740;&#x627E;&#x5230;&#x57DF;&#x540D;&#x3002;<br>CNAME&#xFF0C;&#x522B;&#x540D;&#x8BB0;&#x5F55;&#xFF0C;&#x521B;&#x5EFA;&#x7279;&#x5B9A;&#x7684;FQDN&#x522B;&#x540D;<br>MX&#xFF0C;&#x90AE;&#x4EF6;&#x4EA4;&#x6362;&#x8BB0;&#x5F55;&#xFF0C;&#x6307;&#x5B9A;&#x90AE;&#x4EF6;&#x4EA4;&#x6362;&#x670D;&#x52A1;&#x5668;&#x3002;</p>
-<p><strong>/etc/named.conf&#x5E38;&#x7528;&#x914D;&#x7F6E;&#x9009;&#x9879;</strong></p>
-<table>
-<thead>
-<tr>
-<th>Option</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>allow-query</td>
-<td></td>
-</tr>
-<tr>
-<td>allow-query-cache</td>
-<td></td>
-</tr>
-<tr>
-<td>blackhole</td>
-<td></td>
-</tr>
-<tr>
-<td>directory</td>
-<td></td>
-</tr>
-<tr>
-<td>disable-empty-zone</td>
-<td></td>
-</tr>
-<tr>
-<td>dnssec-enable</td>
-<td></td>
-</tr>
-<tr>
-<td>dnssec-validation</td>
-<td></td>
-</tr>
-<tr>
-<td>empty-zones-enable</td>
-<td></td>
-</tr>
-<tr>
-<td>forwarders</td>
-<td></td>
-</tr>
-<tr>
-<td>forward</td>
-<td></td>
-</tr>
-<tr>
-<td>listen-on</td>
-<td></td>
-</tr>
-<tr>
-<td>listen-on-v6</td>
-<td></td>
-</tr>
-<tr>
-<td>max-cache-size</td>
-<td></td>
-</tr>
-<tr>
-<td>notify</td>
-<td></td>
-</tr>
-<tr>
-<td>pid-file</td>
-<td></td>
-</tr>
-<tr>
-<td>recursion</td>
-<td></td>
-</tr>
-<tr>
-<td>statistics-file</td>
-</tr>
-</tbody>
-</table>
-<script>
-        document.querySelectorAll('.github-emoji')
-          .forEach(el => {
-            if (!el.dataset.src) { return; }
-            const img = document.createElement('img');
-            img.style = 'display:none !important;';
-            img.src = el.dataset.src;
-            img.addEventListener('error', () => {
-              img.remove();
-              el.style.color = 'inherit';
-              el.style.backgroundImage = 'none';
-              el.style.background = 'none';
-            });
-            img.addEventListener('load', () => {
-              img.remove();
-            });
-            document.body.appendChild(img);
-          });
-      </script>
-    
-        <div>
-            <a href="/posts/4782a8c2/" class="post-more waves-button">
-                阅读全文 »
-            </a>
-        </div>
-    </div>
-    
-</article>
-
-        </li>
-    
-    </ul>
-
-    
-<nav id="page-nav">
-    <div class="inner">
-    <a class="extend prev" rel="prev" href="/page/10/">上一页</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="extend next" rel="next" href="/page/12/">下一页</a>
-    </div>
-</nav>
-
-
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/2fe5fc07/">
+				<h2 class="index-title">
+					Linux计划任务实现
+				</h2>
+				<div class="index-brief">
+					crontab
+提交和管理用户的需要周期性执行的任务
+
+# Example of job definition:
+# .---------------- minute (0 - 59)
+# |  .------------- hour (0 - 23)
+# |  |  .---------- day
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2022-06-07</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/e025952a/">
+				<h2 class="index-title">
+					Linux登录退出提示信息欢迎信息
+				</h2>
+				<div class="index-brief">
+					
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2022-06-07</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/b3f64b7d/">
+				<h2 class="index-title">
+					Linux生成随机密码方法
+				</h2>
+				<div class="index-brief">
+					
+gpg生成随机字符# 
+gpg --gen-random --armor 2 12
+# --gen-random 随机生成字符
+# -armor 生成ASCII字符
+# 2 质量级别，0、1、2三个选项
+# 12    字符长度
+
+过滤特殊字符
+gpg --gen-random --armor 2
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2022-06-07</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/1e844aa4/">
+				<h2 class="index-title">
+					Linux的归档与解压缩
+				</h2>
+				<div class="index-brief">
+					Linux解压缩工具（命令）
+tar 、gzip、bzip2、zip、xz、gunzip、
+
+tar-c 创建打包
+-x 展开归档文件
+-v 显示过程信息
+-f 指定文件/目录
+-O 将文件解开到标准输出
+-C 指定路径
+-j bz2格式文件
+-J xz格式文件
+-z gzip格式文件
+
+
+解包：t
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2022-06-07</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/82734d8/">
+				<h2 class="index-title">
+					Linux命令
+				</h2>
+				<div class="index-brief">
+					
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2022-06-07</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/7733d98/">
+				<h2 class="index-title">
+					LDAP的配置与管理
+				</h2>
+				<div class="index-brief">
+					
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2022-06-07</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/9d56e705/">
+				<h2 class="index-title">
+					FTP/TFTP的配置与管理
+				</h2>
+				<div class="index-brief">
+					TFTP
+简单文件传输协议
+
+安装
+yum install tftp-server tftp xinetd
+
+配置
+vim /etc/xinetd.d/ftp
+disable = no
+
+
+tftp服务文件默认存放目录/var/lib/tftpboot/
+
+FTP Server简单配置
+/etc/v
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2022-06-07</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/4782a8c2/">
+				<h2 class="index-title">
+					DNS Server的配置与管理
+				</h2>
+				<div class="index-brief">
+					配置实现
+修改/etc/named.conf配置文件
+
+options {
+    listen-on port 53 { any; };
+    listen-on-v6 port 53 { any; };
+    ...
+    allow-query { any; };
+    ...
+   
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2022-06-07</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+		<div class="index-li">
+			<a href="/posts/9964b559/">
+				<h2 class="index-title">
+					DHCP Server的配置与管理
+				</h2>
+				<div class="index-brief">
+					安装配置#rhel/centos
+yum install -y dhcp
+
+
+/etc/dhcp/dhcpd.confDHCP主配置文件目录/usr/share/doc/dhcp*/dhcpd.conf.sampleDHCP配置模板/var/lib/dhcpd/dhcpd.leases dhcp租约
+					...
+				</div>
+			</a>
+                <div class="article-meta">
+				    <span>2022-06-07</span>
+                    
+                            
+                    
+                </div>
+		</div>	
+	
+	
+	<div id="index-paginator">
+		
+			<a class="extend prev" rel="prev" href="/page/10/"><</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="page-number" href="/page/10/">10</a><span class="page-number current">11</span><a class="page-number" href="/page/12/">12</a><a class="page-number" href="/page/13/">13</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/">15</a><a class="extend next" rel="next" href="/page/12/">></a>
+		
+	</div>
 </div>
 
-        <footer class="footer">
-    <div class="footer-content">
-        <span class="power">
-            <i class="icon icon-lg icon-copyright"></i>
-            2022
-            <i class="icon icon-lg icon-heart"></i>
-            <a href="https://marnm.github.io">marnm.github.io</a>
-            <br>
-            Power by
-            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
-            Theme
-            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
-        </span>
-
-        <br>
-
-        <span id="RunTime" style="color:#a7a7a2;"></span>
-        <br>
-
-        <span>
-            
-
-        </span>
-        <br>
-
-        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
-    </div>
-</footer>
-
-    </main>
-    
-    <div class="mask" id="mask"></div>
-<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
-
-
-    <!-- waves按钮特效 -->
-<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
-
-<!-- 主题配置脚本 -->
-<script>
-var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
-</script>
-
-<!-- jquery -->
-<script src="/js/jquery.min.js?v=3.0"></script>
-
-<!-- 搜索 -->
-
-<div class="search-panel" id="search-panel">
-    <ul class="search-result" id="search-result"></ul>
+	</div>
+	<div id="footer">
+	<p>
+	©2019-<span id="footerYear"></span> 
+	<a href="/">Echo</a> 
+	
+	
+	<br>
+	Theme <a href="//github.com/wujun234/hexo-theme-tree" target="_blank">Tree</a>
+	by <a href="//github.com/wujun234" target="_blank">WuJun</a>
+	Powered by <a href="//hexo.io" target="_blank">Hexo</a>
+	</p>
 </div>
-<template id="search-tpl">
-<li class="item waves-block waves-effect" onclick="location.href='{path}'">
-    <div class="title ellipsis" title="{title}">{title}</div>
-</li>
-</template>
-
-
-<!-- main博客脚本 -->
-<script src="/js/main.min.js?v=3.0"></script>
-
-<!-- 动画&配置 -->
-<script src="/js/script.min.js?v=3.0"></script>
-
-<!-- 脚本管理 -->
-<script>
-
-if(window.innerWidth > 800){
-	/* 3D标题 */
-	$(".content-header").on("mousemove", threedee);
-
-	/* 底部追随鼠标 */
-	$(".footer").hover(2);
-
-	/* gotop键的涟漪 */
-	$("#gotop").hover(1);
-
-	/* 赞赏的粒子雨 */
-	$("#reward").hover(3);
-
-	/* 微信公众号的底部渲染 */
-	$("#wechat").hover(4);
-
-    /* 标题跳动 */
-    $(".archivestitle").bumpyText();
-
-	/* 图片点击放大 */
-	const postimg = jQuery(".post-content img:not(.github-emoji)");
-	postimg.on("click",function(){
-
-		mask.classList.add("in");
-		main.classList.add("Mask");
-		menu.classList.add("Mask");
-		var myimg = this.cloneNode(true);
-		myimg.classList.add("imgShow");
-
-		setTimeout(function(){
-			jQuery(myimg).animate({
-				opacity:"1"
-			},1000);
-		},0);
-
-		document.body.appendChild(myimg);
-
-		myimg.onclick=function(){
-			document.body.removeChild(myimg);
-			mask.classList.remove("in");
-			main.classList.remove("Mask");
-			menu.classList.remove("Mask");
-		};
-
-	});
-
-}
-
-/* 名字跳动 */
-$("#name").bumpyText();
-
-
-/* 网站运行时间 */
-setInterval(function () {
-	setTime("2019/01/01");
-}, 1000);
-
-/* 文章块的淡出 */
-postshow();
-
-/* 座右铭 */
-
-   getHitokoto();
-
-
-
-/* 粘贴提示 */
-G($(".post-content"), location.href, "Echo");
-
-
-/* 控制台 */
-if (window.console && window.console.log) {
-	setTimeout(function () {
-		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
-	}, 0);
-}
-
+<script type="text/javascript"> 
+	document.getElementById('footerYear').innerHTML = new Date().getFullYear() + '';
 </script>
-
-
-
-
-<!-- 公式渲染 -->
-
-
-
-<!-- 不蒜子 -->
-
-
+	<button id="totop-toggle" class="toggle"><i class="fa fa-angle-double-up" aria-hidden="true"></i></button>
 </body>
 </html>

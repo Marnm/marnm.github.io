@@ -1,239 +1,2523 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head><meta name="generator" content="Hexo 3.8.0">
-    <meta http-equiv="Content-Language" content="zh-cn">
-    <meta charset="utf-8">
-    
-    
-    
-    <title>Nginx高可用架构配置 | Deops&#39;s blog | 运维开发工程师</title>
-    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    
-    <meta name="theme-color" content="#77AAFF">
-    
-    
-    <meta name="keywords" content="">
-    
-    
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+	
+	<!-- title -->
+	
+	<title>
+	
+		Nginx高可用架构配置 | 
+	 
+	Deops&#39;s blog
+	</title>
+	
+	<!-- keywords,description -->
+	
+		<meta name="keywords" content="Echo">
+	 
+		<meta name="description" content="Echo">
+	
 
-    
+	<!-- favicon -->
+	
+	<link rel="shortcut icon" href="/favicon.ico">
+	
 
-    <!-- Baidu Push -->
-<script>
-	(function(){
-		var bp = document.createElement('script');
-		var curProtocol = window.location.protocol.split(':')[0];
-		if (curProtocol === 'https') {
-			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+
+	<!-- search -->
+	<script>
+		var searchEngine = "https://www.google.com/search?q=";
+		if(typeof searchEngine == "undefined" || searchEngine == null || searchEngine == ""){
+			searchEngine = "https://www.google.com/search?q=";
 		}
-		else {
-			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		var homeHost = "https://marnm.github.io/";
+		if(typeof homeHost == "undefined" || homeHost == null || homeHost == ""){
+			homeHost = window.location.host;
 		}
-		var s = document.getElementsByTagName("script")[0];
-		s.parentNode.insertBefore(bp, s);
-	})();
-
-	var _hmt = _hmt || [];
-</script>
+	</script>
 
 
-
+	<link rel="stylesheet" href="/css/main.css">
+	<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/lib/highlight/styles/base16/solarized-dark.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
     
-    <meta name="description" content="9&amp;#x53F0;&amp;#x673A;&amp;#x5668;IP&amp;#x5730;&amp;#x5740;&amp;#x5206;&amp;#x914D;&amp;#xFF08;&amp;#x9759;&amp;#x6001;&amp;#xFF09;&amp;#xFF1A;&amp;#xFF1A;192.168.110.11 &amp;#x2014;-&amp;gt; Nginx&amp;#x53CD;&amp;#x5411;&amp;#x4EE3;&amp;#x7406;192.168.110.12 &amp;#x2014;-&amp;gt">
-<meta name="keywords" content="Echo">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Nginx高可用架构配置">
-<meta property="og:url" content="https://marnm.github.io/posts/d2802762/index.html">
-<meta property="og:site_name" content="Deops&#39;s blog">
-<meta property="og:description" content="9&amp;#x53F0;&amp;#x673A;&amp;#x5668;IP&amp;#x5730;&amp;#x5740;&amp;#x5206;&amp;#x914D;&amp;#xFF08;&amp;#x9759;&amp;#x6001;&amp;#xFF09;&amp;#xFF1A;&amp;#xFF1A;192.168.110.11 &amp;#x2014;-&amp;gt; Nginx&amp;#x53CD;&amp;#x5411;&amp;#x4EE3;&amp;#x7406;192.168.110.12 &amp;#x2014;-&amp;gt">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2022-06-07T05:10:07.433Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Nginx高可用架构配置">
-<meta name="twitter:description" content="9&amp;#x53F0;&amp;#x673A;&amp;#x5668;IP&amp;#x5730;&amp;#x5740;&amp;#x5206;&amp;#x914D;&amp;#xFF08;&amp;#x9759;&amp;#x6001;&amp;#xFF09;&amp;#xFF1A;&amp;#xFF1A;192.168.110.11 &amp;#x2014;-&amp;gt; Nginx&amp;#x53CD;&amp;#x5411;&amp;#x4EE3;&amp;#x7406;192.168.110.12 &amp;#x2014;-&amp;gt">
-    
-        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
-    
-    <link rel="shortcut icon" href="/img/favicon.ico">
-    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
-    <script>window.lazyScripts=[]</script>
+    <!-- 引入代码高亮的 js -->
+    <script src="/lib/highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 
-    <!-- custom head -->
-    
-            
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/jquery-pjax@2.0.1/jquery.pjax.min.js"></script>
+	<script src="/js/main.js"></script>
+	
+		<script src="https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/valine@v1.4.14/dist/Valine.min.js"></script>
+	
+	
 </head>
 
 <body>
-    <div id="loading" class="active"></div>
-    <aside id="menu" class="hide">
-  <div class="inner flex-row-vertical">
-    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
-        <i class="icon icon-lg icon-close"></i>
-    </a>
-    <div class="brand-wrap">
-      <div class="brand">
-        <a href="/" class="avatar waves-effect waves-circle waves-light">
-          <img src="/img/avatar.gif" alt="avatar">
-        </a>
-        <hgroup class="introduce">
-          <h5 class="nickname" id="name">Echo</h5>
-          
-            <div id="yiyanmotto" class="motto">&nbsp;</div>
-          
-        </hgroup>
-      </div>
-    </div>
-    <div class="scroll-wrap flex-col">
-      <ul class="nav">
-        
-              <li class="waves-block waves-effect">
-                  <a href="/">
-                    <i class="icon icon-lg icon-home"></i>
-                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/archives">
-                    <i class="icon icon-lg icon-archives"></i>
-                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/categories">
-                    <i class="icon icon-lg icon-th-list"></i>
-                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/tags">
-                    <i class="icon icon-lg icon-tags"></i>
-                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/about">
-                    <i class="icon icon-lg icon-smile-o"></i>
-                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-      <div class="nav2">
-          
-              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
-                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
-              </a>
-          
-              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
-                <i class="icon icon-lg icon-github github"></i>
-              </a>
-          
-              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
-                <i class="icon icon-lg icon-tv tv"></i>
-              </a>
-          
-
-            </div>
-        
-      </ul>
-        
-    </div>
-  </div>
- 
-</aside>
-
-
-    <main id="main">
-        <header class="top-header" id="header">
-    <div class="flex-row">
-        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
-          <i class="icon icon-lg icon-navicon"></i>
-        </a>
-        <div class="flex-col header-title ellipsis">Nginx高可用架构配置</div>
-        
-        <div class="search-wrap" id="search-wrap">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
-                <i class="icon icon-lg icon-chevron-left"></i>
-            </a>
-            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
-                <i class="icon icon-lg icon-search"></i>
-            </a>
-        </div>
-        
-        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
-            <i class="icon icon-lg icon-rss"></i>
-        </a>
-    </div>
-</header>
-<header class="content-header post-header">
-    
-    
-    <div class="container fade-scale">
-        <div id="myheader">
-            <h1 class="title">
-                
-            </h1>
-            <h5 class="subtitle">
-                
-                
-            </h5>
-        </div>
-    </div>
-
-</header>
-
-
-<div class="container body-wrap">
-    
-    <aside class="post-widget">
-        <nav class="post-toc-wrap" id="post-toc">
-            <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#系统基本配置"><span class="post-toc-number">1.</span> <span class="post-toc-text">系统基本配置</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#配置Nginx-Server"><span class="post-toc-number">2.</span> <span class="post-toc-text">配置Nginx Server</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#配置Nginx代理和负载均衡"><span class="post-toc-number">3.</span> <span class="post-toc-text">配置Nginx代理和负载均衡</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#配置存储服务"><span class="post-toc-number">4.</span> <span class="post-toc-text">配置存储服务</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#配置PHP-FastCGI"><span class="post-toc-number">5.</span> <span class="post-toc-text">配置PHP FastCGI</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#在Nginx代理服务器上配置FastCGI"><span class="post-toc-number">5.1.</span> <span class="post-toc-text">在Nginx代理服务器上配置FastCGI</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Nginx代理服务器高可用——Keepalived"><span class="post-toc-number">6.</span> <span class="post-toc-text">Nginx代理服务器高可用——Keepalived</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#配置MySQL"><span class="post-toc-number">7.</span> <span class="post-toc-text">配置MySQL</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#配置主从"><span class="post-toc-number">7.1.</span> <span class="post-toc-text">配置主从</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#MySQL的Keepalived高可用"><span class="post-toc-number">7.2.</span> <span class="post-toc-text">MySQL的Keepalived高可用</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#项目上线"><span class="post-toc-number">8.</span> <span class="post-toc-text">项目上线</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#修改Nginx代理配置"><span class="post-toc-number">8.1.</span> <span class="post-toc-text">修改Nginx代理配置</span></a></li></ol></li></ol>
-        </nav>
-    </aside>
-   
-<article id="post-Nginx高可用架构配置" class="post-article article-type-post fade" itemprop="blogPost">
-
-    <div class="post-card">
-        <h1 class="post-card-title">Nginx高可用架构配置</h1>
-        <div class="post-meta">
-            <i class="icon icon-lg icon-calendar-o"></i>
-            发表于
-            <time class="post-time" title="2022-06-07 12:47:14" datetime="2022-06-07T04:47:14.000Z" itemprop="datePublished">2022-06-07</time>
-
-            <br id="mybreak">
-            
-<script>
-	mybreak.style="display:none";
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3efe99c287df5a1d6f0d02d187e403c1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
 </script>
 
+<header id="header">
+    <a id="title" href="/" class="logo">Deops's blog</a>
 
-            <i>·</i>
+	<ul id="menu">
+		<li class="menu-item">
+			<a href="/about" class="menu-item-link">ABOUT</a>
+		</li>
+	
+		<li class="menu-item">
+			<a href="/tags" class="menu-item-link">标签</a>
+		</li>
+	
+
+	
+		<li class="menu-item">
+			<a href="/categories" class="menu-item-link">分类</a>
+		</li>
+	
+
+		<li class="menu-item">
+			<a href="https://github.com/Marnm" class="menu-item-link" target="_blank">
+				<i class="fa fa-github fa-2x"></i>
+			</a>
+		</li>
+	</ul>
+</header>
+
+	
+<div id="sidebar">
+	<button id="sidebar-toggle" class="toggle"><i class="fa fa-arrow-right " aria-hidden="true"></i></button>
+	
+	<div id="site-toc">
+		<input id="search-input" class="search-input" type="search" placeholder="按回车全站搜索">
+		<div id="tree">
+			
+
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Ansible自动化运维
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/b45e213f/">
+                     
+										    Ansible自动化管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/28c30eb2/">
+                     
+										    CTF线下赛AWD套路小结
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Ceph对象存储
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/e9abc941/">
+                     
+										    Ceph分布式存储
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/38843421/">
+                     
+										    Ceph分布式存储部署笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9964b559/">
+                     
+										    DHCP Server的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4782a8c2/">
+                     
+										    DNS Server的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5e357037/">
+                     
+										    Django教程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Docker
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/4a3d459a/">
+                     
+										    Docker学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										ELK Stack
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/2d95f1c1/">
+                     
+										    ElasticSearch环境搭建
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/573fc171/">
+                     
+										    Logstash二进制安装与启动
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b11339a9/">
+                     
+										    Logstash去除不需要的字段
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d05b44e0/">
+                     
+										    Logstash读取日志发送到ES
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9d56e705/">
+                     
+										    FTP/TFTP的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ca9298d7/">
+                     
+										    Git版本控制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/51acad32/">
+                     
+										    诺尔·巴尔扎克（Honoréde Balzac）的名言
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4def9c28/">
+                     
+										    In Your 20's These Things Matter More Than You Think
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/295162d9/">
+                     
+										    Java8 环境变量配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										KVM虚拟化
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/dba5727f/">
+                     
+										    KVM图形化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/204af86b/">
+                     
+										    KVM虚拟机克隆和快照
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d69c6e72/">
+                     
+										    KVM虚拟机添加磁盘
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/16305c66/">
+                     
+										    KVM虚拟机迁移
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7733d98/">
+                     
+										    LDAP的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5922577d/">
+                     
+										    LNMP手动部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/195423a2/">
+                     
+										    LNMP高可用架构配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/38cc96c8/">
+                     
+										    LVM磁盘管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/be48d001/">
+                     
+										    LVS-DR集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/df68056c/">
+                     
+										    LVS-IPTUN集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dcf8e277/">
+                     
+										    LVS-NAT集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/640aafef/">
+                     
+										    LVS和KeepAlived实现高可用集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/82734d8/">
+                     
+										    Linux命令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/67ee4dec/">
+                     
+										    Linux学习笔记 - 关于开源
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d53cba09/">
+                     
+										    Linux常用性能分析工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/15c0e66c/">
+                     
+										    Linux常见日志文件
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/480c215d/">
+                     
+										    Linux性能管理工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a9bb0c1a/">
+                     
+										    Linux文件的特殊权限
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/cc999d74/">
+                     
+										    Linux文件的隐藏属性
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b7f1c6/">
+                     
+										    Linux文本四剑客
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/aabbd398/">
+                     
+										    Linux无法挂载sysroot并自动进入紧急模式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b3f64b7d/">
+                     
+										    Linux生成随机密码方法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e025952a/">
+                     
+										    Linux登录退出提示信息欢迎信息
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ee2f9f35/">
+                     
+										    Linux的PAM模块
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1e844aa4/">
+                     
+										    Linux的归档与解压缩
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c4bbfe69/">
+                     
+										    Linux的日志切割
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/be846aea/">
+                     
+										    Linux禁止和开启ping的方法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f20e14fd/">
+                     
+										    Linux网卡聚合及bond模式的原理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2fe5fc07/">
+                     
+										    Linux计划任务实现
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/365d0867/">
+                     
+										    Linux路由配置——route
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fbf617b4/">
+                     
+										    MariaDB
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bff83912/">
+                     
+										    Markdown 简明语法手册
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5125c787/">
+                     
+										    Markdown语法说明（快速入门）
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										MongoDB
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/8b1c1f4b/">
+                     
+										    MongoDB介绍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a36562d7/">
+                     
+										    MongoDB学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/55c06d78/">
+                     
+										    MongoDB安装部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										MySQL学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/16fc5dc4/">
+                     
+										    MySQL5.6
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/61fb6d52/">
+                     
+										    MySQL5.7
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bce68613/">
+                     
+										    MySQL基础
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f6e2d114/">
+                     
+										    使用RPM包安装MySQL5.7数据库
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/269a56e8/">
+                     
+										    MySQL备份与恢复（删库不跑路）
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/607e4760/">
+                     
+										    MySQL传统主从同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d77fafec/">
+                     
+										    MySQL的GTID主从同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/db0340bd/">
+                     
+										    MySQL高可用集群架构-MHA架构
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/62ec7971/">
+                     
+										    Atlas实现MySQL读写分离
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/490925f2/">
+                     
+										    MySQL数据库高级应用之读写分离
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/176dc5f3/">
+                     
+										    MyCat垂直分表操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8f74b0e7/">
+                     
+										    MyCat教程全国省份分片枚举操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/208cd020/">
+                     
+										    MySQL调优
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1876d05d/">
+                     
+										    NetworkManager管理工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/60444925/">
+                     
+										    NexT主题优化+美化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Nginx学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/f4d30967/">
+                     
+										    Nginx动静分离部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1db2b3f1/">
+                     
+										    Nginx平滑升级
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2793eb31/">
+                     
+										    Nginx日志管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2793eb31/">
+                     
+										    Nginx日志管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e0989926/">
+                     
+										    Nginx添加第三方模块
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/da411b72/">
+                     
+										    Nginx虚拟主机
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d4e5e907/">
+                     
+										    Nginx访问控制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file active">
+									<a href="/posts/d2802762/">
+                     
+										    Nginx高可用架构配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/36ba38f9/">
+                     
+										    NoSQL知识
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e8c4eb08/">
+                     
+										    OpenSSL使用教程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/97717e94/">
+                     
+										    PXE自动化部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Prometheus学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/39c0f6a1/">
+                     
+										    Prometheus学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1f351894/">
+                     
+										    Python-VirtualEnv
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/297a89d9/">
+                     
+										    Python学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fa8e89f7/">
+                     
+										    RAID磁盘阵列技术介绍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/afdfa673/">
+                     
+										    RHEL 7配置Yum软件仓库
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/32546aed/">
+                     
+										    RedHat Linux重置root管理员密码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/eb7dbe25/">
+                     
+										    RedHat_7 配置网卡信息
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Redis学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/5188e636/">
+                     
+										    Redis与其他应用的集成
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/49fbbc1/">
+                     
+										    Redis基本操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e8376589/">
+                     
+										    Redis安装部署——Cluster集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e78aaf59/">
+                     
+										    Redis安装部署——Sentinel模式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2acd829b/">
+                     
+										    Redis安装部署——主从复制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/119ed1dc/">
+                     
+										    Redis持久化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/18d7d749/">
+                     
+										    Redis概述
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e3fb0a3e/">
+                     
+										    Redis的数据备份与恢复
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3e3d973e/">
+                     
+										    Redis配合MySQL使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f03da4e7/">
+                     
+										    Redis配置文件详解
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/41f893fd/">
+                     
+										    Redis编译安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dbd9d26a/">
+                     
+										    SHELL编程类面试题
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f42b90f9/">
+                     
+										    SHELL脚本工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a8ba1e/">
+                     
+										    SHELL脚本练习
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c45f2736/">
+                     
+										    SQL Server 2008安装配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/aa142b64/">
+                     
+										    SQLite安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e228b71f/">
+                     
+										    SSH原理与应用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1fdc29d2/">
+                     
+										    Shell的基本运算符
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6309c3f8/">
+                     
+										    Shell编程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e76ba468/">
+                     
+										    Ubuntu Desktop优化与配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/129acd64/">
+                     
+										    Ubuntu修改配置及美化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b382711f/">
+                     
+										    VIM的使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e9c6771b/">
+                     
+										    Win10环境下Python2、3和pip2、3版本共存
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6ed6984b/">
+                     
+										    Windows进程管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/59089347/">
+                     
+										    Zabbix3.4邮件报警配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7034657d/">
+                     
+										    Zabbix4.0
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c7b4ec91/">
+                     
+										    firewalld学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1ebd4a76/">
+                     
+										    iproute2工具包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/57bbf635/">
+                     
+										    iptables学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3e189d0c/">
+                     
+										    mysqlclient无法安装的问题
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1939d3e2/">
+                     
+										    net-tools工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bae5d4f0/">
+                     
+										    rhel修改网卡命名规则
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3c7a2415/">
+                     
+										    rsync数据同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/37ca92de/">
+                     
+										    swap交换分区
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6efb91e0/">
+                     
+										    tcpdump与Wireshark的使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d185f6ae/">
+                     
+										    web性能压测学习
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bb750036/">
+                     
+										    你要懂得及时止损，别太在乎沉没成本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/da58b03e/">
+                     
+										    使用HAProxy实现七层负载均衡
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b161a250/">
+                     
+										    使用服务搭建Hexo个人博客
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										其它
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/9bf5b5/">
+                     
+										    我学练英语所使用的方法、工具与资料
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4c41c7ef/">
+                     
+										    十二句经典的爱情名言
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e364486e/">
+                     
+										    基于Docker搭建Prometheus
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/69c239dd/">
+                     
+										    基于LNMP架构搭建企业级开源监控系统Zabbix
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f801d3c5/">
+                     
+										    增加一台Filebeat收集httpd日志
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f5d6f6a9/">
+                     
+										    实战-GitLab更新代码后自动触发Jenkins进行部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fa35a60d/">
+                     
+										    性能测试指标详解
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a3c5d26/">
+                     
+										    搭建Jenkins实现持续集成-配置Jenkins自动拉取GitLab中的代码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4f96852/">
+                     
+										    搭建JumpServer管理王者荣耀数万台游戏服务器
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f0a65eeb/">
+                     
+										    根分区扩容
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2f57a694/">
+                     
+										    正则表达式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9e3f6743/">
+                     
+										    自由的灵魂必将远航
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/217dc297/">
+                     
+										    计算机概述
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8d4b7ae1/">
+                     
+										    计算机组成原理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dded0e80/">
+                     
+										    运维发展史
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/undefined/">
+                     
+										    邮件报警配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5095a46f/">
+                     
+										    配置Docker静态IP
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2b923a54/">
+                     
+										    配置GitLab邮件服务
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/76011417/">
+                     
+										    配置Zabbix3.4监控Apache服务
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+		</div>
+	</div>
+</div>
+
+	<!-- 引入正文 -->
+	<div id="content">
+		<h1 id="article-title">
+	Nginx高可用架构配置
+</h1>
+<div class="article-meta">
+	
+	<span>Echo</span>
+	<span>2022-06-07 12:47:14</span>
+		<div id="article-categories">
+    
+		<span>Categories：</span>
             
+    
 
-        </div>
-        <div class="post-count-custom">
-            <i class="icon icon-lg icon-comment-o"></i>
-            阅读本文可能花费您&nbsp;<span class="post-count">18</span>&nbsp;分钟
-        </div>
-        <div class="post-content" id="post-content" itemprop="postContent">
-            <p><strong>9&#x53F0;&#x673A;&#x5668;IP&#x5730;&#x5740;&#x5206;&#x914D;&#xFF08;&#x9759;&#x6001;&#xFF09;&#xFF1A;</strong>&#xFF1A;<br><code>192.168.110.11</code> &#x2014;-&gt; Nginx&#x53CD;&#x5411;&#x4EE3;&#x7406;<br><code>192.168.110.12</code> &#x2014;-&gt; Nginx&#x53CD;&#x5411;&#x4EE3;&#x7406;<br><code>192.168.110.13</code> &#x2014;-&gt; Nginx Server<br><code>192.168.110.14</code> &#x2014;-&gt; Nginx Server<br><code>192.168.110.15</code> &#x2014;-&gt; PHP 5.6<br><code>192.168.110.16</code> &#x2014;-&gt; PHP 5.6<br><code>192.168.110.17</code> &#x2014;-&gt; &#x5B58;&#x50A8;&#x670D;&#x52A1;<br><code>192.168.110.18</code> &#x2014;-&gt; MySQL<br><code>192.168.110.19</code> &#x2014;-&gt; NMySQL </p>
-<h2 id="&#x7CFB;&#x7EDF;&#x57FA;&#x672C;&#x914D;&#x7F6E;"><a href="#&#x7CFB;&#x7EDF;&#x57FA;&#x672C;&#x914D;&#x7F6E;" class="headerlink" title="&#x7CFB;&#x7EDF;&#x57FA;&#x672C;&#x914D;&#x7F6E;"></a>&#x7CFB;&#x7EDF;&#x57FA;&#x672C;&#x914D;&#x7F6E;</h2><p>&#x5728;&#x6BCF;&#x53F0;&#x673A;&#x5668;&#x4E0A;&#x5B8C;&#x6210;&#x57FA;&#x672C;&#x914D;&#x7F6E;&#x548C;&#x4F18;&#x5316;<br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> CentOS 7 Local YUM and EPEL Repository</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">local</span> yum and epel repository</span></span><br><span class="line">function centos7(){</span><br><span class="line">mv -f /etc/yum.repos.d/*.repo /tmp/</span><br><span class="line">cat &gt; /etc/yum.repos.d/local.repo &lt;&lt;EOF</span><br><span class="line">[local-yum]</span><br><span class="line">name=Local Base ISO Repository</span><br><span class="line">baseurl=http://192.168.110.3/iso/centos7</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line">priority=1</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">local</span> epel</span></span><br><span class="line">cat &gt; /etc/yum.repos.d/epel-local.repo &lt;&lt; EOF</span><br><span class="line">[epel-local]</span><br><span class="line">name=Extra Packages for CentOS 7</span><br><span class="line">baseurl=http://192.168.110.3/epel/7/x86_64</span><br><span class="line">failovermethod=priority</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7</span><br><span class="line">EOF</span><br><span class="line">yum clean all &amp;&amp; yum makecache</span><br><span class="line">yum install -y vim wget</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Red Hat Enterprise Linux 7 Local YUM and EPEL Repository</span></span><br><span class="line">function rhel7(){</span><br><span class="line">mv -f /etc/yum.repos.d/*.repo /tmp</span><br><span class="line">cat &gt; /etc/yum.repos.d/local.repo &lt;&lt;EOF</span><br><span class="line">[local-yum]</span><br><span class="line">name=Local Base ISO Repository</span><br><span class="line">baseurl=http://192.168.110.3/iso/rhel7</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line">priority=1</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">local</span> epel</span></span><br><span class="line">cat &gt; /etc/yum.repos.d/epel-local.repo &lt;&lt; EOF</span><br><span class="line">[epel-local]</span><br><span class="line">name=Extra Packages for Enterprise Linux 7</span><br><span class="line">baseurl=http://192.168.110.3/epel/7Server/x86_64</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line">EOF</span><br><span class="line">yum clean all &amp;&amp; yum makecache</span><br><span class="line">yum install -y vim wget</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Optimiz Linux</span></span><br><span class="line">sed -i &apos;s/SELINUX=enforcing/SELINUX=disabled/&apos; /etc/selinux/config &amp;&gt; /dev/null</span><br><span class="line">setenforce 0</span><br><span class="line">systemctl stop firewalld</span><br><span class="line">systemctl disable firewalld</span><br><span class="line">iptables -F</span><br><span class="line">systemctl stop NetworkManager &amp;&gt; /dev/null</span><br><span class="line">systemctl disable NetworkManager &amp;&gt; /dev/null</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Change IP Address </span></span><br><span class="line">name=`ip a |  grep ens | tr -d : | awk &apos;{print $2}&apos; | head -1`</span><br><span class="line">ip=`ip a | grep &quot;\&lt;inet\&gt;&quot; | grep -v &quot;127.0.0.1&quot; | tr &apos;/&apos; &apos; &apos; | awk &apos;{print $2}&apos; | head -1`</span><br><span class="line"></span><br><span class="line">cat &gt; /etc/sysconfig/network-scripts/ifcfg-$name &lt;&lt; EOF</span><br><span class="line">TYPE=Ethernet</span><br><span class="line">BOOTPROTO=static</span><br><span class="line">DEFROUTE=yes</span><br><span class="line">PEERDNS=yes</span><br><span class="line">PEERROUTES=yes</span><br><span class="line">IPV4_FAILURE_FATAL=no</span><br><span class="line">NAME=$name</span><br><span class="line">DEVICE=$name</span><br><span class="line">ONBOOT=yes</span><br><span class="line">IPADDR=$ip</span><br><span class="line">NETMASK=255.255.255.0</span><br><span class="line">GATEWAY=192.168.110.1</span><br><span class="line">DNS1=192.168.110.1</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Manual replace ip address</span></span><br><span class="line">read -p &quot;Change New IP Address: &quot; new_ip</span><br><span class="line"></span><br><span class="line">sed -i &quot;s/$ip/$new_ip/g&quot; /etc/sysconfig/network-scripts/ifcfg-$name</span><br><span class="line"></span><br><span class="line">systemctl restart network</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Change hostname</span></span><br><span class="line">host_bit=`ip a | grep &quot;\&lt;inet\&gt;&quot; | grep -v &quot;127.0.0.1&quot; | tr &apos;/&apos; &apos; &apos; | awk &apos;{print $2}&apos; | head -1 | awk &apos; BEGIN{ FS=&quot;.&quot;} { print $4 }&apos;`</span><br><span class="line">hostnamectl set-hostname server$host_bit</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Configuration Local Repository</span></span><br><span class="line"><span class="meta">#</span><span class="bash">OS=`cat /etc/redhat-release  | awk <span class="string">&apos;{ print $1 }&apos;</span>`</span></span><br><span class="line">if [ `cat /etc/redhat-release  | awk &apos;{ print $1 }&apos;` == &quot;CentOS&quot; ]</span><br><span class="line">    then centos7</span><br><span class="line">else</span><br><span class="line">    rhel7</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> shutdown</span></span><br><span class="line">init 0</span><br></pre></td></tr></tbody></table></figure><p></p>
-<h2 id="&#x914D;&#x7F6E;Nginx-Server"><a href="#&#x914D;&#x7F6E;Nginx-Server" class="headerlink" title="&#x914D;&#x7F6E;Nginx Server"></a>&#x914D;&#x7F6E;Nginx Server</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Install compiler requirment env</span></span><br><span class="line">yum install -y gcc gcc-c++ pcre pcre-devel openssl openssl-libs openssl-devel zlib zlib-devel</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">source</span> build <span class="keyword">for</span> Nginx </span></span><br><span class="line">cd /usr/local/src/</span><br><span class="line">curl -O --progress http://192.168.110.3/src/nginx-1.12.0.tar.gz</span><br><span class="line">tar -zxf nginx-1.12.0.tar.gz</span><br><span class="line">cd nginx-1.12.0/</span><br><span class="line"></span><br><span class="line">./configure --with-http_v2_module --with-http_ssl_module --with-http_sub_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre</span><br><span class="line"></span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line"></span><br><span class="line">ln -s /usr/local/nginx/sbin/nginx /usr/sbin/nginx</span><br><span class="line"></span><br><span class="line">cd /usr/local/nginx/conf/</span><br><span class="line">cp nginx.conf nginx.conf.bak</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Change Nginx Config</span></span><br><span class="line">cat &gt; /usr/local/nginx/conf/nginx.conf &lt;&lt;EOF</span><br><span class="line">user nobody;</span><br><span class="line">worker_processes auto;</span><br><span class="line">worker_cpu_affinity 0001;</span><br><span class="line">worker_rlimit_nofile 50000;</span><br><span class="line"></span><br><span class="line">error_log /usr/local/nginx/logs/error.log warn;</span><br><span class="line">pid /usr/local/nginx/logs/nginx.pid;</span><br><span class="line"></span><br><span class="line">events {</span><br><span class="line">    worker_connections 50000;</span><br><span class="line">    use epoll;</span><br><span class="line">    multi_accept on;</span><br><span class="line">}</span><br><span class="line"> </span><br><span class="line">http {</span><br><span class="line">    include mime.types;</span><br><span class="line">    default_type application/octet-stream;</span><br><span class="line"></span><br><span class="line">	log_format  main  &apos;\$remote_addr - \$remote_user [\$time_local] &quot;\$request&quot; &apos;</span><br><span class="line">                      &apos;\$status \$body_bytes_sent &quot;\$http_referer&quot; &apos;</span><br><span class="line">                      &apos;&quot;\$http_user_agent&quot; &quot;\$http_x_forwarded_for&quot;&apos;;</span><br><span class="line">    </span><br><span class="line">    access_log /usr/local/nginx/logs/access.log main;</span><br><span class="line">    sendfile on;</span><br><span class="line">    tcp_nopush on;</span><br><span class="line">    keepalive_timeout 65;</span><br><span class="line">    </span><br><span class="line">    gzip on;</span><br><span class="line">    gzip_min_length 2K;</span><br><span class="line">    gzip_buffers 4 16k;</span><br><span class="line">    gzip_comp_level 5;</span><br><span class="line">    gzip_types text/plain application/x-javascript text/css application/xml;</span><br><span class="line">    </span><br><span class="line">    include /usr/local/nginx/conf/user/*.conf;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">nginx</span><br><span class="line"></span><br><span class="line">mkdir -p /usr/local/nginx/conf/user</span><br><span class="line">cat &gt; /usr/local/nginx/conf/user/uplooking.conf &lt;&lt;EOF</span><br><span class="line">server {</span><br><span class="line">    listen 80;</span><br><span class="line">    server_name www.uplookinglinux.com;</span><br><span class="line">    </span><br><span class="line">    charset utf-8;</span><br><span class="line">    access_log /usr/local/nginx/logs/uplookinglinux.access.log main;</span><br><span class="line">    </span><br><span class="line">    location / {</span><br><span class="line">        root /var/www/web;</span><br><span class="line">        index index.html index.htm;</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    error_page 500 502 503 504 /50x.html;</span><br><span class="line">    location = /50x.thml {</span><br><span class="line">        root /usr/local/nginx/html;</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">nginx -s reload</span><br><span class="line"></span><br><span class="line">mkdir -p /var/www/web</span><br><span class="line">echo &quot;Welcome to Nginx&quot; &gt; /var/www/web/index.html</span><br><span class="line">chown -Rf nobody:nobody /var/www/web</span><br><span class="line"></span><br><span class="line">echo -e &quot;* soft nproc 65535\n* hard nproc 65535\n* soft nofile 65535\n* hard nofile 65535&quot; &gt;&gt; /etc/security/limits.conf</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6D4B;&#x8BD5;Nginx</span></span><br><span class="line">CURL=&apos;/usr/bin/curl&apos;</span><br><span class="line">RVMHTTP=&quot;127.0.0.1&quot;</span><br><span class="line">CURLARGS=&quot;-s -I&quot;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">raw=<span class="string">&quot;<span class="variable">$($CURL $CURLARGS $RVMHTTP)</span>&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> curl -s -I 127.0.0.1 &gt; /tmp/stat_code</span></span><br><span class="line"><span class="meta">$</span><span class="bash">CURL <span class="variable">$CURLARGS</span> <span class="variable">$RVMHTTP</span> &gt; /tmp/stat_code</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x83B7;&#x53D6;http&#x72B6;&#x6001;&#x7801;</span></span><br><span class="line">http_code=`/usr/bin/sed -n &apos;1,1p&apos; /tmp/stat_code | /usr/bin/awk &apos;{ print $2 }&apos;`</span><br><span class="line"></span><br><span class="line">if [[ $http_code -ge 200 &amp;&amp; $http_code -le 299 ]]</span><br><span class="line">then</span><br><span class="line">    echo -e &quot;\e[1;32mNginx OK\e[0m&quot;</span><br><span class="line">else</span><br><span class="line">    echo -e &quot;\e[1;31mServer Error !\e[0m&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">nginx -v</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6302;&#x8F7D;NFS&#x76EE;&#x5F55;&#x5230;&#x9759;&#x6001;Nginx Server&#x4E0A;</span></span><br><span class="line">yum install -y nfs-utils &amp;&amp; mount -t nfs 192.168.110.17:/webData /var/www/web/</span><br><span class="line">echo -e &quot;192.168.110.17:/webData\t/var/www/web\tnfs\tdefaults\t0 0&quot; &gt;&gt; /etc/fstab</span><br><span class="line"></span><br><span class="line">mount -a</span><br><span class="line"></span><br><span class="line">echo &quot;&#x8BF7;&#x9000;&#x51FA;&#x5F53;&#x671F;&#x4F1A;&#x8BDD;&#x5E76;&#x91CD;&#x65B0;&#x767B;&#x5F55;&#xFF01;&quot;</span><br></pre></td></tr></tbody></table></figure>
-<h2 id="&#x914D;&#x7F6E;Nginx&#x4EE3;&#x7406;&#x548C;&#x8D1F;&#x8F7D;&#x5747;&#x8861;"><a href="#&#x914D;&#x7F6E;Nginx&#x4EE3;&#x7406;&#x548C;&#x8D1F;&#x8F7D;&#x5747;&#x8861;" class="headerlink" title="&#x914D;&#x7F6E;Nginx&#x4EE3;&#x7406;&#x548C;&#x8D1F;&#x8F7D;&#x5747;&#x8861;"></a>&#x914D;&#x7F6E;Nginx&#x4EE3;&#x7406;&#x548C;&#x8D1F;&#x8F7D;&#x5747;&#x8861;</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5B89;&#x88C5;&#x4F9D;&#x8D56;&#x73AF;&#x5883;</span></span><br><span class="line">yum install -y gcc gcc-c++ pcre pcre-devel openssl openssl-libs openssl-devel zlib zlib-devel</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x83B7;&#x53D6;Nginx</span></span><br><span class="line">cd /usr/local/src/</span><br><span class="line">curl -O --progress http://192.168.110.3/src/nginx-1.12.0.tar.gz</span><br><span class="line">tar -zxf nginx-1.12.0.tar.gz</span><br><span class="line">cd nginx-1.12.0/</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x7F16;&#x8BD1;Nginx</span></span><br><span class="line">./configure --with-http_v2_module --with-http_ssl_module --with-http_sub_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre</span><br><span class="line"></span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line"></span><br><span class="line">ln -s /usr/local/nginx/sbin/nginx /usr/sbin/nginx</span><br><span class="line"></span><br><span class="line">nginx</span><br><span class="line"></span><br><span class="line">cd /usr/local/nginx/conf/</span><br><span class="line">cp nginx.conf nginx.conf.bak</span><br><span class="line"></span><br><span class="line">mkdir -p /usr/local/nginx/conf/user</span><br><span class="line">cat &gt; /usr/local/nginx/conf/nginx.conf &lt;&lt; EOF</span><br><span class="line">user nobody;</span><br><span class="line">worker_processes auto;</span><br><span class="line"></span><br><span class="line">worker_cpu_affinity 0001;</span><br><span class="line">worker_rlimit_nofile 50000;</span><br><span class="line"></span><br><span class="line">error_log /usr/local/nginx/logs/error.log warn;</span><br><span class="line">pid /usr/local/nginx/logs/nginx.pid;</span><br><span class="line"></span><br><span class="line">events {</span><br><span class="line">    worker_connections 50000;</span><br><span class="line">    use epoll;</span><br><span class="line">    multi_accept on;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">http {</span><br><span class="line">    include mime.types;</span><br><span class="line">    default_type application/octet-stream;</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">    log_format  main  &apos;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &apos;</span><br><span class="line">                      &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;</span><br><span class="line">                      &apos;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&apos;;</span><br><span class="line">    </span><br><span class="line">    access_log /usr/local/nginx/logs/access.log main;</span><br><span class="line">    sendfile on;</span><br><span class="line">    tcp_nopush on;</span><br><span class="line">    keepalive_timeout 65;</span><br><span class="line">    </span><br><span class="line">    gzip on;</span><br><span class="line">    gzip_min_length 2K;</span><br><span class="line">    gzip_buffers 4 16k;</span><br><span class="line">    gzip_comp_level 5;</span><br><span class="line">    gzip_types text/plain application/x-javascript text/css application/xml;</span><br><span class="line">    </span><br><span class="line">    upstream webServer {</span><br><span class="line">        server 192.168.110.13:80 weight=1 max_fails=3 fail_timeout=10s;</span><br><span class="line">        server 192.168.110.14:80 weight=1 max_fails=3 fail_timeout=10s;</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    include /user/local/nginx/conf/user/*.conf;</span><br><span class="line">}</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">cat &gt; /usr/local/nginx/conf/user/proxy.conf &lt;&lt; EOF</span><br><span class="line">server {</span><br><span class="line">    listen 80;</span><br><span class="line">    server_name www.uplookinglinux.com;</span><br><span class="line"></span><br><span class="line">    charset utf-8;</span><br><span class="line">    access_log /usr/local/nginx/logs/proxy.access.log main;</span><br><span class="line"></span><br><span class="line">    location / {</span><br><span class="line">        root /var/www/web;</span><br><span class="line">        index index.html index.htm;</span><br><span class="line">        #&#x6307;&#x5B9A;&#x4EE3;&#x7406;&#x5230;&#x5BF9;&#x5E94;&#x7684;&#x540E;&#x7AEF;&#x670D;&#x52A1;&#x5668;</span><br><span class="line">        proxy_pass http://webServer;</span><br><span class="line"></span><br><span class="line">        #&#x4F20;&#x9012;&#x5BA2;&#x6237;&#x7684;ip&#x4FE1;&#x606F;&#x7ED9;&#x8FD9;&#x53F0;&#x670D;&#x52A1;&#x5668; &#x5728;&#x540E;&#x53F0;&#x670D;&#x52A1;&#x901A;&#x8FC7;&#x53C2;&#x6570;$http_x_real_ip&#x53D6;&#x5F97;&#x8BE5;&#x4F20;&#x9012;&#x7684;IP&#x4FE1;&#x606F;</span><br><span class="line">        proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line"></span><br><span class="line">        proxy_redirect off;</span><br><span class="line">        proxy_connect_timeout 30;</span><br><span class="line">        proxy_send_timeout 15;</span><br><span class="line">        proxy_read_timeout 15;</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">nginx -s reload</span><br></pre></td></tr></tbody></table></figure>
-<h2 id="&#x914D;&#x7F6E;&#x5B58;&#x50A8;&#x670D;&#x52A1;"><a href="#&#x914D;&#x7F6E;&#x5B58;&#x50A8;&#x670D;&#x52A1;" class="headerlink" title="&#x914D;&#x7F6E;&#x5B58;&#x50A8;&#x670D;&#x52A1;"></a>&#x914D;&#x7F6E;&#x5B58;&#x50A8;&#x670D;&#x52A1;</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> &#x5B89;&#x88C5;RAID&#x7BA1;&#x7406;&#x5DE5;&#x5177;</span></span><br><span class="line">yum install -y mdadm</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x521B;&#x5EFA;RAID10</span></span><br><span class="line">mdadm -Cv /dev/md10 -a yes -l 10 -n 4 /dev/sd[b-e]</span><br><span class="line">mdadm -Q /dev/md10</span><br><span class="line">mdadm -q /dev/md10</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5236;&#x4F5C;LVM&#x5206;&#x533A;</span></span><br><span class="line">pvcreate /dev/md10</span><br><span class="line">vgcreate webData /dev/md10</span><br><span class="line">lvcreate -n lv_web -L 20G webData</span><br><span class="line">mkfs.xfs /dev/webData/lv_web</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x6302;&#x8F7D;&#x78C1;&#x76D8;</span></span><br><span class="line">mkdir /webData</span><br><span class="line">echo -e &quot;/dev/webData/lv_web\t/webData\t xfs\tdefaults\t0 0&quot; &gt;&gt; /etc/fstab</span><br><span class="line">mount -a</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x914D;&#x7F6E;NFS Server</span></span><br><span class="line">yum install -y rpcbind nfs-utils</span><br><span class="line">systemctl start rpcbind &amp;&gt; /dev/null</span><br><span class="line">systemctl enable rpcbind &amp;&gt; /dev/null</span><br><span class="line">systemctl status rpcbind</span><br><span class="line"></span><br><span class="line">echo -e &quot;/webData *(rw,sync,all_squash,anonuid=99,anongid=99)&quot; &gt; /etc/exports</span><br><span class="line"></span><br><span class="line">systemctl start nfs</span><br><span class="line">systemctl status nfs</span><br></pre></td></tr></tbody></table></figure>
-<h2 id="&#x914D;&#x7F6E;PHP-FastCGI"><a href="#&#x914D;&#x7F6E;PHP-FastCGI" class="headerlink" title="&#x914D;&#x7F6E;PHP FastCGI"></a>&#x914D;&#x7F6E;PHP FastCGI</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> filename : php-config.sh</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x914D;&#x7F6E;PHP</span></span><br><span class="line">cd /usr/local/src/</span><br><span class="line">curl -O --progress http://192.168.110.3/src/php5.6_auto_install.tar.gz</span><br><span class="line">tar zxf php5.6_auto_install.tar.gz</span><br><span class="line">cd php5.6/</span><br><span class="line">chmod a+x install.sh</span><br><span class="line">. ./install.sh</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x521B;&#x5EFA;&#x7AD9;&#x70B9;&#x76EE;&#x5F55;</span></span><br><span class="line">mkdir -p /var/www/web</span><br><span class="line">echo -e &quot;&lt;?php\n\tphpinfo();\n?&gt;&quot; &gt; /var/www/web/index.php</span><br></pre></td></tr></tbody></table></figure>
-<h3 id="&#x5728;Nginx&#x4EE3;&#x7406;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x914D;&#x7F6E;FastCGI"><a href="#&#x5728;Nginx&#x4EE3;&#x7406;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x914D;&#x7F6E;FastCGI" class="headerlink" title="&#x5728;Nginx&#x4EE3;&#x7406;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x914D;&#x7F6E;FastCGI"></a>&#x5728;Nginx&#x4EE3;&#x7406;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x914D;&#x7F6E;FastCGI</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> filename : ngxin-fastcgi.sh</span></span><br><span class="line"></span><br><span class="line">cat &gt;&gt; /usr/local/nginx/conf/nginx.conf &lt;&lt;EOF</span><br><span class="line">upstream phpServer {</span><br><span class="line"><span class="meta">	#</span><span class="bash"> &#x6307;&#x5B9A;&#x8D1F;&#x8F7D;&#x7B97;&#x6CD5;&#xFF1A;&#x7279;&#x5B9A;&#x7684;&#x5BA2;&#x6237;&#x7AEF;&#x7531;&#x56FA;&#x5B9A;&#x7684;&#x670D;&#x52A1;&#x5668;&#x670D;&#x52A1;&#xFF0C;&#x89E3;&#x51B3;session&#x5171;&#x4EAB;&#x95EE;&#x9898;</span></span><br><span class="line">	ip_hash;</span><br><span class="line">	server 192.168.110.15:9000 max_fails=3 fail_timeout=10s;</span><br><span class="line">	server 192.168.110.16:9000 max_fails=3 fail_timeout=10s;</span><br><span class="line">}</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">cat &gt;&gt; /usr/local/nginx/conf/user/proxy.conf &lt;&lt; EOF</span><br><span class="line">fastcgi_connect_timeout 30;</span><br><span class="line">fastcgi_send_timeout 30;</span><br><span class="line">fastcgi_read_timeout 30;</span><br><span class="line">fastcgi_buffer_size 64k;</span><br><span class="line">fastcgi_busy_buffers_size 128k;</span><br><span class="line">fastcgi_temp_file_write_size 128k;</span><br><span class="line">location ~ \.(php|php5)$ {</span><br><span class="line">	root /var/www/web;</span><br><span class="line"><span class="meta">	#</span><span class="bash">&#x6307;&#x5B9A;&#x4EE3;&#x7406;&#x5230;phpServer&#x96C6;&#x7FA4;</span></span><br><span class="line">	fastcgi_pass phpServer;</span><br><span class="line">	fastcgi_index index.php;</span><br><span class="line">	fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;</span><br><span class="line">	include fastcgi_params;</span><br><span class="line">}</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">nginx -t</span><br><span class="line">nginx -s reload</span><br></pre></td></tr></tbody></table></figure>
-<h2 id="Nginx&#x4EE3;&#x7406;&#x670D;&#x52A1;&#x5668;&#x9AD8;&#x53EF;&#x7528;&#x2014;&#x2014;Keepalived"><a href="#Nginx&#x4EE3;&#x7406;&#x670D;&#x52A1;&#x5668;&#x9AD8;&#x53EF;&#x7528;&#x2014;&#x2014;Keepalived" class="headerlink" title="Nginx&#x4EE3;&#x7406;&#x670D;&#x52A1;&#x5668;&#x9AD8;&#x53EF;&#x7528;&#x2014;&#x2014;Keepalived"></a>Nginx&#x4EE3;&#x7406;&#x670D;&#x52A1;&#x5668;&#x9AD8;&#x53EF;&#x7528;&#x2014;&#x2014;Keepalived</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">echo -e &quot;192.168.110.11\tserver11\n192.168.110.12\tserver12&quot; &gt;&gt; /etc/hosts</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5B89;&#x88C5;Keepalived</span></span><br><span class="line">yum install -y keepalived</span><br><span class="line"></span><br><span class="line">mv -f /etc/keepalived/keepalived.conf /etc/keepalived/keepalived.confback</span><br><span class="line">cat &gt; /etc/keepaliaved/keepalived.conf &lt;&lt; EOF</span><br><span class="line">! Configuration File for keepalived</span><br><span class="line"> </span><br><span class="line">global_defs {</span><br><span class="line">    notification_email {</span><br><span class="line">        fnaichu@qq.com</span><br><span class="line">    }</span><br><span class="line">    notification_email_from keepalvied@proxy-1</span><br><span class="line">    smtp_server 127.0.0.1</span><br><span class="line">    smtp_connect_timeout 30</span><br><span class="line">    router_id proxy-1</span><br><span class="line">    vrrp_mcast_group4 224.4.4.4</span><br><span class="line">}</span><br><span class="line"> </span><br><span class="line">vrrp_script chk_proxy {</span><br><span class="line">    script &quot;/etc/keepalived/proxy_check.sh&quot;</span><br><span class="line">     </span><br><span class="line">    interval 2</span><br><span class="line">     </span><br><span class="line">    weight -2</span><br><span class="line">}</span><br><span class="line"> </span><br><span class="line">vrrp_instance VI_1 {</span><br><span class="line">    state BACKUP</span><br><span class="line">     </span><br><span class="line">    nopreempt</span><br><span class="line">     </span><br><span class="line">    virtual_router_id 11</span><br><span class="line">     </span><br><span class="line">    priority 100</span><br><span class="line">     </span><br><span class="line">    advert_int 1</span><br><span class="line">     </span><br><span class="line">    interface ens33</span><br><span class="line">     </span><br><span class="line">    authentication {</span><br><span class="line">        auth_type PASS</span><br><span class="line">        auth_pass 1111</span><br><span class="line">    }</span><br><span class="line">    virtual_ipaddress {</span><br><span class="line">        192.168.110.10/24 dev ens33 label ens33:1</span><br><span class="line">    }</span><br><span class="line">    track_script {</span><br><span class="line">        chk_proxy</span><br><span class="line">    }</span><br><span class="line">    smtp_alert</span><br><span class="line">}</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x4EE3;&#x7406;&#x68C0;&#x6D4B;&#x811A;&#x672C;</span></span><br><span class="line">cat &gt; /etc/keepaliaved/proxy_check.sh &lt;&lt; EOF</span><br><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">netstat -nlpt | grep -w &quot;80&quot; &amp;&gt;&gt; /dev/null</span><br><span class="line"></span><br><span class="line">if [ $? -ne 0 ]</span><br><span class="line">then</span><br><span class="line">	systemctl stop keepalived</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">exit 0</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">chmod +x /etc/keepalived/proxy_check.sh</span><br><span class="line"></span><br><span class="line">systemctl start keepalived</span><br><span class="line">systemctl enable keepalived</span><br></pre></td></tr></tbody></table></figure>
-<h2 id="&#x914D;&#x7F6E;MySQL"><a href="#&#x914D;&#x7F6E;MySQL" class="headerlink" title="&#x914D;&#x7F6E;MySQL"></a>&#x914D;&#x7F6E;MySQL</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line">yum remove -y mariadb-libs</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> &#x5B89;&#x88C5;MySQL</span></span><br><span class="line">rpm -ivh http://192.168.110.3/other/mysql-community-common-5.7.24-1.el7.x86_64.rpm</span><br><span class="line">rpm -ivh http://192.168.110.3/other/mysql-community-libs-5.7.24-1.el7.x86_64.rpm</span><br><span class="line">rpm -ivh http://192.168.110.3/other/mysql-community-client-5.7.24-1.el7.x86_64.rpm</span><br><span class="line">rpm -ivh http://192.168.110.3/other/mysql-community-server-5.7.24-1.el7.x86_64.rpm</span><br><span class="line">rpm -ivh http://192.168.110.3/other/mysql-community-libs-compat-5.7.32-1.el7.x86_64.rpm</span><br><span class="line"></span><br><span class="line">systemctl start mysqld</span><br><span class="line"><span class="meta">#</span><span class="bash">systemctl <span class="built_in">enable</span> mysqld</span></span><br><span class="line">systemctl status mysqld</span><br><span class="line"></span><br><span class="line">echo &quot;skip-name-resolve&quot; &gt;&gt; /etc/my.cnf</span><br><span class="line">grep &quot;temporary password&quot; /var/log/mysqld.log | awk &apos;{ print $NF }&apos;</span><br><span class="line"></span><br><span class="line">echo &quot;&#x4E0A;&#x9762;&#x662F;MySQL&#x521D;&#x59CB;&#x5BC6;&#x7801;&#xFF0C;&#x8BF7;&#x624B;&#x52A8;&#x4FEE;&#x6539;&#x5BC6;&#x7801;&quot;</span><br><span class="line"><span class="meta">#</span><span class="bash"> mysql_secure_installation</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> show global variables like <span class="string">&quot;%password%&quot;</span>;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">set</span> global validate_password_length=6;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">set</span> global validate_password_policy=LOW;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> ALTER USER <span class="string">&apos;root&apos;</span>@<span class="string">&apos;localhost&apos;</span> IDENTIFIED BY <span class="string">&apos;ccc.456&apos;</span>;</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> FLUSH PRIVILEGES;</span></span><br></pre></td></tr></tbody></table></figure>
-<h3 id="&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;"><a href="#&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;" class="headerlink" title="&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;"></a>&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">mysql_replica.sh</span></span><br><span class="line">mysql -uroot -p&quot;ccc.456&quot;</span><br><span class="line">GRANT REPLICATION SLAVE ON *.* TO &apos;root&apos;@&apos;192.168.110.%&apos; IDENTIFIED BY &apos;ccc.456&apos;;</span><br><span class="line">FLUSH PRIVILEGES;</span><br><span class="line">quit</span><br><span class="line"></span><br><span class="line">cat &gt;&gt; /etc/my.cnf &lt;&lt;EOF</span><br><span class="line">server-id=1</span><br><span class="line">log_bin=mysql-bin</span><br><span class="line">query_cache_type=OFF</span><br><span class="line">binlog-ignore-db=performance_schema</span><br><span class="line">binlog-ignore-db=mysql</span><br><span class="line">binlog-ignore-db=sys</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">systemctl restart mysqld</span><br></pre></td></tr></tbody></table></figure>
-<h3 id="MySQL&#x7684;Keepalived&#x9AD8;&#x53EF;&#x7528;"><a href="#MySQL&#x7684;Keepalived&#x9AD8;&#x53EF;&#x7528;" class="headerlink" title="MySQL&#x7684;Keepalived&#x9AD8;&#x53EF;&#x7528;"></a>MySQL&#x7684;Keepalived&#x9AD8;&#x53EF;&#x7528;</h3><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">echo -e &quot;192.168.110.18\tserver18\n192.168.110.19\tserver19\n&quot; &gt;&gt; /etc/hosts</span><br><span class="line"></span><br><span class="line">yum install -y keepalived</span><br><span class="line"></span><br><span class="line">mv /etc/keepalived/keepalived.conf /etc/keepalived/keepalived.confbak</span><br><span class="line"><span class="meta">#</span><span class="bash"> KeepAlived</span></span><br><span class="line">cat &gt; /etc/keepalived/keepalived.conf &lt;&lt; EOF</span><br><span class="line">! Configuration File for keepalived</span><br><span class="line"> </span><br><span class="line">global_defs {</span><br><span class="line">    notification_email {</span><br><span class="line">        Jaking@vip.163.com</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    notification_email_from keepalived@server18</span><br><span class="line">    smtp_server 127.0.0.1</span><br><span class="line">    smtp_connect_timeout 30</span><br><span class="line">    router_id server18</span><br><span class="line">    vrrp_mcast_group5 225.5.5.5</span><br><span class="line">}</span><br><span class="line"> </span><br><span class="line">    vrrp_script chk_proxy {</span><br><span class="line">        script &quot;/etc/keepalived/proxy_check.sh&quot;</span><br><span class="line">        interval 2</span><br><span class="line">        weight -2</span><br><span class="line">    }</span><br><span class="line">     </span><br><span class="line">    vrrp_instance VI_1 {</span><br><span class="line">    state BACKUP</span><br><span class="line">    nopreempt</span><br><span class="line">    virtual_router_id 11</span><br><span class="line">    priority 100</span><br><span class="line">    advert_int 1</span><br><span class="line">    interface ens33</span><br><span class="line">    </span><br><span class="line">    authentication {</span><br><span class="line">        auth_type PASS</span><br><span class="line">        auth_pass 1111</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    virtual_ipaddress {</span><br><span class="line">        192.168.110.20/24 dev ens33 label ens33:1</span><br><span class="line">    }</span><br><span class="line">    </span><br><span class="line">    track_script {</span><br><span class="line">        chk_proxy</span><br><span class="line">    }</span><br><span class="line">    smtp_alert</span><br><span class="line">}</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">cat &gt; /etc/keepalived/proxy_check.sh &lt;&lt;EOF</span><br><span class="line">echo &gt; /etc/keepalived/proxy_check.sh &lt;&lt; EOF</span><br><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">netstat -nlpt | grep -w &quot;3306&quot; &amp;&gt;&gt; /dev/null</span><br><span class="line"> </span><br><span class="line">if [ $? -ne 0 ]</span><br><span class="line">then</span><br><span class="line">    systemctl stop keepalived</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">exit 0</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">chmod a+x /etc/keepalived/proxy_check.sh</span><br><span class="line">systemctl restart keepalived</span><br></pre></td></tr></tbody></table></figure>
-<h2 id="&#x9879;&#x76EE;&#x4E0A;&#x7EBF;"><a href="#&#x9879;&#x76EE;&#x4E0A;&#x7EBF;" class="headerlink" title="&#x9879;&#x76EE;&#x4E0A;&#x7EBF;"></a>&#x9879;&#x76EE;&#x4E0A;&#x7EBF;</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">yum install -y unzip</span><br><span class="line">unzip Cloudreve_v1.0.3&#x4E91;&#x76D8;.zip</span><br><span class="line"></span><br><span class="line">ssh root@192.168.110.18 &quot;mysql -uroot -p&quot;ccc.456&quot; -e &apos;create database cloud;&apos;&quot;</span><br><span class="line">sql_user=&quot;mysql -uroot -p&quot;ccc.456&quot; -e &apos;GRANT ALL ON cloud.* TO &quot;abc&quot;@&quot;192.168.110.%&quot; IDENTIFIED BY &quot;Abc.abc.1&quot;;&apos;&quot;</span><br><span class="line">ssh root@192.168.110.18 &quot;$sql_user&quot;</span><br><span class="line"></span><br><span class="line">chown -R nobody:nobody /webData/</span><br><span class="line">chmod u+w /webData/runtime/</span><br><span class="line">chmod u+w /webData/public/</span><br><span class="line"></span><br><span class="line">cp /webData/application/database_sample.php /webData/application/database.php</span><br></pre></td></tr></tbody></table></figure>
-<h3 id="&#x4FEE;&#x6539;Nginx&#x4EE3;&#x7406;&#x914D;&#x7F6E;"><a href="#&#x4FEE;&#x6539;Nginx&#x4EE3;&#x7406;&#x914D;&#x7F6E;" class="headerlink" title="&#x4FEE;&#x6539;Nginx&#x4EE3;&#x7406;&#x914D;&#x7F6E;"></a>&#x4FEE;&#x6539;Nginx&#x4EE3;&#x7406;&#x914D;&#x7F6E;</h3><figure class="highlight nginx"><table><tbody><tr><td class="code"><pre><span class="line"><span class="attribute">cat</span> /usr/local/nginx/conf/user/proxy.conf </span><br><span class="line">server {</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">listen</span> &#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="number">80</span>;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">server_name</span> &#xA0;www.uplookinglinux.com;</span><br><span class="line">&#xA0;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">charset</span> utf-<span class="number">8</span>;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">access_log</span> &#xA0;/var/log/nginx/proxy.access.log &#xA0;main;</span><br><span class="line">&#xA0;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;<span class="comment">#################################################</span></span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">fastcgi_connect_timeout</span> <span class="number">30</span>;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">fastcgi_send_timeout</span> <span class="number">30</span>;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">fastcgi_read_timeout</span> <span class="number">30</span>;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">fastcgi_buffer_size</span> &#xA0;<span class="number">64k</span>;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">fastcgi_buffers</span> <span class="number">4</span> <span class="number">64k</span>;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">fastcgi_busy_buffers_size</span> <span class="number">128k</span>;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">fastcgi_temp_file_write_size</span> <span class="number">128k</span>;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;<span class="comment">#uri &#x5339;&#x914D; .php &#x6216;&#x8005; .php5 &#x7ED3;&#x5C3E;</span></span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">location</span> <span class="regexp">~ \.(php|php5)$</span> {</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">root</span> &#xA0;&#xA0;/var/www/web;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="comment">#&#x6307;&#x5B9A;&#x4EE3;&#x7406;&#x5230; phpServer&#x96C6;&#x7FA4;</span></span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">fastcgi_pass</span> &#xA0;phpServer;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">fastcgi_index</span> index.php;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">fastcgi_param</span> SCRIPT_FILENAME <span class="variable">$document_root</span><span class="variable">$fastcgi_script_name</span>;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">include</span> &#xA0;&#xA0;fastcgi_params;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;}</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;<span class="comment">#&#x5339;&#x914D;&#x6839;&#x76EE;&#x5F55;&#xFF0C;&#x56E0;&#x4E3A;&#x6839;&#x76EE;&#x5F55;&#x4E0B;&#x7684;&#x4E3B;&#x9875;&#x4E3A;index.php&#x52A8;&#x6001;&#x9875;&#x9762;</span></span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">location</span> = / {</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">root</span> &#xA0;&#xA0;/var/www/web;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="comment">#&#x6307;&#x5B9A;&#x4EE3;&#x7406;&#x5230; phpServer&#x96C6;&#x7FA4;</span></span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">fastcgi_pass</span> &#xA0;phpServer;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">fastcgi_index</span> index.php;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">fastcgi_param</span> SCRIPT_FILENAME <span class="variable">$document_root</span><span class="variable">$fastcgi_script_name</span>;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">include</span> &#xA0;&#xA0;fastcgi_params;</span><br><span class="line">&#xA0;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;}</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;<span class="comment">#################################################</span></span><br><span class="line">&#xA0;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">location</span> / {</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="comment">#&#x8BBE;&#x7F6E;&#x4F2A;&#x9759;&#x6001;&#x8F6C;&#x53D1;&#x89C4;&#x5219;</span></span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">if</span> (!-e <span class="variable">$request_filename</span>) {</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">rewrite</span> <span class="regexp">&#xA0;^(.*)$</span> &#xA0;/index.php?s=/<span class="variable">$1</span> &#xA0;<span class="literal">last</span>;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;break;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;}</span><br><span class="line">&#xA0;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">root</span> &#xA0;&#xA0;/var/www/web;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">index</span> &#xA0;index.html index.htm;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">proxy_pass</span> http://webServer;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">proxy_set_header</span> X-Real-IP &#xA0;<span class="variable">$remote_addr</span>;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">proxy_set_header</span> X-Forwarded-For &#xA0;&#xA0;<span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">&#xA0;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">proxy_redirect</span> <span class="literal">off</span>;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">proxy_connect_timeout</span> <span class="number">30</span>;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">proxy_send_timeout</span> <span class="number">15</span>;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;&#xA0;<span class="attribute">proxy_read_timeout</span> <span class="number">15</span>;</span><br><span class="line">&#xA0;&#xA0;&#xA0;&#xA0;}</span><br><span class="line">}</span><br><span class="line"><span class="attribute">yum</span> install -y nfs-utils</span><br><span class="line">mkdir -p /var/www/web</span><br><span class="line">chown nobody:nobody /var/www/web/</span><br><span class="line">mount -tnfs <span class="number">192.168.110.17</span>:/webData /var/www/web/</span><br><span class="line">echo -e <span class="string">&quot;192.168.10.17:/webData\t/var/www/web\tnfs\tdefaults\t0 0&quot;</span> &gt;&gt; /etc/fstab</span><br><span class="line">mount -a</span><br></pre></td></tr></tbody></table></figure><script>
+    
+		<span>Tags：</span>
+            
+    
+		</div>
+
+</div>
+
+<div id="article-content">
+	<p><strong>9&#x53F0;&#x673A;&#x5668;IP&#x5730;&#x5740;&#x5206;&#x914D;&#xFF08;&#x9759;&#x6001;&#xFF09;&#xFF1A;</strong>&#xFF1A;<br><code>192.168.110.11</code> &#x2014;-&gt; Nginx&#x53CD;&#x5411;&#x4EE3;&#x7406;<br><code>192.168.110.12</code> &#x2014;-&gt; Nginx&#x53CD;&#x5411;&#x4EE3;&#x7406;<br><code>192.168.110.13</code> &#x2014;-&gt; Nginx Server<br><code>192.168.110.14</code> &#x2014;-&gt; Nginx Server<br><code>192.168.110.15</code> &#x2014;-&gt; PHP 5.6<br><code>192.168.110.16</code> &#x2014;-&gt; PHP 5.6<br><code>192.168.110.17</code> &#x2014;-&gt; &#x5B58;&#x50A8;&#x670D;&#x52A1;<br><code>192.168.110.18</code> &#x2014;-&gt; MySQL<br><code>192.168.110.19</code> &#x2014;-&gt; NMySQL </p>
+<h2 id="&#x7CFB;&#x7EDF;&#x57FA;&#x672C;&#x914D;&#x7F6E;"><a href="#&#x7CFB;&#x7EDF;&#x57FA;&#x672C;&#x914D;&#x7F6E;" class="headerlink" title="&#x7CFB;&#x7EDF;&#x57FA;&#x672C;&#x914D;&#x7F6E;"></a>&#x7CFB;&#x7EDF;&#x57FA;&#x672C;&#x914D;&#x7F6E;</h2><p>&#x5728;&#x6BCF;&#x53F0;&#x673A;&#x5668;&#x4E0A;&#x5B8C;&#x6210;&#x57FA;&#x672C;&#x914D;&#x7F6E;&#x548C;&#x4F18;&#x5316;</p>
+<pre><code class="shell">#!/bin/bash
+
+# CentOS 7 Local YUM and EPEL Repository
+# local yum and epel repository
+function centos7(){
+mv -f /etc/yum.repos.d/*.repo /tmp/
+cat &gt; /etc/yum.repos.d/local.repo &lt;&lt;EOF
+[local-yum]
+name=Local Base ISO Repository
+baseurl=http://192.168.110.3/iso/centos7
+enabled=1
+gpgcheck=0
+priority=1
+EOF
+
+# local epel
+cat &gt; /etc/yum.repos.d/epel-local.repo &lt;&lt; EOF
+[epel-local]
+name=Extra Packages for CentOS 7
+baseurl=http://192.168.110.3/epel/7/x86_64
+failovermethod=priority
+enabled=1
+gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
+EOF
+yum clean all &amp;&amp; yum makecache
+yum install -y vim wget
+}
+
+# Red Hat Enterprise Linux 7 Local YUM and EPEL Repository
+function rhel7(){
+mv -f /etc/yum.repos.d/*.repo /tmp
+cat &gt; /etc/yum.repos.d/local.repo &lt;&lt;EOF
+[local-yum]
+name=Local Base ISO Repository
+baseurl=http://192.168.110.3/iso/rhel7
+enabled=1
+gpgcheck=0
+priority=1
+EOF
+
+# local epel
+cat &gt; /etc/yum.repos.d/epel-local.repo &lt;&lt; EOF
+[epel-local]
+name=Extra Packages for Enterprise Linux 7
+baseurl=http://192.168.110.3/epel/7Server/x86_64
+enabled=1
+gpgcheck=0
+EOF
+yum clean all &amp;&amp; yum makecache
+yum install -y vim wget
+}
+
+# Optimiz Linux
+sed -i &apos;s/SELINUX=enforcing/SELINUX=disabled/&apos; /etc/selinux/config &amp;&gt; /dev/null
+setenforce 0
+systemctl stop firewalld
+systemctl disable firewalld
+iptables -F
+systemctl stop NetworkManager &amp;&gt; /dev/null
+systemctl disable NetworkManager &amp;&gt; /dev/null
+
+# Change IP Address 
+name=`ip a |  grep ens | tr -d : | awk &apos;{print $2}&apos; | head -1`
+ip=`ip a | grep &quot;\&lt;inet\&gt;&quot; | grep -v &quot;127.0.0.1&quot; | tr &apos;/&apos; &apos; &apos; | awk &apos;{print $2}&apos; | head -1`
+
+cat &gt; /etc/sysconfig/network-scripts/ifcfg-$name &lt;&lt; EOF
+TYPE=Ethernet
+BOOTPROTO=static
+DEFROUTE=yes
+PEERDNS=yes
+PEERROUTES=yes
+IPV4_FAILURE_FATAL=no
+NAME=$name
+DEVICE=$name
+ONBOOT=yes
+IPADDR=$ip
+NETMASK=255.255.255.0
+GATEWAY=192.168.110.1
+DNS1=192.168.110.1
+EOF
+
+# Manual replace ip address
+read -p &quot;Change New IP Address: &quot; new_ip
+
+sed -i &quot;s/$ip/$new_ip/g&quot; /etc/sysconfig/network-scripts/ifcfg-$name
+
+systemctl restart network
+
+# Change hostname
+host_bit=`ip a | grep &quot;\&lt;inet\&gt;&quot; | grep -v &quot;127.0.0.1&quot; | tr &apos;/&apos; &apos; &apos; | awk &apos;{print $2}&apos; | head -1 | awk &apos; BEGIN{ FS=&quot;.&quot;} { print $4 }&apos;`
+hostnamectl set-hostname server$host_bit
+
+# Configuration Local Repository
+#OS=`cat /etc/redhat-release  | awk &apos;{ print $1 }&apos;`
+if [ `cat /etc/redhat-release  | awk &apos;{ print $1 }&apos;` == &quot;CentOS&quot; ]
+    then centos7
+else
+    rhel7
+fi
+
+# shutdown
+init 0
+</code></pre>
+<h2 id="&#x914D;&#x7F6E;Nginx-Server"><a href="#&#x914D;&#x7F6E;Nginx-Server" class="headerlink" title="&#x914D;&#x7F6E;Nginx Server"></a>&#x914D;&#x7F6E;Nginx Server</h2><pre><code class="shell">#!/bin/bash
+
+# Install compiler requirment env
+yum install -y gcc gcc-c++ pcre pcre-devel openssl openssl-libs openssl-devel zlib zlib-devel
+
+# source build for Nginx 
+cd /usr/local/src/
+curl -O --progress http://192.168.110.3/src/nginx-1.12.0.tar.gz
+tar -zxf nginx-1.12.0.tar.gz
+cd nginx-1.12.0/
+
+./configure --with-http_v2_module --with-http_ssl_module --with-http_sub_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre
+
+make
+make install
+
+ln -s /usr/local/nginx/sbin/nginx /usr/sbin/nginx
+
+cd /usr/local/nginx/conf/
+cp nginx.conf nginx.conf.bak
+
+# Change Nginx Config
+cat &gt; /usr/local/nginx/conf/nginx.conf &lt;&lt;EOF
+user nobody;
+worker_processes auto;
+worker_cpu_affinity 0001;
+worker_rlimit_nofile 50000;
+
+error_log /usr/local/nginx/logs/error.log warn;
+pid /usr/local/nginx/logs/nginx.pid;
+
+events {
+    worker_connections 50000;
+    use epoll;
+    multi_accept on;
+}
+
+http {
+    include mime.types;
+    default_type application/octet-stream;
+
+    log_format  main  &apos;\$remote_addr - \$remote_user [\$time_local] &quot;\$request&quot; &apos;
+                      &apos;\$status \$body_bytes_sent &quot;\$http_referer&quot; &apos;
+                      &apos;&quot;\$http_user_agent&quot; &quot;\$http_x_forwarded_for&quot;&apos;;
+
+    access_log /usr/local/nginx/logs/access.log main;
+    sendfile on;
+    tcp_nopush on;
+    keepalive_timeout 65;
+
+    gzip on;
+    gzip_min_length 2K;
+    gzip_buffers 4 16k;
+    gzip_comp_level 5;
+    gzip_types text/plain application/x-javascript text/css application/xml;
+
+    include /usr/local/nginx/conf/user/*.conf;
+}
+
+EOF
+
+nginx
+
+mkdir -p /usr/local/nginx/conf/user
+cat &gt; /usr/local/nginx/conf/user/uplooking.conf &lt;&lt;EOF
+server {
+    listen 80;
+    server_name www.uplookinglinux.com;
+
+    charset utf-8;
+    access_log /usr/local/nginx/logs/uplookinglinux.access.log main;
+
+    location / {
+        root /var/www/web;
+        index index.html index.htm;
+    }
+
+    error_page 500 502 503 504 /50x.html;
+    location = /50x.thml {
+        root /usr/local/nginx/html;
+    }
+}
+EOF
+
+nginx -s reload
+
+mkdir -p /var/www/web
+echo &quot;Welcome to Nginx&quot; &gt; /var/www/web/index.html
+chown -Rf nobody:nobody /var/www/web
+
+echo -e &quot;* soft nproc 65535\n* hard nproc 65535\n* soft nofile 65535\n* hard nofile 65535&quot; &gt;&gt; /etc/security/limits.conf
+
+
+# &#x6D4B;&#x8BD5;Nginx
+CURL=&apos;/usr/bin/curl&apos;
+RVMHTTP=&quot;127.0.0.1&quot;
+CURLARGS=&quot;-s -I&quot;
+
+#raw=&quot;$($CURL $CURLARGS $RVMHTTP)&quot;
+
+# curl -s -I 127.0.0.1 &gt; /tmp/stat_code
+$CURL $CURLARGS $RVMHTTP &gt; /tmp/stat_code
+
+# &#x83B7;&#x53D6;http&#x72B6;&#x6001;&#x7801;
+http_code=`/usr/bin/sed -n &apos;1,1p&apos; /tmp/stat_code | /usr/bin/awk &apos;{ print $2 }&apos;`
+
+if [[ $http_code -ge 200 &amp;&amp; $http_code -le 299 ]]
+then
+    echo -e &quot;\e[1;32mNginx OK\e[0m&quot;
+else
+    echo -e &quot;\e[1;31mServer Error !\e[0m&quot;
+fi
+
+nginx -v
+
+# &#x6302;&#x8F7D;NFS&#x76EE;&#x5F55;&#x5230;&#x9759;&#x6001;Nginx Server&#x4E0A;
+yum install -y nfs-utils &amp;&amp; mount -t nfs 192.168.110.17:/webData /var/www/web/
+echo -e &quot;192.168.110.17:/webData\t/var/www/web\tnfs\tdefaults\t0 0&quot; &gt;&gt; /etc/fstab
+
+mount -a
+
+echo &quot;&#x8BF7;&#x9000;&#x51FA;&#x5F53;&#x671F;&#x4F1A;&#x8BDD;&#x5E76;&#x91CD;&#x65B0;&#x767B;&#x5F55;&#xFF01;&quot;
+</code></pre>
+<h2 id="&#x914D;&#x7F6E;Nginx&#x4EE3;&#x7406;&#x548C;&#x8D1F;&#x8F7D;&#x5747;&#x8861;"><a href="#&#x914D;&#x7F6E;Nginx&#x4EE3;&#x7406;&#x548C;&#x8D1F;&#x8F7D;&#x5747;&#x8861;" class="headerlink" title="&#x914D;&#x7F6E;Nginx&#x4EE3;&#x7406;&#x548C;&#x8D1F;&#x8F7D;&#x5747;&#x8861;"></a>&#x914D;&#x7F6E;Nginx&#x4EE3;&#x7406;&#x548C;&#x8D1F;&#x8F7D;&#x5747;&#x8861;</h2><pre><code class="shell">#!/bin/bash
+
+# &#x5B89;&#x88C5;&#x4F9D;&#x8D56;&#x73AF;&#x5883;
+yum install -y gcc gcc-c++ pcre pcre-devel openssl openssl-libs openssl-devel zlib zlib-devel
+
+# &#x83B7;&#x53D6;Nginx
+cd /usr/local/src/
+curl -O --progress http://192.168.110.3/src/nginx-1.12.0.tar.gz
+tar -zxf nginx-1.12.0.tar.gz
+cd nginx-1.12.0/
+
+# &#x7F16;&#x8BD1;Nginx
+./configure --with-http_v2_module --with-http_ssl_module --with-http_sub_module --with-http_stub_status_module --with-http_gzip_static_module --with-pcre
+
+make
+make install
+
+ln -s /usr/local/nginx/sbin/nginx /usr/sbin/nginx
+
+nginx
+
+cd /usr/local/nginx/conf/
+cp nginx.conf nginx.conf.bak
+
+mkdir -p /usr/local/nginx/conf/user
+cat &gt; /usr/local/nginx/conf/nginx.conf &lt;&lt; EOF
+user nobody;
+worker_processes auto;
+
+worker_cpu_affinity 0001;
+worker_rlimit_nofile 50000;
+
+error_log /usr/local/nginx/logs/error.log warn;
+pid /usr/local/nginx/logs/nginx.pid;
+
+events {
+    worker_connections 50000;
+    use epoll;
+    multi_accept on;
+}
+
+
+http {
+    include mime.types;
+    default_type application/octet-stream;
+
+
+    log_format  main  &apos;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &apos;
+                      &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;
+                      &apos;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&apos;;
+
+    access_log /usr/local/nginx/logs/access.log main;
+    sendfile on;
+    tcp_nopush on;
+    keepalive_timeout 65;
+
+    gzip on;
+    gzip_min_length 2K;
+    gzip_buffers 4 16k;
+    gzip_comp_level 5;
+    gzip_types text/plain application/x-javascript text/css application/xml;
+
+    upstream webServer {
+        server 192.168.110.13:80 weight=1 max_fails=3 fail_timeout=10s;
+        server 192.168.110.14:80 weight=1 max_fails=3 fail_timeout=10s;
+    }
+
+    include /user/local/nginx/conf/user/*.conf;
+}
+EOF
+
+cat &gt; /usr/local/nginx/conf/user/proxy.conf &lt;&lt; EOF
+server {
+    listen 80;
+    server_name www.uplookinglinux.com;
+
+    charset utf-8;
+    access_log /usr/local/nginx/logs/proxy.access.log main;
+
+    location / {
+        root /var/www/web;
+        index index.html index.htm;
+        #&#x6307;&#x5B9A;&#x4EE3;&#x7406;&#x5230;&#x5BF9;&#x5E94;&#x7684;&#x540E;&#x7AEF;&#x670D;&#x52A1;&#x5668;
+        proxy_pass http://webServer;
+
+        #&#x4F20;&#x9012;&#x5BA2;&#x6237;&#x7684;ip&#x4FE1;&#x606F;&#x7ED9;&#x8FD9;&#x53F0;&#x670D;&#x52A1;&#x5668; &#x5728;&#x540E;&#x53F0;&#x670D;&#x52A1;&#x901A;&#x8FC7;&#x53C2;&#x6570;$http_x_real_ip&#x53D6;&#x5F97;&#x8BE5;&#x4F20;&#x9012;&#x7684;IP&#x4FE1;&#x606F;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        proxy_redirect off;
+        proxy_connect_timeout 30;
+        proxy_send_timeout 15;
+        proxy_read_timeout 15;
+    }
+}
+EOF
+
+nginx -s reload
+</code></pre>
+<h2 id="&#x914D;&#x7F6E;&#x5B58;&#x50A8;&#x670D;&#x52A1;"><a href="#&#x914D;&#x7F6E;&#x5B58;&#x50A8;&#x670D;&#x52A1;" class="headerlink" title="&#x914D;&#x7F6E;&#x5B58;&#x50A8;&#x670D;&#x52A1;"></a>&#x914D;&#x7F6E;&#x5B58;&#x50A8;&#x670D;&#x52A1;</h2><pre><code class="shell"># &#x5B89;&#x88C5;RAID&#x7BA1;&#x7406;&#x5DE5;&#x5177;
+yum install -y mdadm
+
+# &#x521B;&#x5EFA;RAID10
+mdadm -Cv /dev/md10 -a yes -l 10 -n 4 /dev/sd[b-e]
+mdadm -Q /dev/md10
+mdadm -q /dev/md10
+
+# &#x5236;&#x4F5C;LVM&#x5206;&#x533A;
+pvcreate /dev/md10
+vgcreate webData /dev/md10
+lvcreate -n lv_web -L 20G webData
+mkfs.xfs /dev/webData/lv_web
+
+# &#x6302;&#x8F7D;&#x78C1;&#x76D8;
+mkdir /webData
+echo -e &quot;/dev/webData/lv_web\t/webData\t xfs\tdefaults\t0 0&quot; &gt;&gt; /etc/fstab
+mount -a
+
+# &#x914D;&#x7F6E;NFS Server
+yum install -y rpcbind nfs-utils
+systemctl start rpcbind &amp;&gt; /dev/null
+systemctl enable rpcbind &amp;&gt; /dev/null
+systemctl status rpcbind
+
+echo -e &quot;/webData *(rw,sync,all_squash,anonuid=99,anongid=99)&quot; &gt; /etc/exports
+
+systemctl start nfs
+systemctl status nfs
+
+</code></pre>
+<h2 id="&#x914D;&#x7F6E;PHP-FastCGI"><a href="#&#x914D;&#x7F6E;PHP-FastCGI" class="headerlink" title="&#x914D;&#x7F6E;PHP FastCGI"></a>&#x914D;&#x7F6E;PHP FastCGI</h2><pre><code class="shell">#!/bin/bash
+
+# filename : php-config.sh
+# &#x914D;&#x7F6E;PHP
+cd /usr/local/src/
+curl -O --progress http://192.168.110.3/src/php5.6_auto_install.tar.gz
+tar zxf php5.6_auto_install.tar.gz
+cd php5.6/
+chmod a+x install.sh
+. ./install.sh
+
+# &#x521B;&#x5EFA;&#x7AD9;&#x70B9;&#x76EE;&#x5F55;
+mkdir -p /var/www/web
+echo -e &quot;&lt;?php\n\tphpinfo();\n?&gt;&quot; &gt; /var/www/web/index.php
+</code></pre>
+<h3 id="&#x5728;Nginx&#x4EE3;&#x7406;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x914D;&#x7F6E;FastCGI"><a href="#&#x5728;Nginx&#x4EE3;&#x7406;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x914D;&#x7F6E;FastCGI" class="headerlink" title="&#x5728;Nginx&#x4EE3;&#x7406;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x914D;&#x7F6E;FastCGI"></a>&#x5728;Nginx&#x4EE3;&#x7406;&#x670D;&#x52A1;&#x5668;&#x4E0A;&#x914D;&#x7F6E;FastCGI</h3><pre><code class="shell">#!/bin/bash
+
+# filename : ngxin-fastcgi.sh
+
+cat &gt;&gt; /usr/local/nginx/conf/nginx.conf &lt;&lt;EOF
+upstream phpServer {
+    # &#x6307;&#x5B9A;&#x8D1F;&#x8F7D;&#x7B97;&#x6CD5;&#xFF1A;&#x7279;&#x5B9A;&#x7684;&#x5BA2;&#x6237;&#x7AEF;&#x7531;&#x56FA;&#x5B9A;&#x7684;&#x670D;&#x52A1;&#x5668;&#x670D;&#x52A1;&#xFF0C;&#x89E3;&#x51B3;session&#x5171;&#x4EAB;&#x95EE;&#x9898;
+    ip_hash;
+    server 192.168.110.15:9000 max_fails=3 fail_timeout=10s;
+    server 192.168.110.16:9000 max_fails=3 fail_timeout=10s;
+}
+EOF
+
+cat &gt;&gt; /usr/local/nginx/conf/user/proxy.conf &lt;&lt; EOF
+fastcgi_connect_timeout 30;
+fastcgi_send_timeout 30;
+fastcgi_read_timeout 30;
+fastcgi_buffer_size 64k;
+fastcgi_busy_buffers_size 128k;
+fastcgi_temp_file_write_size 128k;
+location ~ \.(php|php5)$ {
+    root /var/www/web;
+    #&#x6307;&#x5B9A;&#x4EE3;&#x7406;&#x5230;phpServer&#x96C6;&#x7FA4;
+    fastcgi_pass phpServer;
+    fastcgi_index index.php;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    include fastcgi_params;
+}
+EOF
+
+nginx -t
+nginx -s reload
+
+</code></pre>
+<h2 id="Nginx&#x4EE3;&#x7406;&#x670D;&#x52A1;&#x5668;&#x9AD8;&#x53EF;&#x7528;&#x2014;&#x2014;Keepalived"><a href="#Nginx&#x4EE3;&#x7406;&#x670D;&#x52A1;&#x5668;&#x9AD8;&#x53EF;&#x7528;&#x2014;&#x2014;Keepalived" class="headerlink" title="Nginx&#x4EE3;&#x7406;&#x670D;&#x52A1;&#x5668;&#x9AD8;&#x53EF;&#x7528;&#x2014;&#x2014;Keepalived"></a>Nginx&#x4EE3;&#x7406;&#x670D;&#x52A1;&#x5668;&#x9AD8;&#x53EF;&#x7528;&#x2014;&#x2014;Keepalived</h2><pre><code class="shell">#!/bin/bash
+
+echo -e &quot;192.168.110.11\tserver11\n192.168.110.12\tserver12&quot; &gt;&gt; /etc/hosts
+
+# &#x5B89;&#x88C5;Keepalived
+yum install -y keepalived
+
+mv -f /etc/keepalived/keepalived.conf /etc/keepalived/keepalived.confback
+cat &gt; /etc/keepaliaved/keepalived.conf &lt;&lt; EOF
+! Configuration File for keepalived
+
+global_defs {
+    notification_email {
+        fnaichu@qq.com
+    }
+    notification_email_from keepalvied@proxy-1
+    smtp_server 127.0.0.1
+    smtp_connect_timeout 30
+    router_id proxy-1
+    vrrp_mcast_group4 224.4.4.4
+}
+
+vrrp_script chk_proxy {
+    script &quot;/etc/keepalived/proxy_check.sh&quot;
+
+    interval 2
+
+    weight -2
+}
+
+vrrp_instance VI_1 {
+    state BACKUP
+
+    nopreempt
+
+    virtual_router_id 11
+
+    priority 100
+
+    advert_int 1
+
+    interface ens33
+
+    authentication {
+        auth_type PASS
+        auth_pass 1111
+    }
+    virtual_ipaddress {
+        192.168.110.10/24 dev ens33 label ens33:1
+    }
+    track_script {
+        chk_proxy
+    }
+    smtp_alert
+}
+EOF
+
+# &#x4EE3;&#x7406;&#x68C0;&#x6D4B;&#x811A;&#x672C;
+cat &gt; /etc/keepaliaved/proxy_check.sh &lt;&lt; EOF
+#!/bin/bash
+
+netstat -nlpt | grep -w &quot;80&quot; &amp;&gt;&gt; /dev/null
+
+if [ $? -ne 0 ]
+then
+    systemctl stop keepalived
+fi
+
+exit 0
+EOF
+
+chmod +x /etc/keepalived/proxy_check.sh
+
+systemctl start keepalived
+systemctl enable keepalived
+</code></pre>
+<h2 id="&#x914D;&#x7F6E;MySQL"><a href="#&#x914D;&#x7F6E;MySQL" class="headerlink" title="&#x914D;&#x7F6E;MySQL"></a>&#x914D;&#x7F6E;MySQL</h2><pre><code class="shell">#!/bin/bash
+
+yum remove -y mariadb-libs
+
+# &#x5B89;&#x88C5;MySQL
+rpm -ivh http://192.168.110.3/other/mysql-community-common-5.7.24-1.el7.x86_64.rpm
+rpm -ivh http://192.168.110.3/other/mysql-community-libs-5.7.24-1.el7.x86_64.rpm
+rpm -ivh http://192.168.110.3/other/mysql-community-client-5.7.24-1.el7.x86_64.rpm
+rpm -ivh http://192.168.110.3/other/mysql-community-server-5.7.24-1.el7.x86_64.rpm
+rpm -ivh http://192.168.110.3/other/mysql-community-libs-compat-5.7.32-1.el7.x86_64.rpm
+
+systemctl start mysqld
+#systemctl enable mysqld
+systemctl status mysqld
+
+echo &quot;skip-name-resolve&quot; &gt;&gt; /etc/my.cnf
+grep &quot;temporary password&quot; /var/log/mysqld.log | awk &apos;{ print $NF }&apos;
+
+echo &quot;&#x4E0A;&#x9762;&#x662F;MySQL&#x521D;&#x59CB;&#x5BC6;&#x7801;&#xFF0C;&#x8BF7;&#x624B;&#x52A8;&#x4FEE;&#x6539;&#x5BC6;&#x7801;&quot;
+# mysql_secure_installation
+# show global variables like &quot;%password%&quot;;
+# set global validate_password_length=6;
+# set global validate_password_policy=LOW;
+# ALTER USER &apos;root&apos;@&apos;localhost&apos; IDENTIFIED BY &apos;ccc.456&apos;;
+# FLUSH PRIVILEGES;
+</code></pre>
+<h3 id="&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;"><a href="#&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;" class="headerlink" title="&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;"></a>&#x914D;&#x7F6E;&#x4E3B;&#x4ECE;</h3><pre><code class="shell">#!/bin/bash
+
+#mysql_replica.sh
+mysql -uroot -p&quot;ccc.456&quot;
+GRANT REPLICATION SLAVE ON *.* TO &apos;root&apos;@&apos;192.168.110.%&apos; IDENTIFIED BY &apos;ccc.456&apos;;
+FLUSH PRIVILEGES;
+quit
+
+cat &gt;&gt; /etc/my.cnf &lt;&lt;EOF
+server-id=1
+log_bin=mysql-bin
+query_cache_type=OFF
+binlog-ignore-db=performance_schema
+binlog-ignore-db=mysql
+binlog-ignore-db=sys
+EOF
+
+systemctl restart mysqld
+
+</code></pre>
+<h3 id="MySQL&#x7684;Keepalived&#x9AD8;&#x53EF;&#x7528;"><a href="#MySQL&#x7684;Keepalived&#x9AD8;&#x53EF;&#x7528;" class="headerlink" title="MySQL&#x7684;Keepalived&#x9AD8;&#x53EF;&#x7528;"></a>MySQL&#x7684;Keepalived&#x9AD8;&#x53EF;&#x7528;</h3><pre><code class="shell">echo -e &quot;192.168.110.18\tserver18\n192.168.110.19\tserver19\n&quot; &gt;&gt; /etc/hosts
+
+yum install -y keepalived
+
+mv /etc/keepalived/keepalived.conf /etc/keepalived/keepalived.confbak
+# KeepAlived
+cat &gt; /etc/keepalived/keepalived.conf &lt;&lt; EOF
+! Configuration File for keepalived
+
+global_defs {
+    notification_email {
+        Jaking@vip.163.com
+    }
+
+    notification_email_from keepalived@server18
+    smtp_server 127.0.0.1
+    smtp_connect_timeout 30
+    router_id server18
+    vrrp_mcast_group5 225.5.5.5
+}
+
+    vrrp_script chk_proxy {
+        script &quot;/etc/keepalived/proxy_check.sh&quot;
+        interval 2
+        weight -2
+    }
+
+    vrrp_instance VI_1 {
+    state BACKUP
+    nopreempt
+    virtual_router_id 11
+    priority 100
+    advert_int 1
+    interface ens33
+
+    authentication {
+        auth_type PASS
+        auth_pass 1111
+    }
+
+    virtual_ipaddress {
+        192.168.110.20/24 dev ens33 label ens33:1
+    }
+
+    track_script {
+        chk_proxy
+    }
+    smtp_alert
+}
+EOF
+
+cat &gt; /etc/keepalived/proxy_check.sh &lt;&lt;EOF
+echo &gt; /etc/keepalived/proxy_check.sh &lt;&lt; EOF
+#!/bin/bash
+netstat -nlpt | grep -w &quot;3306&quot; &amp;&gt;&gt; /dev/null
+
+if [ $? -ne 0 ]
+then
+    systemctl stop keepalived
+fi
+
+exit 0
+EOF
+
+chmod a+x /etc/keepalived/proxy_check.sh
+systemctl restart keepalived
+</code></pre>
+<h2 id="&#x9879;&#x76EE;&#x4E0A;&#x7EBF;"><a href="#&#x9879;&#x76EE;&#x4E0A;&#x7EBF;" class="headerlink" title="&#x9879;&#x76EE;&#x4E0A;&#x7EBF;"></a>&#x9879;&#x76EE;&#x4E0A;&#x7EBF;</h2><pre><code class="shell">yum install -y unzip
+unzip Cloudreve_v1.0.3&#x4E91;&#x76D8;.zip
+
+ssh root@192.168.110.18 &quot;mysql -uroot -p&quot;ccc.456&quot; -e &apos;create database cloud;&apos;&quot;
+sql_user=&quot;mysql -uroot -p&quot;ccc.456&quot; -e &apos;GRANT ALL ON cloud.* TO &quot;abc&quot;@&quot;192.168.110.%&quot; IDENTIFIED BY &quot;Abc.abc.1&quot;;&apos;&quot;
+ssh root@192.168.110.18 &quot;$sql_user&quot;
+
+chown -R nobody:nobody /webData/
+chmod u+w /webData/runtime/
+chmod u+w /webData/public/
+
+cp /webData/application/database_sample.php /webData/application/database.php
+
+
+</code></pre>
+<h3 id="&#x4FEE;&#x6539;Nginx&#x4EE3;&#x7406;&#x914D;&#x7F6E;"><a href="#&#x4FEE;&#x6539;Nginx&#x4EE3;&#x7406;&#x914D;&#x7F6E;" class="headerlink" title="&#x4FEE;&#x6539;Nginx&#x4EE3;&#x7406;&#x914D;&#x7F6E;"></a>&#x4FEE;&#x6539;Nginx&#x4EE3;&#x7406;&#x914D;&#x7F6E;</h3><pre><code class="nginx">cat /usr/local/nginx/conf/user/proxy.conf 
+server {
+    listen       80;
+    server_name  www.uplookinglinux.com;
+
+    charset utf-8;
+    access_log  /var/log/nginx/proxy.access.log  main;
+
+    #################################################
+    fastcgi_connect_timeout 30;
+    fastcgi_send_timeout 30;
+    fastcgi_read_timeout 30;
+    fastcgi_buffer_size  64k;
+    fastcgi_buffers 4 64k;
+    fastcgi_busy_buffers_size 128k;
+    fastcgi_temp_file_write_size 128k;
+    #uri &#x5339;&#x914D; .php &#x6216;&#x8005; .php5 &#x7ED3;&#x5C3E;
+    location ~ \.(php|php5)$ {
+        root   /var/www/web;
+        #&#x6307;&#x5B9A;&#x4EE3;&#x7406;&#x5230; phpServer&#x96C6;&#x7FA4;
+        fastcgi_pass  phpServer;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include   fastcgi_params;
+    }
+    #&#x5339;&#x914D;&#x6839;&#x76EE;&#x5F55;&#xFF0C;&#x56E0;&#x4E3A;&#x6839;&#x76EE;&#x5F55;&#x4E0B;&#x7684;&#x4E3B;&#x9875;&#x4E3A;index.php&#x52A8;&#x6001;&#x9875;&#x9762;
+    location = / {
+        root   /var/www/web;
+        #&#x6307;&#x5B9A;&#x4EE3;&#x7406;&#x5230; phpServer&#x96C6;&#x7FA4;
+        fastcgi_pass  phpServer;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include   fastcgi_params;
+
+    }
+    #################################################
+
+    location / {
+        #&#x8BBE;&#x7F6E;&#x4F2A;&#x9759;&#x6001;&#x8F6C;&#x53D1;&#x89C4;&#x5219;
+        if (!-e $request_filename) {
+            rewrite  ^(.*)$  /index.php?s=/$1  last;
+            break;
+        }
+
+        root   /var/www/web;
+        index  index.html index.htm;
+        proxy_pass http://webServer;
+        proxy_set_header X-Real-IP  $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+
+        proxy_redirect off;
+        proxy_connect_timeout 30;
+        proxy_send_timeout 15;
+        proxy_read_timeout 15;
+    }
+}
+yum install -y nfs-utils
+mkdir -p /var/www/web
+chown nobody:nobody /var/www/web/
+mount -tnfs 192.168.110.17:/webData /var/www/web/
+echo -e &quot;192.168.10.17:/webData\t/var/www/web\tnfs\tdefaults\t0 0&quot; &gt;&gt; /etc/fstab
+mount -a
+</code></pre>
+<script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
             if (!el.dataset.src) { return; }
@@ -252,355 +2536,51 @@
             document.body.appendChild(img);
           });
       </script>
-        </div>
-
-        <blockquote class="post-copyright">
-    <div class="content">
-        
-<span class="post-time">
-    最后更新：<time datetime="2022-06-07T05:10:07.433Z" itemprop="dateUpdated">2022-06-07 13:10:07</time>
-</span>
+</div>
 
 
-        
-        原文链接：<a href="/posts/d2802762/" target="_blank" rel="external">https://marnm.github.io/posts/d2802762/</a>
-        
-    </div>
-    <footer>
-        <div onclick="location.href='https://marnm.github.io'">
-            <img src="/img/avatar.gif" alt="Echo">
-            <a>Echo</a>
-        </div>
-    </footer>
-</blockquote>
-
-        
-    <div class="page-reward">
-        <nav class="myreward">
-            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
-        </nav>
-    </div>
-
-
-
-        <div class="post-footer">
+    <div class="post-guide">
+        <div class="item left">
             
-
+              <a href="/posts/1db2b3f1/">
+                  <i class="fa fa-angle-left" aria-hidden="true"></i>
+                  Nginx平滑升级
+              </a>
             
-<div class="page-share-wrap">
-    
-
-<div class="page-share" id="pageShare">
-    <ul class="reset share-icons">
-      <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/d2802762/&title=《Nginx高可用架构配置》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
-          <i class="icon icon-weibo"></i>
-        </a>
-      </li>
-      <li>
-        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
-          <i class="icon icon-weixin"></i>
-        </a>
-      </li>
-      <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/d2802762/&title=《Nginx高可用架构配置》 — Deops's blog&source=Echo" data-title=" QQ">
-          <i class="icon icon-qq"></i>
-        </a>
-      </li>
-      <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/d2802762/" data-title=" Facebook">
-          <i class="icon icon-facebook"></i>
-        </a>
-      </li>
-      <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Nginx高可用架构配置》 — Deops's blog&url=https://marnm.github.io/posts/d2802762/&via=https://marnm.github.io" data-title=" Twitter">
-          <i class="icon icon-twitter"></i>
-        </a>
-      </li>
-      <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/d2802762/" data-title=" Google+">
-          <i class="icon icon-google-plus"></i>
-        </a>
-      </li>
-    </ul>
- </div>
-
-
-
-    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
-        <i class="icon icon-share-alt icon-lg"></i>
-    </a>
-</div>
-
-
-
+        </div>
+        <div class="item right">
+            
+              <a href="/posts/8f74b0e7/">
+                MyCat教程全国省份分片枚举操作
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+              </a>
+            
         </div>
     </div>
 
-    
-<nav class="post-nav flex-row flex-justify-between">
-  
-    <div class="waves-block waves-effect prev">
-      <a href="/posts/1db2b3f1/" id="post-prev" class="post-nav-link">
-        <h4 class="title">
-          上一篇：Nginx平滑升级
-        </h4>
-      </a>
-    </div>
-  
-
-  
-    <div class="waves-block waves-effect next">
-      <a href="/posts/8f74b0e7/" id="post-next" class="post-nav-link">
-        <h4 class="title" data-hover="下一篇：MyCat教程全国省份分片枚举操作">下一篇：MyCat教程全国省份分片枚举操作</h4>
-      </a>
-    </div>
-  
-</nav>
 
 
 
-    
-    
-
-    
-
-    
-
-
-</article>
-
-</div>
-
-        <footer class="footer">
-    <div class="footer-content">
-        <span class="power">
-            <i class="icon icon-lg icon-copyright"></i>
-            2022
-            <i class="icon icon-lg icon-heart"></i>
-            <a href="https://marnm.github.io">marnm.github.io</a>
-            <br>
-            Power by
-            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
-            Theme
-            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
-        </span>
-
-        <br>
-
-        <span id="RunTime" style="color:#a7a7a2;"></span>
-        <br>
-
-        <span>
-            
-
-        </span>
-        <br>
-
-        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
-    </div>
-</footer>
-
-    </main>
-    
-        
-<div id="reward" class="page-modal reward-lay">
-    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <h3 class="reward-title">
-        <i class="icon icon-quote-left"></i>
-        <span>感谢您的鼓励支持！</span>
-        <i class="icon icon-quote-right"></i>
-    </h3>
-    <div class="reward-content">
-        
-        <div class="reward-code">
-            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
-        </div>
-        
-        <label class="reward-toggle">
-            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
-            <div class="reward-toggle-ctrol">
-                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
-                <span class="reward-toggle-item alipayPay">支付宝</span>
-            </div>
-        </label>
-        
-        <i class="icon icon-caret-up"></i>
-    </div>
-</div>
-
-
-    
-    <div class="mask" id="mask"></div>
-<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
-
-
-
-<div class="global-share" id="globalShare">
-    <ul class="reset share-icons">
-      <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/d2802762/&title=《Nginx高可用架构配置》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
-          <i class="icon icon-weibo"></i>
-        </a>
-      </li>
-      <li>
-        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
-          <i class="icon icon-weixin"></i>
-        </a>
-      </li>
-      <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/d2802762/&title=《Nginx高可用架构配置》 — Deops's blog&source=Echo" data-title=" QQ">
-          <i class="icon icon-qq"></i>
-        </a>
-      </li>
-      <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/d2802762/" data-title=" Facebook">
-          <i class="icon icon-facebook"></i>
-        </a>
-      </li>
-      <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Nginx高可用架构配置》 — Deops's blog&url=https://marnm.github.io/posts/d2802762/&via=https://marnm.github.io" data-title=" Twitter">
-          <i class="icon icon-twitter"></i>
-        </a>
-      </li>
-      <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/d2802762/" data-title=" Google+">
-          <i class="icon icon-google-plus"></i>
-        </a>
-      </li>
-    </ul>
- </div>
-
-
-<div class="page-modal wx-share" id="wxShare">
-    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p class="wechatshare">扫一扫，分享到微信</p>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAAByUlEQVR42u3ay47CMAwFUP7/pztbpJmWa7sJoDlZIRTaExaWH3k84nU8redvfu8523/2zMeKhYuLO+Yel+tsT/WV179NDLi4uPu514EmCUn5UfNj4+Lifi+3mrjg4uL+B+518EoOhouL+5ncu1KQanmzsFbDxcUdcKuJy4rPS/q7uLi4Le5RXJPfzp+Ai4u7h7upkdEawZ7uxMXFXcy9fkS1UJmXUtfvxcXF3cO9t+CpNlLzQ0ZoXFzcm7jVa1hJG/RFPhWgTz/j4uJu4eZDkWonM9/TOzAuLu5qbm/YmQ9Te2Ob6H/FxcVdwE2CzgSRtF3yZAgXF3cPdzI+yQuYPAGqjm1wcXFXcPM2RB50rp9Q/RdfDFlxcXEXcJNNvTSlOb2ZtEpxcXEXcHuXKqqXt3oNlz8CGS4u7nZu/oLJdYq8RYKLi/tebjKz6I1PeilOuVuDi4s75h7F1Ut3ehcvcHFx38XtXYnIQ0/vAkdzyIqLi3srt1qcJM3WyWFeBDhcXNyN3F6pUx27JhE0apji4uJ+GDch9pqnhYoNFxf3w7jzV1Zrr9viLi4ubpE7H6bOk5sojOLi4m7h9gafvRFL9fCj/i4uLm6H+wNqQJCfwhWRDQAAAABJRU5ErkJggg==" alt="微信分享二维码">
-</div>
-
-
-
-
-    <!-- waves按钮特效 -->
-<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
-
-<!-- 主题配置脚本 -->
 <script>
-var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+	
+	
 </script>
-
-<!-- jquery -->
-<script src="/js/jquery.min.js?v=3.0"></script>
-
-<!-- 搜索 -->
-
-<div class="search-panel" id="search-panel">
-    <ul class="search-result" id="search-result"></ul>
+	</div>
+	<div id="footer">
+	<p>
+	©2019-<span id="footerYear"></span> 
+	<a href="/">Echo</a> 
+	
+	
+	<br>
+	Theme <a href="//github.com/wujun234/hexo-theme-tree" target="_blank">Tree</a>
+	by <a href="//github.com/wujun234" target="_blank">WuJun</a>
+	Powered by <a href="//hexo.io" target="_blank">Hexo</a>
+	</p>
 </div>
-<template id="search-tpl">
-<li class="item waves-block waves-effect" onclick="location.href='{path}'">
-    <div class="title ellipsis" title="{title}">{title}</div>
-</li>
-</template>
-
-
-<!-- main博客脚本 -->
-<script src="/js/main.min.js?v=3.0"></script>
-
-<!-- 动画&配置 -->
-<script src="/js/script.min.js?v=3.0"></script>
-
-<!-- 脚本管理 -->
-<script>
-
-if(window.innerWidth > 800){
-	/* 3D标题 */
-	$(".content-header").on("mousemove", threedee);
-
-	/* 底部追随鼠标 */
-	$(".footer").hover(2);
-
-	/* gotop键的涟漪 */
-	$("#gotop").hover(1);
-
-	/* 赞赏的粒子雨 */
-	$("#reward").hover(3);
-
-	/* 微信公众号的底部渲染 */
-	$("#wechat").hover(4);
-
-    /* 标题跳动 */
-    $(".archivestitle").bumpyText();
-
-	/* 图片点击放大 */
-	const postimg = jQuery(".post-content img:not(.github-emoji)");
-	postimg.on("click",function(){
-
-		mask.classList.add("in");
-		main.classList.add("Mask");
-		menu.classList.add("Mask");
-		var myimg = this.cloneNode(true);
-		myimg.classList.add("imgShow");
-
-		setTimeout(function(){
-			jQuery(myimg).animate({
-				opacity:"1"
-			},1000);
-		},0);
-
-		document.body.appendChild(myimg);
-
-		myimg.onclick=function(){
-			document.body.removeChild(myimg);
-			mask.classList.remove("in");
-			main.classList.remove("Mask");
-			menu.classList.remove("Mask");
-		};
-
-	});
-
-}
-
-/* 名字跳动 */
-$("#name").bumpyText();
-
-
-/* 网站运行时间 */
-setInterval(function () {
-	setTime("2019/01/01");
-}, 1000);
-
-/* 文章块的淡出 */
-postshow();
-
-/* 座右铭 */
-
-   getHitokoto();
-
-
-
-/* 粘贴提示 */
-G($(".post-content"), location.href, "Echo");
-
-
-/* 控制台 */
-if (window.console && window.console.log) {
-	setTimeout(function () {
-		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
-	}, 0);
-}
-
+<script type="text/javascript"> 
+	document.getElementById('footerYear').innerHTML = new Date().getFullYear() + '';
 </script>
-
-
-
-
-<!-- 公式渲染 -->
-
-
-
-<!-- 不蒜子 -->
-
-
+	<button id="totop-toggle" class="toggle"><i class="fa fa-angle-double-up" aria-hidden="true"></i></button>
 </body>
 </html>

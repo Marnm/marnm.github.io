@@ -1,229 +1,1848 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head><meta name="generator" content="Hexo 3.8.0">
-    <meta http-equiv="Content-Language" content="zh-cn">
-    <meta charset="utf-8">
-    
-    
-    
-    <title>Redis概述 | Deops&#39;s blog | 运维开发工程师</title>
-    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    
-    <meta name="theme-color" content="#77AAFF">
-    
-    
-    <meta name="keywords" content="">
-    
-    
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+	
+	<!-- title -->
+	
+	<title>
+	
+		Redis概述 | 
+	 
+	Deops&#39;s blog
+	</title>
+	
+	<!-- keywords,description -->
+	
+		<meta name="keywords" content="Echo">
+	 
+		<meta name="description" content="Echo">
+	
 
-    
+	<!-- favicon -->
+	
+	<link rel="shortcut icon" href="/favicon.ico">
+	
 
-    <!-- Baidu Push -->
-<script>
-	(function(){
-		var bp = document.createElement('script');
-		var curProtocol = window.location.protocol.split(':')[0];
-		if (curProtocol === 'https') {
-			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+
+	<!-- search -->
+	<script>
+		var searchEngine = "https://www.google.com/search?q=";
+		if(typeof searchEngine == "undefined" || searchEngine == null || searchEngine == ""){
+			searchEngine = "https://www.google.com/search?q=";
 		}
-		else {
-			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		var homeHost = "https://marnm.github.io/";
+		if(typeof homeHost == "undefined" || homeHost == null || homeHost == ""){
+			homeHost = window.location.host;
 		}
-		var s = document.getElementsByTagName("script")[0];
-		s.parentNode.insertBefore(bp, s);
-	})();
-
-	var _hmt = _hmt || [];
-</script>
+	</script>
 
 
-
+	<link rel="stylesheet" href="/css/main.css">
+	<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/lib/highlight/styles/base16/solarized-dark.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
     
-    <meta name="description" content="Redis&amp;#x6982;&amp;#x8FF0;&amp;#x4EC0;&amp;#x4E48;&amp;#x662F;RedisRedis&amp;#x7684;&amp;#x51FA;&amp;#x73B0;&amp;#x65F6;&amp;#x95F4;&amp;#x5E76;&amp;#x4E0D;&amp;#x957F;&amp;#xFF0C;&amp;#x662F;NoSQL&amp;#x7684;&amp;#x4E00;&amp;#x79CD;&amp;#xFF0C;&amp;#x57FA;&amp;#x4E8E;&amp;#x952E;-&amp;#x">
-<meta name="keywords" content="Echo">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Redis概述">
-<meta property="og:url" content="https://marnm.github.io/posts/18d7d749/index.html">
-<meta property="og:site_name" content="Deops&#39;s blog">
-<meta property="og:description" content="Redis&amp;#x6982;&amp;#x8FF0;&amp;#x4EC0;&amp;#x4E48;&amp;#x662F;RedisRedis&amp;#x7684;&amp;#x51FA;&amp;#x73B0;&amp;#x65F6;&amp;#x95F4;&amp;#x5E76;&amp;#x4E0D;&amp;#x957F;&amp;#xFF0C;&amp;#x662F;NoSQL&amp;#x7684;&amp;#x4E00;&amp;#x79CD;&amp;#xFF0C;&amp;#x57FA;&amp;#x4E8E;&amp;#x952E;-&amp;#x">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://192.168.85.188:8081/uploads/1652923388117537180QQ20220508210823.png">
-<meta property="og:updated_time" content="2022-06-07T05:06:06.548Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Redis概述">
-<meta name="twitter:description" content="Redis&amp;#x6982;&amp;#x8FF0;&amp;#x4EC0;&amp;#x4E48;&amp;#x662F;RedisRedis&amp;#x7684;&amp;#x51FA;&amp;#x73B0;&amp;#x65F6;&amp;#x95F4;&amp;#x5E76;&amp;#x4E0D;&amp;#x957F;&amp;#xFF0C;&amp;#x662F;NoSQL&amp;#x7684;&amp;#x4E00;&amp;#x79CD;&amp;#xFF0C;&amp;#x57FA;&amp;#x4E8E;&amp;#x952E;-&amp;#x">
-<meta name="twitter:image" content="http://192.168.85.188:8081/uploads/1652923388117537180QQ20220508210823.png">
-    
-        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
-    
-    <link rel="shortcut icon" href="/img/favicon.ico">
-    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
-    <script>window.lazyScripts=[]</script>
+    <!-- 引入代码高亮的 js -->
+    <script src="/lib/highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 
-    <!-- custom head -->
-    
-            
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/jquery-pjax@2.0.1/jquery.pjax.min.js"></script>
+	<script src="/js/main.js"></script>
+	
+		<script src="https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/valine@v1.4.14/dist/Valine.min.js"></script>
+	
+	
 </head>
 
 <body>
-    <div id="loading" class="active"></div>
-    <aside id="menu" class="hide">
-  <div class="inner flex-row-vertical">
-    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
-        <i class="icon icon-lg icon-close"></i>
-    </a>
-    <div class="brand-wrap">
-      <div class="brand">
-        <a href="/" class="avatar waves-effect waves-circle waves-light">
-          <img src="/img/avatar.gif" alt="avatar">
-        </a>
-        <hgroup class="introduce">
-          <h5 class="nickname" id="name">Echo</h5>
-          
-            <div id="yiyanmotto" class="motto">&nbsp;</div>
-          
-        </hgroup>
-      </div>
-    </div>
-    <div class="scroll-wrap flex-col">
-      <ul class="nav">
-        
-              <li class="waves-block waves-effect">
-                  <a href="/">
-                    <i class="icon icon-lg icon-home"></i>
-                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/archives">
-                    <i class="icon icon-lg icon-archives"></i>
-                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/categories">
-                    <i class="icon icon-lg icon-th-list"></i>
-                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/tags">
-                    <i class="icon icon-lg icon-tags"></i>
-                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/about">
-                    <i class="icon icon-lg icon-smile-o"></i>
-                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-      <div class="nav2">
-          
-              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
-                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
-              </a>
-          
-              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
-                <i class="icon icon-lg icon-github github"></i>
-              </a>
-          
-              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
-                <i class="icon icon-lg icon-tv tv"></i>
-              </a>
-          
-
-            </div>
-        
-      </ul>
-        
-    </div>
-  </div>
- 
-</aside>
-
-
-    <main id="main">
-        <header class="top-header" id="header">
-    <div class="flex-row">
-        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
-          <i class="icon icon-lg icon-navicon"></i>
-        </a>
-        <div class="flex-col header-title ellipsis">Redis概述</div>
-        
-        <div class="search-wrap" id="search-wrap">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
-                <i class="icon icon-lg icon-chevron-left"></i>
-            </a>
-            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
-                <i class="icon icon-lg icon-search"></i>
-            </a>
-        </div>
-        
-        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
-            <i class="icon icon-lg icon-rss"></i>
-        </a>
-    </div>
-</header>
-<header class="content-header post-header">
-    
-    
-    <div class="container fade-scale">
-        <div id="myheader">
-            <h1 class="title">
-                
-            </h1>
-            <h5 class="subtitle">
-                
-                
-            </h5>
-        </div>
-    </div>
-
-</header>
-
-
-<div class="container body-wrap">
-    
-    <aside class="post-widget">
-        <nav class="post-toc-wrap" id="post-toc">
-            <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Redis概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">Redis概述</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#什么是Redis"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">什么是Redis</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Redis所支持的数据类型"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">Redis所支持的数据类型</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Redis性能评估"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">Redis性能评估</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Redis与memcache对比："><span class="post-toc-number">1.4.</span> <span class="post-toc-text">Redis与memcache对比：</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Redis的优势"><span class="post-toc-number">1.5.</span> <span class="post-toc-text">Redis的优势</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Memcached的优势"><span class="post-toc-number">1.6.</span> <span class="post-toc-text">Memcached的优势</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#安装Redis"><span class="post-toc-number">2.</span> <span class="post-toc-text">安装Redis</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#源码编译安装"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">源码编译安装</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#rpm安装Redis"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">rpm安装Redis</span></a></li></ol></li></ol>
-        </nav>
-    </aside>
-   
-<article id="post-Redis概述" class="post-article article-type-post fade" itemprop="blogPost">
-
-    <div class="post-card">
-        <h1 class="post-card-title">Redis概述</h1>
-        <div class="post-meta">
-            <i class="icon icon-lg icon-calendar-o"></i>
-            发表于
-            <time class="post-time" title="2022-06-07 12:48:52" datetime="2022-06-07T04:48:52.000Z" itemprop="datePublished">2022-06-07</time>
-
-            <br id="mybreak">
-            
-<script>
-	mybreak.style="display:none";
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3efe99c287df5a1d6f0d02d187e403c1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
 </script>
 
+<header id="header">
+    <a id="title" href="/" class="logo">Deops's blog</a>
 
-            <i>·</i>
+	<ul id="menu">
+		<li class="menu-item">
+			<a href="/about" class="menu-item-link">ABOUT</a>
+		</li>
+	
+		<li class="menu-item">
+			<a href="/tags" class="menu-item-link">标签</a>
+		</li>
+	
+
+	
+		<li class="menu-item">
+			<a href="/categories" class="menu-item-link">分类</a>
+		</li>
+	
+
+		<li class="menu-item">
+			<a href="https://github.com/Marnm" class="menu-item-link" target="_blank">
+				<i class="fa fa-github fa-2x"></i>
+			</a>
+		</li>
+	</ul>
+</header>
+
+	
+<div id="sidebar">
+	<button id="sidebar-toggle" class="toggle"><i class="fa fa-arrow-right " aria-hidden="true"></i></button>
+	
+	<div id="site-toc">
+		<input id="search-input" class="search-input" type="search" placeholder="按回车全站搜索">
+		<div id="tree">
+			
+
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Ansible自动化运维
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/b45e213f/">
+                     
+										    Ansible自动化管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/28c30eb2/">
+                     
+										    CTF线下赛AWD套路小结
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Ceph对象存储
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/e9abc941/">
+                     
+										    Ceph分布式存储
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/38843421/">
+                     
+										    Ceph分布式存储部署笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9964b559/">
+                     
+										    DHCP Server的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4782a8c2/">
+                     
+										    DNS Server的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5e357037/">
+                     
+										    Django教程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Docker
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/4a3d459a/">
+                     
+										    Docker学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										ELK Stack
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/2d95f1c1/">
+                     
+										    ElasticSearch环境搭建
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/573fc171/">
+                     
+										    Logstash二进制安装与启动
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b11339a9/">
+                     
+										    Logstash去除不需要的字段
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d05b44e0/">
+                     
+										    Logstash读取日志发送到ES
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9d56e705/">
+                     
+										    FTP/TFTP的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ca9298d7/">
+                     
+										    Git版本控制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/51acad32/">
+                     
+										    诺尔·巴尔扎克（Honoréde Balzac）的名言
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4def9c28/">
+                     
+										    In Your 20's These Things Matter More Than You Think
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/295162d9/">
+                     
+										    Java8 环境变量配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										KVM虚拟化
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/dba5727f/">
+                     
+										    KVM图形化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/204af86b/">
+                     
+										    KVM虚拟机克隆和快照
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d69c6e72/">
+                     
+										    KVM虚拟机添加磁盘
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/16305c66/">
+                     
+										    KVM虚拟机迁移
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7733d98/">
+                     
+										    LDAP的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5922577d/">
+                     
+										    LNMP手动部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/195423a2/">
+                     
+										    LNMP高可用架构配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/38cc96c8/">
+                     
+										    LVM磁盘管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/be48d001/">
+                     
+										    LVS-DR集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/df68056c/">
+                     
+										    LVS-IPTUN集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dcf8e277/">
+                     
+										    LVS-NAT集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/640aafef/">
+                     
+										    LVS和KeepAlived实现高可用集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/82734d8/">
+                     
+										    Linux命令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/67ee4dec/">
+                     
+										    Linux学习笔记 - 关于开源
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d53cba09/">
+                     
+										    Linux常用性能分析工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/15c0e66c/">
+                     
+										    Linux常见日志文件
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/480c215d/">
+                     
+										    Linux性能管理工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a9bb0c1a/">
+                     
+										    Linux文件的特殊权限
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/cc999d74/">
+                     
+										    Linux文件的隐藏属性
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b7f1c6/">
+                     
+										    Linux文本四剑客
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/aabbd398/">
+                     
+										    Linux无法挂载sysroot并自动进入紧急模式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b3f64b7d/">
+                     
+										    Linux生成随机密码方法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e025952a/">
+                     
+										    Linux登录退出提示信息欢迎信息
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ee2f9f35/">
+                     
+										    Linux的PAM模块
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1e844aa4/">
+                     
+										    Linux的归档与解压缩
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c4bbfe69/">
+                     
+										    Linux的日志切割
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/be846aea/">
+                     
+										    Linux禁止和开启ping的方法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f20e14fd/">
+                     
+										    Linux网卡聚合及bond模式的原理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2fe5fc07/">
+                     
+										    Linux计划任务实现
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/365d0867/">
+                     
+										    Linux路由配置——route
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fbf617b4/">
+                     
+										    MariaDB
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bff83912/">
+                     
+										    Markdown 简明语法手册
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5125c787/">
+                     
+										    Markdown语法说明（快速入门）
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										MongoDB
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/8b1c1f4b/">
+                     
+										    MongoDB介绍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a36562d7/">
+                     
+										    MongoDB学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/55c06d78/">
+                     
+										    MongoDB安装部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										MySQL学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/16fc5dc4/">
+                     
+										    MySQL5.6
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/61fb6d52/">
+                     
+										    MySQL5.7
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bce68613/">
+                     
+										    MySQL基础
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f6e2d114/">
+                     
+										    使用RPM包安装MySQL5.7数据库
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/269a56e8/">
+                     
+										    MySQL备份与恢复（删库不跑路）
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/607e4760/">
+                     
+										    MySQL传统主从同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d77fafec/">
+                     
+										    MySQL的GTID主从同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/db0340bd/">
+                     
+										    MySQL高可用集群架构-MHA架构
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/62ec7971/">
+                     
+										    Atlas实现MySQL读写分离
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/490925f2/">
+                     
+										    MySQL数据库高级应用之读写分离
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/176dc5f3/">
+                     
+										    MyCat垂直分表操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8f74b0e7/">
+                     
+										    MyCat教程全国省份分片枚举操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/208cd020/">
+                     
+										    MySQL调优
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1876d05d/">
+                     
+										    NetworkManager管理工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/60444925/">
+                     
+										    NexT主题优化+美化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Nginx学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/f4d30967/">
+                     
+										    Nginx动静分离部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1db2b3f1/">
+                     
+										    Nginx平滑升级
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2793eb31/">
+                     
+										    Nginx日志管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2793eb31/">
+                     
+										    Nginx日志管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e0989926/">
+                     
+										    Nginx添加第三方模块
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/da411b72/">
+                     
+										    Nginx虚拟主机
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d4e5e907/">
+                     
+										    Nginx访问控制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d2802762/">
+                     
+										    Nginx高可用架构配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/36ba38f9/">
+                     
+										    NoSQL知识
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e8c4eb08/">
+                     
+										    OpenSSL使用教程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/97717e94/">
+                     
+										    PXE自动化部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Prometheus学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/39c0f6a1/">
+                     
+										    Prometheus学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1f351894/">
+                     
+										    Python-VirtualEnv
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/297a89d9/">
+                     
+										    Python学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fa8e89f7/">
+                     
+										    RAID磁盘阵列技术介绍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/afdfa673/">
+                     
+										    RHEL 7配置Yum软件仓库
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/32546aed/">
+                     
+										    RedHat Linux重置root管理员密码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/eb7dbe25/">
+                     
+										    RedHat_7 配置网卡信息
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Redis学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/5188e636/">
+                     
+										    Redis与其他应用的集成
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/49fbbc1/">
+                     
+										    Redis基本操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e8376589/">
+                     
+										    Redis安装部署——Cluster集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e78aaf59/">
+                     
+										    Redis安装部署——Sentinel模式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2acd829b/">
+                     
+										    Redis安装部署——主从复制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/119ed1dc/">
+                     
+										    Redis持久化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file active">
+									<a href="/posts/18d7d749/">
+                     
+										    Redis概述
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e3fb0a3e/">
+                     
+										    Redis的数据备份与恢复
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3e3d973e/">
+                     
+										    Redis配合MySQL使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f03da4e7/">
+                     
+										    Redis配置文件详解
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/41f893fd/">
+                     
+										    Redis编译安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dbd9d26a/">
+                     
+										    SHELL编程类面试题
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f42b90f9/">
+                     
+										    SHELL脚本工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a8ba1e/">
+                     
+										    SHELL脚本练习
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c45f2736/">
+                     
+										    SQL Server 2008安装配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/aa142b64/">
+                     
+										    SQLite安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e228b71f/">
+                     
+										    SSH原理与应用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1fdc29d2/">
+                     
+										    Shell的基本运算符
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6309c3f8/">
+                     
+										    Shell编程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e76ba468/">
+                     
+										    Ubuntu Desktop优化与配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/129acd64/">
+                     
+										    Ubuntu修改配置及美化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b382711f/">
+                     
+										    VIM的使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e9c6771b/">
+                     
+										    Win10环境下Python2、3和pip2、3版本共存
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6ed6984b/">
+                     
+										    Windows进程管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/59089347/">
+                     
+										    Zabbix3.4邮件报警配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7034657d/">
+                     
+										    Zabbix4.0
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c7b4ec91/">
+                     
+										    firewalld学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1ebd4a76/">
+                     
+										    iproute2工具包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/57bbf635/">
+                     
+										    iptables学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3e189d0c/">
+                     
+										    mysqlclient无法安装的问题
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1939d3e2/">
+                     
+										    net-tools工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bae5d4f0/">
+                     
+										    rhel修改网卡命名规则
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3c7a2415/">
+                     
+										    rsync数据同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/37ca92de/">
+                     
+										    swap交换分区
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6efb91e0/">
+                     
+										    tcpdump与Wireshark的使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d185f6ae/">
+                     
+										    web性能压测学习
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bb750036/">
+                     
+										    你要懂得及时止损，别太在乎沉没成本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/da58b03e/">
+                     
+										    使用HAProxy实现七层负载均衡
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b161a250/">
+                     
+										    使用服务搭建Hexo个人博客
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										其它
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/9bf5b5/">
+                     
+										    我学练英语所使用的方法、工具与资料
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4c41c7ef/">
+                     
+										    十二句经典的爱情名言
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e364486e/">
+                     
+										    基于Docker搭建Prometheus
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/69c239dd/">
+                     
+										    基于LNMP架构搭建企业级开源监控系统Zabbix
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f801d3c5/">
+                     
+										    增加一台Filebeat收集httpd日志
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f5d6f6a9/">
+                     
+										    实战-GitLab更新代码后自动触发Jenkins进行部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fa35a60d/">
+                     
+										    性能测试指标详解
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a3c5d26/">
+                     
+										    搭建Jenkins实现持续集成-配置Jenkins自动拉取GitLab中的代码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4f96852/">
+                     
+										    搭建JumpServer管理王者荣耀数万台游戏服务器
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f0a65eeb/">
+                     
+										    根分区扩容
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2f57a694/">
+                     
+										    正则表达式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9e3f6743/">
+                     
+										    自由的灵魂必将远航
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/217dc297/">
+                     
+										    计算机概述
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8d4b7ae1/">
+                     
+										    计算机组成原理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dded0e80/">
+                     
+										    运维发展史
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/undefined/">
+                     
+										    邮件报警配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5095a46f/">
+                     
+										    配置Docker静态IP
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2b923a54/">
+                     
+										    配置GitLab邮件服务
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/76011417/">
+                     
+										    配置Zabbix3.4监控Apache服务
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+		</div>
+	</div>
+</div>
+
+	<!-- 引入正文 -->
+	<div id="content">
+		<h1 id="article-title">
+	Redis概述
+</h1>
+<div class="article-meta">
+	
+	<span>Echo</span>
+	<span>2022-06-07 12:48:52</span>
+		<div id="article-categories">
+    
+		<span>Categories：</span>
             
+    
 
-        </div>
-        <div class="post-count-custom">
-            <i class="icon icon-lg icon-comment-o"></i>
-            阅读本文可能花费您&nbsp;<span class="post-count">15</span>&nbsp;分钟
-        </div>
-        <div class="post-content" id="post-content" itemprop="postContent">
-            <h1 id="Redis&#x6982;&#x8FF0;"><a href="#Redis&#x6982;&#x8FF0;" class="headerlink" title="Redis&#x6982;&#x8FF0;"></a>Redis&#x6982;&#x8FF0;</h1><h2 id="&#x4EC0;&#x4E48;&#x662F;Redis"><a href="#&#x4EC0;&#x4E48;&#x662F;Redis" class="headerlink" title="&#x4EC0;&#x4E48;&#x662F;Redis"></a>&#x4EC0;&#x4E48;&#x662F;Redis</h2><p>Redis&#x7684;&#x51FA;&#x73B0;&#x65F6;&#x95F4;&#x5E76;&#x4E0D;&#x957F;&#xFF0C;&#x662F;NoSQL&#x7684;&#x4E00;&#x79CD;&#xFF0C;&#x57FA;&#x4E8E;&#x952E;-&#x503C;&#x578B;&#x7684;&#x5B58;&#x50A8;&#xFF0C;&#x4E0E;memcache&#x7C7B;&#x4F3C;&#xFF0C;&#x4F46;&#x662F;memcache&#x4E2D;&#x53EA;&#x662F;&#x5185;&#x5B58;&#x7684;&#x7F13;&#x5B58;&#xFF0C;&#x800C;Redis&#x4E0D;&#x4EC5;&#x662F;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x7F13;&#x5B58;&#xFF0C;&#x8FD8;&#x63D0;&#x4F9B;&#x6301;&#x4E45;&#x5B58;&#x50A8;&#xFF0C;&#x5728;2009&#x5E74;&#x7B2C;&#x4E00;&#x6B21;&#x53D1;&#x5E03;Redis&#x3002;</p>
+    
+		<span>Tags：</span>
+            
+    
+		</div>
+
+</div>
+
+<div id="article-content">
+	<h1 id="Redis&#x6982;&#x8FF0;"><a href="#Redis&#x6982;&#x8FF0;" class="headerlink" title="Redis&#x6982;&#x8FF0;"></a>Redis&#x6982;&#x8FF0;</h1><h2 id="&#x4EC0;&#x4E48;&#x662F;Redis"><a href="#&#x4EC0;&#x4E48;&#x662F;Redis" class="headerlink" title="&#x4EC0;&#x4E48;&#x662F;Redis"></a>&#x4EC0;&#x4E48;&#x662F;Redis</h2><p>Redis&#x7684;&#x51FA;&#x73B0;&#x65F6;&#x95F4;&#x5E76;&#x4E0D;&#x957F;&#xFF0C;&#x662F;NoSQL&#x7684;&#x4E00;&#x79CD;&#xFF0C;&#x57FA;&#x4E8E;&#x952E;-&#x503C;&#x578B;&#x7684;&#x5B58;&#x50A8;&#xFF0C;&#x4E0E;memcache&#x7C7B;&#x4F3C;&#xFF0C;&#x4F46;&#x662F;memcache&#x4E2D;&#x53EA;&#x662F;&#x5185;&#x5B58;&#x7684;&#x7F13;&#x5B58;&#xFF0C;&#x800C;Redis&#x4E0D;&#x4EC5;&#x662F;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x7F13;&#x5B58;&#xFF0C;&#x8FD8;&#x63D0;&#x4F9B;&#x6301;&#x4E45;&#x5B58;&#x50A8;&#xFF0C;&#x5728;2009&#x5E74;&#x7B2C;&#x4E00;&#x6B21;&#x53D1;&#x5E03;Redis&#x3002;</p>
 <p>Redis&#x5168;&#x79F0;&#xFF08;Remote Dictionary Server&#xFF09;&#x8FDC;&#x7A0B;&#x5B57;&#x5178;&#x670D;&#x52A1;&#x5668;&#xFF0C;&#x800C;&#x8FD9;&#x4E2A;&#x5B57;&#x5178;&#x670D;&#x52A1;&#x5668;&#x4ECE;&#x672C;&#x8D28;&#x4E0A;&#x6765;&#x8BB2;&#xFF0C;&#x4E3B;&#x8981;&#x662F;&#x63D0;&#x4F9B;&#x6570;&#x636E;&#x7ED3;&#x6784;&#x7684;&#x8FDC;&#x7A0B;&#x5B58;&#x50A8;&#x529F;&#x80FD;&#x7684;&#xFF0C;&#x53EF;&#x4EE5;&#x7406;&#x89E3;&#x4E3A;Redis&#x662F;&#x4E00;&#x4E2A;&#x9AD8;&#x7EA7;&#x7684;K-V&#x5B58;&#x50A8;&#xFF0C;&#x548C;&#x6570;&#x636E;&#x7ED3;&#x6784;&#x5B58;&#x50A8;&#xFF0C;&#x56E0;&#x4E3A;Redis&#x9664;&#x4E86;&#x80FD;&#x591F;&#x5B58;&#x50A8;K-V&#x8FD9;&#x79CD;&#x7B80;&#x5355;&#x7684;&#x6570;&#x636E;&#x4E4B;&#x5916;&#xFF0C;&#x8FD8;&#x80FD;&#x591F;&#x5B58;&#x50A8;&#x5217;&#x8868;&#x3001;&#x5B57;&#x5178;&#x3001;hash&#x8868;&#x7B49;&#x5BF9;&#x5E94;&#x7684;&#x6570;&#x636E;&#x7ED3;&#x6784;&#x3002;</p>
 <p>&#x5728;&#x6027;&#x80FD;&#x4E0A;Redis&#x4E0D;&#x6BD4;memcache&#x5DEE;&#xFF0C;&#x56E0;&#x4E3A;redis&#x6574;&#x4E2A;&#x8FD0;&#x884C;&#x901A;&#x901A;&#x90FD;&#x662F;&#x5728;&#x5185;&#x5B58;&#x4E2D;&#x5B9E;&#x73B0;&#x7684;&#xFF0C;&#x5B83;&#x7684;&#x6240;&#x6709;&#x7684;&#x6570;&#x636E;&#x96C6;&#x90FD;&#x662F;&#x4FDD;&#x5B58;&#x5728;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#xFF0C;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x6570;&#x636E;&#x4F1A;&#x5468;&#x671F;&#x6027;&#x7684;&#x5199;&#x5165;&#x5230;&#x78C1;&#x76D8;&#x4E0A;&#xFF0C;&#x4EE5;&#x5B9E;&#x73B0;&#x6570;&#x636E;&#x7684;&#x6301;&#x4E45;&#x529F;&#x80FD;&#xFF0C;&#x800C;&#x8FD9;&#x79CD;&#x5199;&#x78C1;&#x76D8;&#x5E76;&#x4E0D;&#x662F;&#x7528;&#x4E8E;&#x8BBF;&#x95EE;&#xFF0C;&#x800C;&#x4EC5;&#x662F;&#x5197;&#x4F59;&#x529F;&#x80FD;&#xFF0C;&#x6240;&#x4EE5;redis&#x6240;&#x6709;&#x529F;&#x80FD;&#x90FD;&#x5728;&#x5185;&#x5B58;&#x4E2D;&#x5B8C;&#x6210;&#xFF0C;&#x56E0;&#x4E3A;&#x6B64;&#x6027;&#x80FD;&#x4E5F;&#x662F;&#x53EF;&#x60F3;&#x800C;&#x77E5;&#x3002;</p>
 <p>redis&#x4E0E;mamcache&#x4E0D;&#x540C;&#x4E4B;&#x5904;&#x5728;&#x4E8E;redis&#x6709;&#x4E00;&#x4E2A;&#x5468;&#x671F;&#x6027;&#x7684;&#x5C06;&#x6570;&#x636E;&#x4FDD;&#x5B58;&#x5230;&#x78C1;&#x76D8;&#x4E0A;&#x7684;&#x673A;&#x5236;&#xFF0C;&#x800C;&#x4E14;&#x4E0D;&#x53EA;&#x4E00;&#x79CD;&#xFF0C;&#x6709;&#x4E24;&#x79CD;&#x673A;&#x5236;&#xFF0C;&#x8FD9;&#x4E5F;&#x662F;redis&#x6301;&#x4E45;&#x5316;&#x7684;&#x4E00;&#x79CD;&#x5B9E;&#x73B0;&#xFF0C;<strong>&#x53E6;&#x5916;&#x4E0E;memcache&#x6709;&#x6240;&#x533A;&#x522B;&#x7684;&#x662F;&#xFF0C;redis&#x662F;&#x5355;&#x7EBF;&#x7A0B;&#x670D;&#x52A1;&#x5668;&#xFF0C;&#x53EA;&#x6709;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x6765;&#x54CD;&#x5E94;&#x6240;&#x6709;&#x7684;&#x8BF7;&#x6C42;</strong><br>redis&#x652F;&#x6301;&#x4E3B;&#x4ECE;&#x6A21;&#x5F0F;&#xFF0C;&#x4F46;&#x662F;redis&#x7684;&#x4E3B;&#x4ECE;&#x6A21;&#x5F0F;&#x9ED8;&#x8BA4;&#x5C31;&#x6709;&#x4E00;&#x4E2A;sentinel&#x5DE5;&#x5177;&#xFF0C;&#x4ECE;&#x800C;&#x5B9E;&#x73B0;&#x4E3B;&#x4ECE;&#x67B6;&#x6784;&#x7684;&#x9AD8;&#x53EF;&#x7528;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x8BF4;&#xFF0C;redis&#x80FD;&#x591F;&#x501F;&#x52A9;&#x4E8E;sentinel&#x5DE5;&#x5177;&#x6765;&#x76D1;&#x63A7;&#x4E3B;&#x4ECE;&#x8282;&#x70B9;&#xFF0C;&#x5F53;&#x4E3B;&#x8282;&#x70B9;&#x53D1;&#x751F;&#x6545;&#x969C;&#x65F6;&#xFF0C;&#x4F1A;&#x81EA;&#x5DF1;&#x63D0;&#x5347;&#x53E6;&#x5916;&#x4E00;&#x4E2A;&#x4ECE;&#x8282;&#x70B9;&#x6210;&#x4E3A;&#x65B0;&#x7684;&#x4E3B;&#x8282;&#x70B9;</p>
@@ -258,25 +1877,216 @@
 <li>&#x53EF;&#x80FD;&#x6709;&#x66F4;&#x5C11;&#x7684;&#x5185;&#x5B58;&#x788E;&#x7247;</li>
 </ul>
 <h1 id="&#x5B89;&#x88C5;Redis"><a href="#&#x5B89;&#x88C5;Redis" class="headerlink" title="&#x5B89;&#x88C5;Redis"></a>&#x5B89;&#x88C5;Redis</h1><p><a href="https://redis.io" target="_blank" rel="noopener">https://redis.io</a>  &#x5B98;&#x7F51;<br><a href="https://download.redis.io/releases/" target="_blank" rel="noopener">https://download.redis.io/releases/</a>  &#x4E0B;&#x8F7D;&#x5730;&#x5740;</p>
-<h2 id="&#x6E90;&#x7801;&#x7F16;&#x8BD1;&#x5B89;&#x88C5;"><a href="#&#x6E90;&#x7801;&#x7F16;&#x8BD1;&#x5B89;&#x88C5;" class="headerlink" title="&#x6E90;&#x7801;&#x7F16;&#x8BD1;&#x5B89;&#x88C5;"></a>&#x6E90;&#x7801;&#x7F16;&#x8BD1;&#x5B89;&#x88C5;</h2><p><strong>&#x83B7;&#x53D6;&#x6E90;&#x7801;&#x5305;</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@ctos7mini ~]&amp; wget https://download.redis.io/releases/redis-3.2.5.tar.gz</span><br><span class="line">--2022-05-09 04:27:32--  https://download.redis.io/releases/redis-3.2.5.tar.gz</span><br><span class="line">Connecting to 192.168.73.1:7890... connected.</span><br><span class="line">Proxy request sent, awaiting response... 200 OK</span><br><span class="line">Length: 1544040 (1.5M) [application/octet-stream]</span><br><span class="line">Saving to: &#x2018;redis-3.2.5.tar.gz&#x2019;</span><br><span class="line"></span><br><span class="line"><span class="meta">100%</span><span class="bash">[==================================================================================================================&gt;] 1,544,040   1.10MB/s   <span class="keyword">in</span> 1.3s</span></span><br><span class="line"></span><br><span class="line">2022-05-09 04:27:35 (1.10 MB/s) - &#x2018;redis-3.2.5.tar.gz&#x2019; saved [1544040/1544040]</span><br></pre></td></tr></tbody></table></figure><p></p>
-<p><strong>&#x89E3;&#x538B;&#x6587;&#x4EF6;&#x5230;<code>/usr/local/</code></strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@ctos7mini ~]&amp; tar zxvf redis-3.2.5.tar.gz -C /usr/local/</span><br><span class="line">redis-3.2.5/</span><br><span class="line">redis-3.2.5/.gitignore</span><br><span class="line">redis-3.2.5/00-RELEASENOTES</span><br><span class="line">redis-3.2.5/BUGS</span><br><span class="line">redis-3.2.5/CONTRIBUTING</span><br><span class="line">redis-3.2.5/COPYING</span><br><span class="line">redis-3.2.5/INSTALL</span><br><span class="line">redis-3.2.5/MANIFESTO</span><br><span class="line">redis-3.2.5/Makefile</span><br><span class="line">redis-3.2.5/README.md</span><br><span class="line">redis-3.2.5/deps/</span><br><span class="line">redis-3.2.5/deps/Makefile</span><br><span class="line">redis-3.2.5/deps/README.md</span><br><span class="line">redis-3.2.5/deps/geohash-int/</span><br><span class="line">redis-3.2.5/deps/geohash-int/Makefile</span><br><span class="line">redis-3.2.5/deps/geohash-int/geohash.c</span><br><span class="line">redis-3.2.5/deps/geohash-int/geohash.h</span><br><span class="line">redis-3.2.5/deps/geohash-int/geohash_helper.c</span><br><span class="line">..................&#x7701;&#x7565;..........................</span><br></pre></td></tr></tbody></table></figure><p></p>
-<p><strong>&#x5B89;&#x88C5;&#x7F16;&#x8BD1;&#x73AF;&#x5883;</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@ctos7mini redis-3.2.5]&amp; yum install -y gcc gcc-c++ kernel-devel</span><br></pre></td></tr></tbody></table></figure><p></p>
-<p><strong>&#x7F16;&#x8BD1;Redis</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@ctos7mini src]&amp; make &amp;&amp; make install</span><br></pre></td></tr></tbody></table></figure><p></p>
-<p><strong>&#x521B;&#x5EFA;redis.service&#x542F;&#x52A8;&#x6587;&#x4EF6;</strong><br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@ctos7mini ~]&amp; vim /usr/lib/systemd/system/redis.service</span><br></pre></td></tr></tbody></table></figure><p></p>
-<figure class="highlight ini"><table><tbody><tr><td class="code"><pre><span class="line"><span class="section">[Unit]</span></span><br><span class="line"><span class="attr">Description</span>=Redis persistent key-value database</span><br><span class="line"><span class="attr">After</span>=network.target</span><br><span class="line"> </span><br><span class="line"><span class="section">[Service]</span></span><br><span class="line"><span class="attr">ExecStart</span>=/usr/local/redis-<span class="number">3.2</span>.<span class="number">5</span>/src/redis-server /usr/local/redis-<span class="number">3.2</span>.<span class="number">5</span>/redis.conf --supervised systemd</span><br><span class="line"><span class="attr">ExecStop</span>=/usr/libexec/redis-shutdown</span><br><span class="line"><span class="attr">Type</span>=notify</span><br><span class="line"><span class="attr">User</span>=redis</span><br><span class="line"><span class="attr">Group</span>=redis</span><br><span class="line"><span class="attr">RuntimeDirectory</span>=redis</span><br><span class="line"><span class="attr">RuntimeDirectoryMode</span>=<span class="number">0755</span></span><br><span class="line"> </span><br><span class="line"><span class="section">[Install]</span></span><br><span class="line"><span class="attr">WantedBy</span>=multi-user.target</span><br></pre></td></tr></tbody></table></figure>
-<p>&#x521B;&#x5EFA;redis-shutdown&#x6587;&#x4EF6;<br></p><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@ctos7mini src]&amp; vim /usr/libexec/redis-shutdown</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#=========================================================##</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"><span class="meta">#</span><span class="bash"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Wrapper to close properly redis and sentinel</span></span><br><span class="line">test x&quot;$REDIS_DEBUG&quot; != x &amp;&amp; set -x</span><br><span class="line"></span><br><span class="line">REDIS_CLI=/usr/local/redis-3.2.5/src/redis-cli</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Retrieve service name</span></span><br><span class="line">SERVICE_NAME=&quot;$1&quot;</span><br><span class="line">if [ -z &quot;$SERVICE_NAME&quot; ]; then</span><br><span class="line">   SERVICE_NAME=redis</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Get the proper config file based on service name</span></span><br><span class="line">CONFIG_FILE=&quot;/etc/$SERVICE_NAME.conf&quot;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Use awk to retrieve host, port from config file</span></span><br><span class="line">HOST=`awk &apos;/^[[:blank:]]*bind/ { print $2 }&apos; $CONFIG_FILE | tail -n1`</span><br><span class="line">PORT=`awk &apos;/^[[:blank:]]*port/ { print $2 }&apos; $CONFIG_FILE | tail -n1`</span><br><span class="line">PASS=`awk &apos;/^[[:blank:]]*requirepass/ { print $2 }&apos; $CONFIG_FILE | tail -n1`</span><br><span class="line">SOCK=`awk &apos;/^[[:blank:]]*unixsocket\s/ { print $2 }&apos; $CONFIG_FILE | tail -n1`</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Just <span class="keyword">in</span> <span class="keyword">case</span>, use default host, port</span></span><br><span class="line">HOST=${HOST:-127.0.0.1}</span><br><span class="line">if [ &quot;$SERVICE_NAME&quot; = redis ]; then</span><br><span class="line">    PORT=${PORT:-6379}</span><br><span class="line">else</span><br><span class="line">    PORT=${PORT:-26739}</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Setup additional parameters</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> e.g password-protected redis instances</span></span><br><span class="line">[ -z &quot;$PASS&quot;  ] || ADDITIONAL_PARAMS=&quot;-a $PASS&quot;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> shutdown the service properly</span></span><br><span class="line">if [ -e &quot;$SOCK&quot; ] ; then</span><br><span class="line">    $REDIS_CLI -s $SOCK $ADDITIONAL_PARAMS shutdown</span><br><span class="line">else</span><br><span class="line">    $REDIS_CLI -h $HOST -p $PORT $ADDITIONAL_PARAMS shutdown</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#=========================================================##</span></span></span><br><span class="line"></span><br><span class="line">[root@ctos7mini src]&amp; chmod 755 /usr/libexec/redis-shutdown</span><br></pre></td></tr></tbody></table></figure><p></p>
-<figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@ctos7mini ~]&amp; useradd redis -s /sbin/nologin</span><br><span class="line">[root@ctos7mini ~]&amp; systemctl daemon-reload</span><br><span class="line">[root@ctos7mini ~]&amp; systemctl start redis</span><br><span class="line">[root@ctos7mini ~]&amp; netstat -pantul | grep 6379</span><br><span class="line">tcp        0      0 0.0.0.0:6379            0.0.0.0:*               LISTEN      1282/redis-server *</span><br><span class="line">tcp6       0      0 :::6379                 :::*                    LISTEN      1282/redis-server *</span><br><span class="line">[root@ctos7mini ~]&amp;</span><br></pre></td></tr></tbody></table></figure>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[root@ctos7mini ~]&amp; redis-server &amp;</span><br><span class="line">[1] 1282</span><br><span class="line">[root@ctos7mini ~]&amp; 1282:C 09 May 04:53:34.532 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf</span><br><span class="line">1282:M 09 May 04:53:34.533 * Increased maximum number of open files to 10032 (it was originally set to 1024).</span><br><span class="line">                _._</span><br><span class="line">           _.-``__ &apos;&apos;-._</span><br><span class="line">      _.-``    `.  `_.  &apos;&apos;-._           Redis 3.2.5 (00000000/0) 64 bit</span><br><span class="line">  .-`` .-```.  ```\/    _.,_ &apos;&apos;-._</span><br><span class="line"> (    &apos;      ,       .-`  | `,    )     Running in standalone mode</span><br><span class="line"> |`-._`-...-` __...-.``-._|&apos;` _.-&apos;|     Port: 6379</span><br><span class="line"> |    `-._   `._    /     _.-&apos;    |     PID: 1282</span><br><span class="line">  `-._    `-._  `-./  _.-&apos;    _.-&apos;</span><br><span class="line"> |`-._`-._    `-.__.-&apos;    _.-&apos;_.-&apos;|</span><br><span class="line"> |    `-._`-._        _.-&apos;_.-&apos;    |           http://redis.io</span><br><span class="line">  `-._    `-._`-.__.-&apos;_.-&apos;    _.-&apos;</span><br><span class="line"> |`-._`-._    `-.__.-&apos;    _.-&apos;_.-&apos;|</span><br><span class="line"> |    `-._`-._        _.-&apos;_.-&apos;    |</span><br><span class="line">  `-._    `-._`-.__.-&apos;_.-&apos;    _.-&apos;</span><br><span class="line">      `-._    `-.__.-&apos;    _.-&apos;</span><br><span class="line">          `-._        _.-&apos;</span><br><span class="line">              `-.__.-&apos;</span><br><span class="line"></span><br><span class="line">1282:M 09 May 04:53:34.540 # WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.</span><br><span class="line">1282:M 09 May 04:53:34.540 # Server started, Redis version 3.2.5</span><br><span class="line">1282:M 09 May 04:53:34.541 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add &apos;vm.overcommit_memory = 1&apos; to /etc/sysctl.conf and then reboot or run the command &apos;sysctl vm.overcommit_memory=1&apos; for this to take effect.</span><br><span class="line">1282:M 09 May 04:53:34.541 # WARNING you have Transparent Huge Pages (THP) support enabled in your kernel. This will create latency and memory usage issues with Redis. To fix this issue run the command &apos;echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled&apos; as root, and add it to your /etc/rc.local in order to retain the setting after a reboot. Redis must be restarted after THP is disabled.</span><br><span class="line">1282:M 09 May 04:53:34.541 * DB loaded from disk: 0.000 seconds</span><br><span class="line">1282:M 09 May 04:53:34.541 * The server is now ready to accept connections on port 6379</span><br><span class="line"></span><br><span class="line">[root@ctos7mini ~]&amp;</span><br></pre></td></tr></tbody></table></figure>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">[root@ctos7mini ~]&amp; redis-cli</span><br><span class="line">127.0.0.1:6379&gt;</span><br></pre></td></tr></tbody></table></figure>
-<h2 id="rpm&#x5B89;&#x88C5;Redis"><a href="#rpm&#x5B89;&#x88C5;Redis" class="headerlink" title="rpm&#x5B89;&#x88C5;Redis"></a>rpm&#x5B89;&#x88C5;Redis</h2><figure class="highlight shell"><table><tbody><tr><td class="code"><pre><span class="line">[root@ctos7mini ~]&amp; yum install https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/r/redis-3.2.12-2.el7.x86_64.rpm</span><br><span class="line">Loaded plugins: fastestmirror</span><br><span class="line">redis-3.2.12-2.el7.x86_64.rpm                                                                                                                        | 544 kB  00:00:01</span><br><span class="line">Examining /var/tmp/yum-root-OuFo3f/redis-3.2.12-2.el7.x86_64.rpm: redis-3.2.12-2.el7.x86_64</span><br><span class="line">Marking /var/tmp/yum-root-OuFo3f/redis-3.2.12-2.el7.x86_64.rpm to be installed</span><br><span class="line">Resolving Dependencies</span><br><span class="line"><span class="meta">--&gt;</span><span class="bash"> Running transaction check</span></span><br><span class="line"><span class="meta">---&gt;</span><span class="bash"> Package redis.x86_64 0:3.2.12-2.el7 will be installed</span></span><br><span class="line"><span class="meta">--&gt;</span><span class="bash"> Processing Dependency: libjemalloc.so.1()(64bit) <span class="keyword">for</span> package: redis-3.2.12-2.el7.x86_64</span></span><br><span class="line">Loading mirror speeds from cached hostfile</span><br><span class="line"> * base: centos.nethub.com.hk</span><br><span class="line"> * epel: mirrors.neusoft.edu.cn</span><br><span class="line"> * extras: centos.nethub.com.hk</span><br><span class="line"> * updates: centos.nethub.com.hk</span><br><span class="line"><span class="meta">--&gt;</span><span class="bash"> Running transaction check</span></span><br><span class="line"><span class="meta">---&gt;</span><span class="bash"> Package jemalloc.x86_64 0:3.6.0-1.el7 will be installed</span></span><br><span class="line"><span class="meta">--&gt;</span><span class="bash"> Finished Dependency Resolution</span></span><br><span class="line"></span><br><span class="line">Dependencies Resolved</span><br><span class="line"></span><br><span class="line">============================================================================================================================================================================</span><br><span class="line"> Package                             Arch                              Version                                  Repository                                             Size</span><br><span class="line">============================================================================================================================================================================</span><br><span class="line">Installing:</span><br><span class="line"> redis                               x86_64                            3.2.12-2.el7                             /redis-3.2.12-2.el7.x86_64                            1.4 M</span><br><span class="line">Installing for dependencies:</span><br><span class="line"> jemalloc                            x86_64                            3.6.0-1.el7                              epel                                                  105 k</span><br><span class="line"></span><br><span class="line">Transaction Summary</span><br><span class="line">============================================================================================================================================================================</span><br><span class="line">Install  1 Package (+1 Dependent package)</span><br><span class="line"></span><br><span class="line">Total size: 1.5 M</span><br><span class="line">Total download size: 105 k</span><br><span class="line">Installed size: 1.7 M</span><br><span class="line">Is this ok [y/d/N]: y</span><br><span class="line">Downloading packages:</span><br><span class="line">jemalloc-3.6.0-1.el7.x86_64.rpm                                                                                                                      | 105 kB  00:00:00</span><br><span class="line">Running transaction check</span><br><span class="line">Running transaction test</span><br><span class="line">Transaction test succeeded</span><br><span class="line">Running transaction</span><br><span class="line">  Installing : jemalloc-3.6.0-1.el7.x86_64                                                                                                                              1/2</span><br><span class="line">  Installing : redis-3.2.12-2.el7.x86_64                                                                                                                                2/2</span><br><span class="line">  Verifying  : redis-3.2.12-2.el7.x86_64                                                                                                                                1/2</span><br><span class="line">  Verifying  : jemalloc-3.6.0-1.el7.x86_64                                                                                                                              2/2</span><br><span class="line"></span><br><span class="line">Installed:</span><br><span class="line">  redis.x86_64 0:3.2.12-2.el7</span><br><span class="line"></span><br><span class="line">Dependency Installed:</span><br><span class="line">  jemalloc.x86_64 0:3.6.0-1.el7</span><br><span class="line"></span><br><span class="line">Complete!</span><br><span class="line"></span><br><span class="line">[root@ctos7mini ~]&amp; systemctl start redis</span><br><span class="line">[root@ctos7mini ~]&amp;</span><br></pre></td></tr></tbody></table></figure>
-<figure class="image-bubble">
-                <div class="img-lightbox">
-                    <div class="overlay"></div>
-                    <img src="http://192.168.85.188:8081/uploads/1652923388117537180QQ20220508210823.png" alt="" title="">
-                </div>
-                <div class="image-caption"></div>
-            </figure>
-<p>&#x6CE8;&#x610F;&#xFF1A;&#x4F7F;&#x7528;RPM&#x5305;&#x5B89;&#x88C5;redis&#x4F1A;&#x4F9D;&#x8D56;jemalloc&#x7A0B;&#x5E8F;&#x5305;&#xFF0C;jemalloc&#x662F;&#x5185;&#x5B58;&#x5206;&#x914D;&#x5DE5;&#x5177;&#xFF0C;&#x6B64;&#x5305;&#x5728;epel&#x6E90;&#x4E2D;</p>
+<h2 id="&#x6E90;&#x7801;&#x7F16;&#x8BD1;&#x5B89;&#x88C5;"><a href="#&#x6E90;&#x7801;&#x7F16;&#x8BD1;&#x5B89;&#x88C5;" class="headerlink" title="&#x6E90;&#x7801;&#x7F16;&#x8BD1;&#x5B89;&#x88C5;"></a>&#x6E90;&#x7801;&#x7F16;&#x8BD1;&#x5B89;&#x88C5;</h2><p><strong>&#x83B7;&#x53D6;&#x6E90;&#x7801;&#x5305;</strong></p>
+<pre><code class="shell">[root@ctos7mini ~]&amp; wget https://download.redis.io/releases/redis-3.2.5.tar.gz
+--2022-05-09 04:27:32--  https://download.redis.io/releases/redis-3.2.5.tar.gz
+Connecting to 192.168.73.1:7890... connected.
+Proxy request sent, awaiting response... 200 OK
+Length: 1544040 (1.5M) [application/octet-stream]
+Saving to: &#x2018;redis-3.2.5.tar.gz&#x2019;
+
+100%[==================================================================================================================&gt;] 1,544,040   1.10MB/s   in 1.3s
+
+2022-05-09 04:27:35 (1.10 MB/s) - &#x2018;redis-3.2.5.tar.gz&#x2019; saved [1544040/1544040]
+</code></pre>
+<p><strong>&#x89E3;&#x538B;&#x6587;&#x4EF6;&#x5230;<code>/usr/local/</code></strong></p>
+<pre><code class="shell">[root@ctos7mini ~]&amp; tar zxvf redis-3.2.5.tar.gz -C /usr/local/
+redis-3.2.5/
+redis-3.2.5/.gitignore
+redis-3.2.5/00-RELEASENOTES
+redis-3.2.5/BUGS
+redis-3.2.5/CONTRIBUTING
+redis-3.2.5/COPYING
+redis-3.2.5/INSTALL
+redis-3.2.5/MANIFESTO
+redis-3.2.5/Makefile
+redis-3.2.5/README.md
+redis-3.2.5/deps/
+redis-3.2.5/deps/Makefile
+redis-3.2.5/deps/README.md
+redis-3.2.5/deps/geohash-int/
+redis-3.2.5/deps/geohash-int/Makefile
+redis-3.2.5/deps/geohash-int/geohash.c
+redis-3.2.5/deps/geohash-int/geohash.h
+redis-3.2.5/deps/geohash-int/geohash_helper.c
+..................&#x7701;&#x7565;..........................
+</code></pre>
+<p><strong>&#x5B89;&#x88C5;&#x7F16;&#x8BD1;&#x73AF;&#x5883;</strong></p>
+<pre><code class="shell">[root@ctos7mini redis-3.2.5]&amp; yum install -y gcc gcc-c++ kernel-devel
+</code></pre>
+<p><strong>&#x7F16;&#x8BD1;Redis</strong></p>
+<pre><code class="shell">[root@ctos7mini src]&amp; make &amp;&amp; make install
+</code></pre>
+<p><strong>&#x521B;&#x5EFA;redis.service&#x542F;&#x52A8;&#x6587;&#x4EF6;</strong></p>
+<pre><code class="shell">[root@ctos7mini ~]&amp; vim /usr/lib/systemd/system/redis.service
+</code></pre>
+<pre><code class="ini">[Unit]
+Description=Redis persistent key-value database
+After=network.target
+
+[Service]
+ExecStart=/usr/local/redis-3.2.5/src/redis-server /usr/local/redis-3.2.5/redis.conf --supervised systemd
+ExecStop=/usr/libexec/redis-shutdown
+Type=notify
+User=redis
+Group=redis
+RuntimeDirectory=redis
+RuntimeDirectoryMode=0755
+
+[Install]
+WantedBy=multi-user.target
+</code></pre>
+<p>&#x521B;&#x5EFA;redis-shutdown&#x6587;&#x4EF6;</p>
+<pre><code class="shell">[root@ctos7mini src]&amp; vim /usr/libexec/redis-shutdown
+
+##=========================================================##
+
+#!/bin/bash
+#
+# Wrapper to close properly redis and sentinel
+test x&quot;$REDIS_DEBUG&quot; != x &amp;&amp; set -x
+
+REDIS_CLI=/usr/local/redis-3.2.5/src/redis-cli
+
+# Retrieve service name
+SERVICE_NAME=&quot;$1&quot;
+if [ -z &quot;$SERVICE_NAME&quot; ]; then
+   SERVICE_NAME=redis
+fi
+
+# Get the proper config file based on service name
+CONFIG_FILE=&quot;/etc/$SERVICE_NAME.conf&quot;
+
+# Use awk to retrieve host, port from config file
+HOST=`awk &apos;/^[[:blank:]]*bind/ { print $2 }&apos; $CONFIG_FILE | tail -n1`
+PORT=`awk &apos;/^[[:blank:]]*port/ { print $2 }&apos; $CONFIG_FILE | tail -n1`
+PASS=`awk &apos;/^[[:blank:]]*requirepass/ { print $2 }&apos; $CONFIG_FILE | tail -n1`
+SOCK=`awk &apos;/^[[:blank:]]*unixsocket\s/ { print $2 }&apos; $CONFIG_FILE | tail -n1`
+
+# Just in case, use default host, port
+HOST=${HOST:-127.0.0.1}
+if [ &quot;$SERVICE_NAME&quot; = redis ]; then
+    PORT=${PORT:-6379}
+else
+    PORT=${PORT:-26739}
+fi
+
+# Setup additional parameters
+# e.g password-protected redis instances
+[ -z &quot;$PASS&quot;  ] || ADDITIONAL_PARAMS=&quot;-a $PASS&quot;
+
+# shutdown the service properly
+if [ -e &quot;$SOCK&quot; ] ; then
+    $REDIS_CLI -s $SOCK $ADDITIONAL_PARAMS shutdown
+else
+    $REDIS_CLI -h $HOST -p $PORT $ADDITIONAL_PARAMS shutdown
+fi
+
+##=========================================================##
+
+[root@ctos7mini src]&amp; chmod 755 /usr/libexec/redis-shutdown
+</code></pre>
+<pre><code class="shell">[root@ctos7mini ~]&amp; useradd redis -s /sbin/nologin
+[root@ctos7mini ~]&amp; systemctl daemon-reload
+[root@ctos7mini ~]&amp; systemctl start redis
+[root@ctos7mini ~]&amp; netstat -pantul | grep 6379
+tcp        0      0 0.0.0.0:6379            0.0.0.0:*               LISTEN      1282/redis-server *
+tcp6       0      0 :::6379                 :::*                    LISTEN      1282/redis-server *
+[root@ctos7mini ~]&amp;
+</code></pre>
+<pre><code class="mbox">[root@ctos7mini ~]&amp; redis-server &amp;
+[1] 1282
+[root@ctos7mini ~]&amp; 1282:C 09 May 04:53:34.532 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf
+1282:M 09 May 04:53:34.533 * Increased maximum number of open files to 10032 (it was originally set to 1024).
+                _._
+           _.-``__ &apos;&apos;-._
+      _.-``    `.  `_.  &apos;&apos;-._           Redis 3.2.5 (00000000/0) 64 bit
+  .-`` .-```.  ```\/    _.,_ &apos;&apos;-._
+ (    &apos;      ,       .-`  | `,    )     Running in standalone mode
+ |`-._`-...-` __...-.``-._|&apos;` _.-&apos;|     Port: 6379
+ |    `-._   `._    /     _.-&apos;    |     PID: 1282
+  `-._    `-._  `-./  _.-&apos;    _.-&apos;
+ |`-._`-._    `-.__.-&apos;    _.-&apos;_.-&apos;|
+ |    `-._`-._        _.-&apos;_.-&apos;    |           http://redis.io
+  `-._    `-._`-.__.-&apos;_.-&apos;    _.-&apos;
+ |`-._`-._    `-.__.-&apos;    _.-&apos;_.-&apos;|
+ |    `-._`-._        _.-&apos;_.-&apos;    |
+  `-._    `-._`-.__.-&apos;_.-&apos;    _.-&apos;
+      `-._    `-.__.-&apos;    _.-&apos;
+          `-._        _.-&apos;
+              `-.__.-&apos;
+
+1282:M 09 May 04:53:34.540 # WARNING: The TCP backlog setting of 511 cannot be enforced because /proc/sys/net/core/somaxconn is set to the lower value of 128.
+1282:M 09 May 04:53:34.540 # Server started, Redis version 3.2.5
+1282:M 09 May 04:53:34.541 # WARNING overcommit_memory is set to 0! Background save may fail under low memory condition. To fix this issue add &apos;vm.overcommit_memory = 1&apos; to /etc/sysctl.conf and then reboot or run the command &apos;sysctl vm.overcommit_memory=1&apos; for this to take effect.
+1282:M 09 May 04:53:34.541 # WARNING you have Transparent Huge Pages (THP) support enabled in your kernel. This will create latency and memory usage issues with Redis. To fix this issue run the command &apos;echo never &gt; /sys/kernel/mm/transparent_hugepage/enabled&apos; as root, and add it to your /etc/rc.local in order to retain the setting after a reboot. Redis must be restarted after THP is disabled.
+1282:M 09 May 04:53:34.541 * DB loaded from disk: 0.000 seconds
+1282:M 09 May 04:53:34.541 * The server is now ready to accept connections on port 6379
+
+[root@ctos7mini ~]&amp;
+</code></pre>
+<pre><code class="mbox">[root@ctos7mini ~]&amp; redis-cli
+127.0.0.1:6379&gt;
+</code></pre>
+<h2 id="rpm&#x5B89;&#x88C5;Redis"><a href="#rpm&#x5B89;&#x88C5;Redis" class="headerlink" title="rpm&#x5B89;&#x88C5;Redis"></a>rpm&#x5B89;&#x88C5;Redis</h2><pre><code class="shell">[root@ctos7mini ~]&amp; yum install https://download-ib01.fedoraproject.org/pub/epel/7/x86_64/Packages/r/redis-3.2.12-2.el7.x86_64.rpm
+Loaded plugins: fastestmirror
+redis-3.2.12-2.el7.x86_64.rpm                                                                                                                        | 544 kB  00:00:01
+Examining /var/tmp/yum-root-OuFo3f/redis-3.2.12-2.el7.x86_64.rpm: redis-3.2.12-2.el7.x86_64
+Marking /var/tmp/yum-root-OuFo3f/redis-3.2.12-2.el7.x86_64.rpm to be installed
+Resolving Dependencies
+--&gt; Running transaction check
+---&gt; Package redis.x86_64 0:3.2.12-2.el7 will be installed
+--&gt; Processing Dependency: libjemalloc.so.1()(64bit) for package: redis-3.2.12-2.el7.x86_64
+Loading mirror speeds from cached hostfile
+ * base: centos.nethub.com.hk
+ * epel: mirrors.neusoft.edu.cn
+ * extras: centos.nethub.com.hk
+ * updates: centos.nethub.com.hk
+--&gt; Running transaction check
+---&gt; Package jemalloc.x86_64 0:3.6.0-1.el7 will be installed
+--&gt; Finished Dependency Resolution
+
+Dependencies Resolved
+
+============================================================================================================================================================================
+ Package                             Arch                              Version                                  Repository                                             Size
+============================================================================================================================================================================
+Installing:
+ redis                               x86_64                            3.2.12-2.el7                             /redis-3.2.12-2.el7.x86_64                            1.4 M
+Installing for dependencies:
+ jemalloc                            x86_64                            3.6.0-1.el7                              epel                                                  105 k
+
+Transaction Summary
+============================================================================================================================================================================
+Install  1 Package (+1 Dependent package)
+
+Total size: 1.5 M
+Total download size: 105 k
+Installed size: 1.7 M
+Is this ok [y/d/N]: y
+Downloading packages:
+jemalloc-3.6.0-1.el7.x86_64.rpm                                                                                                                      | 105 kB  00:00:00
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  Installing : jemalloc-3.6.0-1.el7.x86_64                                                                                                                              1/2
+  Installing : redis-3.2.12-2.el7.x86_64                                                                                                                                2/2
+  Verifying  : redis-3.2.12-2.el7.x86_64                                                                                                                                1/2
+  Verifying  : jemalloc-3.6.0-1.el7.x86_64                                                                                                                              2/2
+
+Installed:
+  redis.x86_64 0:3.2.12-2.el7
+
+Dependency Installed:
+  jemalloc.x86_64 0:3.6.0-1.el7
+
+Complete!
+
+[root@ctos7mini ~]&amp; systemctl start redis
+[root@ctos7mini ~]&amp;
+</code></pre>
+<p><img src="http://192.168.85.188:8081/uploads/1652923388117537180QQ20220508210823.png" alt=""><br>&#x6CE8;&#x610F;&#xFF1A;&#x4F7F;&#x7528;RPM&#x5305;&#x5B89;&#x88C5;redis&#x4F1A;&#x4F9D;&#x8D56;jemalloc&#x7A0B;&#x5E8F;&#x5305;&#xFF0C;jemalloc&#x662F;&#x5185;&#x5B58;&#x5206;&#x914D;&#x5DE5;&#x5177;&#xFF0C;&#x6B64;&#x5305;&#x5728;epel&#x6E90;&#x4E2D;</p>
 <script>
         document.querySelectorAll('.github-emoji')
           .forEach(el => {
@@ -296,355 +2106,51 @@
             document.body.appendChild(img);
           });
       </script>
-        </div>
-
-        <blockquote class="post-copyright">
-    <div class="content">
-        
-<span class="post-time">
-    最后更新：<time datetime="2022-06-07T05:06:06.548Z" itemprop="dateUpdated">2022-06-07 13:06:06</time>
-</span>
+</div>
 
 
-        
-        原文链接：<a href="/posts/18d7d749/" target="_blank" rel="external">https://marnm.github.io/posts/18d7d749/</a>
-        
-    </div>
-    <footer>
-        <div onclick="location.href='https://marnm.github.io'">
-            <img src="/img/avatar.gif" alt="Echo">
-            <a>Echo</a>
-        </div>
-    </footer>
-</blockquote>
-
-        
-    <div class="page-reward">
-        <nav class="myreward">
-            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
-        </nav>
-    </div>
-
-
-
-        <div class="post-footer">
+    <div class="post-guide">
+        <div class="item left">
             
-
+              <a href="/posts/f03da4e7/">
+                  <i class="fa fa-angle-left" aria-hidden="true"></i>
+                  Redis配置文件详解
+              </a>
             
-<div class="page-share-wrap">
-    
-
-<div class="page-share" id="pageShare">
-    <ul class="reset share-icons">
-      <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/18d7d749/&title=《Redis概述》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
-          <i class="icon icon-weibo"></i>
-        </a>
-      </li>
-      <li>
-        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
-          <i class="icon icon-weixin"></i>
-        </a>
-      </li>
-      <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/18d7d749/&title=《Redis概述》 — Deops's blog&source=Echo" data-title=" QQ">
-          <i class="icon icon-qq"></i>
-        </a>
-      </li>
-      <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/18d7d749/" data-title=" Facebook">
-          <i class="icon icon-facebook"></i>
-        </a>
-      </li>
-      <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Redis概述》 — Deops's blog&url=https://marnm.github.io/posts/18d7d749/&via=https://marnm.github.io" data-title=" Twitter">
-          <i class="icon icon-twitter"></i>
-        </a>
-      </li>
-      <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/18d7d749/" data-title=" Google+">
-          <i class="icon icon-google-plus"></i>
-        </a>
-      </li>
-    </ul>
- </div>
-
-
-
-    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
-        <i class="icon icon-share-alt icon-lg"></i>
-    </a>
-</div>
-
-
-
+        </div>
+        <div class="item right">
+            
+              <a href="/posts/1f351894/">
+                Python-VirtualEnv
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+              </a>
+            
         </div>
     </div>
 
-    
-<nav class="post-nav flex-row flex-justify-between">
-  
-    <div class="waves-block waves-effect prev">
-      <a href="/posts/f03da4e7/" id="post-prev" class="post-nav-link">
-        <h4 class="title">
-          上一篇：Redis配置文件详解
-        </h4>
-      </a>
-    </div>
-  
-
-  
-    <div class="waves-block waves-effect next">
-      <a href="/posts/1f351894/" id="post-next" class="post-nav-link">
-        <h4 class="title" data-hover="下一篇：Python-VirtualEnv">下一篇：Python-VirtualEnv</h4>
-      </a>
-    </div>
-  
-</nav>
 
 
 
-    
-    
-
-    
-
-    
-
-
-</article>
-
-</div>
-
-        <footer class="footer">
-    <div class="footer-content">
-        <span class="power">
-            <i class="icon icon-lg icon-copyright"></i>
-            2022
-            <i class="icon icon-lg icon-heart"></i>
-            <a href="https://marnm.github.io">marnm.github.io</a>
-            <br>
-            Power by
-            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
-            Theme
-            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
-        </span>
-
-        <br>
-
-        <span id="RunTime" style="color:#a7a7a2;"></span>
-        <br>
-
-        <span>
-            
-
-        </span>
-        <br>
-
-        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
-    </div>
-</footer>
-
-    </main>
-    
-        
-<div id="reward" class="page-modal reward-lay">
-    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <h3 class="reward-title">
-        <i class="icon icon-quote-left"></i>
-        <span>感谢您的鼓励支持！</span>
-        <i class="icon icon-quote-right"></i>
-    </h3>
-    <div class="reward-content">
-        
-        <div class="reward-code">
-            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
-        </div>
-        
-        <label class="reward-toggle">
-            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
-            <div class="reward-toggle-ctrol">
-                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
-                <span class="reward-toggle-item alipayPay">支付宝</span>
-            </div>
-        </label>
-        
-        <i class="icon icon-caret-up"></i>
-    </div>
-</div>
-
-
-    
-    <div class="mask" id="mask"></div>
-<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
-
-
-
-<div class="global-share" id="globalShare">
-    <ul class="reset share-icons">
-      <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/18d7d749/&title=《Redis概述》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
-          <i class="icon icon-weibo"></i>
-        </a>
-      </li>
-      <li>
-        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
-          <i class="icon icon-weixin"></i>
-        </a>
-      </li>
-      <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/18d7d749/&title=《Redis概述》 — Deops's blog&source=Echo" data-title=" QQ">
-          <i class="icon icon-qq"></i>
-        </a>
-      </li>
-      <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/18d7d749/" data-title=" Facebook">
-          <i class="icon icon-facebook"></i>
-        </a>
-      </li>
-      <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Redis概述》 — Deops's blog&url=https://marnm.github.io/posts/18d7d749/&via=https://marnm.github.io" data-title=" Twitter">
-          <i class="icon icon-twitter"></i>
-        </a>
-      </li>
-      <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/18d7d749/" data-title=" Google+">
-          <i class="icon icon-google-plus"></i>
-        </a>
-      </li>
-    </ul>
- </div>
-
-
-<div class="page-modal wx-share" id="wxShare">
-    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p class="wechatshare">扫一扫，分享到微信</p>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAABzElEQVR42u3aW46DMBAEQO5/afYAEaTbL2Wl8lcUgl3hYzRuc13xuB/G59Wnb57mvHYMXFzcae79Op5+87lkgnu/992Ai4t7nvteaD5/kyzWPo6o2OHi4v48N184L2q4uLj/kZs0Iu3mBxcX9ze5eQvyPvXYn9yyV8PFxZ3g5inlvs9b8l1cXNwh7l2OfDOTXK1Xx8XFPcLdHWQk7U67Li4u7hlu0ksksWn7Tbs6Li7uee7M6xFtMNrGIl+yHFxc3G3cmSOTNv5oY1lcXNzz3PzmvAC1bVNxWIuLi7uZu2rqfPmxE5PoPRFcXNxF3DbKjOpiPHOy7pdnjIuLu43bFrU2DM0boCJgxcXF3cx9DzvaGLRFtEc1uLi457l5k9HGoPlGqKi4uLi4B7ntS1cz7U5b/nBxcU9y88POsdAk2UQVmx9cXNwj3LGIpL3atjhX/lRwcXEXce9yvM+Qzzx4HIuLi3uEu+yViPjeIv4YilRwcXFXcWc2J2MvVeQB62NgiouLe4Q7Fo/m1TEvgkW+i4uL+5PcpMDNb7GWFTJcXNzN3MF0tpwtOkrBxcXdxp0PN8e2QHmjg4uLe5I7U57ao9Y8EFmQ7+Li4o5w/wBMcuIxoDYIUQAAAABJRU5ErkJggg==" alt="微信分享二维码">
-</div>
-
-
-
-
-    <!-- waves按钮特效 -->
-<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
-
-<!-- 主题配置脚本 -->
 <script>
-var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+	
+	
 </script>
-
-<!-- jquery -->
-<script src="/js/jquery.min.js?v=3.0"></script>
-
-<!-- 搜索 -->
-
-<div class="search-panel" id="search-panel">
-    <ul class="search-result" id="search-result"></ul>
+	</div>
+	<div id="footer">
+	<p>
+	©2019-<span id="footerYear"></span> 
+	<a href="/">Echo</a> 
+	
+	
+	<br>
+	Theme <a href="//github.com/wujun234/hexo-theme-tree" target="_blank">Tree</a>
+	by <a href="//github.com/wujun234" target="_blank">WuJun</a>
+	Powered by <a href="//hexo.io" target="_blank">Hexo</a>
+	</p>
 </div>
-<template id="search-tpl">
-<li class="item waves-block waves-effect" onclick="location.href='{path}'">
-    <div class="title ellipsis" title="{title}">{title}</div>
-</li>
-</template>
-
-
-<!-- main博客脚本 -->
-<script src="/js/main.min.js?v=3.0"></script>
-
-<!-- 动画&配置 -->
-<script src="/js/script.min.js?v=3.0"></script>
-
-<!-- 脚本管理 -->
-<script>
-
-if(window.innerWidth > 800){
-	/* 3D标题 */
-	$(".content-header").on("mousemove", threedee);
-
-	/* 底部追随鼠标 */
-	$(".footer").hover(2);
-
-	/* gotop键的涟漪 */
-	$("#gotop").hover(1);
-
-	/* 赞赏的粒子雨 */
-	$("#reward").hover(3);
-
-	/* 微信公众号的底部渲染 */
-	$("#wechat").hover(4);
-
-    /* 标题跳动 */
-    $(".archivestitle").bumpyText();
-
-	/* 图片点击放大 */
-	const postimg = jQuery(".post-content img:not(.github-emoji)");
-	postimg.on("click",function(){
-
-		mask.classList.add("in");
-		main.classList.add("Mask");
-		menu.classList.add("Mask");
-		var myimg = this.cloneNode(true);
-		myimg.classList.add("imgShow");
-
-		setTimeout(function(){
-			jQuery(myimg).animate({
-				opacity:"1"
-			},1000);
-		},0);
-
-		document.body.appendChild(myimg);
-
-		myimg.onclick=function(){
-			document.body.removeChild(myimg);
-			mask.classList.remove("in");
-			main.classList.remove("Mask");
-			menu.classList.remove("Mask");
-		};
-
-	});
-
-}
-
-/* 名字跳动 */
-$("#name").bumpyText();
-
-
-/* 网站运行时间 */
-setInterval(function () {
-	setTime("2019/01/01");
-}, 1000);
-
-/* 文章块的淡出 */
-postshow();
-
-/* 座右铭 */
-
-   getHitokoto();
-
-
-
-/* 粘贴提示 */
-G($(".post-content"), location.href, "Echo");
-
-
-/* 控制台 */
-if (window.console && window.console.log) {
-	setTimeout(function () {
-		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
-	}, 0);
-}
-
+<script type="text/javascript"> 
+	document.getElementById('footerYear').innerHTML = new Date().getFullYear() + '';
 </script>
-
-
-
-
-<!-- 公式渲染 -->
-
-
-
-<!-- 不蒜子 -->
-
-
+	<button id="totop-toggle" class="toggle"><i class="fa fa-angle-double-up" aria-hidden="true"></i></button>
 </body>
 </html>

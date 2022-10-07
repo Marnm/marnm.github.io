@@ -1,238 +1,1902 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head><meta name="generator" content="Hexo 3.8.0">
-    <meta http-equiv="Content-Language" content="zh-cn">
-    <meta charset="utf-8">
-    
-    
-    
-    <title>NexT主题优化+美化 | Deops&#39;s blog | 运维开发工程师</title>
-    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
-    
-    <meta name="theme-color" content="#77AAFF">
-    
-    
-    <meta name="keywords" content="Hexo,NexT">
-    
-    
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+	
+	<!-- title -->
+	
+	<title>
+	
+		NexT主题优化+美化 | 
+	 
+	Deops&#39;s blog
+	</title>
+	
+	<!-- keywords,description -->
+	
+		<meta name="keywords" content="Hexo,Echo">
+	 
+		<meta name="description" content="Hexo和NexT主题">
+	
 
-    
+	<!-- favicon -->
+	
+	<link rel="shortcut icon" href="/favicon.ico">
+	
 
-    <!-- Baidu Push -->
-<script>
-	(function(){
-		var bp = document.createElement('script');
-		var curProtocol = window.location.protocol.split(':')[0];
-		if (curProtocol === 'https') {
-			bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+
+	<!-- search -->
+	<script>
+		var searchEngine = "https://www.google.com/search?q=";
+		if(typeof searchEngine == "undefined" || searchEngine == null || searchEngine == ""){
+			searchEngine = "https://www.google.com/search?q=";
 		}
-		else {
-			bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+		var homeHost = "https://marnm.github.io/";
+		if(typeof homeHost == "undefined" || homeHost == null || homeHost == ""){
+			homeHost = window.location.host;
 		}
-		var s = document.getElementsByTagName("script")[0];
-		s.parentNode.insertBefore(bp, s);
-	})();
-
-	var _hmt = _hmt || [];
-</script>
+	</script>
 
 
-
+	<link rel="stylesheet" href="/css/main.css">
+	<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/lib/highlight/styles/base16/solarized-dark.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css">
     
-    <meta name="description" content="Hexo和NexT主题">
-<meta name="keywords" content="Hexo">
-<meta property="og:type" content="article">
-<meta property="og:title" content="NexT主题优化+美化">
-<meta property="og:url" content="https://marnm.github.io/posts/60444925/index.html">
-<meta property="og:site_name" content="Deops&#39;s blog">
-<meta property="og:description" content="Hexo和NexT主题">
-<meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2022-05-26T13:32:07.811Z">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="NexT主题优化+美化">
-<meta name="twitter:description" content="Hexo和NexT主题">
-    
-        <link rel="alternate" type="application/atom+xml" title="Deops&#39;s blog" href="/atom.xml">
-    
-    <link rel="shortcut icon" href="/img/favicon.ico">
-    <link id="style" rel="stylesheet" href="/css/style.css?v=3.0">
-    <script>window.lazyScripts=[]</script>
+    <!-- 引入代码高亮的 js -->
+    <script src="/lib/highlight/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 
-    <!-- custom head -->
-    
-            
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/jquery-pjax@2.0.1/jquery.pjax.min.js"></script>
+	<script src="/js/main.js"></script>
+	
+		<script src="https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/valine@v1.4.14/dist/Valine.min.js"></script>
+	
+	
 </head>
 
 <body>
-    <div id="loading" class="active"></div>
-    <aside id="menu" class="hide">
-  <div class="inner flex-row-vertical">
-    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
-        <i class="icon icon-lg icon-close"></i>
-    </a>
-    <div class="brand-wrap">
-      <div class="brand">
-        <a href="/" class="avatar waves-effect waves-circle waves-light">
-          <img src="/img/avatar.gif" alt="avatar">
-        </a>
-        <hgroup class="introduce">
-          <h5 class="nickname" id="name">Echo</h5>
-          
-            <div id="yiyanmotto" class="motto">&nbsp;</div>
-          
-        </hgroup>
-      </div>
-    </div>
-    <div class="scroll-wrap flex-col">
-      <ul class="nav">
-        
-              <li class="waves-block waves-effect">
-                  <a href="/">
-                    <i class="icon icon-lg icon-home"></i>
-                    <span>主 页</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/archives">
-                    <i class="icon icon-lg icon-archives"></i>
-                    <span>归 档</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/categories">
-                    <i class="icon icon-lg icon-th-list"></i>
-                    <span>分 类</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/tags">
-                    <i class="icon icon-lg icon-tags"></i>
-                    <span>标 签</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-              <li class="waves-block waves-effect">
-                  <a href="/about">
-                    <i class="icon icon-lg icon-smile-o"></i>
-                    <span>关 于</span><i class="icon icon-lg icon-caret-left"></i>
-                  </a>
-              </li>
-            
-      <div class="nav2">
-          
-              <a class="nav2item" data-title="Email" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=442KgIbNhZajhYybjoKKj82AjI4" target="_parent" title="Email">
-                <i class="icon icon-lg icon-envelope-o envelope-o"></i>
-              </a>
-          
-              <a class="nav2item" data-title="Github" href="https://github.com/Marnm" target="_blank" title="Github">
-                <i class="icon icon-lg icon-github github"></i>
-              </a>
-          
-              <a class="nav2item" data-title="我的哔哩哔哩" href="https://space.bilibili.com/31374976" target="_blank" title="我的哔哩哔哩">
-                <i class="icon icon-lg icon-tv tv"></i>
-              </a>
-          
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3efe99c287df5a1d6f0d02d187e403c1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
 
-            </div>
-        
-      </ul>
-        
-    </div>
-  </div>
- 
-</aside>
+<header id="header">
+    <a id="title" href="/" class="logo">Deops's blog</a>
 
+	<ul id="menu">
+		<li class="menu-item">
+			<a href="/about" class="menu-item-link">ABOUT</a>
+		</li>
+	
+		<li class="menu-item">
+			<a href="/tags" class="menu-item-link">标签</a>
+		</li>
+	
 
-    <main id="main">
-        <header class="top-header" id="header">
-    <div class="flex-row">
-        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
-          <i class="icon icon-lg icon-navicon"></i>
-        </a>
-        <div class="flex-col header-title ellipsis">NexT主题优化+美化</div>
-        
-        <div class="search-wrap" id="search-wrap">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
-                <i class="icon icon-lg icon-chevron-left"></i>
-            </a>
-            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
-            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
-                <i class="icon icon-lg icon-search"></i>
-            </a>
-        </div>
-        
-        <a href="../../atom.xml" target="_blank" class="header-icon waves-effect waves-circle waves-light" id="Rss">
-            <i class="icon icon-lg icon-rss"></i>
-        </a>
-    </div>
-</header>
-<header class="content-header post-header">
-    
-    
-    <div class="container fade-scale">
-        <div id="myheader">
-            <h1 class="title">
-                
-            </h1>
-            <h5 class="subtitle">
-                
-                
-            </h5>
-        </div>
-    </div>
+	
+		<li class="menu-item">
+			<a href="/categories" class="menu-item-link">分类</a>
+		</li>
+	
 
+		<li class="menu-item">
+			<a href="https://github.com/Marnm" class="menu-item-link" target="_blank">
+				<i class="fa fa-github fa-2x"></i>
+			</a>
+		</li>
+	</ul>
 </header>
 
+	
+<div id="sidebar">
+	<button id="sidebar-toggle" class="toggle"><i class="fa fa-arrow-right " aria-hidden="true"></i></button>
+	
+	<div id="site-toc">
+		<input id="search-input" class="search-input" type="search" placeholder="按回车全站搜索">
+		<div id="tree">
+			
 
-<div class="container body-wrap">
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Ansible自动化运维
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/b45e213f/">
+                     
+										    Ansible自动化管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/28c30eb2/">
+                     
+										    CTF线下赛AWD套路小结
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Ceph对象存储
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/e9abc941/">
+                     
+										    Ceph分布式存储
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/38843421/">
+                     
+										    Ceph分布式存储部署笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9964b559/">
+                     
+										    DHCP Server的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4782a8c2/">
+                     
+										    DNS Server的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5e357037/">
+                     
+										    Django教程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Docker
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/4a3d459a/">
+                     
+										    Docker学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										ELK Stack
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/2d95f1c1/">
+                     
+										    ElasticSearch环境搭建
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/573fc171/">
+                     
+										    Logstash二进制安装与启动
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b11339a9/">
+                     
+										    Logstash去除不需要的字段
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d05b44e0/">
+                     
+										    Logstash读取日志发送到ES
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9d56e705/">
+                     
+										    FTP/TFTP的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ca9298d7/">
+                     
+										    Git版本控制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/51acad32/">
+                     
+										    诺尔·巴尔扎克（Honoréde Balzac）的名言
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4def9c28/">
+                     
+										    In Your 20's These Things Matter More Than You Think
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/295162d9/">
+                     
+										    Java8 环境变量配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										KVM虚拟化
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/dba5727f/">
+                     
+										    KVM图形化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/204af86b/">
+                     
+										    KVM虚拟机克隆和快照
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d69c6e72/">
+                     
+										    KVM虚拟机添加磁盘
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/16305c66/">
+                     
+										    KVM虚拟机迁移
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7733d98/">
+                     
+										    LDAP的配置与管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5922577d/">
+                     
+										    LNMP手动部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/195423a2/">
+                     
+										    LNMP高可用架构配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/38cc96c8/">
+                     
+										    LVM磁盘管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/be48d001/">
+                     
+										    LVS-DR集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/df68056c/">
+                     
+										    LVS-IPTUN集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dcf8e277/">
+                     
+										    LVS-NAT集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/640aafef/">
+                     
+										    LVS和KeepAlived实现高可用集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/82734d8/">
+                     
+										    Linux命令
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/67ee4dec/">
+                     
+										    Linux学习笔记 - 关于开源
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d53cba09/">
+                     
+										    Linux常用性能分析工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/15c0e66c/">
+                     
+										    Linux常见日志文件
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/480c215d/">
+                     
+										    Linux性能管理工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a9bb0c1a/">
+                     
+										    Linux文件的特殊权限
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/cc999d74/">
+                     
+										    Linux文件的隐藏属性
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b7f1c6/">
+                     
+										    Linux文本四剑客
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/aabbd398/">
+                     
+										    Linux无法挂载sysroot并自动进入紧急模式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b3f64b7d/">
+                     
+										    Linux生成随机密码方法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e025952a/">
+                     
+										    Linux登录退出提示信息欢迎信息
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/ee2f9f35/">
+                     
+										    Linux的PAM模块
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1e844aa4/">
+                     
+										    Linux的归档与解压缩
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c4bbfe69/">
+                     
+										    Linux的日志切割
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/be846aea/">
+                     
+										    Linux禁止和开启ping的方法
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f20e14fd/">
+                     
+										    Linux网卡聚合及bond模式的原理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2fe5fc07/">
+                     
+										    Linux计划任务实现
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/365d0867/">
+                     
+										    Linux路由配置——route
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fbf617b4/">
+                     
+										    MariaDB
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bff83912/">
+                     
+										    Markdown 简明语法手册
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5125c787/">
+                     
+										    Markdown语法说明（快速入门）
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										MongoDB
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/8b1c1f4b/">
+                     
+										    MongoDB介绍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/a36562d7/">
+                     
+										    MongoDB学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/55c06d78/">
+                     
+										    MongoDB安装部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										MySQL学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/16fc5dc4/">
+                     
+										    MySQL5.6
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/61fb6d52/">
+                     
+										    MySQL5.7
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bce68613/">
+                     
+										    MySQL基础
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f6e2d114/">
+                     
+										    使用RPM包安装MySQL5.7数据库
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/269a56e8/">
+                     
+										    MySQL备份与恢复（删库不跑路）
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/607e4760/">
+                     
+										    MySQL传统主从同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d77fafec/">
+                     
+										    MySQL的GTID主从同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/db0340bd/">
+                     
+										    MySQL高可用集群架构-MHA架构
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/62ec7971/">
+                     
+										    Atlas实现MySQL读写分离
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/490925f2/">
+                     
+										    MySQL数据库高级应用之读写分离
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/176dc5f3/">
+                     
+										    MyCat垂直分表操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8f74b0e7/">
+                     
+										    MyCat教程全国省份分片枚举操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/208cd020/">
+                     
+										    MySQL调优
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1876d05d/">
+                     
+										    NetworkManager管理工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file active">
+									<a href="/posts/60444925/">
+                     
+										    NexT主题优化+美化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Nginx学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/f4d30967/">
+                     
+										    Nginx动静分离部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1db2b3f1/">
+                     
+										    Nginx平滑升级
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2793eb31/">
+                     
+										    Nginx日志管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2793eb31/">
+                     
+										    Nginx日志管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e0989926/">
+                     
+										    Nginx添加第三方模块
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/da411b72/">
+                     
+										    Nginx虚拟主机
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d4e5e907/">
+                     
+										    Nginx访问控制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d2802762/">
+                     
+										    Nginx高可用架构配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/36ba38f9/">
+                     
+										    NoSQL知识
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e8c4eb08/">
+                     
+										    OpenSSL使用教程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/97717e94/">
+                     
+										    PXE自动化部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Prometheus学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/39c0f6a1/">
+                     
+										    Prometheus学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1f351894/">
+                     
+										    Python-VirtualEnv
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/297a89d9/">
+                     
+										    Python学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fa8e89f7/">
+                     
+										    RAID磁盘阵列技术介绍
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/afdfa673/">
+                     
+										    RHEL 7配置Yum软件仓库
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/32546aed/">
+                     
+										    RedHat Linux重置root管理员密码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/eb7dbe25/">
+                     
+										    RedHat_7 配置网卡信息
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										Redis学习笔记
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/5188e636/">
+                     
+										    Redis与其他应用的集成
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/49fbbc1/">
+                     
+										    Redis基本操作
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e8376589/">
+                     
+										    Redis安装部署——Cluster集群
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e78aaf59/">
+                     
+										    Redis安装部署——Sentinel模式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2acd829b/">
+                     
+										    Redis安装部署——主从复制
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/119ed1dc/">
+                     
+										    Redis持久化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/18d7d749/">
+                     
+										    Redis概述
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e3fb0a3e/">
+                     
+										    Redis的数据备份与恢复
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3e3d973e/">
+                     
+										    Redis配合MySQL使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f03da4e7/">
+                     
+										    Redis配置文件详解
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/41f893fd/">
+                     
+										    Redis编译安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dbd9d26a/">
+                     
+										    SHELL编程类面试题
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f42b90f9/">
+                     
+										    SHELL脚本工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a8ba1e/">
+                     
+										    SHELL脚本练习
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c45f2736/">
+                     
+										    SQL Server 2008安装配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/aa142b64/">
+                     
+										    SQLite安装
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e228b71f/">
+                     
+										    SSH原理与应用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1fdc29d2/">
+                     
+										    Shell的基本运算符
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6309c3f8/">
+                     
+										    Shell编程
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e76ba468/">
+                     
+										    Ubuntu Desktop优化与配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/129acd64/">
+                     
+										    Ubuntu修改配置及美化
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b382711f/">
+                     
+										    VIM的使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e9c6771b/">
+                     
+										    Win10环境下Python2、3和pip2、3版本共存
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6ed6984b/">
+                     
+										    Windows进程管理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/59089347/">
+                     
+										    Zabbix3.4邮件报警配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/7034657d/">
+                     
+										    Zabbix4.0
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/c7b4ec91/">
+                     
+										    firewalld学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1ebd4a76/">
+                     
+										    iproute2工具包
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/57bbf635/">
+                     
+										    iptables学习笔记
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3e189d0c/">
+                     
+										    mysqlclient无法安装的问题
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/1939d3e2/">
+                     
+										    net-tools工具
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bae5d4f0/">
+                     
+										    rhel修改网卡命名规则
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/3c7a2415/">
+                     
+										    rsync数据同步
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/37ca92de/">
+                     
+										    swap交换分区
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/6efb91e0/">
+                     
+										    tcpdump与Wireshark的使用
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/d185f6ae/">
+                     
+										    web性能压测学习
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/bb750036/">
+                     
+										    你要懂得及时止损，别太在乎沉没成本
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/da58b03e/">
+                     
+										    使用HAProxy实现七层负载均衡
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/b161a250/">
+                     
+										    使用服务搭建Hexo个人博客
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="directory">
+									<a href="#" class="directory">
+										<i class="fa fa-plus-square-o"></i>
+										其它
+									</a>
+									
+							<ul>
+								<li class="file">
+									<a href="/posts/9bf5b5/">
+                     
+										    我学练英语所使用的方法、工具与资料
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+								</li>
+								
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4c41c7ef/">
+                     
+										    十二句经典的爱情名言
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/e364486e/">
+                     
+										    基于Docker搭建Prometheus
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/69c239dd/">
+                     
+										    基于LNMP架构搭建企业级开源监控系统Zabbix
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f801d3c5/">
+                     
+										    增加一台Filebeat收集httpd日志
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f5d6f6a9/">
+                     
+										    实战-GitLab更新代码后自动触发Jenkins进行部署
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/fa35a60d/">
+                     
+										    性能测试指标详解
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8a3c5d26/">
+                     
+										    搭建Jenkins实现持续集成-配置Jenkins自动拉取GitLab中的代码
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/4f96852/">
+                     
+										    搭建JumpServer管理王者荣耀数万台游戏服务器
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/f0a65eeb/">
+                     
+										    根分区扩容
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2f57a694/">
+                     
+										    正则表达式
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/9e3f6743/">
+                     
+										    自由的灵魂必将远航
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/217dc297/">
+                     
+										    计算机概述
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/8d4b7ae1/">
+                     
+										    计算机组成原理
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/dded0e80/">
+                     
+										    运维发展史
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/undefined/">
+                     
+										    邮件报警配置
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/5095a46f/">
+                     
+										    配置Docker静态IP
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/2b923a54/">
+                     
+										    配置GitLab邮件服务
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+							<ul>
+								<li class="file">
+									<a href="/posts/76011417/">
+                     
+										    配置Zabbix3.4监控Apache服务
+                     
+									</a>
+								</li>
+								<div class="article-toc" style="display: none;"></div>
+							</ul>
+			
+		</div>
+	</div>
+</div>
+
+	<!-- 引入正文 -->
+	<div id="content">
+		<h1 id="article-title">
+	NexT主题优化+美化
+</h1>
+<div class="article-meta">
+	
+	<span>Echo</span>
+	<span>2018-07-27 20:16:41</span>
+		<div id="article-categories">
     
-    <aside class="post-widget">
-        <nav class="post-toc-wrap" id="post-toc">
-            <h4>TOC</h4>
-            <ol class="post-toc"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#前言"><span class="post-toc-number">1.</span> <span class="post-toc-text">前言</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1-0-视觉优化与性能优化"><span class="post-toc-number">2.</span> <span class="post-toc-text">1.0 视觉优化与性能优化</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1-1-更改字体"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">1.1 更改字体</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1-2-修改行距和间距"><span class="post-toc-number">2.0.2.</span> <span class="post-toc-text">1.2 修改行距和间距</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#1-3-使用gulp压缩hexo博客"><span class="post-toc-number">2.0.3.</span> <span class="post-toc-text">1.3 使用gulp压缩hexo博客</span></a></li></ol></li></ol><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-0-主题美化与主题修改"><span class="post-toc-number">3.</span> <span class="post-toc-text">2.0 主题美化与主题修改</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2-1-修改字体颜色"><span class="post-toc-number">3.0.1.</span> <span class="post-toc-text">2.1 修改字体颜色</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2-2-修改文章内链接文本样式"><span class="post-toc-number">3.0.2.</span> <span class="post-toc-text">2.2 修改文章内链接文本样式</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2-3-修改文章底部标签的-号"><span class="post-toc-number">3.0.3.</span> <span class="post-toc-text">2.3 修改文章底部标签的#号</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2-4-在每篇文章末尾添加“结束”标记"><span class="post-toc-number">3.0.4.</span> <span class="post-toc-text">2.4 在每篇文章末尾添加“结束”标记</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2-5-修改作者头像样式"><span class="post-toc-number">3.0.5.</span> <span class="post-toc-text">2.5 修改作者头像样式</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2-6-修改代码块样式"><span class="post-toc-number">3.0.6.</span> <span class="post-toc-text">2.6 修改代码块样式</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2-7-取消侧边栏文章目录对标题的自动编号"><span class="post-toc-number">3.0.7.</span> <span class="post-toc-text">2.7 取消侧边栏文章目录对标题的自动编号</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2-8-修改侧边栏的背景图片-amp-颜色"><span class="post-toc-number">3.0.8.</span> <span class="post-toc-text">2.8 修改侧边栏的背景图片&amp;颜色</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#2-9-给侧边栏头像添加链接"><span class="post-toc-number">3.0.9.</span> <span class="post-toc-text">2.9 给侧边栏头像添加链接</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3-0-添加加密功能"><span class="post-toc-number">4.</span> <span class="post-toc-text">3.0 添加加密功能</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#3-1-安装"><span class="post-toc-number">4.0.1.</span> <span class="post-toc-text">3.1 安装</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#3-2-快速开始"><span class="post-toc-number">4.0.2.</span> <span class="post-toc-text">3.2 快速开始</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#最后"><span class="post-toc-number">5.</span> <span class="post-toc-text">最后</span></a></li>
-        </nav>
-    </aside>
-   
-<article id="post-NexT主题优化-美化" class="post-article article-type-post fade" itemprop="blogPost">
-
-    <div class="post-card">
-        <h1 class="post-card-title">NexT主题优化+美化</h1>
-        <div class="post-meta">
-            <i class="icon icon-lg icon-calendar-o"></i>
-            发表于
-            <time class="post-time" title="2018-07-27 20:16:41" datetime="2018-07-27T12:16:41.000Z" itemprop="datePublished">2018-07-27</time>
-
-            <br id="mybreak">
+		<span>Categories：</span>
             
-	<i class="icon icon-lg icon-folder-o"></i>
-	分类：<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/前端/">前端</a></li></ul>
-
-
-            <i>·</i>
+                
+                    <span>
+                        <i class="fa fa-folder" aria-hidden="true">
+                        <a href="/categories/前端/">前端</a>
+                        </i>
+                      
+                    </span>
+                
             
+    
 
-        </div>
-        <div class="post-count-custom">
-            <i class="icon icon-lg icon-comment-o"></i>
-            阅读本文可能花费您&nbsp;<span class="post-count">11</span>&nbsp;分钟
-        </div>
-        <div class="post-content" id="post-content" itemprop="postContent">
-            <h3 id="&#x524D;&#x8A00;"><a href="#&#x524D;&#x8A00;" class="headerlink" title="&#x524D;&#x8A00;"></a>&#x524D;&#x8A00;</h3><p>&#x5173;&#x4E8E;Hexo&#x535A;&#x5BA2;NexT&#x4E3B;&#x9898;&#x7F8E;&#x5316;&#x5C31;&#x4E0D;&#x4E00;&#x4E00;&#x5217;&#x4E3E;&#x7684;&#xFF0C;&#x7F51;&#x4E0A;&#x6559;&#x7A0B;&#x4E00;&#x5927;&#x5806;&#xFF0C;&#x6211;&#x5C31;&#x5217;&#x51FA;&#x4E00;&#x4E9B;&#x4E2A;&#x4EBA;&#x89C9;&#x5F97;&#x6BD4;&#x8F83;&#x5B9E;&#x7528;&#x7684;</p>
+    
+		<span>Tags：</span>
+            
+                
+                    <span>
+                        <i class="fa fa-tag" aria-hidden="true">
+                        <a href="/tags/Hexo/">Hexo</a>
+                        </i>
+                    </span>
+                
+            
+                
+                    <span>
+                        <i class="fa fa-tag" aria-hidden="true">
+                        <a href="/tags/NexT/">NexT</a>
+                        </i>
+                    </span>
+                
+            
+    
+		</div>
+
+</div>
+
+<div id="article-content">
+	<h3 id="&#x524D;&#x8A00;"><a href="#&#x524D;&#x8A00;" class="headerlink" title="&#x524D;&#x8A00;"></a>&#x524D;&#x8A00;</h3><p>&#x5173;&#x4E8E;Hexo&#x535A;&#x5BA2;NexT&#x4E3B;&#x9898;&#x7F8E;&#x5316;&#x5C31;&#x4E0D;&#x4E00;&#x4E00;&#x5217;&#x4E3E;&#x7684;&#xFF0C;&#x7F51;&#x4E0A;&#x6559;&#x7A0B;&#x4E00;&#x5927;&#x5806;&#xFF0C;&#x6211;&#x5C31;&#x5217;&#x51FA;&#x4E00;&#x4E9B;&#x4E2A;&#x4EBA;&#x89C9;&#x5F97;&#x6BD4;&#x8F83;&#x5B9E;&#x7528;&#x7684;</p>
 <h3 id="1-0-&#x89C6;&#x89C9;&#x4F18;&#x5316;&#x4E0E;&#x6027;&#x80FD;&#x4F18;&#x5316;"><a href="#1-0-&#x89C6;&#x89C9;&#x4F18;&#x5316;&#x4E0E;&#x6027;&#x80FD;&#x4F18;&#x5316;" class="headerlink" title="1.0 &#x89C6;&#x89C9;&#x4F18;&#x5316;&#x4E0E;&#x6027;&#x80FD;&#x4F18;&#x5316;"></a>1.0 &#x89C6;&#x89C9;&#x4F18;&#x5316;&#x4E0E;&#x6027;&#x80FD;&#x4F18;&#x5316;</h3><a id="more"></a>
 <h5 id="1-1-&#x66F4;&#x6539;&#x5B57;&#x4F53;"><a href="#1-1-&#x66F4;&#x6539;&#x5B57;&#x4F53;" class="headerlink" title="1.1 &#x66F4;&#x6539;&#x5B57;&#x4F53;"></a>1.1 &#x66F4;&#x6539;&#x5B57;&#x4F53;</h5><blockquote>
 <p><code>themes\next\source\css\\_varibles\custom.styl</code></p>
 </blockquote>
-<figure class="highlight cs"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">// &#x6807;&#x9898;&#xFF0C;&#x4FEE;&#x6539;&#x6210;&#x4F60;&#x671F;&#x671B;&#x7684;&#x5B57;&#x4F53;&#x65CF;</span></span><br><span class="line">$font-family-headings = Georgia, sans</span><br><span class="line"></span><br><span class="line"><span class="comment">// &#x4FEE;&#x6539;&#x6210;&#x4F60;&#x671F;&#x671B;&#x7684;&#x5B57;&#x4F53;&#x65CF;</span></span><br><span class="line">$font-family-<span class="keyword">base</span> = <span class="string">&quot;Microsoft YaHei&quot;</span>, Verdana, sans-serif</span><br><span class="line"></span><br><span class="line"><span class="comment">// &#x4EE3;&#x7801;&#x5B57;&#x4F53;</span></span><br><span class="line">$code-font-family = <span class="string">&quot;Input Mono&quot;</span>, <span class="string">&quot;PT Mono&quot;</span>, Consolas, Monaco, Menlo, monospace</span><br><span class="line"></span><br><span class="line"><span class="comment">// &#x6B63;&#x6587;&#x5B57;&#x4F53;&#x7684;&#x5927;&#x5C0F;</span></span><br><span class="line">$font-size-<span class="keyword">base</span> = <span class="number">16</span>px</span><br><span class="line"></span><br><span class="line"><span class="comment">// &#x4EE3;&#x7801;&#x5B57;&#x4F53;&#x7684;&#x5927;&#x5C0F;</span></span><br><span class="line">$code-font-size = <span class="number">13</span>px</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="cs">// &#x6807;&#x9898;&#xFF0C;&#x4FEE;&#x6539;&#x6210;&#x4F60;&#x671F;&#x671B;&#x7684;&#x5B57;&#x4F53;&#x65CF;
+$font-family-headings = Georgia, sans
+
+// &#x4FEE;&#x6539;&#x6210;&#x4F60;&#x671F;&#x671B;&#x7684;&#x5B57;&#x4F53;&#x65CF;
+$font-family-base = &quot;Microsoft YaHei&quot;, Verdana, sans-serif
+
+// &#x4EE3;&#x7801;&#x5B57;&#x4F53;
+$code-font-family = &quot;Input Mono&quot;, &quot;PT Mono&quot;, Consolas, Monaco, Menlo, monospace
+
+// &#x6B63;&#x6587;&#x5B57;&#x4F53;&#x7684;&#x5927;&#x5C0F;
+$font-size-base = 16px
+
+// &#x4EE3;&#x7801;&#x5B57;&#x4F53;&#x7684;&#x5927;&#x5C0F;
+$code-font-size = 13px
+</code></pre>
 <h5 id="1-2-&#x4FEE;&#x6539;&#x884C;&#x8DDD;&#x548C;&#x95F4;&#x8DDD;"><a href="#1-2-&#x4FEE;&#x6539;&#x884C;&#x8DDD;&#x548C;&#x95F4;&#x8DDD;" class="headerlink" title="1.2 &#x4FEE;&#x6539;&#x884C;&#x8DDD;&#x548C;&#x95F4;&#x8DDD;"></a>1.2 &#x4FEE;&#x6539;&#x884C;&#x8DDD;&#x548C;&#x95F4;&#x8DDD;</h5><blockquote>
 <p><code>themes\next\source\css\\_varibles\base.styl</code></p>
 </blockquote>
-<figure class="highlight cs"><table><tbody><tr><td class="code"><pre><span class="line"><span class="comment">// &#x5168;&#x6587;&#x95F4;&#x8DDD;&#x53C2;&#x6570;</span></span><br><span class="line">$line-height-<span class="keyword">base</span>           = <span class="number">1.8</span></span><br><span class="line">$line-height-code-block     = <span class="number">1.6</span>  <span class="comment">// Can&apos;t be less than 1.3</span></span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="CS">// &#x5168;&#x6587;&#x95F4;&#x8DDD;&#x53C2;&#x6570;
+$line-height-base           = 1.8
+$line-height-code-block     = 1.6  // Can&apos;t be less than 1.3
+</code></pre>
 <h5 id="1-3-&#x4F7F;&#x7528;gulp&#x538B;&#x7F29;hexo&#x535A;&#x5BA2;"><a href="#1-3-&#x4F7F;&#x7528;gulp&#x538B;&#x7F29;hexo&#x535A;&#x5BA2;" class="headerlink" title="1.3 &#x4F7F;&#x7528;gulp&#x538B;&#x7F29;hexo&#x535A;&#x5BA2;"></a>1.3 &#x4F7F;&#x7528;gulp&#x538B;&#x7F29;hexo&#x535A;&#x5BA2;</h5><p>&#x5B89;&#x88C5;gulp</p>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">npm install gulp -g</span><br></pre></td></tr></tbody></table></figure>
-<p>&#x5B89;&#x88C5;gulp&#x4F9D;&#x8D56;&#x6A21;&#x5757;</p>
+<pre><code>npm install gulp -g
+</code></pre><p>&#x5B89;&#x88C5;gulp&#x4F9D;&#x8D56;&#x6A21;&#x5757;</p>
 <blockquote>
 <ul>
 <li>gulp-htmlclean  //&#x6E05;&#x7406;HTML</li>
@@ -242,11 +1906,73 @@
 <li>gulp-imagemin //&#x538B;&#x7F29;&#x56FE;&#x7247;</li>
 </ul>
 </blockquote>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">npm install gulp-htmlclean gulp-htmlmin gulp-minify-css gulp-uglify gulp-imagemin --save</span><br></pre></td></tr></tbody></table></figure>
-<p>&#x5B89;&#x88C5;&#x5B8C;&#x53EF;&#x4EE5;&#x5728;&#x6839;&#x76EE;&#x5F55;<code>package.json</code>&#x6587;&#x4EF6;&#x91CC;&#x770B;&#x5230;</p>
-<figure class="highlight"><table><tbody><tr><td class="code"><pre><span class="line">&quot;dependencies&quot;: {</span><br><span class="line">    &quot;gulp&quot;: &quot;^3.9.1&quot;,</span><br><span class="line">    &quot;gulp-imagemin&quot;: &quot;^4.1.0&quot;,</span><br><span class="line">    ...</span><br><span class="line">    ...</span><br><span class="line">  },</span><br><span class="line">  &quot;devDependencies&quot;: {</span><br><span class="line">    &quot;babel-core&quot;: &quot;^6.26.3&quot;,</span><br><span class="line">    &quot;gulp-babel&quot;: &quot;^7.0.1&quot;,</span><br><span class="line">    &quot;gulp-htmlclean&quot;: &quot;^2.7.22&quot;,</span><br><span class="line">    &quot;gulp-htmlmin&quot;: &quot;^4.0.0&quot;,</span><br><span class="line">    &quot;gulp-minify-css&quot;: &quot;^1.2.4&quot;,</span><br><span class="line">    &quot;gulp-uglify&quot;: &quot;^3.0.1&quot;</span><br><span class="line">  }</span><br></pre></td></tr></tbody></table></figure>
+<pre><code>npm install gulp-htmlclean gulp-htmlmin gulp-minify-css gulp-uglify gulp-imagemin --save
+</code></pre><p>&#x5B89;&#x88C5;&#x5B8C;&#x53EF;&#x4EE5;&#x5728;&#x6839;&#x76EE;&#x5F55;<code>package.json</code>&#x6587;&#x4EF6;&#x91CC;&#x770B;&#x5230;</p>
+<pre><code class="json">&quot;dependencies&quot;: {
+    &quot;gulp&quot;: &quot;^3.9.1&quot;,
+    &quot;gulp-imagemin&quot;: &quot;^4.1.0&quot;,
+    ...
+    ...
+  },
+  &quot;devDependencies&quot;: {
+    &quot;babel-core&quot;: &quot;^6.26.3&quot;,
+    &quot;gulp-babel&quot;: &quot;^7.0.1&quot;,
+    &quot;gulp-htmlclean&quot;: &quot;^2.7.22&quot;,
+    &quot;gulp-htmlmin&quot;: &quot;^4.0.0&quot;,
+    &quot;gulp-minify-css&quot;: &quot;^1.2.4&quot;,
+    &quot;gulp-uglify&quot;: &quot;^3.0.1&quot;
+  }
+</code></pre>
 <p>&#x5728;&#x535A;&#x5BA2;&#x6839;&#x76EE;&#x5F55;&#x4E0B;&#x624B;&#x52A8;&#x6DFB;&#x52A0;<code>gulpfile.js</code>&#x6587;&#x4EF6;</p>
-<figure class="highlight javascript"><table><tbody><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> gulp = <span class="built_in">require</span>(<span class="string">&apos;gulp&apos;</span>);</span><br><span class="line"><span class="keyword">var</span> minifycss = <span class="built_in">require</span>(<span class="string">&apos;gulp-minify-css&apos;</span>);</span><br><span class="line"><span class="keyword">var</span> uglify = <span class="built_in">require</span>(<span class="string">&apos;gulp-uglify&apos;</span>);</span><br><span class="line"><span class="keyword">var</span> htmlmin = <span class="built_in">require</span>(<span class="string">&apos;gulp-htmlmin&apos;</span>);</span><br><span class="line"><span class="keyword">var</span> htmlclean = <span class="built_in">require</span>(<span class="string">&apos;gulp-htmlclean&apos;</span>);</span><br><span class="line"><span class="keyword">var</span> imagemin = <span class="built_in">require</span>(<span class="string">&apos;gulp-imagemin&apos;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// &#x538B;&#x7F29;html</span></span><br><span class="line">gulp.task(<span class="string">&apos;minify-html&apos;</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{</span><br><span class="line">    <span class="keyword">return</span> gulp.src(<span class="string">&apos;./public/**/*.html&apos;</span>)</span><br><span class="line">        .pipe(htmlclean())</span><br><span class="line">        .pipe(htmlmin({</span><br><span class="line">            removeComments: <span class="literal">true</span>,</span><br><span class="line">            minifyJS: <span class="literal">true</span>,</span><br><span class="line">            minifyCSS: <span class="literal">true</span>,</span><br><span class="line">            minifyURLs: <span class="literal">true</span>,</span><br><span class="line">        }))</span><br><span class="line">        .pipe(gulp.dest(<span class="string">&apos;./public&apos;</span>))</span><br><span class="line">});</span><br><span class="line"><span class="comment">// &#x538B;&#x7F29;css</span></span><br><span class="line">gulp.task(<span class="string">&apos;minify-css&apos;</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{</span><br><span class="line">    <span class="keyword">return</span> gulp.src(<span class="string">&apos;./public/**/*.css&apos;</span>)</span><br><span class="line">        .pipe(minifycss({</span><br><span class="line">            compatibility: <span class="string">&apos;ie8&apos;</span></span><br><span class="line">        }))</span><br><span class="line">        .pipe(gulp.dest(<span class="string">&apos;./public&apos;</span>));</span><br><span class="line">});</span><br><span class="line"><span class="comment">// &#x538B;&#x7F29;js</span></span><br><span class="line">gulp.task(<span class="string">&apos;minify-js&apos;</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{</span><br><span class="line">    <span class="keyword">return</span> gulp.src(<span class="string">&apos;./public/js/**/*.js&apos;</span>)</span><br><span class="line">        .pipe(uglify())</span><br><span class="line">        .pipe(gulp.dest(<span class="string">&apos;./public&apos;</span>));</span><br><span class="line">});</span><br><span class="line"><span class="comment">// &#x538B;&#x7F29;&#x56FE;&#x7247;</span></span><br><span class="line">gulp.task(<span class="string">&apos;minify-images&apos;</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>{</span><br><span class="line">    <span class="keyword">return</span> gulp.src(<span class="string">&apos;./public/images/**/*.*&apos;</span>)</span><br><span class="line">        .pipe(imagemin(</span><br><span class="line">        [imagemin.gifsicle({<span class="string">&apos;optimizationLevel&apos;</span>: <span class="number">3</span>}), </span><br><span class="line">        imagemin.jpegtran({<span class="string">&apos;progressive&apos;</span>: <span class="literal">true</span>}), </span><br><span class="line">        imagemin.optipng({<span class="string">&apos;optimizationLevel&apos;</span>: <span class="number">7</span>}), </span><br><span class="line">        imagemin.svgo()],</span><br><span class="line">        {<span class="string">&apos;verbose&apos;</span>: <span class="literal">true</span>}))</span><br><span class="line">        .pipe(gulp.dest(<span class="string">&apos;./public/images&apos;</span>))</span><br><span class="line">});</span><br><span class="line"><span class="comment">// &#x9ED8;&#x8BA4;&#x4EFB;&#x52A1;</span></span><br><span class="line">gulp.task(<span class="string">&apos;default&apos;</span>, [</span><br><span class="line">    <span class="string">&apos;minify-html&apos;</span>,<span class="string">&apos;minify-css&apos;</span>,<span class="string">&apos;minify-js&apos;</span>,<span class="string">&apos;minify-images&apos;</span></span><br><span class="line">]);</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="JavaScript">var gulp = require(&apos;gulp&apos;);
+var minifycss = require(&apos;gulp-minify-css&apos;);
+var uglify = require(&apos;gulp-uglify&apos;);
+var htmlmin = require(&apos;gulp-htmlmin&apos;);
+var htmlclean = require(&apos;gulp-htmlclean&apos;);
+var imagemin = require(&apos;gulp-imagemin&apos;);
+
+// &#x538B;&#x7F29;html
+gulp.task(&apos;minify-html&apos;, function() {
+    return gulp.src(&apos;./public/**/*.html&apos;)
+        .pipe(htmlclean())
+        .pipe(htmlmin({
+            removeComments: true,
+            minifyJS: true,
+            minifyCSS: true,
+            minifyURLs: true,
+        }))
+        .pipe(gulp.dest(&apos;./public&apos;))
+});
+// &#x538B;&#x7F29;css
+gulp.task(&apos;minify-css&apos;, function() {
+    return gulp.src(&apos;./public/**/*.css&apos;)
+        .pipe(minifycss({
+            compatibility: &apos;ie8&apos;
+        }))
+        .pipe(gulp.dest(&apos;./public&apos;));
+});
+// &#x538B;&#x7F29;js
+gulp.task(&apos;minify-js&apos;, function() {
+    return gulp.src(&apos;./public/js/**/*.js&apos;)
+        .pipe(uglify())
+        .pipe(gulp.dest(&apos;./public&apos;));
+});
+// &#x538B;&#x7F29;&#x56FE;&#x7247;
+gulp.task(&apos;minify-images&apos;, function() {
+    return gulp.src(&apos;./public/images/**/*.*&apos;)
+        .pipe(imagemin(
+        [imagemin.gifsicle({&apos;optimizationLevel&apos;: 3}), 
+        imagemin.jpegtran({&apos;progressive&apos;: true}), 
+        imagemin.optipng({&apos;optimizationLevel&apos;: 7}), 
+        imagemin.svgo()],
+        {&apos;verbose&apos;: true}))
+        .pipe(gulp.dest(&apos;./public/images&apos;))
+});
+// &#x9ED8;&#x8BA4;&#x4EFB;&#x52A1;
+gulp.task(&apos;default&apos;, [
+    &apos;minify-html&apos;,&apos;minify-css&apos;,&apos;minify-js&apos;,&apos;minify-images&apos;
+]);
+</code></pre>
 <p>&#x76F4;&#x63A5;&#x8FD0;&#x884C;<code>gulp</code>&#x547D;&#x4EE4;&#x5F00;&#x59CB;&#x538B;&#x7F29;</p>
 <p><strong>&#x53C2;&#x8003;&#x94FE;&#x63A5;</strong></p>
 <p><a href="http://fengdi.org/2017/08/07/Hexo%E5%8D%9A%E5%AE%A2%E4%B9%8B%E9%80%9F%E5%BA%A6%E4%BC%98%E5%8C%96.html" target="_blank" rel="noopener">Hexo&#x535A;&#x5BA2;&#x4E4B;&#x901F;&#x5EA6;&#x4F18;&#x5316;</a></p>
@@ -255,7 +1981,19 @@
 <h3 id="2-0-&#x4E3B;&#x9898;&#x7F8E;&#x5316;&#x4E0E;&#x4E3B;&#x9898;&#x4FEE;&#x6539;"><a href="#2-0-&#x4E3B;&#x9898;&#x7F8E;&#x5316;&#x4E0E;&#x4E3B;&#x9898;&#x4FEE;&#x6539;" class="headerlink" title="2.0 &#x4E3B;&#x9898;&#x7F8E;&#x5316;&#x4E0E;&#x4E3B;&#x9898;&#x4FEE;&#x6539;"></a>2.0 &#x4E3B;&#x9898;&#x7F8E;&#x5316;&#x4E0E;&#x4E3B;&#x9898;&#x4FEE;&#x6539;</h3><h5 id="2-1-&#x4FEE;&#x6539;&#x5B57;&#x4F53;&#x989C;&#x8272;"><a href="#2-1-&#x4FEE;&#x6539;&#x5B57;&#x4F53;&#x989C;&#x8272;" class="headerlink" title="2.1 &#x4FEE;&#x6539;&#x5B57;&#x4F53;&#x989C;&#x8272;"></a>2.1 &#x4FEE;&#x6539;&#x5B57;&#x4F53;&#x989C;&#x8272;</h5><h5 id="2-2-&#x4FEE;&#x6539;&#x6587;&#x7AE0;&#x5185;&#x94FE;&#x63A5;&#x6587;&#x672C;&#x6837;&#x5F0F;"><a href="#2-2-&#x4FEE;&#x6539;&#x6587;&#x7AE0;&#x5185;&#x94FE;&#x63A5;&#x6587;&#x672C;&#x6837;&#x5F0F;" class="headerlink" title="2.2 &#x4FEE;&#x6539;&#x6587;&#x7AE0;&#x5185;&#x94FE;&#x63A5;&#x6587;&#x672C;&#x6837;&#x5F0F;"></a>2.2 &#x4FEE;&#x6539;&#x6587;&#x7AE0;&#x5185;&#x94FE;&#x63A5;&#x6587;&#x672C;&#x6837;&#x5F0F;</h5><blockquote>
 <p><code>theme\next\source\css\\_common\components\post\post.styl</code></p>
 </blockquote>
-<figure class="highlight css"><table><tbody><tr><td class="code"><pre><span class="line">// &#x5728;&#x672B;&#x5C3E;&#x6DFB;&#x52A0;</span><br><span class="line">// &#x6587;&#x7AE0;&#x5185;&#x94FE;&#x63A5;&#x6587;&#x672C;&#x6837;&#x5F0F;</span><br><span class="line"><span class="selector-class">.post-body</span> <span class="selector-tag">p</span> <span class="selector-tag">a</span>{</span><br><span class="line">  <span class="attribute">color</span>: <span class="number">#0593d3</span>;</span><br><span class="line">  <span class="attribute">border-bottom</span>: none;</span><br><span class="line">  <span class="attribute">border-bottom</span>: <span class="number">1px</span> solid <span class="number">#0593d3</span>;</span><br><span class="line">  &amp;:hover {</span><br><span class="line">    <span class="selector-tag">color</span>: <span class="selector-id">#fc6423</span>;</span><br><span class="line">    <span class="selector-tag">border-bottom</span>: <span class="selector-tag">none</span>;</span><br><span class="line">    <span class="selector-tag">border-bottom</span>: 1<span class="selector-tag">px</span> <span class="selector-tag">solid</span> <span class="selector-id">#fc6423</span>;</span><br><span class="line">  }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="css">// &#x5728;&#x672B;&#x5C3E;&#x6DFB;&#x52A0;
+// &#x6587;&#x7AE0;&#x5185;&#x94FE;&#x63A5;&#x6587;&#x672C;&#x6837;&#x5F0F;
+.post-body p a{
+  color: #0593d3;
+  border-bottom: none;
+  border-bottom: 1px solid #0593d3;
+  &amp;:hover {
+    color: #fc6423;
+    border-bottom: none;
+    border-bottom: 1px solid #fc6423;
+  }
+}
+</code></pre>
 <h5 id="2-3-&#x4FEE;&#x6539;&#x6587;&#x7AE0;&#x5E95;&#x90E8;&#x6807;&#x7B7E;&#x7684;-&#x53F7;"><a href="#2-3-&#x4FEE;&#x6539;&#x6587;&#x7AE0;&#x5E95;&#x90E8;&#x6807;&#x7B7E;&#x7684;-&#x53F7;" class="headerlink" title="2.3 &#x4FEE;&#x6539;&#x6587;&#x7AE0;&#x5E95;&#x90E8;&#x6807;&#x7B7E;&#x7684;#&#x53F7;"></a>2.3 &#x4FEE;&#x6539;&#x6587;&#x7AE0;&#x5E95;&#x90E8;&#x6807;&#x7B7E;&#x7684;#&#x53F7;</h5><blockquote>
 <p><code>/themes/next/layout/_macro/post.swig</code></p>
 <p>&#x641C;&#x7D22;<code>rel=&quot;tag&quot;</code>&#xFF0C;&#x5C06;#&#x6362;&#x6210;<code>&lt;i class=&quot;fa fa-tag&quot;&gt;&lt;/i&gt;</code></p>
@@ -263,21 +2001,115 @@
 <h5 id="2-4-&#x5728;&#x6BCF;&#x7BC7;&#x6587;&#x7AE0;&#x672B;&#x5C3E;&#x6DFB;&#x52A0;&#x201C;&#x7ED3;&#x675F;&#x201D;&#x6807;&#x8BB0;"><a href="#2-4-&#x5728;&#x6BCF;&#x7BC7;&#x6587;&#x7AE0;&#x672B;&#x5C3E;&#x6DFB;&#x52A0;&#x201C;&#x7ED3;&#x675F;&#x201D;&#x6807;&#x8BB0;" class="headerlink" title="2.4 &#x5728;&#x6BCF;&#x7BC7;&#x6587;&#x7AE0;&#x672B;&#x5C3E;&#x6DFB;&#x52A0;&#x201C;&#x7ED3;&#x675F;&#x201D;&#x6807;&#x8BB0;"></a>2.4 &#x5728;&#x6BCF;&#x7BC7;&#x6587;&#x7AE0;&#x672B;&#x5C3E;&#x6DFB;&#x52A0;&#x201C;&#x7ED3;&#x675F;&#x201D;&#x6807;&#x8BB0;</h5><blockquote>
 <p>&#x5728;<code>\themes\next\layout\_macro</code>&#x4E2D;&#x65B0;&#x5EFA;<code>passage-end-tag.swig&#x6587;&#x4EF6;</code></p>
 </blockquote>
-<figure class="highlight html"><table><tbody><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    {% if not is_index %}</span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">&quot;text-align:center;color: #ccc;font-size:14px;&quot;</span>&gt;</span>-------------Ending-------------<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    {% endif %}</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="html">&lt;div&gt;
+    {% if not is_index %}
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------Ending-------------</div>
+    {% endif %}
+&lt;/div&gt;
+</code></pre>
 <p>&#x63A5;&#x7740;&#x6253;&#x5F00;<code>\themes\next\layout\_macro\post.swig</code>&#xFF0C;&#x5728;<code>post-body</code>&#x4E4B;&#x540E;&#x548C;<code>post-footer</code>&#x4E4B;&#x524D;&#x6DFB;&#x52A0;&#x5982;&#x4E0B;&#x4EE3;&#x7801;</p>
-<figure class="highlight html"><table><tbody><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">  {% if not is_index %}</span><br><span class="line">    {% include &apos;post-end-tag.swig&apos; %}</span><br><span class="line">  {% endif %}</span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="html">    &lt;div&gt;
+      {% if not is_index %}
+        {% include &apos;post-end-tag.swig&apos; %}
+      {% endif %}
+    &lt;/div&gt;
+</code></pre>
 <p>&#x7136;&#x540E;&#x5728;<code>&#x4E3B;&#x9898;&#x914D;&#x7F6E;&#x6587;&#x4EF6;</code>&#x672B;&#x5C3E;&#x6DFB;&#x52A0;</p>
-<figure class="highlight html"><table><tbody><tr><td class="code"><pre><span class="line"># &#x6587;&#x7AE0;&#x672B;&#x5C3E;&#x6DFB;&#x52A0;&#x201C;&#x672C;&#x6587;&#x7ED3;&#x675F;&#x201D;&#x6807;&#x8BB0;</span><br><span class="line">passage_end_tag:</span><br><span class="line">  enabled: true</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="html"># &#x6587;&#x7AE0;&#x672B;&#x5C3E;&#x6DFB;&#x52A0;&#x201C;&#x672C;&#x6587;&#x7ED3;&#x675F;&#x201D;&#x6807;&#x8BB0;
+passage_end_tag:
+  enabled: true
+</code></pre>
 <h5 id="2-5-&#x4FEE;&#x6539;&#x4F5C;&#x8005;&#x5934;&#x50CF;&#x6837;&#x5F0F;"><a href="#2-5-&#x4FEE;&#x6539;&#x4F5C;&#x8005;&#x5934;&#x50CF;&#x6837;&#x5F0F;" class="headerlink" title="2.5 &#x4FEE;&#x6539;&#x4F5C;&#x8005;&#x5934;&#x50CF;&#x6837;&#x5F0F;"></a>2.5 &#x4FEE;&#x6539;&#x4F5C;&#x8005;&#x5934;&#x50CF;&#x6837;&#x5F0F;</h5><p>&#x6253;&#x5F00;<code>\themes\next\source\css\_common\components\sidebar\sidebar-author.styl</code></p>
-<figure class="highlight css"><table><tbody><tr><td class="code"><pre><span class="line"><span class="selector-class">.site-author-image</span> {</span><br><span class="line">  <span class="attribute">display</span>: block;</span><br><span class="line">  <span class="attribute">margin</span>: <span class="number">0</span> auto;</span><br><span class="line">  <span class="attribute">padding</span>: $site-author-image-padding;</span><br><span class="line">  <span class="attribute">max-width</span>: $site-author-image-width;</span><br><span class="line">  <span class="attribute">height</span>: $site-author-image-height;</span><br><span class="line">  <span class="attribute">border</span>: $site-author-image-border-width solid $site-author-image-border-color;</span><br><span class="line">  <span class="comment">/* &#x5934;&#x50CF;&#x5706;&#x5F62; */</span></span><br><span class="line">  <span class="attribute">border-radius</span>: <span class="number">80px</span>;</span><br><span class="line">  <span class="attribute">-webkit-border-radius</span>: <span class="number">80px</span>;</span><br><span class="line">  <span class="attribute">-moz-border-radius</span>: <span class="number">80px</span>;</span><br><span class="line">  <span class="attribute">box-shadow</span>: inset <span class="number">0</span> -<span class="number">1px</span> <span class="number">0</span> <span class="number">#333</span>sf;</span><br><span class="line">  <span class="comment">/* &#x8BBE;&#x7F6E;&#x5FAA;&#x73AF;&#x52A8;&#x753B; [animation: (play)&#x52A8;&#x753B;&#x540D;&#x79F0; (2s)&#x52A8;&#x753B;&#x64AD;&#x653E;&#x65F6;&#x957F;&#x5355;&#x4F4D;&#x79D2;&#x6216;&#x5FAE;&#x79D2; (ase-out)&#x52A8;&#x753B;&#x64AD;&#x653E;&#x7684;&#x901F;&#x5EA6;&#x66F2;&#x7EBF;&#x4E3A;&#x4EE5;&#x4F4E;&#x901F;&#x7ED3;&#x675F; </span></span><br><span class="line"><span class="comment">    (1s)&#x7B49;&#x5F85;1&#x79D2;&#x7136;&#x540E;&#x5F00;&#x59CB;&#x52A8;&#x753B; (1)&#x52A8;&#x753B;&#x64AD;&#x653E;&#x6B21;&#x6570;(infinite&#x4E3A;&#x5FAA;&#x73AF;&#x64AD;&#x653E;) ]*/</span></span><br><span class="line"> </span><br><span class="line">  <span class="comment">/* &#x9F20;&#x6807;&#x7ECF;&#x8FC7;&#x5934;&#x50CF;&#x65CB;&#x8F6C;360&#x5EA6; */</span></span><br><span class="line">  <span class="attribute">-webkit-transition</span>: -webkit-transform <span class="number">1.0s</span> ease-out;</span><br><span class="line">  <span class="attribute">-moz-transition</span>: -moz-transform <span class="number">1.0s</span> ease-out;</span><br><span class="line">  <span class="attribute">transition</span>: transform <span class="number">1.0s</span> ease-out;</span><br><span class="line">}</span><br><span class="line"><span class="selector-tag">img</span><span class="selector-pseudo">:hover</span> {</span><br><span class="line">  <span class="comment">/* &#x9F20;&#x6807;&#x7ECF;&#x8FC7;&#x505C;&#x6B62;&#x5934;&#x50CF;&#x65CB;&#x8F6C; </span></span><br><span class="line"><span class="comment">  -webkit-animation-play-state:paused;</span></span><br><span class="line"><span class="comment">  animation-play-state:paused;*/</span></span><br><span class="line">  <span class="comment">/* &#x9F20;&#x6807;&#x7ECF;&#x8FC7;&#x5934;&#x50CF;&#x65CB;&#x8F6C;360&#x5EA6; */</span></span><br><span class="line">  <span class="attribute">-webkit-transform</span>: <span class="built_in">rotateZ</span>(360deg);</span><br><span class="line">  <span class="attribute">-moz-transform</span>: <span class="built_in">rotateZ</span>(360deg);</span><br><span class="line">  <span class="attribute">transform</span>: <span class="built_in">rotateZ</span>(360deg);</span><br><span class="line">}</span><br><span class="line"><span class="comment">/* Z &#x8F74;&#x65CB;&#x8F6C;&#x52A8;&#x753B; */</span></span><br><span class="line">@-<span class="keyword">webkit</span>-<span class="keyword">keyframes</span> play {</span><br><span class="line">  0% {</span><br><span class="line">    <span class="attribute">-webkit-transform</span>: <span class="built_in">rotateZ</span>(0deg);</span><br><span class="line">  }</span><br><span class="line">  100% {</span><br><span class="line">    <span class="attribute">-webkit-transform</span>: <span class="built_in">rotateZ</span>(-360deg);</span><br><span class="line">  }</span><br><span class="line">}</span><br><span class="line">@-<span class="keyword">moz</span>-<span class="keyword">keyframes</span> play {</span><br><span class="line">  0% {</span><br><span class="line">    <span class="attribute">-moz-transform</span>: <span class="built_in">rotateZ</span>(0deg);</span><br><span class="line">  }</span><br><span class="line">  100% {</span><br><span class="line">    <span class="attribute">-moz-transform</span>: <span class="built_in">rotateZ</span>(-360deg);</span><br><span class="line">  }</span><br><span class="line">}</span><br><span class="line">@<span class="keyword">keyframes</span> play {</span><br><span class="line">  0% {</span><br><span class="line">    <span class="attribute">transform</span>: <span class="built_in">rotateZ</span>(0deg);</span><br><span class="line">  }</span><br><span class="line">  100% {</span><br><span class="line">    <span class="attribute">transform</span>: <span class="built_in">rotateZ</span>(-360deg);</span><br><span class="line">  }</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="CSS">.site-author-image {
+  display: block;
+  margin: 0 auto;
+  padding: $site-author-image-padding;
+  max-width: $site-author-image-width;
+  height: $site-author-image-height;
+  border: $site-author-image-border-width solid $site-author-image-border-color;
+  /* &#x5934;&#x50CF;&#x5706;&#x5F62; */
+  border-radius: 80px;
+  -webkit-border-radius: 80px;
+  -moz-border-radius: 80px;
+  box-shadow: inset 0 -1px 0 #333sf;
+  /* &#x8BBE;&#x7F6E;&#x5FAA;&#x73AF;&#x52A8;&#x753B; [animation: (play)&#x52A8;&#x753B;&#x540D;&#x79F0; (2s)&#x52A8;&#x753B;&#x64AD;&#x653E;&#x65F6;&#x957F;&#x5355;&#x4F4D;&#x79D2;&#x6216;&#x5FAE;&#x79D2; (ase-out)&#x52A8;&#x753B;&#x64AD;&#x653E;&#x7684;&#x901F;&#x5EA6;&#x66F2;&#x7EBF;&#x4E3A;&#x4EE5;&#x4F4E;&#x901F;&#x7ED3;&#x675F; 
+    (1s)&#x7B49;&#x5F85;1&#x79D2;&#x7136;&#x540E;&#x5F00;&#x59CB;&#x52A8;&#x753B; (1)&#x52A8;&#x753B;&#x64AD;&#x653E;&#x6B21;&#x6570;(infinite&#x4E3A;&#x5FAA;&#x73AF;&#x64AD;&#x653E;) ]*/
+
+  /* &#x9F20;&#x6807;&#x7ECF;&#x8FC7;&#x5934;&#x50CF;&#x65CB;&#x8F6C;360&#x5EA6; */
+  -webkit-transition: -webkit-transform 1.0s ease-out;
+  -moz-transition: -moz-transform 1.0s ease-out;
+  transition: transform 1.0s ease-out;
+}
+img:hover {
+  /* &#x9F20;&#x6807;&#x7ECF;&#x8FC7;&#x505C;&#x6B62;&#x5934;&#x50CF;&#x65CB;&#x8F6C; 
+  -webkit-animation-play-state:paused;
+  animation-play-state:paused;*/
+  /* &#x9F20;&#x6807;&#x7ECF;&#x8FC7;&#x5934;&#x50CF;&#x65CB;&#x8F6C;360&#x5EA6; */
+  -webkit-transform: rotateZ(360deg);
+  -moz-transform: rotateZ(360deg);
+  transform: rotateZ(360deg);
+}
+/* Z &#x8F74;&#x65CB;&#x8F6C;&#x52A8;&#x753B; */
+@-webkit-keyframes play {
+  0% {
+    -webkit-transform: rotateZ(0deg);
+  }
+  100% {
+    -webkit-transform: rotateZ(-360deg);
+  }
+}
+@-moz-keyframes play {
+  0% {
+    -moz-transform: rotateZ(0deg);
+  }
+  100% {
+    -moz-transform: rotateZ(-360deg);
+  }
+}
+@keyframes play {
+  0% {
+    transform: rotateZ(0deg);
+  }
+  100% {
+    transform: rotateZ(-360deg);
+  }
+}
+</code></pre>
 <h5 id="2-6-&#x4FEE;&#x6539;&#x4EE3;&#x7801;&#x5757;&#x6837;&#x5F0F;"><a href="#2-6-&#x4FEE;&#x6539;&#x4EE3;&#x7801;&#x5757;&#x6837;&#x5F0F;" class="headerlink" title="2.6 &#x4FEE;&#x6539;&#x4EE3;&#x7801;&#x5757;&#x6837;&#x5F0F;"></a>2.6 &#x4FEE;&#x6539;<code></code>&#x4EE3;&#x7801;&#x5757;&#x6837;&#x5F0F;</h5><p><code>\themes\next\source\css\_custom\custom.styl</code></p>
-<figure class="highlight css"><table><tbody><tr><td class="code"><pre><span class="line">&#x5411;&#x91CC;&#x9762;&#x52A0;&#x5165;&#xFF1A;(&#x989C;&#x8272;&#x53EF;&#x4EE5;&#x81EA;&#x5DF1;&#x5B9A;&#x4E49;)</span><br><span class="line">// Custom styles.</span><br><span class="line"><span class="selector-tag">code</span> {</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#ff7600</span>;</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#fbf7f8</span>;</span><br><span class="line">    <span class="attribute">margin</span>: <span class="number">2px</span>;</span><br><span class="line">}</span><br><span class="line">// &#x5927;&#x4EE3;&#x7801;&#x5757;&#x7684;&#x81EA;&#x5B9A;&#x4E49;&#x6837;&#x5F0F;</span><br><span class="line"><span class="selector-class">.highlight</span>, <span class="selector-tag">pre</span> {</span><br><span class="line">    <span class="attribute">margin</span>: <span class="number">5px</span> <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">padding</span>: <span class="number">5px</span>;</span><br><span class="line">    <span class="attribute">border-radius</span>: <span class="number">3px</span>;</span><br><span class="line">}</span><br><span class="line"><span class="selector-class">.highlight</span>, <span class="selector-tag">code</span>, <span class="selector-tag">pre</span> {</span><br><span class="line">    <span class="attribute">border</span>: <span class="number">1px</span> solid <span class="number">#d6d6d6</span>;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="css">&#x5411;&#x91CC;&#x9762;&#x52A0;&#x5165;&#xFF1A;(&#x989C;&#x8272;&#x53EF;&#x4EE5;&#x81EA;&#x5DF1;&#x5B9A;&#x4E49;)
+// Custom styles.
+code {
+    color: #ff7600;
+    background: #fbf7f8;
+    margin: 2px;
+}
+// &#x5927;&#x4EE3;&#x7801;&#x5757;&#x7684;&#x81EA;&#x5B9A;&#x4E49;&#x6837;&#x5F0F;
+.highlight, pre {
+    margin: 5px 0;
+    padding: 5px;
+    border-radius: 3px;
+}
+.highlight, code, pre {
+    border: 1px solid #d6d6d6;
+}
+</code></pre>
 <h5 id="2-7-&#x53D6;&#x6D88;&#x4FA7;&#x8FB9;&#x680F;&#x6587;&#x7AE0;&#x76EE;&#x5F55;&#x5BF9;&#x6807;&#x9898;&#x7684;&#x81EA;&#x52A8;&#x7F16;&#x53F7;"><a href="#2-7-&#x53D6;&#x6D88;&#x4FA7;&#x8FB9;&#x680F;&#x6587;&#x7AE0;&#x76EE;&#x5F55;&#x5BF9;&#x6807;&#x9898;&#x7684;&#x81EA;&#x52A8;&#x7F16;&#x53F7;" class="headerlink" title="2.7 &#x53D6;&#x6D88;&#x4FA7;&#x8FB9;&#x680F;&#x6587;&#x7AE0;&#x76EE;&#x5F55;&#x5BF9;&#x6807;&#x9898;&#x7684;&#x81EA;&#x52A8;&#x7F16;&#x53F7;"></a>2.7 &#x53D6;&#x6D88;&#x4FA7;&#x8FB9;&#x680F;&#x6587;&#x7AE0;&#x76EE;&#x5F55;&#x5BF9;&#x6807;&#x9898;&#x7684;&#x81EA;&#x52A8;&#x7F16;&#x53F7;</h5><p>&#x6253;&#x5F00;&#x4E3B;&#x9898;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#xFF0C;&#x5C06;<code>number:</code>&#x53D8;&#x91CF;&#x6539;&#x6210;false&#x5373;&#x53EF;</p>
 <pre><code>number: false
 </code></pre><h5 id="2-8-&#x4FEE;&#x6539;&#x4FA7;&#x8FB9;&#x680F;&#x7684;&#x80CC;&#x666F;&#x56FE;&#x7247;-amp-&#x989C;&#x8272;"><a href="#2-8-&#x4FEE;&#x6539;&#x4FA7;&#x8FB9;&#x680F;&#x7684;&#x80CC;&#x666F;&#x56FE;&#x7247;-amp-&#x989C;&#x8272;" class="headerlink" title="2.8 &#x4FEE;&#x6539;&#x4FA7;&#x8FB9;&#x680F;&#x7684;&#x80CC;&#x666F;&#x56FE;&#x7247;&amp;&#x989C;&#x8272;"></a>2.8 &#x4FEE;&#x6539;&#x4FA7;&#x8FB9;&#x680F;&#x7684;&#x80CC;&#x666F;&#x56FE;&#x7247;&amp;&#x989C;&#x8272;</h5><p>&#x4FA7;&#x8FB9;&#x680F;&#x6837;&#x5F0F;&#x6587;&#x4EF6;<code>\themes\next\source\css\_common\components\sidebar\sidebar.styl</code></p>
-<figure class="highlight css"><table><tbody><tr><td class="code"><pre><span class="line"><span class="selector-class">.sidebar</span> {</span><br><span class="line">	<span class="attribute">position</span>: fixed;</span><br><span class="line">	<span class="attribute">right</span>: <span class="number">0</span>;</span><br><span class="line">	<span class="attribute">top</span>: <span class="number">0</span>;</span><br><span class="line">	<span class="attribute">bottom</span>: <span class="number">0</span>;</span><br><span class="line">	<span class="attribute">background</span>: <span class="built_in">url</span>(&#x56FE;&#x7247;&#x5730;&#x5740;.jpg) no-repeat <span class="meta">!important</span>;</span><br><span class="line">	<span class="attribute">background-size</span>: cover <span class="meta">!important</span>;</span><br><span class="line">}</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="CSS">    .sidebar {
+        position: fixed;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background: url(&#x56FE;&#x7247;&#x5730;&#x5740;.jpg) no-repeat !important;
+        background-size: cover !important;
+    }
+</code></pre>
 <h5 id="2-9-&#x7ED9;&#x4FA7;&#x8FB9;&#x680F;&#x5934;&#x50CF;&#x6DFB;&#x52A0;&#x94FE;&#x63A5;"><a href="#2-9-&#x7ED9;&#x4FA7;&#x8FB9;&#x680F;&#x5934;&#x50CF;&#x6DFB;&#x52A0;&#x94FE;&#x63A5;" class="headerlink" title="2.9 &#x7ED9;&#x4FA7;&#x8FB9;&#x680F;&#x5934;&#x50CF;&#x6DFB;&#x52A0;&#x94FE;&#x63A5;"></a>2.9 &#x7ED9;&#x4FA7;&#x8FB9;&#x680F;&#x5934;&#x50CF;&#x6DFB;&#x52A0;&#x94FE;&#x63A5;</h5><p>&#x6253;&#x5F00;<code>\next\source\css\_common\components\sidebar\sidebar-author.styl</code>&#xFF1B;<br>&#x5728;<code>.site-author-image</code>&#x53D8;&#x91CF;&#x5185;&#x6DFB;&#x52A0;<code>cursor: pointer;</code>&#x4FEE;&#x6539;&#x9F20;&#x6807;&#x6837;&#x5F0F;&#xFF1B;<br>&#x6253;&#x5F00;<code>\next\source\js\src\motion.js</code>&#xFF0C;&#x5728;&#x9876;&#x90E8;&#x6DFB;&#x52A0;&#x5982;&#x4E0B;&#x4EE3;&#x7801;&#xFF1A;</p>
-<figure class="highlight javascript"><table><tbody><tr><td class="code"><pre><span class="line">$(<span class="string">&apos;.site-author-image&apos;</span>).click(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>{</span><br><span class="line">     <span class="built_in">window</span>.location.href=<span class="string">&quot;&#x81EA;&#x5B9A;&#x4E49;&#x94FE;&#x63A5;&quot;</span>;</span><br><span class="line">});</span><br></pre></td></tr></tbody></table></figure>
+<pre><code class="JavaScript">    $(&apos;.site-author-image&apos;).click(function(){
+      window.location.href=&quot;&#x81EA;&#x5B9A;&#x4E49;&#x94FE;&#x63A5;&quot;;
+    });
+</code></pre>
 <h3 id="3-0-&#x6DFB;&#x52A0;&#x52A0;&#x5BC6;&#x529F;&#x80FD;"><a href="#3-0-&#x6DFB;&#x52A0;&#x52A0;&#x5BC6;&#x529F;&#x80FD;" class="headerlink" title="3.0 &#x6DFB;&#x52A0;&#x52A0;&#x5BC6;&#x529F;&#x80FD;"></a>3.0 &#x6DFB;&#x52A0;&#x52A0;&#x5BC6;&#x529F;&#x80FD;</h3><blockquote>
 <p>Hexo&#x7684;&#x6587;&#x7AE0;&#x52A0;&#x5BC6;&#x6211;&#x77E5;&#x9053;&#x7684;&#x6709;&#x4E24;&#x79CD;&#xFF0C;&#x8FD9;&#x91CC;&#x4E3B;&#x8981;&#x8BB2;<code>hexo-blog-encrypt</code> &#x7684;&#x4F7F;&#x7528;<br>&#x4F60;&#x5199;&#x4E86;&#x4E00;&#x7BC7;&#x535A;&#x5BA2;&#xFF0C;&#x4F46;&#x662F;&#xFF0C;&#x51FA;&#x4E8E;&#x67D0;&#x79CD;&#x539F;&#x56E0;&#xFF0C;&#x4E0D;&#x592A;&#x5E0C;&#x671B;&#x6BCF;&#x4E00;&#x4E2A;&#x4EBA;&#x90FD;&#x53EF;&#x4EE5;&#x770B;&#x5230;&#x3002;<br>&#x6240;&#x4EE5;&#x4F60;&#x5E38;&#x5E38;&#x4F1A;&#x4E3A;&#x8FD9;&#x79CD;&#x6587;&#x7AE0;&#x8BBE;&#x7F6E;&#x4E00;&#x4E2A;&#x5BC6;&#x7801;&#xFF0C;&#x9700;&#x8981;&#x8F93;&#x5165;&#x5BC6;&#x7801;&#x624D;&#x53EF;&#x4EE5;&#x8BBF;&#x95EE;&#x8FD9;&#x7BC7;&#x535A;&#x5BA2;&#x3002;<br>&#x8BE6;&#x7EC6;&#x4ECB;&#x7ECD;&#x53C2;&#x8003;&#xFF1A;<a href="https://github.com/MikeCoder/hexo-blog-encrypt/blob/master/ReadMe.zh.md" target="_blank" rel="noopener">https://github.com/MikeCoder/hexo-blog-encrypt/blob/master/ReadMe.zh.md</a></p>
 </blockquote>
@@ -290,12 +2122,23 @@
 <h5 id="3-2-&#x5FEB;&#x901F;&#x5F00;&#x59CB;"><a href="#3-2-&#x5FEB;&#x901F;&#x5F00;&#x59CB;" class="headerlink" title="3.2 &#x5FEB;&#x901F;&#x5F00;&#x59CB;"></a>3.2 &#x5FEB;&#x901F;&#x5F00;&#x59CB;</h5><ul>
 <li>&#x9996;&#x5148;&#x5728;<code>_config.yml</code>&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x4E2D;&#x542F;&#x7528;&#x63D2;&#x4EF6;</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line"># Security</span><br><span class="line">##</span><br><span class="line">encrypt:</span><br><span class="line">  enable: true</span><br></pre></td></tr></tbody></table></figure>
-<ul>
+<pre><code># Security
+##
+encrypt:
+  enable: true
+</code></pre><ul>
 <li>&#x7136;&#x540E;&#x5728;&#x4F60;&#x7684;&#x6587;&#x7AE0;&#x7684;&#x5934;&#x90E8;&#x4E0A;&#x52A0;&#x4E0A;&#x5BF9;&#x5E94;&#x5B57;&#x6BB5;&#xFF1A;</li>
 </ul>
-<figure class="highlight plain"><table><tbody><tr><td class="code"><pre><span class="line">---</span><br><span class="line">title: hello world</span><br><span class="line">date: 2016-03-30 21:18:02</span><br><span class="line">tags:</span><br><span class="line">  - fdsafsdaf</span><br><span class="line">password: 123456</span><br><span class="line">abstract: Welcome to my blog, enter password to read.</span><br><span class="line">message: Welcome to my blog, enter password to read.</span><br><span class="line">---</span><br></pre></td></tr></tbody></table></figure>
-<ul>
+<pre><code>---
+title: hello world
+date: 2016-03-30 21:18:02
+tags:
+  - fdsafsdaf
+password: 123456
+abstract: Welcome to my blog, enter password to read.
+message: Welcome to my blog, enter password to read.
+---
+</code></pre><ul>
 <li>password: &#x662F;&#x8BE5;&#x535A;&#x5BA2;&#x52A0;&#x5BC6;&#x4F7F;&#x7528;&#x7684;&#x5BC6;&#x7801;</li>
 <li>abstract: &#x662F;&#x8BE5;&#x535A;&#x5BA2;&#x7684;&#x6458;&#x8981;&#xFF0C;&#x4F1A;&#x663E;&#x793A;&#x5728;&#x535A;&#x5BA2;&#x7684;&#x5217;&#x8868;&#x9875;</li>
 <li>message: &#x8FD9;&#x4E2A;&#x662F;&#x535A;&#x5BA2;&#x67E5;&#x770B;&#x65F6;&#xFF0C;&#x5BC6;&#x7801;&#x8F93;&#x5165;&#x6846;&#x4E0A;&#x9762;&#x7684;&#x63CF;&#x8FF0;&#x6027;&#x6587;&#x5B57;</li>
@@ -320,359 +2163,51 @@
             document.body.appendChild(img);
           });
       </script>
-        </div>
-
-        <blockquote class="post-copyright">
-    <div class="content">
-        
-<span class="post-time">
-    最后更新：<time datetime="2022-05-26T13:32:07.811Z" itemprop="dateUpdated">2022-05-26 21:32:07</time>
-</span>
+</div>
 
 
-        
-        原文链接：<a href="/posts/60444925/" target="_blank" rel="external">https://marnm.github.io/posts/60444925/</a>
-        
-    </div>
-    <footer>
-        <div onclick="location.href='https://marnm.github.io'">
-            <img src="/img/avatar.gif" alt="Echo">
-            <a>Echo</a>
-        </div>
-    </footer>
-</blockquote>
-
-        
-    <div class="page-reward">
-        <nav class="myreward">
-            <a id="rewardBtn" href="javascript:;"><span>打&nbsp;赏</span><span>装成好像很多人打赏的样子</span></a>
-        </nav>
-    </div>
-
-
-
-        <div class="post-footer">
+    <div class="post-guide">
+        <div class="item left">
             
-	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Hexo/">Hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/NexT/">NexT</a></li></ul>
-
-
+              <a href="/posts/9e3f6743/">
+                  <i class="fa fa-angle-left" aria-hidden="true"></i>
+                  自由的灵魂必将远航
+              </a>
             
-<div class="page-share-wrap">
-    
-
-<div class="page-share" id="pageShare">
-    <ul class="reset share-icons">
-      <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/60444925/&title=《NexT主题优化+美化》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
-          <i class="icon icon-weibo"></i>
-        </a>
-      </li>
-      <li>
-        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
-          <i class="icon icon-weixin"></i>
-        </a>
-      </li>
-      <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/60444925/&title=《NexT主题优化+美化》 — Deops's blog&source=前言关于Hexo博客NexT主题美化就不一一列举的，网上教程一大堆，我就列出一些个人觉得比较实用的
-1.0 视觉优化与性能优化" data-title=" QQ">
-          <i class="icon icon-qq"></i>
-        </a>
-      </li>
-      <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/60444925/" data-title=" Facebook">
-          <i class="icon icon-facebook"></i>
-        </a>
-      </li>
-      <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《NexT主题优化+美化》 — Deops's blog&url=https://marnm.github.io/posts/60444925/&via=https://marnm.github.io" data-title=" Twitter">
-          <i class="icon icon-twitter"></i>
-        </a>
-      </li>
-      <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/60444925/" data-title=" Google+">
-          <i class="icon icon-google-plus"></i>
-        </a>
-      </li>
-    </ul>
- </div>
-
-
-
-    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
-        <i class="icon icon-share-alt icon-lg"></i>
-    </a>
-</div>
-
-
-
+        </div>
+        <div class="item right">
+            
+              <a href="/posts/67ee4dec/">
+                Linux学习笔记 - 关于开源
+                <i class="fa fa-angle-right" aria-hidden="true"></i>
+              </a>
+            
         </div>
     </div>
 
-    
-<nav class="post-nav flex-row flex-justify-between">
-  
-    <div class="waves-block waves-effect prev">
-      <a href="/posts/9e3f6743/" id="post-prev" class="post-nav-link">
-        <h4 class="title">
-          上一篇：自由的灵魂必将远航
-        </h4>
-      </a>
-    </div>
-  
-
-  
-    <div class="waves-block waves-effect next">
-      <a href="/posts/67ee4dec/" id="post-next" class="post-nav-link">
-        <h4 class="title" data-hover="下一篇：Linux学习笔记 - 关于开源">下一篇：Linux学习笔记 - 关于开源</h4>
-      </a>
-    </div>
-  
-</nav>
 
 
 
-    
-    
-
-    
-
-    
-
-
-</article>
-
-</div>
-
-        <footer class="footer">
-    <div class="footer-content">
-        <span class="power">
-            <i class="icon icon-lg icon-copyright"></i>
-            2022
-            <i class="icon icon-lg icon-heart"></i>
-            <a href="https://marnm.github.io">marnm.github.io</a>
-            <br>
-            Power by
-            <a href="https://hexo.io/" target="_blank" rel="external nofollow">Hexo</a>&nbsp;·&nbsp;
-            Theme
-            <a class="tomotoeslink" href="https://github.com/tomotoes/hexo-theme-tomotoes/" target="_blank" rel="external nofollow">tomotoes</a>
-        </span>
-
-        <br>
-
-        <span id="RunTime" style="color:#a7a7a2;"></span>
-        <br>
-
-        <span>
-            
-
-        </span>
-        <br>
-
-        <span class="license"><a target="_blank" rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">博客内容遵循 知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
-    </div>
-</footer>
-
-    </main>
-    
-        
-<div id="reward" class="page-modal reward-lay">
-    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <h3 class="reward-title">
-        <i class="icon icon-quote-left"></i>
-        <span>感谢您的鼓励支持！</span>
-        <i class="icon icon-quote-right"></i>
-    </h3>
-    <div class="reward-content">
-        
-        <div class="reward-code">
-            <img id="rewardCode" data-img="/img/dog.png" alt="打赏二维码">
-        </div>
-        
-        <label class="reward-toggle">
-            <input id="rewardToggle" type="checkbox" class="reward-toggle-check" data-wechat="/img/wechat.png" data-alipay="/img/alipay.png">
-            <div class="reward-toggle-ctrol">
-                <span class="reward-toggle-item wechatPay">&nbsp;&nbsp;微信&nbsp;&nbsp;</span>
-                <span class="reward-toggle-item alipayPay">支付宝</span>
-            </div>
-        </label>
-        
-        <i class="icon icon-caret-up"></i>
-    </div>
-</div>
-
-
-    
-    <div class="mask" id="mask"></div>
-<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
-
-
-
-<div class="global-share" id="globalShare">
-    <ul class="reset share-icons">
-      <li>
-        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://marnm.github.io/posts/60444925/&title=《NexT主题优化+美化》 — Deops's blog&pic=https://marnm.github.io/img/avatar.gif" data-title="微博">
-          <i class="icon icon-weibo"></i>
-        </a>
-      </li>
-      <li>
-        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
-          <i class="icon icon-weixin"></i>
-        </a>
-      </li>
-      <li>
-        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://marnm.github.io/posts/60444925/&title=《NexT主题优化+美化》 — Deops's blog&source=前言关于Hexo博客NexT主题美化就不一一列举的，网上教程一大堆，我就列出一些个人觉得比较实用的
-1.0 视觉优化与性能优化" data-title=" QQ">
-          <i class="icon icon-qq"></i>
-        </a>
-      </li>
-      <li>
-        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://marnm.github.io/posts/60444925/" data-title=" Facebook">
-          <i class="icon icon-facebook"></i>
-        </a>
-      </li>
-      <li>
-        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《NexT主题优化+美化》 — Deops's blog&url=https://marnm.github.io/posts/60444925/&via=https://marnm.github.io" data-title=" Twitter">
-          <i class="icon icon-twitter"></i>
-        </a>
-      </li>
-      <li>
-        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://marnm.github.io/posts/60444925/" data-title=" Google+">
-          <i class="icon icon-google-plus"></i>
-        </a>
-      </li>
-    </ul>
- </div>
-
-
-<div class="page-modal wx-share" id="wxShare">
-    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
-    <p class="wechatshare">扫一扫，分享到微信</p>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAK4AAACuCAAAAACKZ2kyAAAB0ElEQVR42u3aO47DMAxFUe1/0542TZT7SIkwBldVgATxoQuCH62Fz/NxyLf733/+Zt04cuXKbXOf7UlBaUjcIFeu3HnuPtF8Y/GQyOtAyU6uXLkv5vIw0qQmV67c/8TtND9y5cp9J5eXIOQzb28u9mpy5cptcPmU8t7nK/NduXLllrhPeGqP349Wg6fLlSt3hMsTSi0AUu7Ey125cuUOcmuLkDQ9kRcU92py5co9yiXXrVIKX8TG61i5cuWOcPk6hIA6YQdtlVy5cse5teaHVyA8tV3s1eTKlZv95+LlSLHTKm1Mgg2PXLly29x+SkpXs6Sc+vosuXLlDnL7g4xaqxMHJleu3HHuvoghqxFe+pDU9iORyZUr9xo3HVukzVKtEUKNlly5ci9z0xVI55oFH7zG8125cuVe4KYXI9JFCA/sR9hy5cod5HaqiNolDFLirDS/ypUrt819wsN7Kf4/QWskV67cEW7nSgRPXrzJ6Sx05cqVe5bbT17pgoSPaNESRa5cude4tQ0ML1N4Bj0w35UrV+44l487a6c4NZErV+4LuPH9jtLwFK1S5MqVe43Lh5t8gNKZxMQ7Ybly5R7l1haf/AJWbSByYL4rV67cCvcPrJ0BLxLa2qMAAAAASUVORK5CYII=" alt="微信分享二维码">
-</div>
-
-
-
-
-    <!-- waves按钮特效 -->
-<script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
-
-<!-- 主题配置脚本 -->
 <script>
-var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+	
+	
 </script>
-
-<!-- jquery -->
-<script src="/js/jquery.min.js?v=3.0"></script>
-
-<!-- 搜索 -->
-
-<div class="search-panel" id="search-panel">
-    <ul class="search-result" id="search-result"></ul>
+	</div>
+	<div id="footer">
+	<p>
+	©2019-<span id="footerYear"></span> 
+	<a href="/">Echo</a> 
+	
+	
+	<br>
+	Theme <a href="//github.com/wujun234/hexo-theme-tree" target="_blank">Tree</a>
+	by <a href="//github.com/wujun234" target="_blank">WuJun</a>
+	Powered by <a href="//hexo.io" target="_blank">Hexo</a>
+	</p>
 </div>
-<template id="search-tpl">
-<li class="item waves-block waves-effect" onclick="location.href='{path}'">
-    <div class="title ellipsis" title="{title}">{title}</div>
-</li>
-</template>
-
-
-<!-- main博客脚本 -->
-<script src="/js/main.min.js?v=3.0"></script>
-
-<!-- 动画&配置 -->
-<script src="/js/script.min.js?v=3.0"></script>
-
-<!-- 脚本管理 -->
-<script>
-
-if(window.innerWidth > 800){
-	/* 3D标题 */
-	$(".content-header").on("mousemove", threedee);
-
-	/* 底部追随鼠标 */
-	$(".footer").hover(2);
-
-	/* gotop键的涟漪 */
-	$("#gotop").hover(1);
-
-	/* 赞赏的粒子雨 */
-	$("#reward").hover(3);
-
-	/* 微信公众号的底部渲染 */
-	$("#wechat").hover(4);
-
-    /* 标题跳动 */
-    $(".archivestitle").bumpyText();
-
-	/* 图片点击放大 */
-	const postimg = jQuery(".post-content img:not(.github-emoji)");
-	postimg.on("click",function(){
-
-		mask.classList.add("in");
-		main.classList.add("Mask");
-		menu.classList.add("Mask");
-		var myimg = this.cloneNode(true);
-		myimg.classList.add("imgShow");
-
-		setTimeout(function(){
-			jQuery(myimg).animate({
-				opacity:"1"
-			},1000);
-		},0);
-
-		document.body.appendChild(myimg);
-
-		myimg.onclick=function(){
-			document.body.removeChild(myimg);
-			mask.classList.remove("in");
-			main.classList.remove("Mask");
-			menu.classList.remove("Mask");
-		};
-
-	});
-
-}
-
-/* 名字跳动 */
-$("#name").bumpyText();
-
-
-/* 网站运行时间 */
-setInterval(function () {
-	setTime("2019/01/01");
-}, 1000);
-
-/* 文章块的淡出 */
-postshow();
-
-/* 座右铭 */
-
-   getHitokoto();
-
-
-
-/* 粘贴提示 */
-G($(".post-content"), location.href, "Echo");
-
-
-/* 控制台 */
-if (window.console && window.console.log) {
-	setTimeout(function () {
-		console.log("\n %c 一个坏掉的番茄 %c  © Simon Ma  http://tomotoes.com \n\n", "color:#FFFFFB;background:#1abc9c;padding:5px 0;border-radius:.5rem 0 0 .5rem;", "color:#FFFFFB;background:#080808;padding:5px 0;border-radius:0 .5rem .5rem 0;");
-	}, 0);
-}
-
+<script type="text/javascript"> 
+	document.getElementById('footerYear').innerHTML = new Date().getFullYear() + '';
 </script>
-
-
-
-
-<!-- 公式渲染 -->
-
-
-
-<!-- 不蒜子 -->
-
-
+	<button id="totop-toggle" class="toggle"><i class="fa fa-angle-double-up" aria-hidden="true"></i></button>
 </body>
 </html>
